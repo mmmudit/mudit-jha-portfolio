@@ -1,0 +1,55 @@
+@import "tailwindcss";
+
+:root {
+  --dough: #fbfaf5;
+  --willow-grey: #c8d5bb;
+  --rust-grey: #47585c;
+  --button-primary: #52525b;
+  --button-secondary: #7f7f80;
+  --zinc-800: #27272a;
+  --zinc-300: #d4d4d8;
+  --status-green: #31b564;
+  --background: var(--dough);
+  --foreground: var(--zinc-800);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-dough: var(--dough);
+  --color-willow-grey: var(--willow-grey);
+  --color-rust-grey: var(--rust-grey);
+  --color-button-primary: var(--button-primary);
+  --color-button-secondary: var(--button-secondary);
+  --color-zinc-800: var(--zinc-800);
+  --color-zinc-300: var(--zinc-300);
+  --color-status-green: var(--status-green);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --font-display: var(--font-figtree);
+  --font-hand: var(--font-myfont);
+}
+
+body {
+  background: var(--dough);
+  color: var(--foreground);
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+}
+
+.dot-grid {
+  background-color: var(--dough);
+  background-image: radial-gradient(circle, rgba(200, 213, 187, 0.55) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+.gradient-divider {
+  background: linear-gradient(to bottom, var(--rust-grey), var(--willow-grey) 74.479%);
+}
+
+.nav-pill-active {
+  background-color: var(--willow-grey);
+  box-shadow:
+    inset 0 1px 1px rgba(255, 255, 255, 0.9),
+    inset 0 -1px 1px rgba(0, 0, 0, 0.02),
+    0 2px 4px rgba(0, 0, 0, 0.06);
+}
