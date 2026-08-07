@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import { Caveat, Figtree, Geist, Geist_Mono } from "next/font/google";
+import localFont from "next/font/local";
+import { Figtree, Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -18,10 +19,10 @@ const figtree = Figtree({
   weight: ["500", "600"],
 });
 
-const myFont = Caveat({
+const myFont = localFont({
+  src: "../../public/fonts/Myfont Regular.ttf",
   variable: "--font-myfont",
-  subsets: ["latin"],
-  weight: ["400", "700"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
