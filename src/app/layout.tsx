@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import { Figtree, Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import AgentationClient from "../components/agentation-client";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -37,7 +38,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} ${figtree.variable} ${myFont.variable} h-full antialiased`}
     >
-      <body className="min-h-full bg-dough text-zinc-800">{children}</body>
+      <body className="min-h-full bg-dough text-zinc-800">
+        {children}
+        <AgentationClient />
+      </body>
     </html>
   );
 }
