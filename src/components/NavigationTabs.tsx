@@ -153,22 +153,20 @@ export default function NavigationTabs({
         {tabs.map((tab) => {
           const isActive = tab.id === activeId;
           return (
-            <Link
-              key={tab.id}
-              href={tab.href}
-              ref={(el: HTMLAnchorElement | null) => (tabRefs.current[tab.id] = el)}
-              onClick={(e) => onTabClick(e as any, tab)}
-              onMouseEnter={() => prefetch(tab.href)}
-              onFocus={() => prefetch(tab.href)}
-              onTouchStart={() => prefetch(tab.href)}
-              className={clsx(
-                "relative rounded-full px-[15px] py-[6px] text-[18px] font-light tracking-[-1px] transition-colors",
-                isActive
-                  ? "text-button-primary"
-                  : "text-button-secondary hover:text-button-primary"
-              )}
-            >
-              {tab.label}
+            <Link key={tab.id} href={tab.href} legacyBehavior>
+              <a
+                ref={(el: HTMLAnchorElement | null) => (tabRefs.current[tab.id] = el)}
+                onClick={(e) => onTabClick(e as any, tab)}
+                onMouseEnter={() => prefetch(tab.href)}
+                onFocus={() => prefetch(tab.href)}
+                onTouchStart={() => prefetch(tab.href)}
+                className={clsx(
+                  "relative rounded-full px-[15px] py-[6px] text-[18px] font-light tracking-[-1px] transition-colors",
+                  isActive ? "text-button-primary" : "text-button-secondary hover:text-button-primary"
+                )}
+              >
+                {tab.label}
+              </a>
             </Link>
           );
         })}
