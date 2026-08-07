@@ -11,6 +11,7 @@
   --status-green: #31b564;
   --background: var(--dough);
   --foreground: var(--zinc-800);
+  --hue-1: #f97373; /* visible test color for demo components */
 }
 
 @theme inline {
@@ -52,35 +53,4 @@ body {
     inset 0 1px 1px rgba(255, 255, 255, 0.9),
     inset 0 -1px 1px rgba(0, 0, 0, 0.02),
     0 2px 4px rgba(0, 0, 0, 0.06);
-}
-
-/* Liquid glass effect for navigation and panels */
-.liquid-glass {
-  background: rgba(255, 255, 255, 0.06);
-  backdrop-filter: blur(8px) saturate(120%);
-  -webkit-backdrop-filter: blur(8px) saturate(120%);
-  border-radius: 9999px;
-  padding: 6px;
-  transition: background-color 300ms ease, transform 250ms ease, box-shadow 300ms ease;
-  box-shadow: 0 6px 18px rgba(16, 24, 40, 0.04);
-}
-
-.liquid-glass:hover {
-  background: rgba(255, 255, 255, 0.09);
-  transform: translateY(-2px) scale(1.01);
-  box-shadow: 0 10px 30px rgba(16, 24, 40, 0.06);
-}
-
-.liquid-glass button {
-  transition: transform 220ms cubic-bezier(.2,.9,.2,1), box-shadow 220ms ease, color 200ms ease;
-}
-
-.liquid-glass button:hover {
-  transform: translateY(-3px);
-}
-
-.liquid-glass .nav-pill-active {
-  background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
-  color: var(--color-button-primary, #52525b);
-  border: 1px solid rgba(255,255,255,0.12);
 }
