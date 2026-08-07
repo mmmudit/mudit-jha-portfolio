@@ -13,9 +13,6 @@ const socialLinks = [
 export function Footer() {
   return (
     <footer className="relative pt-12">
-      <p className="absolute right-0 top-0 hidden font-hand text-[48px] tracking-[-1px] text-willow-grey lg:block">
-        say hi ↓
-      </p>
 
       <div className="flex flex-col gap-9">
         <div className="flex flex-col gap-28">
@@ -29,8 +26,10 @@ export function Footer() {
                 &ldquo;cool quotes that tickle my mind&rdquo;
               </p>
             </div>
-
-            <nav className="flex flex-col gap-7 font-sans text-[clamp(2rem,5vw,3rem)] font-semibold leading-[27px] tracking-[-1px] text-willow-grey">
+            <nav className="relative flex flex-col gap-7 font-sans text-[clamp(2rem,5vw,3rem)] font-semibold leading-[27px] tracking-[-1px] text-willow-grey">
+              <p className="absolute left-0 -top-14 hidden font-hand text-[48px] tracking-[-1px] text-willow-grey lg:block">
+                say hi ↓
+              </p>
               {socialLinks.map((link) => (
                 <a
                   key={link.label}
