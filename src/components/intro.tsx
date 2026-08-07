@@ -1,4 +1,4 @@
-import { Nav } from "./nav";
+import NavigationTabs from "./NavigationTabs";
 
 export function Intro() {
   return (
@@ -16,7 +16,7 @@ export function Intro() {
         behavior.
       </p>
 
-      <Nav />
+      <NavigationTabs />
     </section>
   );
 }
