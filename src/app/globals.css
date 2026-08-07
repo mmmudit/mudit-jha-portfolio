@@ -11,7 +11,8 @@
   --status-green: #31b564;
   --background: var(--dough);
   --foreground: var(--zinc-800);
-  --hue-1: #f97373; /* visible test color for demo components */
+  --hue-1: #f97373;
+  /* visible test color for demo components */
 }
 
 @theme inline {
@@ -44,8 +45,9 @@ body {
 }
 
 .gradient-divider {
-  background: linear-gradient(to bottom, var(--rust-grey), var(--willow-grey) 74.479%);
+  background: rgba(200, 213, 187, 0.35);
 }
+
 
 .nav-pill-active {
   background-color: var(--willow-grey);
@@ -53,4 +55,64 @@ body {
     inset 0 1px 1px rgba(255, 255, 255, 0.9),
     inset 0 -1px 1px rgba(0, 0, 0, 0.02),
     0 2px 4px rgba(0, 0, 0, 0.06);
+}
+
+/* Motion tokens (minimal excerpt used by components) */
+:root {
+  --duration-quick: 150ms;
+  --duration-fast: 250ms;
+  --tabs-dur: 250ms;
+  --tabs-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --page-slide-dur: 250ms;
+  --page-slide-distance: 8px;
+  --ease-smooth-out: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Project card: press feedback + hover gating */
+.project-card {
+  transition: transform var(--duration-fast) var(--tabs-ease);
+  will-change: transform;
+}
+@media (hover: hover) and (pointer: fine) {
+  .project-card:hover {
+    transform: translateY(-4px);
+  }
+}
+.project-card:active {
+  transform: scale(0.97);
+  transition: transform var(--duration-quick) var(--ease-smooth-out);
+}
+@media (prefers-reduced-motion: reduce) {
+  .project-card,
+  .project-card:hover,
+  .project-card:active {
+    transition: none !important;
+    transform: none !important;
+  }
+}
+
+/* Nav pill transition helper (fallback for JS-driven styles) */
+.nav-pill-transition {
+  transition: transform var(--tabs-dur) var(--tabs-ease),
+    width var(--tabs-dur) var(--tabs-ease),
+    opacity var(--tabs-dur) var(--tabs-ease);
+}
+
+/* Generic pressable utility for anchors and buttons */
+.pressable {
+  transition: transform var(--duration-quick) var(--ease-smooth-out),
+    color var(--duration-quick) var(--ease-smooth-out),
+    opacity var(--duration-quick) var(--ease-smooth-out);
+  will-change: transform;
+}
+.pressable:active {
+  transform: scale(0.97);
+  transition: transform var(--duration-quick) var(--ease-smooth-out);
+}
+@media (prefers-reduced-motion: reduce) {
+  .pressable,
+  .pressable:active {
+    transition: none !important;
+    transform: none !important;
+  }
 }
