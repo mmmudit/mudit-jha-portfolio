@@ -3,6 +3,11 @@ import localFont from "next/font/local";
 import { Figtree, Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import AgentationClient from "../components/agentation-client";
+import PageTransition from "../components/PageTransition";
+import { Header } from "../components/header";
+import NavigationTabs from "../components/NavigationTabs";
+import { Intro } from "../components/intro";
+import { Divider } from "../components/divider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -39,7 +44,15 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${geistSans.variable} ${geistMono.variable} ${figtree.variable} ${myFont.variable} h-full antialiased`}
     >
       <body className="min-h-full bg-dough text-zinc-800">
-        {children}
+        <div className="mx-auto w-full max-w-[1440px] px-6 pt-[60px] sm:px-14">
+          <div className="mx-auto flex w-full max-w-[1334px] flex-col gap-12">
+            <Header />
+            <Intro />
+            <NavigationTabs />
+            <Divider />
+            <PageTransition>{children}</PageTransition>
+          </div>
+        </div>
         <AgentationClient />
       </body>
     </html>

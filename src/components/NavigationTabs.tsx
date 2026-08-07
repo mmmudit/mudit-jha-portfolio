@@ -2,8 +2,8 @@
 
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
+import { usePathname } from "next/navigation";
 import clsx from "clsx";
-import { useRouter } from "next/navigation";
 
 type Tab = {
   id: string;
@@ -19,7 +19,21 @@ type IndicatorRect = {
   opacity: number;
 };
 
-const TRANSITION_CLASS = "transition-[transform,width,opacity] duration-300 ease-out";
+const TRANSITION_CLASS = "transition-[transform,width,opacity]";
+
+// Color pulled from Figma node 80:901
+const NAV_COLOR = "#c8d5bb";
+// Willow grey (used for pill background)
+const WILLOW_HEX = "#C8D5BB";
+
+const hexToRgba = (hex: string, alpha = 1) => {
+  const cleaned = hex.replace("#", "");
+  const bigint = parseInt(cleaned, 16);
+  const r = (bigint >> 16) & 255;
+  const g = (bigint >> 8) & 255;
+  const b = bigint & 255;
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+};
 
 export default function NavigationTabs({
   tabs = [
@@ -32,12 +46,13 @@ export default function NavigationTabs({
   tabs?: Tab[];
   initialActiveId?: string;
 }) {
-  const router = useRouter();
   const containerRef = useRef<HTMLDivElement | null>(null);
   const tabRefs = useRef<Record<string, HTMLAnchorElement | null>>({});
-  const pendingHref = useRef<string | null>(null);
+  const pathname = usePathname();
 
-  const [activeId, setActiveId] = useState<string | undefined>(initialActiveId ?? tabs[0]?.id);
+  const [activeId, setActiveId] = useState<string | undefined>(
+    initialActiveId ?? tabs[0]?.id,
+  );
   const [indicator, setIndicator] = useState<IndicatorRect | null>(null);
   const [indicatorReady, setIndicatorReady] = useState(false);
 
@@ -81,27 +96,17 @@ export default function NavigationTabs({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeId]);
 
-  // Click handling that waits for transition
-  const onTabClick = (e: React.MouseEvent, tab: Tab) => {
-    // modifiers bypass
-    if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
-    if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-
-    e.preventDefault();
-    // set pending destination
-    pendingHref.current = tab.href;
-    setActiveId(tab.id);
-    // measure immediately so slide starts
-    measureActive();
-  };
-
-  const onTransitionEnd = (e: React.TransitionEvent) => {
-    if (e.propertyName !== "transform") return;
-    if (!pendingHref.current) return;
-    const href = pendingHref.current;
-    pendingHref.current = null;
-    router.push(href, { scroll: false });
-  };
+  // Update activeId when route changes so the pill follows the current URL
+  useEffect(() => {
+    if (!pathname) return;
+    const match = tabs.find(
+      (t) =>
+        t.href === pathname || (t.href !== "/" && pathname.startsWith(t.href)),
+    );
+    if (match) setActiveId(match.id);
+    else setActiveId(tabs[0]?.id);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pathname]);
 
   // Prefetch on hover/focus/touchstart
   const prefetch = (href: string) => {
@@ -116,7 +121,7 @@ export default function NavigationTabs({
   };
 
   return (
-    <div ref={containerRef} className="relative inline-flex items-center">
+    <div ref={containerRef} className="relative inline-flex items-center z-30">
       {/* Static fallback pill to avoid flash */}
       {!indicatorReady && (
         <div
@@ -137,14 +142,16 @@ export default function NavigationTabs({
       {indicator && (
         <div
           aria-hidden
-          onTransitionEnd={onTransitionEnd}
-          className={clsx("absolute rounded-full bg-white/6 backdrop-blur-sm border border-white/10 shadow-md", TRANSITION_CLASS)}
+          className={clsx("absolute rounded-full backdrop-blur-sm shadow-md", TRANSITION_CLASS)}
           style={{
             width: indicator.width,
             height: indicator.height,
             transform: `translate3d(${indicator.left}px, ${indicator.top}px, 0)`,
             opacity: indicator.opacity,
+            backgroundColor: WILLOW_HEX,
+            border: `1px solid ${hexToRgba(WILLOW_HEX, 0.9)}`,
             pointerEvents: "none",
+            transition: `transform var(--tabs-dur,250ms) var(--tabs-ease, cubic-bezier(0.22,1,0.36,1)), width var(--tabs-dur,250ms) var(--tabs-ease, cubic-bezier(0.22,1,0.36,1)), opacity var(--tabs-dur,250ms) var(--tabs-ease, cubic-bezier(0.22,1,0.36,1))`,
           }}
         />
       )}
@@ -154,17 +161,16 @@ export default function NavigationTabs({
           const isActive = tab.id === activeId;
           return (
             <Link key={tab.id} href={tab.href} legacyBehavior>
-              <a
+                <a
                 ref={(el: HTMLAnchorElement | null) => {
                   tabRefs.current[tab.id] = el;
                 }}
-                onClick={(e) => onTabClick(e as any, tab)}
                 onMouseEnter={() => prefetch(tab.href)}
                 onFocus={() => prefetch(tab.href)}
                 onTouchStart={() => prefetch(tab.href)}
                 className={clsx(
-                  "relative rounded-full px-[15px] py-[6px] text-[18px] font-light tracking-[-1px] transition-colors",
-                  isActive ? "text-button-primary" : "text-button-secondary hover:text-button-primary"
+                  "relative rounded-full px-[15px] py-[6px] text-[18px] font-light tracking-[-1px] pressable",
+                  isActive ? "text-zinc-900" : "text-zinc-500 hover:text-zinc-900",
                 )}
               >
                 {tab.label}
