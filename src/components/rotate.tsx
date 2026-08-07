@@ -1,13 +1,13 @@
 "use client";
 
-import * as motion from "motion/react-client";
+import { motion } from "motion/react-client";
 
 export default function Rotate() {
   return (
     <motion.div
       style={box}
-      animate={{ rotate: 360 }}
-      transition={{ duration: 1 }}
+      animate={{ rotate: [0, 360] }}
+      transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
     />
   );
 }
@@ -19,6 +19,6 @@ export default function Rotate() {
 const box = {
   width: 100,
   height: 100,
-  backgroundColor: "var(--hue-1)",
+  backgroundColor: "var(--willow-grey)",
   borderRadius: 5,
 } as const;
