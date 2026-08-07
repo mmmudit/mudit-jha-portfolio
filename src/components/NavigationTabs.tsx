@@ -155,7 +155,9 @@ export default function NavigationTabs({
           return (
             <Link key={tab.id} href={tab.href} legacyBehavior>
               <a
-                ref={(el: HTMLAnchorElement | null) => (tabRefs.current[tab.id] = el)}
+                ref={(el: HTMLAnchorElement | null) => {
+                  tabRefs.current[tab.id] = el;
+                }}
                 onClick={(e) => onTabClick(e as any, tab)}
                 onMouseEnter={() => prefetch(tab.href)}
                 onFocus={() => prefetch(tab.href)}
