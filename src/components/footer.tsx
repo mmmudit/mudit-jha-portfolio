@@ -2,12 +2,12 @@ import { Divider } from "./divider";
 import { LiveClock } from "./live-clock";
 
 const socialLinks = [
-  { label: "Instagram ↗", href: "https://instagram.com" },
-  { label: "LinkedIn ↗", href: "https://linkedin.com" },
-  { label: "Github ↗", href: "https://github.com" },
-  { label: "X ↗", href: "https://x.com" },
-  { label: "Substack ↗", href: "https://substack.com" },
-  { label: "Email ↗", href: "mailto:hello@muditjha.com" },
+  { label: "Instagram ↗", href: "https://www.instagram.com/mmmudit/" },
+  { label: "LinkedIn ↗", href: "https://www.linkedin.com/in/muditj3/" },
+  { label: "Github ↗", href: "https://github.com/mmmudit" },
+  { label: "X ↗", href: "https://x.com/MuditJ1" },
+  { label: "Substack ↗", href: "https://substack.com/@mmmudit" },
+  { label: "Email ↗", href: "mailto:hello@muditjha.me" },
 ] as const;
 
 export function Footer() {
@@ -35,8 +35,14 @@ export function Footer() {
                 <a
                   key={link.label}
                   href={link.href}
-                  target={link.href.startsWith("mailto:") ? undefined : "_blank"}
-                  rel={link.href.startsWith("mailto:") ? undefined : "noopener noreferrer"}
+                  target={
+                    link.href.startsWith("mailto:") ? undefined : "_blank"
+                  }
+                  rel={
+                    link.href.startsWith("mailto:")
+                      ? undefined
+                      : "noopener noreferrer"
+                  }
                   className="transition-opacity hover:opacity-70"
                 >
                   {link.label}
