@@ -10,7 +10,7 @@ export function Nav() {
   const [active, setActive] = useState<NavLink>("work");
 
   return (
-    <nav className="flex items-center gap-1">
+    <nav className="liquid-glass flex items-center gap-1">
       {links.map((link) => {
         const isActive = active === link;
 
