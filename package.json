@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "agentation:server": "npx -y agentation-mcp server"
+    "agentation:server": "cross-env NODE_ENV=development npx -y agentation-mcp server"
   },
   "dependencies": {
     "@radix-ui/react-popover": "^1.1.23",
@@ -31,6 +31,7 @@
     "@types/react-dom": "^19",
     "@types/three": "^0.185.4",
     "agentation": "^3.0.2",
+    "cross-env": "^10.1.0",
     "eslint": "^9",
     "eslint-config-next": "16.3.0",
     "tailwindcss": "^4",
