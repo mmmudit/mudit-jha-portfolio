@@ -7,6 +7,7 @@ import PageTransition from "../components/PageTransition";
 import { Header } from "../components/header";
 import { Intro } from "../components/intro";
 import { Divider } from "../components/divider";
+import { GrainOverlay } from "../components/grain-overlay";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -42,7 +43,8 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} ${figtree.variable} ${myFont.variable} h-full antialiased`}
     >
-      <body className="min-h-full bg-dough text-zinc-800">
+      <body className="min-h-full bg-dough text-zinc-800 relative">
+        <GrainOverlay />
         <div className="mx-auto w-full max-w-[1440px] px-6 pt-4 sm:px-14 sm:pt-8">
           <Header />
           <div className="mx-auto flex w-full max-w-[1334px] flex-col gap-12 pt-8 pb-16">
