@@ -142,7 +142,10 @@ export default function NavigationTabs({
       {indicator && (
         <div
           aria-hidden
-          className={clsx("absolute rounded-full backdrop-blur-sm shadow-md", TRANSITION_CLASS)}
+          className={clsx(
+            "absolute rounded-full backdrop-blur-sm shadow-md",
+            TRANSITION_CLASS,
+          )}
           style={{
             width: indicator.width,
             height: indicator.height,
@@ -161,7 +164,7 @@ export default function NavigationTabs({
           const isActive = tab.id === activeId;
           return (
             <Link key={tab.id} href={tab.href} legacyBehavior>
-                <a
+              <a
                 ref={(el: HTMLAnchorElement | null) => {
                   tabRefs.current[tab.id] = el;
                 }}
@@ -170,7 +173,9 @@ export default function NavigationTabs({
                 onTouchStart={() => prefetch(tab.href)}
                 className={clsx(
                   "relative rounded-full px-[15px] py-[6px] text-[18px] font-light tracking-[-1px] pressable",
-                  isActive ? "text-zinc-900" : "text-zinc-500 hover:text-zinc-900",
+                  isActive
+                    ? "text-zinc-900"
+                    : "text-zinc-500 hover:text-zinc-900",
                 )}
               >
                 {tab.label}

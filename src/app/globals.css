@@ -1,4 +1,6 @@
 @import "tailwindcss";
+@import "tailwindcss";
+@import "shadcn/tailwind.css";
 
 :root {
   --dough: #fbfaf5;
@@ -73,16 +75,20 @@ body {
   transition: transform var(--duration-fast) var(--tabs-ease);
   will-change: transform;
 }
+
 @media (hover: hover) and (pointer: fine) {
   .project-card:hover {
     transform: translateY(-4px);
   }
 }
+
 .project-card:active {
   transform: scale(0.97);
   transition: transform var(--duration-quick) var(--ease-smooth-out);
 }
+
 @media (prefers-reduced-motion: reduce) {
+
   .project-card,
   .project-card:hover,
   .project-card:active {
@@ -105,11 +111,14 @@ body {
     opacity var(--duration-quick) var(--ease-smooth-out);
   will-change: transform;
 }
+
 .pressable:active {
   transform: scale(0.97);
   transition: transform var(--duration-quick) var(--ease-smooth-out);
 }
+
 @media (prefers-reduced-motion: reduce) {
+
   .pressable,
   .pressable:active {
     transition: none !important;

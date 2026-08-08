@@ -33,8 +33,14 @@ export function Footer() {
                 <a
                   key={link.label}
                   href={link.href}
-                  target={link.href.startsWith("mailto:") ? undefined : "_blank"}
-                  rel={link.href.startsWith("mailto:") ? undefined : "noopener noreferrer"}
+                  target={
+                    link.href.startsWith("mailto:") ? undefined : "_blank"
+                  }
+                  rel={
+                    link.href.startsWith("mailto:")
+                      ? undefined
+                      : "noopener noreferrer"
+                  }
                   className="pressable transition-opacity hover:opacity-70"
                 >
                   {link.label}

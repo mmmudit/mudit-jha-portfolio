@@ -39,7 +39,11 @@ export function Header() {
                 backgroundColor: hover ? "#e6e6e6" : "#fbfaf5",
               }
         }
-        transition={reduce ? {} : { type: "spring", stiffness: 450, damping: 40 }}
+        transition={
+          reduce
+            ? {}
+            : { type: "spring", stiffness: 1000, damping: 50, mass: 0.6 }
+        }
         className="pressable relative inline-flex shrink-0 items-center overflow-hidden rounded-full border-2 border-zinc-300"
         style={{ width: minW }}
       >
@@ -47,24 +51,30 @@ export function Header() {
           {/* Centered icon when idle; moves right and rotates on hover */}
           <div className="absolute inset-0">
             {/* Left-aligned text (hidden by default) */}
-            <motion.div
-              className="absolute inset-0 flex items-center justify-start pl-3"
-              initial={false}
-                animate={reduce ? {} : { opacity: hover ? 1 : 0 }}
-                transition={reduce ? {} : { duration: 0.15 }}
-            >
+            <div className="absolute inset-0 flex items-center justify-start pl-4">
               <motion.span
-                className="whitespace-nowrap text-sm font-medium text-zinc-800"
+                className="whitespace-nowrap text-sm font-bold tracking-[0.01em] text-zinc-800"
                 initial={false}
-                animate={reduce ? {} : { x: hover ? 0 : 6 }}
-                transition={reduce ? {} : { duration: 0.15 }}
+                animate={
+                  reduce
+                    ? {}
+                    : {
+                        x: hover ? 0 : 8,
+                        filter: hover ? "blur(0px)" : "blur(16px)",
+                        opacity: hover ? 1 : 0,
+                        scale: hover ? 1 : 0.96,
+                      }
+                }
+                transition={
+                  reduce ? {} : { duration: 0.24, ease: [0.22, 1, 0.36, 1] }
+                }
               >
                 let's chat
               </motion.span>
-            </motion.div>
+            </div>
 
             {/* Icon fixed at right; rotates and darkens on hover but does not move */}
-            <div className="absolute inset-0 flex items-center justify-end pr-3 pointer-events-none">
+            <div className="absolute inset-0 flex items-center justify-end pr-2.5 pointer-events-none">
               <motion.span
                 initial={false}
                 animate={
@@ -73,9 +83,12 @@ export function Header() {
                     : {
                         color: hover ? "#374151" : "#9CA3AF",
                         rotate: hover ? 5 : 0,
+                        backgroundColor: hover ? "#e6e6e6" : "#fbfaf5",
                       }
                 }
-                transition={reduce ? {} : { duration: 0.15 }}
+                transition={
+                  reduce ? {} : { duration: 0.15, ease: [0.22, 1, 0.36, 1] }
+                }
                 className="flex items-center justify-center w-[30px] h-[30px] text-zinc-400"
               >
                 <svg
