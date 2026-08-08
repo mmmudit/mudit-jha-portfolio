@@ -126,7 +126,7 @@ export default function NavigationTabs({
       {!indicatorReady && (
         <div
           aria-hidden
-          className="absolute rounded-full bg-white/6 backdrop-blur-sm border border-white/10 shadow-md"
+          className="absolute rounded-full bg-white/6 backdrop-blur-md border border-white/10 shadow-md"
           style={{
             left: 0,
             top: 0,
@@ -143,7 +143,7 @@ export default function NavigationTabs({
         <div
           aria-hidden
           className={clsx(
-            "absolute rounded-full backdrop-blur-sm shadow-md",
+            "absolute rounded-full backdrop-blur-sm shadow-md nav-pill-transition",
             TRANSITION_CLASS,
           )}
           style={{
@@ -154,7 +154,6 @@ export default function NavigationTabs({
             backgroundColor: WILLOW_HEX,
             border: `1px solid ${hexToRgba(WILLOW_HEX, 0.9)}`,
             pointerEvents: "none",
-            transition: `transform var(--tabs-dur,250ms) var(--tabs-ease, cubic-bezier(0.22,1,0.36,1)), width var(--tabs-dur,250ms) var(--tabs-ease, cubic-bezier(0.22,1,0.36,1)), opacity var(--tabs-dur,250ms) var(--tabs-ease, cubic-bezier(0.22,1,0.36,1))`,
           }}
         />
       )}

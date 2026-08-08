@@ -1,5 +1,6 @@
 Title: Extract nav pill transition into CSS class and apply consistently
 Plan-Id: 003
+Status: DONE
 Created-At: 2026-08-07
 Git-Commit: 76c706e
 

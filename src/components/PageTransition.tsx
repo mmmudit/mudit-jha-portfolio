@@ -17,7 +17,7 @@ export default function PageTransition({ children }: { children: ReactNode }) {
         exit={{ opacity: 0, y: reduce ? 0 : -8 }}
         transition={
           reduce
-            ? { duration: 0.12 }
+            ? { duration: 0.15 }
             : { duration: 0.25, ease: [0.22, 1, 0.36, 1] }
         }
       >

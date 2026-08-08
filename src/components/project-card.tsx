@@ -31,11 +31,11 @@ export function ProjectCard({
   return (
     <Link
       href={href}
-      className="project-card group relative flex flex-col gap-3 items-start w-full cursor-pointer text-left focus-visible:outline-none"
+      className="project-card pressable group relative flex flex-col gap-3 items-start w-full cursor-pointer text-left focus-visible:outline-none"
       style={{ animationDelay: `${animationDelay}ms` }}
     >
       {/* Aspect Ratio Media Container with Hover Scale */}
-      <div className="content-stretch flex flex-col items-start justify-end overflow-hidden relative rounded-[26px] shrink-0 w-full transition-transform duration-300 ease-out group-hover:scale-[0.99] active:scale-[0.97]">
+      <div className="content-stretch flex flex-col items-start justify-end overflow-hidden relative rounded-[26px] shrink-0 w-full transition-transform duration-300 ease-out [@media(hover:hover)]:group-hover:scale-[0.99] active:scale-[0.97] motion-reduce:transition-none motion-reduce:transform-none">
         <div className="aspect-[678/367.625] relative isolate rounded-[26px] shrink-0 w-full overflow-hidden bg-[#e4e4e7]">
           {/* Fallback gradient / shimmer */}
           <div
@@ -51,7 +51,7 @@ export function ProjectCard({
               fill
               sizes="(max-width: 768px) 100vw, 50vw"
               onLoad={() => setImageLoaded(true)}
-              className="absolute max-w-none object-cover size-full rounded-[26px] transition-transform duration-500 ease-out group-hover:scale-[1.02] pointer-events-none z-10"
+              className="absolute max-w-none object-cover size-full rounded-[26px] transition-transform duration-500 ease-out [@media(hover:hover)]:group-hover:scale-[1.02] motion-reduce:transition-none motion-reduce:transform-none pointer-events-none z-10"
             />
           )}
         </div>

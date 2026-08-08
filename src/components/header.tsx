@@ -13,7 +13,24 @@ export function Header() {
   const expandedW = 125;
 
   return (
-    <header className="sticky top-4 z-50 relative flex items-center justify-between w-full">
+    <>
+      {/* Top Progressive Gradient Blur Overlay (Decreasing Top-to-Bottom) */}
+      <div
+        className="fixed top-0 inset-x-0 h-36 sm:h-44 z-40 pointer-events-none select-none transition-all duration-300"
+        style={{
+          background:
+            "linear-gradient(to bottom, rgba(251, 250, 245, 0.92) 0%, rgba(251, 250, 245, 0.4) 60%, rgba(251, 250, 245, 0) 100%)",
+          backdropFilter: "blur(16px)",
+          WebkitBackdropFilter: "blur(16px)",
+          maskImage:
+            "linear-gradient(to bottom, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0.5) 60%, rgba(0, 0, 0, 0) 100%)",
+          WebkitMaskImage:
+            "linear-gradient(to bottom, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0.5) 60%, rgba(0, 0, 0, 0) 100%)",
+        }}
+        aria-hidden="true"
+      />
+
+      <header className="sticky top-4 z-50 relative flex items-center justify-between w-full">
       {/* Left: Avatar */}
       <div className="size-[64px] sm:size-[72px] shrink-0 overflow-hidden rounded-full bg-zinc-300 shadow-sm">
         <Image
@@ -44,9 +61,9 @@ export function Header() {
           reduce
             ? {}
             : {
-                width: hover ? expandedW : minW,
-                backgroundColor: hover ? "#e6e6e6" : "#fbfaf5",
-              }
+              width: hover ? expandedW : minW,
+              backgroundColor: hover ? "#e6e6e6" : "#fbfaf5",
+            }
         }
         transition={
           reduce
@@ -67,11 +84,12 @@ export function Header() {
                   reduce
                     ? {}
                     : {
-                        x: hover ? 0 : 8,
-                        filter: hover ? "blur(0px)" : "blur(16px)",
-                        opacity: hover ? 1 : 0,
-                        scale: hover ? 1 : 0.96,
-                      }
+                      transform: hover
+                        ? "translateX(0px) scale(1)"
+                        : "translateX(8px) scale(0.96)",
+                      filter: hover ? "blur(0px)" : "blur(16px)",
+                      opacity: hover ? 1 : 0,
+                    }
                 }
                 transition={
                   reduce ? {} : { duration: 0.24, ease: [0.22, 1, 0.36, 1] }
@@ -89,10 +107,10 @@ export function Header() {
                   reduce
                     ? {}
                     : {
-                        color: hover ? "#374151" : "#9CA3AF",
-                        rotate: hover ? 5 : 0,
-                        backgroundColor: hover ? "#e6e6e6" : "#fbfaf5",
-                      }
+                      color: hover ? "#374151" : "#9CA3AF",
+                      rotate: hover ? 5 : 0,
+                      backgroundColor: hover ? "#e6e6e6" : "#fbfaf5",
+                    }
                 }
                 transition={
                   reduce ? {} : { duration: 0.15, ease: [0.22, 1, 0.36, 1] }
@@ -123,6 +141,7 @@ export function Header() {
         </div>
       </motion.a>
     </header>
+  </>
   );
 }
 

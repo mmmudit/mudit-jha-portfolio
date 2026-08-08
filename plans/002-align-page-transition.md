@@ -1,5 +1,6 @@
 Title: Align `PageTransition` to motion tokens and reduced-motion
 Plan-Id: 002
+Status: DONE
 Created-At: 2026-08-07
 Git-Commit: 76c706e
 

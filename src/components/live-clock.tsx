@@ -23,8 +23,9 @@ export function LiveClock() {
 
   return (
     <p className="font-mono text-[16px] uppercase leading-4 text-rust-grey">
-      <span className="mr-2 inline-flex size-3 items-center justify-center">
-        <span className="size-1.5 rounded-full bg-status-green" />
+      <span className="relative mr-2 inline-flex size-3 items-center justify-center">
+        <span className="green-pulse-ring" aria-hidden="true" />
+        <span className="relative size-1.5 rounded-full bg-status-green" />
       </span>
       {time || "—"} | Minneapolis, MN
     </p>

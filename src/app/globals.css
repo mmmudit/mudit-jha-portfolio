@@ -38,6 +38,18 @@ body {
   background: var(--dough);
   color: var(--foreground);
   font-family: var(--font-geist-sans), system-ui, sans-serif;
+  /* Soft warm paper finish */
+  background-image: radial-gradient(rgba(0, 0, 0, 0.015) 1px, transparent 1px);
+  background-size: 16px 16px;
+}
+
+/* Paper Card Utility: Tactile layered shadows & subtle edge stroke */
+.paper-card {
+  background-color: #fbfaf5;
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.03),
+    0 4px 16px rgba(0, 0, 0, 0.04),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
 }
 
 .dot-grid {
@@ -74,12 +86,6 @@ body {
 .project-card {
   transition: transform var(--duration-fast) var(--tabs-ease);
   will-change: transform;
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .project-card:hover {
-    transform: translateY(-4px);
-  }
 }
 
 .project-card:active {
@@ -123,5 +129,36 @@ body {
   .pressable:active {
     transition: none !important;
     transform: none !important;
+  }
+}
+
+/* Live clock status pulse animation */
+@keyframes statusPulse {
+  0% {
+    transform: scale(0.95);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(1.8);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+}
+
+.green-pulse-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  background-color: var(--status-green);
+  animation: statusPulse 2.4s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .green-pulse-ring {
+    animation: none !important;
+    display: none !important;
   }
 }
