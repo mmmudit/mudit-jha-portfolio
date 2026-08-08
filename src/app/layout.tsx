@@ -8,6 +8,7 @@ import { Header } from "../components/header";
 import { Intro } from "../components/intro";
 import { Divider } from "../components/divider";
 import { GrainOverlay } from "../components/grain-overlay";
+import { SuperSaiyanBreakout } from "../components/super-saiyan-breakout";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -37,7 +38,7 @@ export const metadata: Metadata = {
     "Design engineer & creative generalist. Building thoughtful things at the intersection of tech and human behavior.",
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html
       lang="en"
@@ -45,11 +46,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     >
       <body className="min-h-full bg-dough text-zinc-800 relative">
         <GrainOverlay />
+        <SuperSaiyanBreakout />
         <div className="mx-auto w-full max-w-[1440px] px-6 pt-4 sm:px-14 sm:pt-8">
           <Header />
-          <div className="mx-auto flex w-full max-w-[1334px] flex-col gap-12 pt-8 pb-16">
-            <Intro />
-            <Divider />
+          <div className="mx-auto flex w-full max-w-[1334px] flex-col pt-8 pb-16">
             <PageTransition>{children}</PageTransition>
           </div>
         </div>
