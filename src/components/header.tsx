@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { motion, useReducedMotion } from "framer-motion";
 import { useState } from "react";
+import NavigationTabs from "./NavigationTabs";
 
 export function Header() {
   const [hover, setHover] = useState(false);
@@ -10,21 +11,29 @@ export function Header() {
 
   const minW = 54;
   const expandedW = 125;
-  const shiftX = (expandedW - minW) / 2;
 
   return (
-    <header className="flex items-center justify-between">
-      <div className="size-[100px] shrink-0 overflow-hidden rounded-[60px] bg-zinc-300">
+    <header className="sticky top-4 z-50 relative flex items-center justify-between w-full">
+      {/* Left: Avatar */}
+      <div className="size-[64px] sm:size-[72px] shrink-0 overflow-hidden rounded-full bg-zinc-300 shadow-sm">
         <Image
           src="/assets/avatar.png"
           alt="Mudit Jha"
-          width={100}
-          height={100}
+          width={72}
+          height={72}
           className="size-full object-cover"
           priority
         />
       </div>
 
+      {/* Center: Navigation Bar (Floating Pill - Absolutely Centered so button animation never shifts it) */}
+      <div className="absolute left-1/2 -translate-x-1/2 flex items-center justify-center pointer-events-auto">
+        <div className="rounded-full border border-zinc-300/70 bg-[#fbfaf5]/85 backdrop-blur-md p-1 shadow-[0_4px_20px_rgba(0,0,0,0.06)]">
+          <NavigationTabs />
+        </div>
+      </div>
+
+      {/* Right: Contact email button */}
       <motion.a
         href="mailto:hello@muditjha.com"
         aria-label="Email Mudit Jha"
@@ -48,7 +57,6 @@ export function Header() {
         style={{ width: minW }}
       >
         <div className="relative h-[54px] w-full">
-          {/* Centered icon when idle; moves right and rotates on hover */}
           <div className="absolute inset-0">
             {/* Left-aligned text (hidden by default) */}
             <div className="absolute inset-0 flex items-center justify-start pl-4">
@@ -73,7 +81,7 @@ export function Header() {
               </motion.span>
             </div>
 
-            {/* Icon fixed at right; rotates and darkens on hover but does not move */}
+            {/* Icon fixed at right */}
             <div className="absolute inset-0 flex items-center justify-end pr-2.5 pointer-events-none">
               <motion.span
                 initial={false}
@@ -117,3 +125,5 @@ export function Header() {
     </header>
   );
 }
+
+

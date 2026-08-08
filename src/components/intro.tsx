@@ -1,5 +1,3 @@
-import NavigationTabs from "./NavigationTabs";
-
 export function Intro() {
   return (
     <section className="flex flex-col gap-6">
