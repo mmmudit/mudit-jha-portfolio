@@ -57,7 +57,7 @@ export function Footer() {
                         ? undefined
                         : "noopener noreferrer"
                     }
-                    className="pressable transition-opacity hover:opacity-70"
+                    className="pressable transition-opacity [@media(hover:hover)]:hover:opacity-70"
                   >
                     {link.label}
                   </a>
@@ -69,7 +69,7 @@ export function Footer() {
                           initial={{ opacity: 0, scale: 0.9, x: -4 }}
                           animate={{ opacity: 1, scale: 1, x: 0 }}
                           exit={{ opacity: 0, scale: 0.9, x: -4 }}
-                          transition={{ duration: 0.16, ease: [0.23, 1, 0.32, 1] }}
+                          transition={{ duration: 0.15, ease: [0.22, 1, 0.36, 1] }}
                           className="inline-flex items-center gap-1 px-2.5 py-0.5 text-xs font-mono font-medium text-emerald-700 bg-emerald-100 rounded-full border border-emerald-300"
                         >
                           <Check className="size-3 text-emerald-600" />
@@ -91,7 +91,7 @@ export function Footer() {
             href="https://ethangwang.com/"
             target="_blank"
             rel="noopener noreferrer"
-            className="p-2 font-display text-[18px] font-medium tracking-[-0.1px] text-button-secondary transition-opacity hover:opacity-70"
+            className="p-2 font-display text-[18px] font-medium tracking-[-0.1px] text-button-secondary transition-opacity [@media(hover:hover)]:hover:opacity-70"
           >
             © 2026 muditjha
           </a>

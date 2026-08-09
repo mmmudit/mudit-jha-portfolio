@@ -1,0 +1,101 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-08-08T23:19:40Z",
+  "title": "Design System: Mudit Jha Portfolio",
+  "extensions": {
+    "colorMeta": {
+      "dough": {
+        "role": "neutral",
+        "displayName": "Dough (Warm Paper)",
+        "canonical": "#fbfaf5",
+        "tonalRamp": ["#1e1d1a", "#3b3934", "#5c5952", "#807c73", "#a6a297", "#ccc8bd", "#e6e3da", "#fbfaf5"]
+      },
+      "willow-grey": {
+        "role": "primary",
+        "displayName": "Willow Grey",
+        "canonical": "#c8d5bb",
+        "tonalRamp": ["#1b2315", "#324029", "#4c5e40", "#697e59", "#879f74", "#a7c193", "#c8d5bb", "#e8f0e0"]
+      },
+      "rust-grey": {
+        "role": "secondary",
+        "displayName": "Rust Grey",
+        "canonical": "#47585c",
+        "tonalRamp": ["#0e1314", "#1c2527", "#2e3b3e", "#47585c", "#62767a", "#819599", "#a4b5b8", "#ccdadc"]
+      },
+      "zinc-800": {
+        "role": "neutral",
+        "displayName": "Zinc 800",
+        "canonical": "#27272a",
+        "tonalRamp": ["#09090b", "#18181b", "#27272a", "#3f3f46", "#52525b", "#71717a", "#a1a1aa", "#d4d4d8"]
+      },
+      "status-green": {
+        "role": "tertiary",
+        "displayName": "Status Green",
+        "canonical": "#31b564",
+        "tonalRamp": ["#072412", "#0f4724", "#1b6d39", "#289650", "#31b564", "#5ed28a", "#98e5b5", "#d2f5df"]
+      }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display (Figtree)", "purpose": "Hero headlines and section titles." },
+      "body": { "displayName": "Body (Geist Sans)", "purpose": "Primary readable UI copy and descriptions." },
+      "mono": { "displayName": "Mono (Geist Mono)", "purpose": "Live clock stats, timestamps, and HUD metrics." }
+    },
+    "shadows": [
+      { "name": "paper-card", "value": "0 1px 2px rgba(0,0,0,0.03), 0 4px 16px rgba(0,0,0,0.04), inset 0 1px 0 rgba(255,255,255,0.8)", "purpose": "Soft tactile paper elevation at rest." },
+      { "name": "floating-pill", "value": "0 4px 20px rgba(0,0,0,0.06)", "purpose": "Ambient lift for floating navigation dock." },
+      { "name": "card-hover", "value": "0 4px 14px rgba(0,0,0,0.08)", "purpose": "Elevated response on project card hover." }
+    ],
+    "motion": [
+      { "name": "duration-quick", "value": "150ms", "purpose": "Quick feedback and text transitions." },
+      { "name": "duration-fast", "value": "250ms", "purpose": "Card hover scale and sliding pill navigation." },
+      { "name": "ease-smooth-out", "value": "cubic-bezier(0.22, 1, 0.36, 1)", "purpose": "Standard smooth ease-out curve." }
+    ],
+    "breakpoints": [
+      { "name": "sm", "value": "640px" },
+      { "name": "md", "value": "768px" },
+      { "name": "lg", "value": "1024px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Navigation Tab Pill",
+      "kind": "nav",
+      "refersTo": "nav-pill",
+      "description": "Floating nav pill with Willow grey active background and dual-layer clip-path text transition.",
+      "html": "<div class=\"ds-nav-container\"><span class=\"ds-nav-item ds-active\">work</span><span class=\"ds-nav-item\">play</span><span class=\"ds-nav-item\">about</span></div>",
+      "css": ".ds-nav-container { display: inline-flex; align-items: center; gap: 4px; padding: 4px; background: rgba(251,250,245,0.85); border: 1px solid rgba(212,212,216,0.7); border-radius: 9999px; box-shadow: 0 4px 20px rgba(0,0,0,0.06); } .ds-nav-item { position: relative; padding: 6px 15px; font-size: 18px; font-weight: 300; color: #7f7f80; border-radius: 9999px; transition: color 0.15s ease; cursor: pointer; } .ds-nav-item.ds-active { background: #c8d5bb; color: #27272a; font-weight: 400; }"
+    },
+    {
+      "name": "Project Card",
+      "kind": "card",
+      "refersTo": "card-project",
+      "description": "Tactile paper project media card with rounded 26px squircle corners, scale feedback, and bottom-left white glass badge.",
+      "html": "<div class=\"ds-project-card\"><div class=\"ds-card-media\"><div class=\"ds-card-badge\">Apple • 2025</div></div><div class=\"ds-card-sub\">Designing new features to drive spatial interaction.</div></div>",
+      "css": ".ds-project-card { display: flex; flex-direction: column; gap: 12px; cursor: pointer; transform: scale(1); transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1); } .ds-project-card:active { transform: scale(0.97); } .ds-card-media { position: relative; aspect-ratio: 678/367; background: #e4e4e7; border-radius: 26px; overflow: hidden; border: 1px solid rgba(212,212,216,0.7); } .ds-card-badge { position: absolute; bottom: 12px; left: 12px; padding: 5px 14px; background: rgba(255,255,255,0.9); backdrop-filter: blur(4px); border-radius: 9999px; font-size: 16px; font-weight: 500; color: #18181b; box-shadow: 0 2px 8px rgba(0,0,0,0.04); } .ds-card-sub { padding: 0 13px; font-size: 16px; color: #a1a1aa; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Tactile Paper Sanctuary",
+    "overview": "This visual system treats digital software as a warm, tactile material surface. Rather than stark dark modes or cold flat interfaces, the aesthetic is anchored in a soft paper finish (#fbfaf5 dough background with a 16px radial dot grid), muted organic Willow grey (#c8d5bb) accents, and precise Rust grey typography.",
+    "keyCharacteristics": [
+      "Tactile Material Surface: Soft warm paper finishes (#fbfaf5) paired with ambient multi-layered paper card shadows.",
+      "Restrained Earth Palette: Willow grey (#c8d5bb) as the single primary accent, Rust grey (#47585c) for secondary hierarchy.",
+      "Dual-Layer Seamless Clipping: Active navigation pill overlays feature dual-layer clip-path text transitions.",
+      "Physical Motion Token Scale: Shared motion tokens (--duration-quick: 150ms, --duration-fast: 250ms, --ease-smooth-out: cubic-bezier(0.22, 1, 0.36, 1))."
+    ],
+    "rules": [
+      { "name": "The One Voice Rule", "body": "The primary Willow grey accent (#c8d5bb) is reserved for active state highlights and interactive focus. Its rarity gives it visual authority.", "section": "colors" },
+      { "name": "The Pressable Feedback Rule", "body": "All interactive surfaces scale down to scale(0.97) on :active with a 150ms cubic-bezier(0.22, 1, 0.36, 1) transition, giving immediate physical feedback on tap/press.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do use var(--dough) (#fbfaf5) for page backgrounds to maintain the warm paper sanctuary feel.",
+      "Do gate all hover transitions behind [@media(hover:hover)] media queries.",
+      "Do use var(--ease-smooth-out) (cubic-bezier(0.22, 1, 0.36, 1)) for all surface transitions."
+    ],
+    "donts": [
+      "Don't use pure dark #000000 or stark white #ffffff page backgrounds.",
+      "Don't animate non-GPU layout properties like width, top, or margin during state transitions.",
+      "Don't exceed 300ms duration for UI micro-interactions."
+    ]
+  }
+}

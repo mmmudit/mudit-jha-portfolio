@@ -19,7 +19,7 @@ type IndicatorRect = {
   opacity: number;
 };
 
-const TRANSITION_CLASS = "transition-[transform,width,opacity]";
+const TRANSITION_CLASS = "transition-[transform,opacity]";
 
 // Color pulled from Figma node 80:901
 const NAV_COLOR = "#c8d5bb";
@@ -158,9 +158,32 @@ export default function NavigationTabs({
         />
       )}
 
+      {/* Clipped Active Text Overlay for Seamless Color Transition */}
+      {indicator && containerRef.current && (
+        <div
+          aria-hidden
+          className="absolute inset-0 flex items-center gap-1 pointer-events-none z-20 transition-[clip-path] duration-250 ease-out"
+          style={{
+            clipPath: `inset(${indicator.top}px ${
+              containerRef.current.clientWidth - (indicator.left + indicator.width)
+            }px ${
+              containerRef.current.clientHeight - (indicator.top + indicator.height)
+            }px ${indicator.left}px round 9999px)`,
+          }}
+        >
+          {tabs.map((tab) => (
+            <span
+              key={`active-${tab.id}`}
+              className="relative px-[15px] py-[6px] text-[18px] font-normal tracking-[-1px] text-zinc-900"
+            >
+              {tab.label}
+            </span>
+          ))}
+        </div>
+      )}
+
       <div className="flex items-center gap-1 relative z-10">
         {tabs.map((tab) => {
-          const isActive = tab.id === activeId;
           return (
             <Link key={tab.id} href={tab.href} legacyBehavior>
               <a
@@ -170,12 +193,7 @@ export default function NavigationTabs({
                 onMouseEnter={() => prefetch(tab.href)}
                 onFocus={() => prefetch(tab.href)}
                 onTouchStart={() => prefetch(tab.href)}
-                className={clsx(
-                  "relative rounded-full px-[15px] py-[6px] text-[18px] font-light tracking-[-1px] pressable",
-                  isActive
-                    ? "text-zinc-900"
-                    : "text-zinc-500 hover:text-zinc-900",
-                )}
+                className="relative rounded-full px-[15px] py-[6px] text-[18px] font-light tracking-[-1px] pressable text-zinc-500 [@media(hover:hover)]:hover:text-zinc-900"
               >
                 {tab.label}
               </a>

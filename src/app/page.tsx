@@ -78,7 +78,7 @@ export default function Home() {
         <Divider />
 
         <section className="grid grid-cols-1 gap-8 md:grid-cols-2 md:gap-x-8 md:gap-y-10">
-          {projects.map((project) => (
+          {projects.map((project, index) => (
             <ProjectCard
               key={project.id}
               title={project.title}
@@ -89,6 +89,7 @@ export default function Home() {
               href={project.href}
               actionText={project.actionText}
               animationDelay={project.animationDelay}
+              priority={index < 2}
             />
           ))}
         </section>
