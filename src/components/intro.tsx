@@ -2,7 +2,7 @@ import { LiveClock } from "./live-clock";
 
 export function Intro() {
   return (
-    <section className="flex flex-col gap-4">
+    <section className="flex flex-col gap-4 mt-50">
       <LiveClock />
       <h1 className="font-display text-[36px] font-semibold tracking-[-3px] text-zinc-800 text-balance">
         mudit jha
