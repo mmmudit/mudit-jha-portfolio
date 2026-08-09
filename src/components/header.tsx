@@ -16,7 +16,7 @@ export function Header() {
     <>
       {/* Top Progressive Gradient Blur Overlay (Decreasing Top-to-Bottom) */}
       <div
-        className="fixed top-0 inset-x-0 h-36 sm:h-44 pt-[env(safe-area-inset-top,500px)] z-40 pointer-events-none select-none transition-[backdrop-filter,opacity] duration-250 ease-out"
+        className="fixed top-0 inset-x-0 h-36 sm:h-44 pt-[env(safe-area-inset-top,0px)] z-40 pointer-events-none select-none transition-[backdrop-filter,opacity] duration-250 ease-out"
         style={{
           background:
             "linear-gradient(to bottom, rgba(251, 250, 245, 0.92) 0%, rgba(251, 250, 245, 0.4) 60%, rgba(251, 250, 245, 0) 100%)",

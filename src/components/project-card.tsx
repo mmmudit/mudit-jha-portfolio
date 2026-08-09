@@ -7,6 +7,7 @@ import { motion, useScroll, useTransform, useReducedMotion } from "framer-motion
 
 export type ProjectCardProps = {
   title: string;
+  slug?: string;
   year?: string;
   description: string;
   image?: string;
@@ -17,10 +18,12 @@ export type ProjectCardProps = {
   animationDelay?: number;
   priority?: boolean;
   index?: number;
+  onClick?: (e: React.MouseEvent) => void;
 };
 
 export function ProjectCard({
   title,
+  slug,
   year = "2025",
   description,
   image,
@@ -30,6 +33,7 @@ export function ProjectCard({
   animationDelay = 0,
   priority = false,
   index = 0,
+  onClick,
 }: ProjectCardProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [imageLoaded, setImageLoaded] = useState(false);
@@ -50,6 +54,13 @@ export function ProjectCard({
   const rotate = useTransform(scrollYProgress, [0, 0.25, 0.75, 1], [initialTilt, 0, 0, -initialTilt * 0.65]);
   const filter = useTransform(scrollYProgress, [0, 0.2], ["blur(4px)", "blur(0px)"]);
 
+  const handleClick = (e: React.MouseEvent) => {
+    if (onClick) {
+      e.preventDefault();
+      onClick(e);
+    }
+  };
+
   return (
     <div ref={containerRef} className="w-full">
       <motion.div
@@ -68,6 +79,7 @@ export function ProjectCard({
       >
         <Link
           href={href}
+          onClick={handleClick}
           className="project-card pressable group relative flex flex-col gap-3 items-start w-full cursor-pointer text-left focus-visible:outline-none"
         >
           {/* Aspect Ratio Media Container with Hover Scale */}
