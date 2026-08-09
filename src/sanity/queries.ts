@@ -20,6 +20,19 @@ export const POST_QUERY = `*[_type == "post" && slug.current == $slug][0]{
 export const PROJECTS_QUERY = `*[_type == "project"] | order(order asc, _createdAt desc){
   _id,
   title,
+  "slug": slug.current,
+  year,
+  description,
+  "image": image.asset->url,
+  gradient,
+  href,
+  actionText
+}`;
+
+export const PROJECT_BY_SLUG_QUERY = `*[_type == "project" && (slug.current == $slug || _id == $slug)][0]{
+  _id,
+  title,
+  "slug": slug.current,
   year,
   description,
   "image": image.asset->url,

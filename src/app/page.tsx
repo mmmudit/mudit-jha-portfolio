@@ -1,7 +1,7 @@
 import { Intro } from "@/components/intro";
 import { Divider } from "@/components/divider";
 import { Footer } from "@/components/footer";
-import { ProjectCard } from "@/components/project-card";
+import { ProjectGrid } from "@/components/project-grid";
 import { client } from "@/sanity/client";
 import { PROJECTS_QUERY } from "@/sanity/queries";
 
@@ -9,24 +9,27 @@ const defaultProjects = [
   {
     _id: "1",
     title: "Apple",
+    slug: "apple",
     year: "2025",
     description: "Designing new features to drive spatial interaction and user delight.",
     image: "/assets/projects/apple_vision.png",
     gradient: "from-amber-100/80 via-rose-100/80 to-purple-100/80",
-    href: "#",
+    href: "https://apple.com",
   },
   {
     _id: "2",
     title: "Roblox",
+    slug: "roblox",
     year: "2024",
     description: "Reimagining the future of social gameplay and user communication.",
     image: "/assets/projects/canvas_os.png",
     gradient: "from-sky-100/80 via-blue-100/80 to-indigo-100/80",
-    href: "#",
+    href: "https://roblox.com",
   },
   {
     _id: "3",
     title: "Polaroid Studio",
+    slug: "polaroid-studio",
     year: "2025",
     description: "Interactive digital camera app with real-time film emulsion shaders.",
     image: "/assets/projects/polaroid_studio.png",
@@ -37,6 +40,7 @@ const defaultProjects = [
   {
     _id: "4",
     title: "Screentime Receipt",
+    slug: "screentime-receipt",
     year: "2025",
     description: "Visualizing personal digital consumption as thermal printed store receipts.",
     image: "/assets/projects/screentime_receipt.png",
@@ -47,6 +51,7 @@ const defaultProjects = [
   {
     _id: "5",
     title: "Film Diary",
+    slug: "film-diary",
     year: "2024",
     description: "Cinematic frame archiver and automated color palette extraction tool.",
     image: "/assets/projects/polaroid_studio.png",
@@ -57,6 +62,7 @@ const defaultProjects = [
   {
     _id: "6",
     title: "Canvas OS",
+    slug: "canvas-os",
     year: "2024-25",
     description: "Infinite spatial workspace with physics-based nodes and gesture flow.",
     image: "/assets/projects/canvas_os.png",
@@ -82,22 +88,7 @@ export default async function Home() {
         <Intro />
         <Divider />
 
-        <section className="grid grid-cols-1 gap-8 md:grid-cols-2 md:gap-x-8 md:gap-y-10">
-          {projects.map((project: any, index: number) => (
-            <ProjectCard
-              key={project._id || index}
-              index={index}
-              title={project.title}
-              year={project.year}
-              description={project.description}
-              image={project.image}
-              gradient={project.gradient}
-              href={project.href}
-              actionText={project.actionText}
-              priority={index < 2}
-            />
-          ))}
-        </section>
+        <ProjectGrid projects={projects} />
 
         <Divider />
         <Footer />
