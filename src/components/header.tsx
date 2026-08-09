@@ -16,7 +16,7 @@ export function Header() {
     <>
       {/* Top Progressive Gradient Blur Overlay (Decreasing Top-to-Bottom) */}
       <div
-        className="fixed top-0 inset-x-0 h-36 sm:h-44 z-40 pointer-events-none select-none transition-all duration-300"
+        className="fixed top-0 inset-x-0 h-36 sm:h-44 z-40 pointer-events-none select-none transition-[backdrop-filter,opacity] duration-250 ease-out"
         style={{
           background:
             "linear-gradient(to bottom, rgba(251, 250, 245, 0.92) 0%, rgba(251, 250, 245, 0.4) 60%, rgba(251, 250, 245, 0) 100%)",
@@ -78,12 +78,12 @@ export function Header() {
                         transform: hover
                           ? "translateX(0px) scale(1)"
                           : "translateX(8px) scale(0.96)",
-                        filter: hover ? "blur(0px)" : "blur(16px)",
+                        filter: hover ? "blur(0px)" : "blur(2px)",
                         opacity: hover ? 1 : 0,
                       }
                   }
                   transition={
-                    reduce ? {} : { duration: 0.24, ease: [0.22, 1, 0.36, 1] }
+                    reduce ? {} : { duration: 0.15, ease: [0.22, 1, 0.36, 1] }
                   }
                 >
                   let's chat

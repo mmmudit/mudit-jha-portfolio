@@ -353,7 +353,7 @@ export function InfiniteCanvas() {
               onClick={() => setSelectedCategory(tab.id)}
               className={`relative px-3.5 py-1.5 text-sm font-medium rounded-full transition-colors duration-200 cursor-pointer ${isActive
                 ? "text-zinc-900 font-semibold"
-                : "text-zinc-500 hover:text-zinc-800"
+                : "text-zinc-500 [@media(hover:hover)]:hover:text-zinc-800"
                 }`}
             >
               {isActive && (
@@ -384,7 +384,7 @@ export function InfiniteCanvas() {
         <div className="flex items-center gap-1 p-1 rounded-full border border-zinc-300/80 bg-[#fbfaf5]/90 backdrop-blur-md shadow-sm">
           <button
             onClick={() => setZoom((z) => Math.max(0.5, z - 0.15))}
-            className="p-2 text-zinc-600 hover:text-zinc-900 hover:bg-zinc-200/50 rounded-full transition-colors cursor-pointer"
+            className="p-2 text-zinc-600 [@media(hover:hover)]:hover:text-zinc-900 [@media(hover:hover)]:hover:bg-zinc-200/50 rounded-full transition-colors cursor-pointer"
             title="Zoom Out"
           >
             <ZoomOut className="size-4" />
@@ -394,7 +394,7 @@ export function InfiniteCanvas() {
           </span>
           <button
             onClick={() => setZoom((z) => Math.min(1.5, z + 0.15))}
-            className="p-2 text-zinc-600 hover:text-zinc-900 hover:bg-zinc-200/50 rounded-full transition-colors cursor-pointer"
+            className="p-2 text-zinc-600 [@media(hover:hover)]:hover:text-zinc-900 [@media(hover:hover)]:hover:bg-zinc-200/50 rounded-full transition-colors cursor-pointer"
             title="Zoom In"
           >
             <ZoomIn className="size-4" />

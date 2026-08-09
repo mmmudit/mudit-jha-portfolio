@@ -71,15 +71,23 @@ body {
     0 2px 4px rgba(0, 0, 0, 0.06);
 }
 
-/* Motion tokens (minimal excerpt used by components) */
+/* Motion tokens (transitions.dev standard scale) */
 :root {
+  --duration-micro: 80ms;
   --duration-quick: 150ms;
   --duration-fast: 250ms;
+  --duration-medium: 350ms;
+  --duration-slow: 400ms;
+  --duration-stagger: 40ms;
   --tabs-dur: 250ms;
   --tabs-ease: cubic-bezier(0.22, 1, 0.36, 1);
   --page-slide-dur: 250ms;
   --page-slide-distance: 8px;
+  --distance-micro: 4px;
+  --distance-base: 8px;
+  --distance-medium: 12px;
   --ease-smooth-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-bounce: cubic-bezier(0.34, 1.36, 0.64, 1);
 }
 
 /* Project card: press feedback + hover gating */
@@ -93,11 +101,30 @@ body {
   transition: transform var(--duration-quick) var(--ease-smooth-out);
 }
 
+@keyframes cardReveal {
+  from {
+    opacity: 0;
+    transform: translateY(var(--distance-medium));
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.project-card-reveal {
+  animation: cardReveal var(--duration-fast) var(--ease-smooth-out) forwards;
+  will-change: transform, opacity;
+}
+
 @media (prefers-reduced-motion: reduce) {
 
   .project-card,
   .project-card:hover,
-  .project-card:active {
+  .project-card:active,
+  .project-card-reveal {
+    animation: none !important;
+    opacity: 1 !important;
     transition: none !important;
     transform: none !important;
   }

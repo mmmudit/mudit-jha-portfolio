@@ -89,7 +89,7 @@ export function InteractiveTsuLogo() {
             scaleY: manualBlink ? 0.1 : 1,
             scaleX: manualBlink ? 1.3 : 1,
           }}
-          transition={{ duration: 0.12, ease: "easeInOut" }}
+          transition={{ duration: 0.08, ease: [0.22, 1, 0.36, 1] }}
           className="animate-toon-blink"
           style={{ originX: "32px", originY: "32px" }}
           filter="url(#pencil-rough)"
