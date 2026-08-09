@@ -384,7 +384,7 @@ export function InfiniteCanvas() {
         <div className="flex items-center gap-1 p-1 rounded-full border border-zinc-300/80 bg-[#fbfaf5]/90 backdrop-blur-md shadow-sm">
           <button
             onClick={() => setZoom((z) => Math.max(0.5, z - 0.15))}
-            className="p-2 text-zinc-600 [@media(hover:hover)]:hover:text-zinc-900 [@media(hover:hover)]:hover:bg-zinc-200/50 rounded-full transition-colors cursor-pointer"
+            className="p-2 min-h-[44px] min-w-[44px] flex items-center justify-center text-zinc-600 [@media(hover:hover)]:hover:text-zinc-900 [@media(hover:hover)]:hover:bg-zinc-200/50 rounded-full transition-colors cursor-pointer"
             title="Zoom Out"
           >
             <ZoomOut className="size-4" />
@@ -394,7 +394,7 @@ export function InfiniteCanvas() {
           </span>
           <button
             onClick={() => setZoom((z) => Math.min(1.5, z + 0.15))}
-            className="p-2 text-zinc-600 [@media(hover:hover)]:hover:text-zinc-900 [@media(hover:hover)]:hover:bg-zinc-200/50 rounded-full transition-colors cursor-pointer"
+            className="p-2 min-h-[44px] min-w-[44px] flex items-center justify-center text-zinc-600 [@media(hover:hover)]:hover:text-zinc-900 [@media(hover:hover)]:hover:bg-zinc-200/50 rounded-full transition-colors cursor-pointer"
             title="Zoom In"
           >
             <ZoomIn className="size-4" />
