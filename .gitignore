@@ -1,8 +1,13 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 # dependencies
-/node_modules
-/.pnp
+node_modules
+node_modules/
+**/node_modules
+**/node_modules/
+studio-portfolio/node_modules
+studio-portfolio/node_modules/
+.pnp
 .pnp.*
 .yarn/*
 !.yarn/patches
@@ -13,12 +18,17 @@
 # testing
 /coverage
 
-# next.js
-/.next/
-/out/
-
-# production
-/build
+# next.js and sanity runtime
+.next
+.next/
+out
+out/
+.sanity
+.sanity/
+**/.sanity
+**/.sanity/
+build
+studio-portfolio/dist
 
 # misc
 .DS_Store
@@ -30,7 +40,7 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
-# env files (can opt-in for committing if needed)
+# env files
 .env*
 
 # vercel

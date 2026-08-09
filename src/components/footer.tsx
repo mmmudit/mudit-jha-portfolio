@@ -88,9 +88,7 @@ export function Footer() {
 
         <div className="mx-auto flex max-w-[240px] w-full flex-col items-center text-center">
           <a
-            href="https://ethangwang.com/"
-            target="_blank"
-            rel="noopener noreferrer"
+
             className="p-1 font-mono text-[13px] font-medium tracking-tight text-button-secondary transition-opacity [@media(hover:hover)]:hover:opacity-70"
           >
             © 2026 muditjha
