@@ -63,13 +63,13 @@ export function Footer() {
                   </a>
 
                   {link.label.startsWith("Email") && (
-                    <AnimatePresence>
+                    <AnimatePresence initial={false}>
                       {copied && (
                         <motion.span
-                          initial={{ opacity: 0, scale: 0.9, x: -4 }}
-                          animate={{ opacity: 1, scale: 1, x: 0 }}
-                          exit={{ opacity: 0, scale: 0.9, x: -4 }}
-                          transition={{ duration: 0.15, ease: [0.22, 1, 0.36, 1] }}
+                          initial={{ opacity: 0, scale: 0.25, filter: "blur(4px)" }}
+                          animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
+                          exit={{ opacity: 0, scale: 0.25, filter: "blur(4px)" }}
+                          transition={{ type: "spring", duration: 0.3, bounce: 0 }}
                           className="inline-flex items-center gap-1 px-2.5 py-0.5 text-xs font-mono font-medium text-emerald-700 bg-emerald-100 rounded-full border border-emerald-300"
                         >
                           <Check className="size-3 text-emerald-600" />
@@ -82,19 +82,21 @@ export function Footer() {
               ))}
             </nav>
           </div>
+
+          <Divider />
         </div>
 
-        <div className="mx-auto flex w-[220px] flex-col items-center text-center">
+        <div className="mx-auto flex max-w-[240px] w-full flex-col items-center text-center">
           <a
             href="https://ethangwang.com/"
             target="_blank"
             rel="noopener noreferrer"
-            className="p-2 font-display text-[18px] font-medium tracking-[-0.1px] text-button-secondary transition-opacity [@media(hover:hover)]:hover:opacity-70"
+            className="p-1 font-mono text-[13px] font-medium tracking-tight text-button-secondary transition-opacity [@media(hover:hover)]:hover:opacity-70"
           >
             © 2026 muditjha
           </a>
-          <p className="p-2 text-[18px] font-light tracking-[-1px] text-button-secondary">
-            CHANGELOG: 09-03-2003
+          <p className="p-1 font-mono text-[12px] font-normal tracking-tight text-button-secondary/80">
+            CHANGELOG: 08-09-2026
           </p>
         </div>
       </div>
