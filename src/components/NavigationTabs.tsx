@@ -121,7 +121,7 @@ export default function NavigationTabs({
   };
 
   return (
-    <div ref={containerRef} className="relative inline-flex items-center z-30">
+    <div ref={containerRef} className="relative inline-flex items-center z-3">
       {/* Static fallback pill to avoid flash */}
       {!indicatorReady && (
         <div

@@ -316,19 +316,21 @@ export function InfiniteCanvas() {
             </p>
           </div>
 
-          {filteredItems.map((item) => {
-            const isDimmed =
-              selectedCategory !== "all" && item.category !== selectedCategory;
+          <AnimatePresence mode="popLayout">
+            {filteredItems.map((item) => {
+              const isDimmed =
+                selectedCategory !== "all" && item.category !== selectedCategory;
 
-            return (
-              <CanvasCard
-                key={item.id}
-                item={item}
-                isDimmed={isDimmed}
-                onInspect={() => setActiveModalItem(item)}
-              />
-            );
-          })}
+              return (
+                <CanvasCard
+                  key={item.id}
+                  item={item}
+                  isDimmed={isDimmed}
+                  onInspect={() => setActiveModalItem(item)}
+                />
+              );
+            })}
+          </AnimatePresence>
         </motion.div>
       </div>
 

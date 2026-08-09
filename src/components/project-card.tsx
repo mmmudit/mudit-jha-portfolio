@@ -39,9 +39,8 @@ export function ProjectCard({
         <div className="aspect-[678/367.625] relative isolate rounded-[26px] shrink-0 w-full overflow-hidden bg-[#e4e4e7]">
           {/* Fallback gradient / shimmer */}
           <div
-            className={`absolute inset-0 bg-gradient-to-br ${gradient} ${
-              imageLoaded ? "opacity-0" : "opacity-100"
-            } transition-opacity duration-500`}
+            className={`absolute inset-0 bg-gradient-to-br ${gradient} ${imageLoaded ? "opacity-0" : "opacity-100"
+              } transition-opacity duration-500`}
           />
 
           {image && (
@@ -64,7 +63,7 @@ export function ProjectCard({
 
         {/* Floating pill badge on bottom left of image (Desktop) */}
         <div className="absolute bottom-0 left-0 p-3 hidden md:block z-30 pointer-events-none">
-          <div className="bg-white border border-[#f4f4f5] border-solid flex items-center justify-center px-3.5 pt-[5px] pb-[4.8px] rounded-full shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
+          <div className="bg-white/90 backdrop-blur-sm border border-[#f4f4f5] border-solid flex items-center justify-center px-3.5 pt-[5px] pb-[4.8px] rounded-full shadow-[0_2px_8px_rgba(0,0,0,0.04)] [@media(hover:hover)]:group-hover:shadow-[0_4px_14px_rgba(0,0,0,0.08)] [@media(hover:hover)]:group-hover:bg-white transition-all duration-200 ease-out">
             <p className="font-sans font-medium tracking-[0.005em] leading-snug text-[#18181b] text-base">
               <span>{title}</span>
               <span className="text-[#a1a1aa] font-normal"> • {year}</span>
