@@ -37,7 +37,7 @@ export function ProjectCard({
       style={{ animationDelay: `${animationDelay}ms` }}
     >
       {/* Aspect Ratio Media Container with Hover Scale */}
-      <div className="content-stretch flex flex-col items-start justify-end overflow-hidden relative rounded-[26px] shrink-0 w-full transition-transform duration-250 ease-out [@media(hover:hover)]:group-hover:scale-[0.99] active:scale-[0.97] motion-reduce:transition-none motion-reduce:transform-none">
+      <div className="content-stretch flex flex-col items-start justify-end overflow-hidden relative rounded-[26px] shrink-0 w-full transition-transform duration-250 ease-out [@media(hover:hover)]:group-hover:scale-[0.99] active:scale-[0.96] motion-reduce:transition-none motion-reduce:transform-none">
         <div className="aspect-[678/367.625] relative isolate rounded-[26px] shrink-0 w-full overflow-hidden bg-[#e4e4e7]">
           {/* Fallback gradient / shimmer */}
           <div
@@ -62,7 +62,7 @@ export function ProjectCard({
         {/* Inner border stroke overlay */}
         <div
           aria-hidden="true"
-          className="absolute border border-zinc-200/70 inset-0 pointer-events-none rounded-[26px] z-20"
+          className="absolute border border-black/10 dark:border-white/10 inset-0 pointer-events-none rounded-[26px] z-20"
         />
 
         {/* Floating pill badge on bottom left of image (Desktop) */}
