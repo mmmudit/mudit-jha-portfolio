@@ -1,3 +1,8 @@
+"use client";
+
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Check } from "lucide-react";
 import { Divider } from "./divider";
 import { LiveClock } from "./live-clock";
 
@@ -11,6 +16,16 @@ const socialLinks = [
 ] as const;
 
 export function Footer() {
+  const [copied, setCopied] = useState(false);
+
+  const handleEmailClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    if (href.startsWith("mailto:")) {
+      navigator.clipboard?.writeText("hello@muditjha.me");
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1800);
+    }
+  };
+
   return (
     <footer className="relative pt-12">
       <div className="flex flex-col gap-9">
@@ -30,21 +45,40 @@ export function Footer() {
                 say hi ↓
               </p>
               {socialLinks.map((link) => (
-                <a
-                  key={link.label}
-                  href={link.href}
-                  target={
-                    link.href.startsWith("mailto:") ? undefined : "_blank"
-                  }
-                  rel={
-                    link.href.startsWith("mailto:")
-                      ? undefined
-                      : "noopener noreferrer"
-                  }
-                  className="pressable transition-opacity hover:opacity-70"
-                >
-                  {link.label}
-                </a>
+                <div key={link.label} className="relative inline-flex items-center gap-2">
+                  <a
+                    href={link.href}
+                    onClick={(e) => handleEmailClick(e, link.href)}
+                    target={
+                      link.href.startsWith("mailto:") ? undefined : "_blank"
+                    }
+                    rel={
+                      link.href.startsWith("mailto:")
+                        ? undefined
+                        : "noopener noreferrer"
+                    }
+                    className="pressable transition-opacity hover:opacity-70"
+                  >
+                    {link.label}
+                  </a>
+
+                  {link.label.startsWith("Email") && (
+                    <AnimatePresence>
+                      {copied && (
+                        <motion.span
+                          initial={{ opacity: 0, scale: 0.9, x: -4 }}
+                          animate={{ opacity: 1, scale: 1, x: 0 }}
+                          exit={{ opacity: 0, scale: 0.9, x: -4 }}
+                          transition={{ duration: 0.16, ease: [0.23, 1, 0.32, 1] }}
+                          className="inline-flex items-center gap-1 px-2.5 py-0.5 text-xs font-mono font-medium text-emerald-700 bg-emerald-100 rounded-full border border-emerald-300"
+                        >
+                          <Check className="size-3 text-emerald-600" />
+                          <span>Copied</span>
+                        </motion.span>
+                      )}
+                    </AnimatePresence>
+                  )}
+                </div>
               ))}
             </nav>
           </div>
