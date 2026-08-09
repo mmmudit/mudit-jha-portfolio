@@ -63,7 +63,7 @@ export function Footer() {
                   </a>
 
                   {link.label.startsWith("Email") && (
-                    <AnimatePresence>
+                    <AnimatePresence initial={false}>
                       {copied && (
                         <motion.span
                           initial={{ opacity: 0, scale: 0.9, x: -4 }}

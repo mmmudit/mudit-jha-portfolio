@@ -61,7 +61,7 @@ export function Header() {
               ? {}
               : { type: "spring", stiffness: 1000, damping: 50, mass: 0.6 }
           }
-          className="pressable relative inline-flex shrink-0 items-center overflow-hidden rounded-full border-2 border-zinc-300"
+          className="pressable relative inline-flex shrink-0 items-center overflow-hidden rounded-full border border-zinc-300/80 shadow-[0_2px_8px_rgba(0,0,0,0.04)]"
           style={{ width: minW }}
         >
           <div className="relative h-[54px] w-full">

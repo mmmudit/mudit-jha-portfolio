@@ -24,9 +24,12 @@ export default function AboutPage() {
           <div className="pt-2">
             <Link
               href="/"
-              className="pressable inline-flex items-center gap-1.5 text-sm font-medium text-zinc-800 [@media(hover:hover)]:hover:text-zinc-600"
+              className="pressable group inline-flex items-center gap-1.5 text-sm font-medium text-zinc-800 [@media(hover:hover)]:hover:text-zinc-600"
             >
-              ← Back to work
+              <span className="inline-block transition-transform duration-150 ease-out group-hover:-translate-x-0.5">
+                ←
+              </span>
+              <span>Back to work</span>
             </Link>
           </div>
         </section>

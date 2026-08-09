@@ -162,7 +162,7 @@ export default function NavigationTabs({
       {indicator && containerRef.current && (
         <div
           aria-hidden
-          className="absolute inset-0 flex items-center gap-1 pointer-events-none z-20 transition-[clip-path] duration-250 ease-out"
+          className="absolute inset-0 flex items-center gap-1 pointer-events-none z-20 transition-[clip-path] duration-[var(--tabs-dur)] ease-[var(--tabs-ease)]"
           style={{
             clipPath: `inset(${indicator.top}px ${
               containerRef.current.clientWidth - (indicator.left + indicator.width)
@@ -174,7 +174,7 @@ export default function NavigationTabs({
           {tabs.map((tab) => (
             <span
               key={`active-${tab.id}`}
-              className="relative px-[15px] py-[6px] text-[18px] font-normal tracking-[-1px] text-zinc-900"
+              className="relative px-[15px] py-[6px] text-[18px] font-light tracking-[-1px] text-zinc-900"
             >
               {tab.label}
             </span>
@@ -193,7 +193,7 @@ export default function NavigationTabs({
                 onMouseEnter={() => prefetch(tab.href)}
                 onFocus={() => prefetch(tab.href)}
                 onTouchStart={() => prefetch(tab.href)}
-                className="relative rounded-full px-[15px] py-[6px] text-[18px] font-light tracking-[-1px] pressable text-zinc-500 [@media(hover:hover)]:hover:text-zinc-900"
+                className="relative rounded-full px-[15px] py-[6px] text-[18px] font-light tracking-[-1px] text-zinc-500 [@media(hover:hover)]:hover:text-zinc-900"
               >
                 {tab.label}
               </a>

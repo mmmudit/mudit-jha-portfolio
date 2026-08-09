@@ -550,7 +550,7 @@ function CanvasCard({
       }}
       className="absolute cursor-default"
     >
-      <div className="group relative flex flex-col rounded-[26px] border border-zinc-300/80 bg-[#fbfaf5] p-3.5 shadow-[0_4px_24px_rgba(0,0,0,0.05)] transition-all duration-300 hover:shadow-[0_12px_36px_rgba(0,0,0,0.1)] hover:-translate-y-1">
+      <div className="group relative flex flex-col rounded-[26px] border border-zinc-300/80 bg-[#fbfaf5] p-3.5 shadow-[0_4px_24px_rgba(0,0,0,0.05)] transition-[transform,box-shadow] duration-300 hover:shadow-[0_12px_36px_rgba(0,0,0,0.1)] hover:-translate-y-1">
         {/* Card Header Info */}
         <div className="flex items-center justify-between mb-2.5 px-1">
           <div className="flex items-center gap-2">
