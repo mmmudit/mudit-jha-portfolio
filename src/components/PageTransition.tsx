@@ -9,7 +9,7 @@ export default function PageTransition({ children }: { children: ReactNode }) {
   const reduce = useReducedMotion();
 
   return (
-    <AnimatePresence mode="wait" initial={false}>
+    <AnimatePresence mode="popLayout" initial={false}>
       <motion.div
         key={pathname}
         initial={{ opacity: 0, y: reduce ? 0 : 8 }}

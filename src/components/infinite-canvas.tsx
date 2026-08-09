@@ -283,7 +283,7 @@ export function InfiniteCanvas() {
           }`}
       >
         <motion.div
-          className="absolute origin-center size-0"
+          className="absolute origin-center size-0 transform-gpu will-change-transform"
           style={{
             x: springX,
             y: springY,
@@ -683,6 +683,7 @@ function CanvasCard({
               src={item.image}
               alt={item.title}
               fill
+              sizes="(max-width: 768px) 100vw, 400px"
               className="object-cover transition-transform duration-500 group-hover:scale-105"
             />
           </div>
@@ -694,6 +695,7 @@ function CanvasCard({
               src={item.image}
               alt={item.title}
               fill
+              sizes="(max-width: 768px) 100vw, 400px"
               className="object-cover"
             />
             {/* Holographic foil overlay effect */}

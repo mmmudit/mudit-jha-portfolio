@@ -5,8 +5,6 @@ import "./globals.css";
 import AgentationClient from "../components/agentation-client";
 import PageTransition from "../components/PageTransition";
 import { Header } from "../components/header";
-import { Intro } from "../components/intro";
-import { Divider } from "../components/divider";
 import { GrainOverlay } from "../components/grain-overlay";
 
 const geistSans = Geist({
@@ -47,9 +45,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <GrainOverlay />
         <div className="mx-auto w-full max-w-[1440px] px-6 pt-4 sm:px-14 sm:pt-8">
           <Header />
-          <div className="mx-auto flex w-full max-w-[1334px] flex-col gap-12 pt-8 pb-16">
-            <Intro />
-            <Divider />
+          <div className="mx-auto flex w-full max-w-[1334px] flex-col pt-8">
             <PageTransition>{children}</PageTransition>
           </div>
         </div>
