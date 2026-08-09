@@ -82,8 +82,6 @@ export function Footer() {
               ))}
             </nav>
           </div>
-
-          <Divider />
         </div>
 
         <div className="mx-auto flex w-[220px] flex-col items-center text-center">
