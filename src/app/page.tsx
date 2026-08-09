@@ -1,4 +1,3 @@
-import { Intro } from "@/components/intro";
 import { Divider } from "@/components/divider";
 import { Footer } from "@/components/footer";
 import { ProjectCard } from "@/components/project-card";
@@ -74,9 +73,6 @@ export default function Home() {
   return (
     <main className="min-h-screen pb-16">
       <div className="flex w-full flex-col gap-12">
-        <Intro />
-        <Divider />
-
         <section className="grid grid-cols-1 gap-8 md:grid-cols-2 md:gap-x-8 md:gap-y-10">
           {projects.map((project) => (
             <ProjectCard

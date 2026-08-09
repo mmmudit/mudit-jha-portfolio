@@ -4,7 +4,6 @@ import Image from "next/image";
 import { motion, useReducedMotion } from "framer-motion";
 import { useState } from "react";
 import NavigationTabs from "./NavigationTabs";
-import { InteractiveTsuLogo } from "./tsu-logo";
 
 export function Header() {
   const [hover, setHover] = useState(false);
@@ -32,8 +31,17 @@ export function Header() {
       />
 
       <header className="sticky top-4 z-50 relative flex items-center justify-between w-full">
-      {/* Left: Interactive Tsu Logo */}
-      <InteractiveTsuLogo />
+      {/* Left: Avatar */}
+      <div className="size-[64px] sm:size-[72px] shrink-0 overflow-hidden rounded-full bg-zinc-300 shadow-sm">
+        <Image
+          src="/assets/avatar.png"
+          alt="Mudit Jha"
+          width={72}
+          height={72}
+          className="size-full object-cover"
+          priority
+        />
+      </div>
 
       {/* Center: Navigation Bar (Floating Pill - Absolutely Centered so button animation never shifts it) */}
       <div className="absolute left-1/2 -translate-x-1/2 flex items-center justify-center pointer-events-auto">
