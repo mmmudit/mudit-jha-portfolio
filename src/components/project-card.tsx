@@ -37,7 +37,7 @@ export function ProjectCard({
       style={{ animationDelay: `${animationDelay}ms` }}
     >
       {/* Aspect Ratio Media Container with Hover Scale */}
-      <div className="content-stretch flex flex-col items-start justify-end overflow-hidden relative rounded-[26px] shrink-0 w-full transition-transform duration-250 ease-out [@media(hover:hover)]:group-hover:scale-[0.99] active:scale-[0.97] motion-reduce:transition-none motion-reduce:transform-none">
+      <div className="content-stretch flex flex-col items-start justify-end overflow-hidden relative rounded-[26px] shrink-0 w-full transition-transform duration-250 ease-out [@media(hover:hover)]:group-hover:scale-[0.99] active:scale-[0.96] motion-reduce:transition-none motion-reduce:transform-none">
         <div className="aspect-[678/367.625] relative isolate rounded-[26px] shrink-0 w-full overflow-hidden bg-[#e4e4e7]">
           {/* Fallback gradient / shimmer */}
           <div
@@ -62,7 +62,7 @@ export function ProjectCard({
         {/* Inner border stroke overlay */}
         <div
           aria-hidden="true"
-          className="absolute border border-zinc-200/70 inset-0 pointer-events-none rounded-[26px] z-20"
+          className="absolute border border-black/10 dark:border-white/10 inset-0 pointer-events-none rounded-[26px] z-20"
         />
 
         {/* Floating pill badge on bottom left of image (Desktop) */}
@@ -78,10 +78,10 @@ export function ProjectCard({
 
       {/* Subtitle / Description text below card (Desktop) */}
       <div className="hidden md:flex content-stretch items-start px-[13px] py-0 -mt-1.5 -mb-0.5 relative shrink-0 w-full">
-        <p className="font-sans font-normal leading-snug text-[#a1a1aa] group-hover:text-zinc-600 transition-colors duration-150 ease-out text-base tracking-[0.005em] text-left">
+        <p className="font-sans font-normal leading-snug text-zinc-500 group-hover:text-zinc-700 transition-colors duration-150 ease-out text-base tracking-[0.005em] text-left text-pretty">
           {description}
           {actionText && (
-            <span className="inline-flex items-center ml-1.5 font-medium text-blue-500 group-hover:text-blue-600 opacity-0 group-hover:opacity-100 transition-opacity duration-150 ease-out">
+            <span className="inline-flex items-center ms-1.5 font-medium text-blue-500 group-hover:text-blue-600 opacity-0 group-hover:opacity-100 transition-opacity duration-150 ease-out">
               • {actionText}
             </span>
           )}
@@ -93,10 +93,10 @@ export function ProjectCard({
         <div className="flex items-center w-full">
           <p className="relative shrink-0 text-[#18181b] text-left font-medium">
             <span>{title}</span>
-            <span className="text-[#a1a1aa] font-normal"> • {year}</span>
+            <span className="text-zinc-500 font-normal tabular-nums"> • {year}</span>
           </p>
         </div>
-        <p className="relative shrink-0 text-[#a1a1aa] w-full text-left font-normal leading-tight">
+        <p className="relative shrink-0 text-zinc-500 w-full text-left font-normal leading-tight text-pretty">
           {description}
         </p>
       </div>

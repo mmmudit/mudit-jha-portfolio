@@ -13,8 +13,6 @@
   --status-green: #31b564;
   --background: var(--dough);
   --foreground: var(--zinc-800);
-  --hue-1: #f97373;
-  /* visible test color for demo components */
 }
 
 @theme inline {
@@ -97,7 +95,7 @@ body {
 }
 
 .project-card:active {
-  transform: scale(0.97);
+  transform: scale(0.96);
   transition: transform var(--duration-quick) var(--ease-smooth-out);
 }
 
@@ -146,7 +144,7 @@ body {
 }
 
 .pressable:active {
-  transform: scale(0.97);
+  transform: scale(0.96);
   transition: transform var(--duration-quick) var(--ease-smooth-out);
 }
 
