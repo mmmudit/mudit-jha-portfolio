@@ -99,30 +99,14 @@ body {
   transition: transform var(--duration-quick) var(--ease-smooth-out);
 }
 
-@keyframes cardReveal {
-  from {
-    opacity: 0;
-    transform: translateY(var(--distance-medium));
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.project-card-reveal {
-  animation: cardReveal var(--duration-fast) var(--ease-smooth-out) forwards;
-  will-change: transform, opacity;
-}
-
 @media (prefers-reduced-motion: reduce) {
 
   .project-card,
   .project-card:hover,
-  .project-card:active,
-  .project-card-reveal {
+  .project-card:active {
     animation: none !important;
     opacity: 1 !important;
+    filter: none !important;
     transition: none !important;
     transform: none !important;
   }
