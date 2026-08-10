@@ -41,6 +41,30 @@ export const PROJECT_BY_SLUG_QUERY = `*[_type == "project" && (slug.current == $
   actionText
 }`;
 
+export const BOOKS_QUERY = `*[_type == "book"] | order(order asc, _createdAt desc){
+  _id,
+  title,
+  author,
+  authorInitials,
+  spineColor,
+  spineTextColor,
+  "coverImage": coverImage.asset->url,
+  link,
+  order
+}`;
+
+export const TUNES_QUERY = `*[_type == "tune"] | order(order asc, _createdAt desc){
+  _id,
+  title,
+  artist,
+  album,
+  "coverImage": coverImage.asset->url,
+  gradient,
+  link,
+  audioPreviewUrl,
+  order
+}`;
+
 export function defineQuery(query: string) {
   return query;
 }
