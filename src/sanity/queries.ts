@@ -65,6 +65,24 @@ export const TUNES_QUERY = `*[_type == "tune"] | order(order asc, _createdAt des
   order
 }`;
 
+export const PLAY_ITEMS_QUERY = `*[_type == "playItem" && !(_id in path("drafts.**"))] | order(order asc, _createdAt desc){
+  _id,
+  "id": _id,
+  title,
+  category,
+  tag,
+  year,
+  description,
+  x,
+  y,
+  width,
+  "image": image.asset->url,
+  gradient,
+  type,
+  details,
+  order
+}`;
+
 export function defineQuery(query: string) {
   return query;
 }

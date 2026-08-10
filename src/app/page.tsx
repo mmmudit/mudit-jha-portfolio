@@ -5,6 +5,8 @@ import { ProjectGrid } from "@/components/project-grid";
 import { client } from "@/sanity/client";
 import { PROJECTS_QUERY } from "@/sanity/queries";
 
+export const revalidate = 0;
+
 const defaultProjects = [
   {
     _id: "1",
@@ -75,7 +77,7 @@ const defaultProjects = [
 export default async function Home() {
   let sanityProjects: any[] = [];
   try {
-    sanityProjects = await client.fetch(PROJECTS_QUERY, {}, { next: { revalidate: 30 } });
+    sanityProjects = await client.fetch(PROJECTS_QUERY);
   } catch {
     sanityProjects = [];
   }
