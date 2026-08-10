@@ -1,0 +1,15 @@
+{"_id":"book-grid-systems","_type":"book","title":"Grid Systems in Graphic Design","author":"Josef Müller-Brockmann","authorInitials":"JMB","spineColor":"#ff4500","spineTextColor":"#ffffff","link":"https://www.google.com/search?q=Grid+Systems+in+Graphic+Design","order":1}
+{"_id":"book-refactoring-ui","_type":"book","title":"Refactoring UI","author":"Adam Wathan & Steve Schoger","authorInitials":"AW+SS","spineColor":"#293845","spineTextColor":"#ffffff","link":"https://refactoringui.com/","order":2}
+{"_id":"book-universal-ux","_type":"book","title":"Universal UX Principles","author":"I.P.","authorInitials":"IP","spineColor":"#1e242b","spineTextColor":"#ffffff","link":"#","order":3}
+{"_id":"book-just-enough","_type":"book","title":"Just Enough Research","author":"Erika Hall","authorInitials":"TS","spineColor":"#f1f5f9","spineTextColor":"#18181b","link":"#","order":4}
+{"_id":"book-creative-act","_type":"book","title":"The Creative Act: A Way of Being","author":"Rick Rubin","authorInitials":"RR","spineColor":"#cbd5e1","spineTextColor":"#18181b","link":"#","order":5}
+{"_id":"book-steal-like-an-artist","_type":"book","title":"Steal Like An Artist","author":"Austin Kleon","authorInitials":"AK","spineColor":"#27272a","spineTextColor":"#ffffff","link":"#","order":6}
+{"_id":"book-show-your-work","_type":"book","title":"Show Your Work!","author":"Austin Kleon","authorInitials":"AK","spineColor":"#eab308","spineTextColor":"#18181b","link":"#","order":7}
+{"_id":"book-build","_type":"book","title":"Build: An Unorthodox Guide to Making Things Worth Making","author":"Tony Fadell","authorInitials":"TF","spineColor":"#e2e8f0","spineTextColor":"#18181b","link":"#","order":8}
+{"_id":"book-rework","_type":"book","title":"Rework","author":"Jason Fried & DHH","authorInitials":"JF+DHH","spineColor":"#333336","spineTextColor":"#ffffff","link":"#","order":9}
+{"_id":"book-great-ceo","_type":"book","title":"The Great CEO Within","author":"Matt Mochary","authorInitials":"MM","spineColor":"#2e102e","spineTextColor":"#ffffff","link":"#","order":10}
+{"_id":"book-make-something","_type":"book","title":"Make Something Wonderful","author":"Steve Jobs Archive","authorInitials":"SJ","spineColor":"#94938d","spineTextColor":"#18181b","link":"#","order":11}
+{"_id":"book-how-to-american","_type":"book","title":"How to American","author":"Jimmy O. Yang","authorInitials":"JOY","spineColor":"#52525b","spineTextColor":"#ffffff","link":"#","order":12}
+{"_id":"book-sword-of-destiny","_type":"book","title":"Sword of Destiny","author":"Andrzej Sapkowski","authorInitials":"AS","spineColor":"#cbd5e1","spineTextColor":"#18181b","link":"#","order":13}
+{"_id":"book-hustle-smarter","_type":"book","title":"Hustle Harder, Hustle Smarter","author":"Curtis '50 Cent' Jackson","authorInitials":"50","spineColor":"#6b5e52","spineTextColor":"#ffffff","link":"#","order":14}
+{"_id":"book-subtle-art","_type":"book","title":"The Subtle Art of Not Giving a F*ck","author":"Mark Manson","authorInitials":"MM","spineColor":"#ea580c","spineTextColor":"#ffffff","link":"#","order":15}
