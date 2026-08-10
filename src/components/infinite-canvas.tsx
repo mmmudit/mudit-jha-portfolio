@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 
 export type CanvasItem = {
+  _id?: string;
   id: string;
   title: string;
   category: "interactive" | "prototypes" | "shaders" | "notes";
@@ -160,7 +161,20 @@ const INITIAL_ITEMS: CanvasItem[] = [
   },
 ];
 
-export function InfiniteCanvas() {
+export function InfiniteCanvas({ items }: { items?: CanvasItem[] }) {
+  const canvasItems = useMemo(() => {
+    const raw = items && items.length > 0 ? items : INITIAL_ITEMS;
+    return raw.map((item) => ({
+      ...item,
+      id: item.id || item._id || `item-${Math.random()}`,
+      category: item.category || "interactive",
+      type: item.type || "image",
+      gradient: item.gradient || "from-purple-100/90 via-rose-100/90 to-amber-100/90",
+      x: typeof item.x === "number" ? item.x : 0,
+      y: typeof item.y === "number" ? item.y : 0,
+      width: typeof item.width === "number" ? item.width : 360,
+    }));
+  }, [items]);
   const containerRef = useRef<HTMLDivElement | null>(null);
 
   // Canvas Pan State (X, Y) and Scale
@@ -255,9 +269,9 @@ export function InfiniteCanvas() {
 
   // Filter Items
   const filteredItems = useMemo(() => {
-    if (selectedCategory === "all") return INITIAL_ITEMS;
-    return INITIAL_ITEMS.filter((item) => item.category === selectedCategory);
-  }, [selectedCategory]);
+    if (selectedCategory === "all") return canvasItems;
+    return canvasItems.filter((item) => item.category === selectedCategory);
+  }, [canvasItems, selectedCategory]);
 
   return (
     <div className="relative size-full overflow-hidden bg-dough select-none">

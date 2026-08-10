@@ -6,10 +6,17 @@ export const client = {
   async fetch<T>(query: string, params: Record<string, any> = {}, options: any = {}): Promise<T> {
     try {
       const encodedQuery = encodeURIComponent(query);
-      const url = `https://${projectId}.api.sanity.io/v${apiVersion}/data/query/${dataset}?query=${encodedQuery}`;
+      const paramPairs = Object.entries(params).map(
+        ([key, val]) => `$${key}=${encodeURIComponent(JSON.stringify(val))}`
+      );
+      const paramQuery = paramPairs.length > 0 ? `&${paramPairs.join("&")}` : "";
+      const url = `https://${projectId}.api.sanity.io/v${apiVersion}/data/query/${dataset}?query=${encodedQuery}${paramQuery}`;
 
       const res = await fetch(url, {
-        next: options.next || { revalidate: 30 },
+        cache: "no-store",
+        headers: {
+          "Cache-Control": "no-cache, no-store",
+        },
       });
 
       if (!res.ok) {

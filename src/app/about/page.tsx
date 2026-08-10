@@ -203,6 +203,8 @@ const defaultTunes: TuneData[] = [
   },
 ];
 
+export const revalidate = 0;
+
 export default async function AboutPage() {
   let sanityBooks: BookData[] = [];
   let sanityTunes: TuneData[] = [];
