@@ -18,7 +18,12 @@ export type ProjectCardProps = {
   animationDelay?: number;
   priority?: boolean;
   index?: number;
+  isDimmed?: boolean;
   onClick?: (e: React.MouseEvent) => void;
+  onMouseEnter?: () => void;
+  onMouseLeave?: () => void;
+  onFocus?: () => void;
+  onBlur?: () => void;
 };
 
 export function ProjectCard({
@@ -33,7 +38,12 @@ export function ProjectCard({
   animationDelay = 0,
   priority = false,
   index = 0,
+  isDimmed = false,
   onClick,
+  onMouseEnter,
+  onMouseLeave,
+  onFocus,
+  onBlur,
 }: ProjectCardProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [imageLoaded, setImageLoaded] = useState(false);
@@ -42,17 +52,16 @@ export function ProjectCard({
   const isOdd = index % 2 !== 0;
   const initialTilt = isOdd ? 2.5 : -2.5;
 
-  // Realtime scroll progress tracking per card (Adam Argyle wBMvNaN scroll-driven animation)
+  // Realtime scroll progress tracking per card
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start 0.95", "end 0.05"],
   });
 
-  const scale = useTransform(scrollYProgress, [0, 0.25, 0.75, 1], [0.9, 1, 1, 0.94]);
-  const opacity = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [0.2, 1, 1, 0.4]);
-  const y = useTransform(scrollYProgress, [0, 0.25, 0.75, 1], [48, 0, 0, -28]);
+  const scale = useTransform(scrollYProgress, [0, 0.25, 0.75, 1], [0.95, 1, 1, 0.97]);
+  const opacity = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [0.4, 1, 1, 0.6]);
+  const y = useTransform(scrollYProgress, [0, 0.25, 0.75, 1], [32, 0, 0, -20]);
   const rotate = useTransform(scrollYProgress, [0, 0.25, 0.75, 1], [initialTilt, 0, 0, -initialTilt * 0.65]);
-  const filter = useTransform(scrollYProgress, [0, 0.2], ["blur(4px)", "blur(0px)"]);
 
   const handleClick = (e: React.MouseEvent) => {
     if (onClick) {
@@ -68,28 +77,31 @@ export function ProjectCard({
           reduce
             ? {}
             : {
-                scale,
-                opacity,
-                y,
-                rotate,
-                filter,
-              }
+              scale,
+              opacity,
+              y,
+              rotate,
+            }
         }
         className="w-full"
       >
         <Link
           href={href}
           onClick={handleClick}
-          className="project-card pressable group relative flex flex-col gap-3 items-start w-full cursor-pointer text-left focus-visible:outline-none"
+          onMouseEnter={onMouseEnter}
+          onMouseLeave={onMouseLeave}
+          onFocus={onFocus}
+          onBlur={onBlur}
+          className={`project-card pressable group relative flex flex-col gap-3 items-start w-full cursor-pointer text-left focus-visible:outline-none transition-opacity duration-200 ease-out ${isDimmed ? "opacity-40" : "opacity-100"
+            }`}
         >
           {/* Aspect Ratio Media Container with Hover Scale */}
           <div className="content-stretch flex flex-col items-start justify-end overflow-hidden relative rounded-[26px] shrink-0 w-full transition-transform duration-250 ease-out [@media(hover:hover)]:group-hover:scale-[0.99] active:scale-[0.96] motion-reduce:transition-none motion-reduce:transform-none">
             <div className="aspect-[678/367.625] relative isolate rounded-[26px] shrink-0 w-full overflow-hidden bg-[#e4e4e7]">
               {/* Fallback gradient / shimmer */}
               <div
-                className={`absolute inset-0 bg-gradient-to-br ${gradient} ${
-                  imageLoaded ? "opacity-0" : "opacity-100"
-                } transition-opacity duration-150 ease-out`}
+                className={`absolute inset-0 bg-gradient-to-br ${gradient} ${imageLoaded ? "opacity-0" : "opacity-100"
+                  } transition-opacity duration-150 ease-out`}
               />
 
               {image && (
@@ -114,10 +126,16 @@ export function ProjectCard({
 
             {/* Floating pill badge on bottom left of image (Desktop) */}
             <div className="absolute bottom-0 left-0 p-3 hidden md:block z-30 pointer-events-none">
-              <div className="bg-white/90 backdrop-blur-sm border border-[#f4f4f5] border-solid flex items-center justify-center px-3.5 pt-[5px] pb-[4.8px] rounded-full shadow-[0_2px_8px_rgba(0,0,0,0.04)] [@media(hover:hover)]:group-hover:shadow-[0_4px_14px_rgba(0,0,0,0.08)] [@media(hover:hover)]:group-hover:bg-white transition-[background-color,box-shadow] duration-150 ease-out">
-                <p className="font-sans font-medium tracking-[0.005em] leading-snug text-[#18181b] text-base">
+              <div className="bg-white/90 dark:bg-zinc-900/90 backdrop-blur-sm border border-[#f4f4f5] dark:border-zinc-800 border-solid flex items-center justify-center px-3.5 pt-[5px] pb-[4.8px] rounded-full shadow-[0_2px_8px_rgba(0,0,0,0.04)] [@media(hover:hover)]:group-hover:shadow-[0_4px_14px_rgba(0,0,0,0.08)] [@media(hover:hover)]:group-hover:bg-white dark:[@media(hover:hover)]:group-hover:bg-zinc-900 transition-all duration-200 ease-out">
+                <p className={`font-sans font-medium tracking-[0.005em] leading-snug text-base transition-colors duration-200 ease-out ${isDimmed
+                  ? "text-zinc-400 dark:text-zinc-500"
+                  : "text-[#18181b] dark:text-zinc-100 [@media(hover:hover)]:group-hover:text-black dark:[@media(hover:hover)]:group-hover:text-white"
+                  }`}>
                   <span>{title}</span>
-                  <span className="text-[#a1a1aa] font-normal"> • {year}</span>
+                  <span className={`font-normal transition-colors duration-200 ease-out ${isDimmed
+                    ? "text-zinc-300 dark:text-zinc-600"
+                    : "text-[#a1a1aa] dark:text-zinc-400 [@media(hover:hover)]:group-hover:text-zinc-600 dark:[@media(hover:hover)]:group-hover:text-zinc-300"
+                    }`}> • {year}</span>
                 </p>
               </div>
             </div>
@@ -125,11 +143,33 @@ export function ProjectCard({
 
           {/* Subtitle / Description text below card (Desktop) */}
           <div className="hidden md:flex content-stretch items-start px-[13px] py-0 -mt-1.5 -mb-0.5 relative shrink-0 w-full">
-            <p className="font-sans font-normal leading-snug text-zinc-500 group-hover:text-zinc-700 transition-colors duration-150 ease-out text-base tracking-[0.005em] text-left text-pretty">
-              {description}
+            <p className={`font-sans font-normal leading-snug transition-colors duration-200 ease-out text-base tracking-[0.005em] text-left text-pretty ${isDimmed
+              ? "text-zinc-400 dark:text-zinc-600"
+              : "text-zinc-500 dark:text-zinc-400 [@media(hover:hover)]:group-hover:text-black dark:[@media(hover:hover)]:group-hover:text-zinc-600 font-medium"
+              }`}>
+              <span
+                className="inline-block transition-transform duration-200 motion-reduce:transform-none [@media(hover:hover)]:group-hover:translate-x-0.5"
+                style={{ transitionTimingFunction: "cubic-bezier(0.23, 1, 0.32, 1)" }}
+              >
+                {description}
+              </span>
               {actionText && (
-                <span className="inline-flex items-center ms-1.5 font-medium text-blue-500 group-hover:text-blue-600 opacity-0 group-hover:opacity-100 transition-opacity duration-150 ease-out">
-                  • {actionText}
+                <span
+                  className="inline-flex items-center ms-1.5 font-medium text-blue-500 dark:text-blue-400 [@media(hover:hover)]:group-hover:text-blue-600 dark:[@media(hover:hover)]:group-hover:text-blue-300 opacity-0 -translate-x-2 [@media(hover:hover)]:group-hover:opacity-100 [@media(hover:hover)]:group-hover:translate-x-0 transition-[opacity,transform,color] duration-200 motion-reduce:transition-none motion-reduce:transform-none pointer-events-none"
+                  style={{ transitionTimingFunction: "cubic-bezier(0.23, 1, 0.32, 1)" }}
+                >
+                  <span className="me-1 font-normal opacity-60">•</span>
+                  <span>{actionText}</span>
+                  <svg
+                    className="w-3.5 h-3.5 ms-1 transition-transform duration-200 motion-reduce:transform-none [@media(hover:hover)]:group-hover:translate-x-0.5"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth="2.25"
+                    style={{ transitionTimingFunction: "cubic-bezier(0.23, 1, 0.32, 1)" }}
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                  </svg>
                 </span>
               )}
             </p>
@@ -138,13 +178,25 @@ export function ProjectCard({
           {/* Mobile Layout */}
           <div className="md:hidden content-stretch flex flex-col font-sans font-normal items-start leading-snug px-[13px] py-0 relative shrink-0 text-base tracking-[0.01em] gap-1 text-left w-full">
             <div className="flex items-center w-full">
-              <p className="relative shrink-0 text-[#18181b] text-left font-medium">
+              <p className={`relative shrink-0 text-left font-medium transition-colors duration-200 ${isDimmed
+                ? "text-zinc-400 dark:text-zinc-500"
+                : "text-[#18181b] dark:text-zinc-100 [@media(hover:hover)]:group-hover:text-black dark:[@media(hover:hover)]:group-hover:text-white"
+                }`}>
                 <span>{title}</span>
-                <span className="text-zinc-500 font-normal tabular-nums"> • {year}</span>
+                <span className={`font-normal tabular-nums transition-colors duration-200 ${isDimmed ? "text-zinc-300 dark:text-zinc-600" : "text-zinc-500 dark:text-zinc-400"
+                  }`}> • {year}</span>
               </p>
             </div>
-            <p className="relative shrink-0 text-zinc-500 w-full text-left font-normal leading-tight text-pretty">
+            <p className={`relative shrink-0 w-full text-left font-normal leading-tight text-pretty transition-colors duration-200 ${isDimmed
+              ? "text-zinc-400 dark:text-zinc-600"
+              : "text-zinc-500 dark:text-zinc-400 [@media(hover:hover)]:group-hover:text-black dark:[@media(hover:hover)]:group-hover:text-white"
+              }`}>
               {description}
+              {actionText && (
+                <span className="inline-flex items-center ms-1.5 font-medium text-blue-500 dark:text-blue-400">
+                  • {actionText}
+                </span>
+              )}
             </p>
           </div>
         </Link>
