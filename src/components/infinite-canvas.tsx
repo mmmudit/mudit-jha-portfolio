@@ -310,25 +310,41 @@ export function InfiniteCanvas({ items }: { items?: CanvasItem[] }) {
             className="absolute left-0 top-0 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center justify-center text-center w-[580px] max-w-[90vw] pointer-events-none select-none z-10"
           >
             {/* Verified Checkmark Badge Icon */}
-            <div className="mb-4 flex items-center justify-center">
+            <motion.div
+              className="mb-4 flex items-center justify-center"
+              initial={{ opacity: 0, y: 6 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1], delay: 0 }}
+            >
               <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="drop-shadow-sm">
                 <path d="M22.5 12.5c0-1.58-.875-2.95-2.148-3.66.152-.51.238-1.05.238-1.61 0-2.9-2.35-5.25-5.25-5.25-.56 0-1.1.086-1.61.238C12.95 1.025 11.58.15 10 .15c-1.58 0-2.95.875-3.66 2.148-.51-.152-1.05-.238-1.61-.238-2.9 0-5.25 2.35-5.25 5.25 0 .56.086 1.1.238 1.61C1.025 9.55.15 10.92.15 12.5c0 1.58.875 2.95 2.148 3.66-.152.51-.238 1.05-.238 1.61 0 2.9 2.35 5.25 5.25 5.25.56 0 1.1-.086 1.61-.238 1.48 1.273 2.85 2.148 4.43 2.148 1.58 0 2.95-.875 3.66-2.148.51.152 1.05.238 1.61.238 2.9 0 5.25-2.35 5.25-5.25 0-.56-.086-1.1-.238-1.61 1.273-.71 2.148-2.08 2.148-3.66z" fill="#c8d5bb" />
                 <path d="M10.2 16.2l-3.7-3.7 1.4-1.4 2.3 2.3 5.3-5.3 1.4 1.4-6.7 6.7z" fill="#ffffff" />
               </svg>
-            </div>
+            </motion.div>
 
             {/* Serif Title */}
-            <h1 className="font-hand text-5xl sm:text-6xl font-medium tracking-[-2.5px] text-zinc-900 mb-4">
-              Mudit's Playground
-            </h1>
+            <motion.h1
+              className="font-hand text-5xl sm:text-6xl font-medium tracking-[-2.5px] text-zinc-900 mb-4"
+              initial={{ opacity: 0, y: 6 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1], delay: 0.06 }}
+            >
+              Mudit&apos;s Playground
+            </motion.h1>
 
             {/* Subtitle Paragraph */}
-            <p className="font-display text-zinc-600 text-lg leading-relaxed font-normal max-w-lg">
-              Welcome. Here's a peek into the mind and life of Mudit where you'll see
+            <motion.p
+              className="font-display text-zinc-600 text-lg leading-relaxed font-normal max-w-lg"
+              initial={{ opacity: 0, y: 6 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1], delay: 0.1 }}
+            >
+              Welcome. Here&apos;s a peek into the mind and life of Mudit where you&apos;ll see
               unpublished design, montages, and a different side of Mudit outside of
               design. Drag around to get to know him.
-            </p>
+            </motion.p>
           </div>
+
 
           <AnimatePresence mode="popLayout">
             {filteredItems.map((item) => {

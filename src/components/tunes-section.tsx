@@ -170,19 +170,27 @@ export function TunesSection({ tunes }: TunesSectionProps) {
         </div>
 
         {/* Bottom Track Title Link Bar */}
-        <div className="relative z-10 pt-4 flex items-center justify-center">
-          {activeTune && (
-            <a
-              href={activeTune.link || "#"}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="group inline-flex items-center gap-2 font-display text-sm font-medium text-zinc-400 hover:text-white transition-colors"
-            >
-              <span>Playing: {activeTune.title} — {activeTune.artist}</span>
-              <ExternalLink className="size-3.5 text-zinc-500 group-hover:text-zinc-300 transition-colors" />
-            </a>
-          )}
+        <div className="relative z-10 pt-4 flex items-center justify-center min-h-[28px]">
+          <AnimatePresence mode="wait" initial={false}>
+            {activeTune && (
+              <motion.a
+                key={activeTune._id || activeTune.title}
+                href={activeTune.link || "#"}
+                target="_blank"
+                rel="noopener noreferrer"
+                initial={{ opacity: 0, y: 4 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -4 }}
+                transition={{ duration: 0.15, ease: [0.22, 1, 0.36, 1] }}
+                className="group inline-flex items-center gap-2 font-display text-sm font-medium text-zinc-400 hover:text-white transition-colors"
+              >
+                <span>Playing: {activeTune.title} — {activeTune.artist}</span>
+                <ExternalLink className="size-3.5 text-zinc-500 group-hover:text-zinc-300 transition-colors" />
+              </motion.a>
+            )}
+          </AnimatePresence>
         </div>
+
       </div>
     </section>
   );
