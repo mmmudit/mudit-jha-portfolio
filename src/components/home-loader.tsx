@@ -1,20 +1,20 @@
 "use client";
 
 import { useEffect, useRef, useState, useCallback } from "react";
-import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 
 // ── Simulation constants ──────────────────────────────────────────────────────
-const W = 256;       // grid width
-const H = 200;       // grid height
-const DU = 0.2097;   // diffusion rate U
-const DV = 0.1050;   // diffusion rate V
-const BASE_F = 0.054; // feed rate (coral growth)
-const BASE_K = 0.062; // kill rate
-const THRESHOLD = 0.22; // 1-bit cut point on V channel
-const STEPS = 6;     // simulation steps per animation frame
-const FRAMES_TO_READY = 120; // ~2s at 60fps before dismiss is enabled
+const W = 256;
+const H = 200;
+const DU = 0.2097;
+const DV = 0.1050;
+const BASE_F = 0.054;
+const BASE_K = 0.062;
+const THRESHOLD = 0.22;
+const STEPS = 12;           // faster: more steps per frame
+const FRAMES_TO_READY = 50; // faster: ~0.85s at 60fps before dismiss enabled
 
-// 1-bit pixel palette – Uint32 little-endian RGBA (0xAA_BB_GG_RR)
+// 1-bit palette — Uint32 little-endian RGBA (0xAA_BB_GG_RR)
 const PX_CREAM = ((0xff << 24) | (245 << 16) | (250 << 8) | 251) >>> 0; // #fbfaf5
 const PX_INK   = ((0xff << 24) | ( 42 << 16) | ( 39 << 8) |  39) >>> 0; // #27272a
 
@@ -23,7 +23,6 @@ function makeGrid(fill: number) {
   return new Float32Array(W * H).fill(fill);
 }
 
-/** Seed three growth points with a small square of V-chemical */
 function seedGrid(u: Float32Array, v: Float32Array) {
   const seeds: [number, number][] = [
     [Math.floor(W * 0.50), Math.floor(H * 0.50)],
@@ -43,7 +42,6 @@ function seedGrid(u: Float32Array, v: Float32Array) {
   }
 }
 
-/** One Gray-Scott step with periodic (wrapped) boundary conditions */
 function gsStep(
   u: Float32Array, v: Float32Array,
   nu: Float32Array, nv: Float32Array,
@@ -72,9 +70,11 @@ interface HomeLoaderProps {
 }
 
 export function HomeLoader({ onDismiss }: HomeLoaderProps) {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const rafRef    = useRef<number>(0);
-  const simRef    = useRef({
+  const canvasRef     = useRef<HTMLCanvasElement>(null);
+  const overlayRef    = useRef<HTMLDivElement>(null);
+  const simRafRef     = useRef<number>(0);
+  const dismissRafRef = useRef<number>(0);
+  const simRef = useRef({
     u:       makeGrid(1),
     v:       makeGrid(0),
     nu:      makeGrid(0),
@@ -83,17 +83,49 @@ export function HomeLoader({ onDismiss }: HomeLoaderProps) {
     startMs: 0,
   });
   const [canDismiss, setCanDismiss] = useState(false);
-  const [exiting, setExiting]       = useState(false);
-  const reduce = useReducedMotion();
+  const [dismissing, setDismissing] = useState(false);
 
+  // ── Circle iris reveal on dismiss ─────────────────────────────────────────
+  // Uses radial-gradient mask: transparent circle (page shows) grows from 0 → full
+  // mask-image: radial-gradient(circle at 50% 50%, transparent R, black R)
+  // As R grows, the transparent hole expands from center, revealing the page below.
   const triggerDismiss = useCallback(() => {
-    if (!canDismiss || exiting) return;
-    setExiting(true);
-    // Give exit animation time to run before calling onDismiss
-    setTimeout(onDismiss, reduce ? 0 : 600);
-  }, [canDismiss, exiting, onDismiss, reduce]);
+    if (!canDismiss || dismissing) return;
+    setDismissing(true);
 
-  // Run the Gray-Scott simulation
+    // Stop simulation so the frozen frame stays while the iris opens
+    cancelAnimationFrame(simRafRef.current);
+
+    const el = overlayRef.current;
+    if (!el) { onDismiss(); return; }
+    const elSafe = el; // capture non-null for closure
+
+    const DURATION = 750; // ms
+    // Max radius to cover the full viewport diagonal
+    const maxR = Math.hypot(window.innerWidth, window.innerHeight) * 0.6;
+    const start = performance.now();
+
+    function animateIris(ts: number) {
+      const t = Math.min((ts - start) / DURATION, 1);
+      // Ease-in-out cubic for smooth iris open feel
+      const eased = t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+      const r = maxR * eased;
+
+      const mask = `radial-gradient(circle at 50% 50%, transparent ${r}px, black ${r}px)`;
+      elSafe.style.webkitMaskImage = mask;
+      elSafe.style.maskImage = mask;
+
+      if (t < 1) {
+        dismissRafRef.current = requestAnimationFrame(animateIris);
+      } else {
+        onDismiss();
+      }
+    }
+
+    dismissRafRef.current = requestAnimationFrame(animateIris);
+  }, [canDismiss, dismissing, onDismiss]);
+
+  // ── Gray-Scott simulation loop ────────────────────────────────────────────
   useEffect(() => {
     seedGrid(simRef.current.u, simRef.current.v);
     simRef.current.startMs = performance.now();
@@ -102,7 +134,7 @@ export function HomeLoader({ onDismiss }: HomeLoaderProps) {
     if (!canvas) return;
     const ctx = canvas.getContext("2d", { alpha: false });
     if (!ctx) return;
-    const ctxSafe = ctx; // capture for closure — TS can't narrow inside nested fn
+    const ctxSafe = ctx;
     ctxSafe.imageSmoothingEnabled = false;
 
     const imgData = ctxSafe.createImageData(W, H);
@@ -110,14 +142,12 @@ export function HomeLoader({ onDismiss }: HomeLoaderProps) {
 
     function loop(ts: number) {
       const sim = simRef.current;
-      const elapsed = (ts - sim.startMs) / 1000; // seconds
+      const elapsed = (ts - sim.startMs) / 1000;
 
-      // Slowly perturb feed rate on a 20-second sine cycle
-      // This causes the stable pattern to occasionally break apart and reform
+      // Feed rate perturbed on 20-second sine cycle
       const perturb = Math.sin((elapsed / 20) * Math.PI * 2) * 0.006;
       const f = BASE_F + perturb;
 
-      // Multiple steps per frame so pattern grows visibly
       for (let s = 0; s < STEPS; s++) {
         gsStep(sim.u, sim.v, sim.nu, sim.nv, f);
         sim.u.set(sim.nu);
@@ -125,7 +155,7 @@ export function HomeLoader({ onDismiss }: HomeLoaderProps) {
       }
       sim.frame++;
 
-      // 1-bit threshold render — no antialiasing, hard boundary
+      // 1-bit threshold — hard boundary, no antialiasing
       const { v } = sim;
       for (let i = 0; i < W * H; i++) {
         px[i] = v[i] > THRESHOLD ? PX_INK : PX_CREAM;
@@ -134,11 +164,16 @@ export function HomeLoader({ onDismiss }: HomeLoaderProps) {
 
       if (sim.frame === FRAMES_TO_READY) setCanDismiss(true);
 
-      rafRef.current = requestAnimationFrame(loop);
+      simRafRef.current = requestAnimationFrame(loop);
     }
 
-    rafRef.current = requestAnimationFrame(loop);
-    return () => cancelAnimationFrame(rafRef.current);
+    simRafRef.current = requestAnimationFrame(loop);
+    return () => cancelAnimationFrame(simRafRef.current);
+  }, []);
+
+  // Cleanup dismiss RAF on unmount
+  useEffect(() => {
+    return () => cancelAnimationFrame(dismissRafRef.current);
   }, []);
 
   // Keyboard dismiss
@@ -152,112 +187,40 @@ export function HomeLoader({ onDismiss }: HomeLoaderProps) {
 
   return (
     <motion.div
-      key="home-loader"
+      ref={overlayRef}
       initial={{ opacity: 0 }}
-      animate={{ opacity: exiting ? 0 : 1 }}
-      transition={{
-        duration: exiting ? 0.6 : 0.35,
-        ease: [0.22, 1, 0.36, 1],
-      }}
-      className="fixed inset-0 z-[60] flex overflow-hidden bg-[#fbfaf5] cursor-pointer"
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+      className="fixed inset-0 z-[60] cursor-pointer overflow-hidden bg-[#fbfaf5]"
       onClick={triggerDismiss}
       aria-label="Loading — click to enter"
       role="dialog"
       aria-modal="true"
     >
-      {/* ── Left panel: typography ─────────────────────────────────────────── */}
-      <div className="relative flex flex-col justify-end w-[44%] shrink-0 p-10 sm:p-12 xl:p-16 select-none pointer-events-none">
-        <div className="flex flex-col gap-7 pb-2">
+      {/* Full-screen Gray-Scott canvas — pixelated 1-bit */}
+      <canvas
+        ref={canvasRef}
+        width={W}
+        height={H}
+        className="absolute inset-0 w-full h-full"
+        style={{ imageRendering: "pixelated" }}
+      />
 
-          {/* Section label — small caps tracking */}
-          <motion.span
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.5, delay: 0.1 }}
-            className="font-mono text-[10px] tracking-[0.25em] uppercase text-zinc-300"
-          >
-            Surface tension
-          </motion.span>
-
-          {/* Three-line headline — near-black, display */}
-          <div className="flex flex-col leading-none" style={{ gap: "0.06em" }}>
-            {["Generative", "form from", "constraint."].map((line, i) => (
-              <motion.span
-                key={line}
-                initial={{ opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{
-                  duration: 0.4,
-                  delay: 0.18 + i * 0.06,
-                  ease: [0.22, 1, 0.36, 1],
-                }}
-                className="font-display font-semibold tracking-[-2.5px] text-zinc-900"
-                style={{ fontSize: "clamp(1.9rem, 3.8vw, 3.5rem)" }}
-              >
-                {line}
-              </motion.span>
-            ))}
-          </div>
-
-          {/* Generative layering secondary line */}
+      {/* Click-to-enter cue — centered, appears after pattern forms */}
+      <AnimatePresence>
+        {canDismiss && !dismissing && (
           <motion.p
+            key="cue"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ duration: 0.45, delay: 0.42 }}
-            className="font-sans text-[13px] leading-relaxed text-zinc-400 max-w-[24ch]"
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.6 }}
+            className="absolute bottom-8 left-1/2 -translate-x-1/2 font-mono text-[11px] tracking-[0.2em] uppercase text-zinc-500 select-none pointer-events-none mix-blend-multiply"
           >
-            Self-organizing structure emergent from chemical reaction.
+            click to enter
           </motion.p>
-
-          {/* Caption: 01_ / 02_ underscore letterpressed mono */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.4, delay: 0.55 }}
-            className="flex flex-col gap-1.5 pt-4 border-t border-zinc-100"
-          >
-            <span className="font-mono text-[11px] tracking-[0.07em] text-zinc-400">
-              01_ reaction-diffusion
-            </span>
-            <span className="font-mono text-[11px] tracking-[0.07em] text-zinc-400">
-              02_ gray-scott / f:k
-            </span>
-          </motion.div>
-        </div>
-
-        {/* Dismiss cue — appears after pattern establishes */}
-        <AnimatePresence>
-          {canDismiss && (
-            <motion.p
-              key="cue"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.6 }}
-              className="absolute bottom-10 left-10 sm:left-12 xl:left-16 font-mono text-[10px] tracking-[0.18em] uppercase text-zinc-300"
-            >
-              click to enter →
-            </motion.p>
-          )}
-        </AnimatePresence>
-      </div>
-
-      {/* ── Vertical rule: hard edge, no feathering ────────────────────────── */}
-      <div className="w-px bg-zinc-200 shrink-0" />
-
-      {/* ── Right panel: Gray-Scott canvas ────────────────────────────────── */}
-      {/* Hard-edged rectangle clip: overflow-hidden, no border-radius, no shadow */}
-      <div className="flex-1 relative overflow-hidden bg-[#fbfaf5]">
-        <canvas
-          ref={canvasRef}
-          width={W}
-          height={H}
-          className="absolute inset-0 w-full h-full"
-          style={{
-            imageRendering: "pixelated",
-          }}
-        />
-      </div>
+        )}
+      </AnimatePresence>
     </motion.div>
   );
 }
