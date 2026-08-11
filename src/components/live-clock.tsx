@@ -17,7 +17,7 @@ function TickingCharacter({ char, index }: { char: string; index: number }) {
           initial={{ y: "100%", opacity: 0 }}
           animate={{ y: "0%", opacity: 1 }}
           exit={{ y: "-100%", opacity: 0 }}
-          transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ duration: 0.15, ease: [0.22, 1, 0.36, 1] }}
           className="absolute inset-0 flex items-center justify-center font-mono tabular-nums"
         >
           {char}

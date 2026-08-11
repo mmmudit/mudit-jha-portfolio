@@ -96,12 +96,15 @@ export function ProjectCard({
             }`}
         >
           {/* Aspect Ratio Media Container with Hover Scale */}
-          <div className="content-stretch flex flex-col items-start justify-end overflow-hidden relative rounded-[26px] shrink-0 w-full transition-transform duration-250 ease-out [@media(hover:hover)]:group-hover:scale-[0.99] active:scale-[0.96] motion-reduce:transition-none motion-reduce:transform-none">
+          <div
+            className="content-stretch flex flex-col items-start justify-end overflow-hidden relative rounded-[26px] shrink-0 w-full transition-transform duration-200 [@media(hover:hover)]:group-hover:scale-[0.99] active:scale-[0.96] motion-reduce:transition-none motion-reduce:transform-none"
+            style={{ transitionTimingFunction: "cubic-bezier(0.23, 1, 0.32, 1)" }}
+          >
             <div className="aspect-[678/367.625] relative isolate rounded-[26px] shrink-0 w-full overflow-hidden bg-[#e4e4e7]">
               {/* Fallback gradient / shimmer */}
               <div
                 className={`absolute inset-0 bg-gradient-to-br ${gradient} ${imageLoaded ? "opacity-0" : "opacity-100"
-                  } transition-opacity duration-150 ease-out`}
+                  } transition-opacity duration-200 ease-out`}
               />
 
               {image && (
@@ -112,8 +115,8 @@ export function ProjectCard({
                   priority={priority}
                   sizes="(max-width: 768px) 100vw, 50vw"
                   onLoad={() => setImageLoaded(true)}
-                  className="absolute max-w-none object-cover size-full rounded-[26px] transition-transform duration-250 ease-out [@media(hover:hover)]:group-hover:scale-[1.02] motion-reduce:transition-none motion-reduce:transform-none pointer-events-none z-10"
-                  style={{ transitionTimingFunction: "cubic-bezier(0.22, 1, 0.36, 1)" }}
+                  className="absolute max-w-none object-cover size-full rounded-[26px] transition-transform duration-200 [@media(hover:hover)]:group-hover:scale-[1.02] motion-reduce:transition-none motion-reduce:transform-none pointer-events-none z-10"
+                  style={{ transitionTimingFunction: "cubic-bezier(0.23, 1, 0.32, 1)" }}
                 />
               )}
             </div>

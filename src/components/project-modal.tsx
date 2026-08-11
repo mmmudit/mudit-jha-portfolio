@@ -179,13 +179,14 @@ export function ProjectModal({ project, onClose }: ProjectModalProps) {
                             {/* Line Marker with spring expansion */}
                             <div className="relative flex items-center h-4 w-12 shrink-0">
                               <motion.div
+                                style={{ transformOrigin: "left center" }}
                                 animate={{
-                                  width: isActive ? 44 : isHovered ? 28 : 14,
+                                  scaleX: isActive ? 1 : isHovered ? 0.64 : 0.32,
                                   backgroundColor: isActive ? "#18181b" : isHovered ? "#52525b" : "#d4d4d8",
-                                  height: isActive ? 2 : 1.5,
+                                  opacity: isActive ? 1 : isHovered ? 0.85 : 0.6,
                                 }}
                                 transition={{ type: "spring", stiffness: 360, damping: 26 }}
-                                className="rounded-full"
+                                className="w-11 h-[2px] rounded-full"
                               />
                             </div>
 
