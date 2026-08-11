@@ -9,7 +9,7 @@ export function Header() {
   const [hover, setHover] = useState(false);
   const reduce = useReducedMotion();
 
-  const minW = 54;
+  const minW = 56;
   const expandedW = 125;
 
   return (

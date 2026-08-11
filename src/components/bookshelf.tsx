@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { ExternalLink, BookOpen } from "lucide-react";
 
 export type BookData = {
@@ -23,6 +23,7 @@ export type BookshelfProps = {
 export function Bookshelf({ books }: BookshelfProps) {
   const [selectedBook, setSelectedBook] = useState<BookData | null>(books[0] || null);
   const [hoveredBook, setHoveredBook] = useState<BookData | null>(null);
+  const reduce = useReducedMotion();
 
   const activeBook = hoveredBook || selectedBook || books[0];
 
@@ -50,10 +51,14 @@ export function Bookshelf({ books }: BookshelfProps) {
             {activeBook && (
               <motion.div
                 key={activeBook._id || activeBook.title}
-                initial={{ opacity: 0, y: 12, scale: 0.96 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, y: -10, scale: 0.96 }}
-                transition={{ duration: 0.2, ease: "easeOut" }}
+                initial={reduce ? { opacity: 0 } : { opacity: 0, y: 12, scale: 0.96 }}
+                animate={reduce ? { opacity: 1 } : { opacity: 1, y: 0, scale: 1 }}
+                exit={reduce ? { opacity: 0 } : { opacity: 0, y: -10, scale: 0.96 }}
+                transition={
+                  reduce
+                    ? { duration: 0.15 }
+                    : { type: "spring", stiffness: 320, damping: 28, mass: 0.8 }
+                }
                 className="flex items-center gap-5 w-full bg-zinc-900/90 border border-zinc-800 p-4 rounded-2xl backdrop-blur-md shadow-xl"
               >
                 {/* Book Mini Cover Graphic */}

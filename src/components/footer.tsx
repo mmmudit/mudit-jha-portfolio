@@ -66,10 +66,10 @@ export function Footer() {
                     <AnimatePresence initial={false}>
                       {copied && (
                         <motion.span
-                          initial={{ opacity: 0, scale: 0.25, filter: "blur(4px)" }}
+                          initial={{ opacity: 0, scale: 0.92, filter: "blur(2px)" }}
                           animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
-                          exit={{ opacity: 0, scale: 0.25, filter: "blur(4px)" }}
-                          transition={{ type: "spring", duration: 0.3, bounce: 0 }}
+                          exit={{ opacity: 0, scale: 0.92, filter: "blur(2px)" }}
+                          transition={{ type: "spring", duration: 0.25, bounce: 0 }}
                           className="inline-flex items-center gap-1 px-2.5 py-0.5 text-xs font-mono font-medium text-emerald-700 bg-emerald-100 rounded-full border border-emerald-300"
                         >
                           <Check className="size-3 text-emerald-600" />

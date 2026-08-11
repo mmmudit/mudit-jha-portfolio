@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import clsx from "clsx";
 
 type Tab = {
@@ -27,6 +27,7 @@ export default function NavigationTabs({
   initialActiveId?: string;
 }) {
   const pathname = usePathname();
+  const reduce = useReducedMotion();
 
   const [activeId, setActiveId] = useState<string | undefined>(
     initialActiveId ?? tabs[0]?.id,
@@ -60,18 +61,22 @@ export default function NavigationTabs({
           >
             {isActive && (
               <motion.div
-                layoutId="active-nav-pill"
+                layoutId={reduce ? undefined : "active-nav-pill"}
                 className="absolute inset-0 rounded-full shadow-[inset_0_1px_1px_rgba(255,255,255,0.9),inset_0_-1px_1px_rgba(0,0,0,0.02),0_2px_4px_rgba(0,0,0,0.06)] pointer-events-none"
                 style={{
                   backgroundColor: WILLOW_HEX,
                   border: `1px solid rgba(200, 213, 187, 0.9)`,
                 }}
-                transition={{
-                  type: "spring",
-                  stiffness: 400,
-                  damping: 32,
-                  mass: 0.8,
-                }}
+                transition={
+                  reduce
+                    ? { duration: 0 }
+                    : {
+                      type: "spring",
+                      stiffness: 400,
+                      damping: 32,
+                      mass: 0.8,
+                    }
+                }
               />
             )}
             <span className="relative z-10">{tab.label}</span>
