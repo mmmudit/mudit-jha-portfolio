@@ -32,8 +32,13 @@
   --font-hand: var(--font-myfont);
 }
 
+html,
 body {
-  background: var(--dough);
+  overflow-x: clip;
+}
+
+body {
+  background: linear-gradient(180deg, #FBFBF5 71.63%, #E1E5DE 100%);
   color: var(--foreground);
   font-family: var(--font-geist-sans), system-ui, sans-serif;
   /* Soft warm paper finish */
