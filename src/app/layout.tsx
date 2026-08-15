@@ -6,6 +6,7 @@ import AgentationClient from "../components/agentation-client";
 import PageTransition from "../components/PageTransition";
 import { Header } from "../components/header";
 import { GrainOverlay } from "../components/grain-overlay";
+import { IntroLoader } from "../components/IntroLoader";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -41,18 +42,41 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} ${figtree.variable} ${myFont.variable} h-full antialiased`}
     >
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                try {
+                  var seen = sessionStorage.getItem('portfolio_intro_seen');
+                  var forced = window.location.search.indexOf('intro') !== -1;
+                  var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+                  if (!forced && (seen === 'true' || reduced)) {
+                    document.documentElement.classList.add('intro-dismissed');
+                  }
+                } catch (e) {}
+              })();
+            `,
+          }}
+        />
+        <link rel="preload" href="/intro.webm" as="video" type="video/webm" />
+        <link rel="preload" href="/intro.mp4" as="video" type="video/mp4" />
+      </head>
       <body className="min-h-full bg-dough text-zinc-800 relative">
-        <GrainOverlay />
-        <div className="mx-auto w-full max-w-[1440px] px-6 pt-4 sm:px-14 sm:pt-8">
-          <Header />
-          <div className="mx-auto flex w-full max-w-[1334px] flex-col pt-8">
-            <PageTransition>{children}</PageTransition>
+        <IntroLoader>
+          <GrainOverlay />
+          <div className="mx-auto w-full max-w-[1440px] px-6 pt-4 sm:px-14 sm:pt-8">
+            <Header />
+            <div className="mx-auto flex w-full max-w-[1334px] flex-col pt-8">
+              <PageTransition>{children}</PageTransition>
+            </div>
           </div>
-        </div>
-        <AgentationClient />
+          <AgentationClient />
+        </IntroLoader>
       </body>
     </html>
   );
 }
+
 
 
