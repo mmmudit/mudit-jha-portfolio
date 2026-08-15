@@ -4,7 +4,7 @@ import React, { useEffect, useRef, useState, useCallback } from "react";
 
 const STORAGE_KEY = "portfolio_intro_seen";
 const SKIP_DELAY_MS = 800;
-const FADE_DURATION_MS = 500;
+const FADE_DURATION_MS = 1000;
 
 interface IntroLoaderProps {
   children?: React.ReactNode;
@@ -74,7 +74,7 @@ export function IntroLoader({ children }: IntroLoaderProps) {
       if (isMobile) {
         try {
           sessionStorage.setItem(STORAGE_KEY, "true");
-        } catch {}
+        } catch { }
         document.documentElement.classList.add("intro-dismissed");
         setIsOverlayActive(false);
         return;
@@ -87,7 +87,7 @@ export function IntroLoader({ children }: IntroLoaderProps) {
       ) {
         try {
           sessionStorage.setItem(STORAGE_KEY, "true");
-        } catch {}
+        } catch { }
         document.documentElement.classList.add("intro-dismissed");
         setIsOverlayActive(false);
         return;
@@ -101,12 +101,12 @@ export function IntroLoader({ children }: IntroLoaderProps) {
       });
     }
 
-    // 4. Unlock skip capability after delay
+    // 3. Unlock skip capability after delay
     skipTimerRef.current = setTimeout(() => {
       setCanSkip(true);
     }, SKIP_DELAY_MS);
 
-    // 5. Safety fallback: if video stalls or takes too long (> 8s), auto-dismiss
+    // 4. Safety fallback: if video stalls or takes too long (> 8s), auto-dismiss
     fallbackTimerRef.current = setTimeout(() => {
       completeIntro();
     }, 8000);
@@ -144,9 +144,8 @@ export function IntroLoader({ children }: IntroLoaderProps) {
           aria-label="Intro Video"
           aria-modal="true"
           onClick={handleOverlayClick}
-          className={`fixed inset-0 z-[10000] bg-black hidden md:flex items-center justify-center overflow-hidden select-none transition-opacity ease-out ${
-            isFadingOut ? "opacity-0 pointer-events-none" : "opacity-100"
-          }`}
+          className={`fixed inset-0 z-[10000] bg-black flex items-center justify-center overflow-hidden select-none transition-opacity ease-out ${isFadingOut ? "opacity-0 pointer-events-none" : "opacity-100"
+            }`}
           style={{ transitionDuration: `${FADE_DURATION_MS}ms` }}
         >
           <video
