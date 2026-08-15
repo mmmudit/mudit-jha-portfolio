@@ -2,7 +2,6 @@ import { Intro } from "@/components/intro";
 import { Divider } from "@/components/divider";
 import { Footer } from "@/components/footer";
 import { ProjectGrid } from "@/components/project-grid";
-import { HomeLoaderWrapper } from "@/components/home-loader-wrapper";
 import { client } from "@/sanity/client";
 import { PROJECTS_QUERY } from "@/sanity/queries";
 
@@ -86,18 +85,16 @@ export default async function Home() {
   const projects = sanityProjects && sanityProjects.length > 0 ? sanityProjects : defaultProjects;
 
   return (
-    <HomeLoaderWrapper>
-      <main className="min-h-screen pb-16">
-        <div className="flex w-full flex-col gap-12">
-          <Intro />
-          <Divider />
+    <main className="min-h-screen pb-16">
+      <div className="flex w-full flex-col gap-12">
+        <Intro />
+        <Divider />
 
-          <ProjectGrid projects={projects} />
+        <ProjectGrid projects={projects} />
 
-          <Divider />
-          <Footer />
-        </div>
-      </main>
-    </HomeLoaderWrapper>
+        <Divider />
+        <Footer />
+      </div>
+    </main>
   );
 }

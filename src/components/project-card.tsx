@@ -183,7 +183,7 @@ export function ProjectCard({
             <div className="flex items-center w-full">
               <p className={`relative shrink-0 text-left font-medium transition-colors duration-200 ${isDimmed
                 ? "text-zinc-400 dark:text-zinc-500"
-                : "text-[#18181b] dark:text-zinc-100 [@media(hover:hover)]:group-hover:text-black dark:[@media(hover:hover)]:group-hover:text-white"
+                : "text-[#18181b] dark:text-zinc-500 [@media(hover:hover)]:group-hover:text-black dark:[@media(hover:hover)]:group-hover:text-zinc-600"
                 }`}>
                 <span>{title}</span>
                 <span className={`font-normal tabular-nums transition-colors duration-200 ${isDimmed ? "text-zinc-300 dark:text-zinc-600" : "text-zinc-500 dark:text-zinc-400"
