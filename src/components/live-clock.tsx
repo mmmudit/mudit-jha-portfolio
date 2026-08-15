@@ -27,7 +27,11 @@ function TickingCharacter({ char, index }: { char: string; index: number }) {
   );
 }
 
-export function LiveClock() {
+interface LiveClockProps {
+  variant?: "header" | "footer";
+}
+
+export function LiveClock({ variant = "footer" }: LiveClockProps) {
   const [time, setTime] = useState<string>("");
 
   useEffect(() => {
@@ -48,12 +52,35 @@ export function LiveClock() {
 
   const timeChars = time ? time.split("") : [];
 
+  if (variant === "header") {
+    return (
+      <div className="font-sans font-light text-[13px] sm:text-[15px] md:text-[16px] uppercase tracking-[-0.5px] leading-none text-[#7f7f80] inline-flex items-center gap-2 select-none">
+        <span className="relative inline-flex size-2.5 items-center justify-center shrink-0">
+          <span className="green-pulse-ring" aria-hidden="true" />
+          <span className="relative size-1.5 rounded-full bg-status-green" />
+        </span>
+        <span className="inline-flex items-center tabular-nums">
+          {timeChars.length > 0 ? (
+            timeChars.map((char, i) => (
+              <TickingCharacter key={i} char={char} index={i} />
+            ))
+          ) : (
+            <span>--:--:-- --</span>
+          )}
+        </span>
+        <span className="text-[#7f7f80]/60 font-sans mx-0.5">•</span>
+        <span className="text-[#7f7f80] font-sans">Minneapolis • GMT -05:00</span>
+      </div>
+    );
+  }
+
   return (
-    <div className="font-mono text-[13px] sm:text-[14px] uppercase tracking-tight leading-none text-rust-grey inline-flex items-center gap-2 select-none">
+    <div className="font-sans font-light text-[13px] sm:text-[15px] md:text-[16px] uppercase tracking-[-0.5px] leading-none text-[#7f7f80] inline-flex items-center gap-2 select-none">
       <span className="relative inline-flex size-2.5 items-center justify-center shrink-0">
         <span className="green-pulse-ring" aria-hidden="true" />
         <span className="relative size-1.5 rounded-full bg-status-green" />
       </span>
+      <span className="text-[#7f7f80] font-sans">Mudit Standard Time:</span>
       <span className="inline-flex items-center tabular-nums">
         {timeChars.length > 0 ? (
           timeChars.map((char, i) => (
@@ -63,8 +90,6 @@ export function LiveClock() {
           <span>--:--:-- --</span>
         )}
       </span>
-      <span className="text-zinc-400 font-sans mx-0.5">•</span>
-      <span className="text-zinc-600 font-mono">Minneapolis, MN</span>
     </div>
   );
 }

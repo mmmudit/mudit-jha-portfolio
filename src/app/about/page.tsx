@@ -221,7 +221,7 @@ export default async function AboutPage() {
   const tunes = sanityTunes && sanityTunes.length > 0 ? sanityTunes : defaultTunes;
 
   return (
-    <main className="min-h-screen pb-16">
+    <main className="min-h-screen">
       <div className="flex w-full flex-col gap-12">
         <AboutHero />
 

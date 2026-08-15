@@ -21,7 +21,7 @@ const geistMono = Geist_Mono({
 const figtree = Figtree({
   variable: "--font-figtree",
   subsets: ["latin"],
-  weight: ["500", "600"],
+  weight: ["400", "500", "600", "700", "800", "900"],
 });
 
 const myFont = localFont({
@@ -62,14 +62,14 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <link rel="preload" href="/intro.webm" as="video" type="video/webm" />
         <link rel="preload" href="/intro.mp4" as="video" type="video/mp4" />
       </head>
-      <body className="min-h-full bg-dough text-zinc-800 relative">
+      <body className="min-h-full text-zinc-800 relative">
         <IntroLoader>
           <GrainOverlay />
-          <div className="mx-auto w-full max-w-[1440px] px-6 pt-4 sm:px-14 sm:pt-8">
+          <div className="w-full px-6 pt-4 sm:px-14 sm:pt-8">
             <Header />
-            <div className="mx-auto flex w-full max-w-[1334px] flex-col pt-8">
-              <PageTransition>{children}</PageTransition>
-            </div>
+          </div>
+          <div className="mx-auto flex w-full max-w-[1334px] flex-col px-6 sm:px-14 pt-8">
+            <PageTransition>{children}</PageTransition>
           </div>
           <AgentationClient />
         </IntroLoader>

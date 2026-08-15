@@ -85,7 +85,7 @@ export default async function Home() {
   const projects = sanityProjects && sanityProjects.length > 0 ? sanityProjects : defaultProjects;
 
   return (
-    <main className="min-h-screen pb-16">
+    <main className="min-h-screen">
       <div className="flex w-full flex-col gap-12">
         <Intro />
         <Divider />
