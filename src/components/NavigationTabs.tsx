@@ -22,16 +22,24 @@ export default function NavigationTabs({
     { id: "about", label: "about", href: "/about" },
   ],
   initialActiveId,
+  layoutId = "active-nav-pill",
 }: {
   tabs?: Tab[];
   initialActiveId?: string;
+  layoutId?: string;
 }) {
   const pathname = usePathname();
   const reduce = useReducedMotion();
 
-  const [activeId, setActiveId] = useState<string | undefined>(
-    initialActiveId ?? tabs[0]?.id,
-  );
+  const [activeId, setActiveId] = useState<string | undefined>(() => {
+    if (initialActiveId) return initialActiveId;
+    if (!pathname) return undefined;
+    const match = tabs.find(
+      (t) =>
+        t.href === pathname || (t.href !== "/" && pathname.startsWith(t.href)),
+    );
+    return match ? match.id : undefined;
+  });
 
   // Update activeId when route changes so the pill follows the current URL
   useEffect(() => {
@@ -40,9 +48,12 @@ export default function NavigationTabs({
       (t) =>
         t.href === pathname || (t.href !== "/" && pathname.startsWith(t.href)),
     );
-    if (match) setActiveId(match.id);
-    else setActiveId(tabs[0]?.id);
-  }, [pathname, tabs]);
+    if (match) {
+      setActiveId(match.id);
+    } else {
+      setActiveId(initialActiveId ?? undefined);
+    }
+  }, [pathname, tabs, initialActiveId]);
 
   return (
     <nav className="relative inline-flex items-center gap-1 z-10" aria-label="Main Navigation">
@@ -61,7 +72,7 @@ export default function NavigationTabs({
           >
             {isActive && (
               <motion.div
-                layoutId={reduce ? undefined : "active-nav-pill"}
+                layoutId={reduce ? undefined : layoutId}
                 className="absolute inset-0 rounded-full shadow-[inset_0_1px_1px_rgba(255,255,255,0.9),inset_0_-1px_1px_rgba(0,0,0,0.02),0_2px_4px_rgba(0,0,0,0.06)] pointer-events-none"
                 style={{
                   backgroundColor: WILLOW_HEX,
