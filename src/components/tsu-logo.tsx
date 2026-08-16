@@ -52,7 +52,7 @@ export function InteractiveTsuLogo() {
       ref={containerRef}
       onHoverStart={handleManualBlink}
       whileHover={{ scale: shouldReduceMotion ? 1 : 1.08 }}
-      whileTap={{ scale: shouldReduceMotion ? 1 : 0.95 }}
+      whileTap={{ scale: shouldReduceMotion ? 1 : 0.96 }}
       transition={{ type: "spring", stiffness: 450, damping: 25 }}
       className="size-[48px] sm:size-[56px] shrink-0 flex items-center justify-center relative select-none cursor-pointer group"
       aria-label="Mudit Jha Logo - Interactive Blinking Toon Eyes"

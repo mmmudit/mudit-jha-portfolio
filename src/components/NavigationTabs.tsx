@@ -53,7 +53,7 @@ export default function NavigationTabs({
             key={tab.id}
             href={tab.href}
             className={clsx(
-              "relative rounded-full px-[15px] py-[6px] text-[18px] tracking-[-1px] transition-colors duration-150 pressable focus-visible:outline-none select-none",
+              "relative rounded-full px-[15px] py-[6px] text-[18px] tracking-[-1px] transition-colors duration-150 pressable focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-400 focus-visible:ring-offset-1 select-none",
               isActive
                 ? "font-medium text-zinc-900"
                 : "font-normal text-zinc-500 [@media(hover:hover)]:hover:text-zinc-900"

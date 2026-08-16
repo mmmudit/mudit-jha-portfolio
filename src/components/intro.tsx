@@ -20,7 +20,7 @@ export function Intro() {
   });
 
   return (
-    <section className="flex flex-col gap-4 mt-50">
+    <section className="flex flex-col gap-4 mt-20 sm:mt-28 md:mt-40">
       <motion.div {...fadeUp(0)}>
         <LiveClock variant="header" />
       </motion.div>
@@ -34,11 +34,11 @@ export function Intro() {
 
       <motion.p
         {...fadeUp(0.1)}
-        className="shimmer shimmer-spread-16 shimmer-angle-45 shimmer-color-[#c8d5bb] shimmer-duration-7500 max-w-[800px] font-display text-[26px] font-medium leading-6 tracking-[-0.1px] text-button-secondary text-pretty"
+        className="shimmer shimmer-spread-16 shimmer-angle-45 shimmer-color-[#c8d5bb] shimmer-duration-7500 max-w-[800px] font-display text-[26px] font-medium leading-[1.3] tracking-[-0.1px] text-button-secondary text-pretty"
       >
         Design engineer &amp; creative generalist. Building thoughtful things at the
         intersection of tech and{" "}
-        <span className="font-hand italic font-bold text-[30px] leading-6 text-willow-grey">
+        <span className="font-hand italic font-bold text-[30px] leading-none text-willow-grey">
           human
         </span>{" "}
         behavior.

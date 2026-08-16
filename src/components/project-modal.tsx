@@ -2,7 +2,8 @@
 
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { createPortal } from "react-dom";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { X, ExternalLink } from "lucide-react";
 
 export type ProjectData = {
@@ -39,25 +40,78 @@ const SECTIONS = [
 ];
 
 export function ProjectModal({ project, onClose }: ProjectModalProps) {
+  const [mounted, setMounted] = useState(false);
+  const modalRef = useRef<HTMLDivElement>(null);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [activeSectionId, setActiveSectionId] = useState("sec-media");
   const [hoveredSectionId, setHoveredSectionId] = useState<string | null>(null);
+  const reduce = useReducedMotion();
 
-  // Listen for Escape key press to close modal
   useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // Listen for Escape key press, trap Tab focus within modal, and lock outside scrolling
+  useEffect(() => {
+    if (!project) return;
+
+    // Save and lock page scrolling
+    const originalBodyOverflow = document.body.style.overflow;
+    const originalHtmlOverflow = document.documentElement.style.overflow;
+    const originalBodyPaddingRight = document.body.style.paddingRight;
+
+    // Prevent layout shift from scrollbar disappearing
+    const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+    if (scrollbarWidth > 0) {
+      document.body.style.paddingRight = `${scrollbarWidth}px`;
+    }
+
+    document.body.style.overflow = "hidden";
+    document.documentElement.style.overflow = "hidden";
+
+    // Auto-focus close button when modal opens
+    const focusTimer = setTimeout(() => {
+      closeButtonRef.current?.focus();
+    }, 50);
+
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
         onClose();
+        return;
+      }
+
+      // Trap Tab focus inside modal dialog
+      if (e.key === "Tab" && modalRef.current) {
+        const focusables = modalRef.current.querySelectorAll<HTMLElement>(
+          'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+        );
+        if (focusables.length === 0) return;
+
+        const first = focusables[0];
+        const last = focusables[focusables.length - 1];
+
+        if (e.shiftKey) {
+          if (document.activeElement === first) {
+            e.preventDefault();
+            last.focus();
+          }
+        } else {
+          if (document.activeElement === last) {
+            e.preventDefault();
+            first.focus();
+          }
+        }
       }
     };
 
-    if (project) {
-      document.body.style.overflow = "hidden";
-      window.addEventListener("keydown", handleKeyDown);
-    }
+    window.addEventListener("keydown", handleKeyDown);
 
     return () => {
-      document.body.style.overflow = "";
+      clearTimeout(focusTimer);
+      document.body.style.overflow = originalBodyOverflow;
+      document.documentElement.style.overflow = originalHtmlOverflow;
+      document.body.style.paddingRight = originalBodyPaddingRight;
       window.removeEventListener("keydown", handleKeyDown);
     };
   }, [project, onClose]);
@@ -88,50 +142,82 @@ export function ProjectModal({ project, onClose }: ProjectModalProps) {
     }
   };
 
-  if (!project) return null;
+  const gradientPreset = project?.gradient || "from-zinc-200 to-zinc-300";
 
-  const gradientPreset = project.gradient || "from-zinc-200 to-zinc-300";
+  if (!mounted) return null;
 
-  return (
+  return createPortal(
     <AnimatePresence>
       {project && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 md:p-8 overflow-y-auto">
-          {/* Backdrop Blur Overlay */}
+        <div
+          className="fixed inset-0 z-[99999] flex items-center justify-center p-4 sm:p-6 md:p-8 overflow-hidden touch-none select-none overscroll-contain"
+          onWheel={(e) => {
+            // Prevent mouse wheel on backdrop from reaching background
+            if (e.target === e.currentTarget) {
+              e.preventDefault();
+            }
+          }}
+        >
+          {/* Backdrop Overlay (No blur) */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.25, ease: "easeOut" }}
+            transition={{ duration: 0.18, ease: [0.22, 1, 0.36, 1] }}
             onClick={onClose}
-            className="fixed inset-0 bg-black/40 backdrop-blur-md cursor-pointer"
+            className="fixed inset-0 bg-black/40 cursor-pointer"
             aria-hidden="true"
           />
 
-          {/* Card Outer Gradient Wrapper - Slide in / out */}
+          {/* Card Outer Gradient Wrapper - Fluid Spring In / Out */}
           <motion.div
-            initial={{ opacity: 0, y: 70, scale: 0.95 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 50, scale: 0.96 }}
-            transition={{
-              type: "spring",
-              stiffness: 280,
-              damping: 26,
-              mass: 0.8,
+            ref={modalRef}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="modal-project-title"
+            tabIndex={-1}
+            initial={{
+              opacity: 0,
+              y: reduce ? 0 : 24,
+              scale: reduce ? 1 : 0.96,
             }}
+            animate={{
+              opacity: 1,
+              y: 0,
+              scale: 1,
+            }}
+            exit={{
+              opacity: 0,
+              y: reduce ? 0 : 16,
+              scale: reduce ? 1 : 0.96,
+            }}
+            transition={
+              reduce
+                ? { duration: 0.15 }
+                : {
+                  type: "spring",
+                  stiffness: 360,
+                  damping: 28,
+                  mass: 0.7,
+                }
+            }
             onClick={(e) => e.stopPropagation()}
-            className={`relative z-10 w-full max-w-[940px] max-h-[88vh] rounded-[28px] p-[1.5px] bg-gradient-to-br ${gradientPreset} shadow-[0_20px_50px_rgba(0,0,0,0.14)] flex flex-col overflow-hidden`}
+            className={`relative z-10 w-full max-w-[940px] max-h-[88vh] rounded-[28px] p-[1.5px] bg-gradient-to-br ${gradientPreset} shadow-[0_25px_60px_rgba(0,0,0,0.25)] flex flex-col overflow-hidden my-auto outline-none select-text overscroll-contain`}
           >
             {/* Inner Modal Container (#fbfaf5 dough paper finish) */}
             <div className="relative flex flex-col size-full overflow-hidden rounded-[26.5px] bg-[#fbfaf5] text-zinc-800 text-left">
               {/* Modal Top Header (Mobile & Desktop) */}
               <motion.div
-                initial={{ opacity: 0, y: -12 }}
+                initial={{ opacity: 0, y: reduce ? 0 : -8 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.25, delay: 0.08, ease: "easeOut" }}
-                className="flex items-center justify-between px-6 pt-5 pb-4 border-b border-black/5 shrink-0 bg-[#fbfaf5]/95 backdrop-blur-sm z-20"
+                transition={{ duration: 0.2, delay: reduce ? 0 : 0.06, ease: [0.22, 1, 0.36, 1] }}
+                className="flex items-center justify-between px-6 pt-5 pb-4 border-b border-black/5 shrink-0 bg-[#fbfaf5] z-20"
               >
                 <div className="flex items-center gap-2.5">
-                  <h3 className="font-display text-xl sm:text-2xl font-semibold text-zinc-900 tracking-tight">
+                  <h3
+                    id="modal-project-title"
+                    className="font-display text-xl sm:text-2xl font-semibold text-zinc-900 tracking-tight"
+                  >
                     {project.title}
                   </h3>
                   <span className="px-2.5 py-0.5 text-xs font-mono font-medium tracking-wide uppercase bg-zinc-200/70 text-zinc-700 rounded-full">
@@ -140,8 +226,9 @@ export function ProjectModal({ project, onClose }: ProjectModalProps) {
                 </div>
 
                 <button
+                  ref={closeButtonRef}
                   onClick={onClose}
-                  className="pressable p-2 text-zinc-500 hover:text-zinc-900 rounded-full hover:bg-black/5 transition-colors"
+                  className="pressable p-2 text-zinc-500 hover:text-zinc-900 rounded-full hover:bg-black/5 active:scale-[0.96] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-400"
                   aria-label="Close modal"
                 >
                   <X className="size-5" />
@@ -392,6 +479,7 @@ export function ProjectModal({ project, onClose }: ProjectModalProps) {
           </motion.div>
         </div>
       )}
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body
   );
 }

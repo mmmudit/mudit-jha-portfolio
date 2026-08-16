@@ -65,7 +65,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <body className="min-h-full text-zinc-800 relative">
         <IntroLoader>
           <GrainOverlay />
-          <div className="w-full px-6 pt-4 sm:px-14 sm:pt-8">
+          <div className="sticky top-0 z-50 w-full px-6 pt-4 sm:px-14 sm:pt-6 pointer-events-none">
             <Header />
           </div>
           <div className="mx-auto flex w-full max-w-[1334px] flex-col px-6 sm:px-14 pt-8">

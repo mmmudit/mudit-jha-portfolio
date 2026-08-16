@@ -92,7 +92,7 @@ export function ProjectCard({
           onMouseLeave={onMouseLeave}
           onFocus={onFocus}
           onBlur={onBlur}
-          className={`project-card pressable group relative flex flex-col gap-3 items-start w-full cursor-pointer text-left focus-visible:outline-none transition-opacity duration-200 ease-out ${isDimmed ? "opacity-40" : "opacity-100"
+          className={`project-card pressable group relative flex flex-col gap-3 items-start w-full cursor-pointer text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-400 focus-visible:ring-offset-4 rounded-[28px] transition-opacity duration-200 ease-out ${isDimmed ? "opacity-40" : "opacity-100"
             }`}
         >
           {/* Aspect Ratio Media Container with Hover Scale */}
@@ -129,7 +129,7 @@ export function ProjectCard({
 
             {/* Floating pill badge on bottom left of image (Desktop) */}
             <div className="absolute bottom-0 left-0 p-3 hidden md:block z-30 pointer-events-none">
-              <div className="bg-white/90 dark:bg-zinc-900/90 backdrop-blur-sm border border-[#f4f4f5] dark:border-zinc-800 border-solid flex items-center justify-center px-3.5 pt-[5px] pb-[4.8px] rounded-full shadow-[0_2px_8px_rgba(0,0,0,0.04)] [@media(hover:hover)]:group-hover:shadow-[0_4px_14px_rgba(0,0,0,0.08)] [@media(hover:hover)]:group-hover:bg-white dark:[@media(hover:hover)]:group-hover:bg-zinc-900 transition-all duration-200 ease-out">
+              <div className="bg-white/90 dark:bg-zinc-900/90 backdrop-blur-sm border border-[#f4f4f5] dark:border-zinc-800 border-solid flex items-center justify-center px-3.5 pt-[5px] pb-[4.8px] rounded-full shadow-[0_2px_8px_rgba(0,0,0,0.04)] [@media(hover:hover)]:group-hover:shadow-[0_4px_14px_rgba(0,0,0,0.08)] [@media(hover:hover)]:group-hover:bg-white dark:[@media(hover:hover)]:group-hover:bg-zinc-900 transition-[background-color,border-color,box-shadow] duration-200 ease-out">
                 <p className={`font-sans font-medium tracking-[0.005em] leading-snug text-base transition-colors duration-200 ease-out ${isDimmed
                   ? "text-zinc-400 dark:text-zinc-500"
                   : "text-[#18181b] dark:text-zinc-100 [@media(hover:hover)]:group-hover:text-black dark:[@media(hover:hover)]:group-hover:text-white"
@@ -168,7 +168,7 @@ export function ProjectCard({
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
-                    strokeWidth="2.25"
+                    strokeWidth="2"
                     style={{ transitionTimingFunction: "cubic-bezier(0.23, 1, 0.32, 1)" }}
                   >
                     <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />

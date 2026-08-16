@@ -16,7 +16,7 @@ export function Header() {
     <>
       {/* Top Progressive Gradient Blur Overlay (Decreasing Top-to-Bottom) */}
       <div
-        className="fixed top-0 inset-x-0 h-36 sm:h-44 pt-[env(safe-area-inset-top,0px)] z-40 pointer-events-none select-none transition-[backdrop-filter,opacity] duration-250 ease-out"
+        className="fixed top-0 inset-x-0 h-36 sm:h-44 pt-[env(safe-area-inset-top,0px)] -z-10 pointer-events-none select-none transition-[backdrop-filter,opacity] duration-250 ease-out"
         style={{
           background:
             "linear-gradient(to bottom, rgba(251, 250, 245, 0.92) 0%, rgba(251, 250, 245, 0.4) 60%, rgba(251, 250, 245, 0) 100%)",
@@ -30,9 +30,11 @@ export function Header() {
         aria-hidden="true"
       />
 
-      <header className="sticky top-4 z-50 relative flex items-center justify-between w-full">
+      <header className="relative z-10 flex items-center justify-between w-full pointer-events-none">
         {/* Left: Interactive Eye Toon Logo */}
-        <InteractiveTsuLogo />
+        <div className="pointer-events-auto">
+          <InteractiveTsuLogo />
+        </div>
 
         {/* Center: Navigation Bar (Floating Pill - Absolutely Centered so button animation never shifts it) */}
         <div className="absolute left-1/2 -translate-x-1/2 flex items-center justify-center pointer-events-auto">
@@ -59,9 +61,9 @@ export function Header() {
           transition={
             reduce
               ? {}
-              : { type: "spring", stiffness: 1000, damping: 50, mass: 0.6 }
+              : { type: "spring", stiffness: 420, damping: 30, mass: 0.8 }
           }
-          className="pressable relative inline-flex shrink-0 items-center overflow-hidden rounded-full border-2 border-zinc-300"
+          className="pressable pointer-events-auto relative inline-flex shrink-0 items-center overflow-hidden rounded-full border-2 border-zinc-300"
           style={{ width: minW }}
         >
           <div className="relative h-[54px] w-full">
