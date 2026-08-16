@@ -53,7 +53,7 @@ export function TunesSection({ tunes }: TunesSectionProps) {
 
         {/* Selected Track Top Header Summary */}
         <div className="relative z-10 w-full max-w-[640px] flex items-center justify-between gap-4 mb-6">
-          <AnimatePresence mode="wait">
+          <AnimatePresence mode="wait" initial={false}>
             {activeTune && (
               <motion.div
                 key={activeTune._id || activeTune.title}
@@ -65,7 +65,14 @@ export function TunesSection({ tunes }: TunesSectionProps) {
               >
                 <div className="flex items-center gap-3.5 min-w-0">
                   <div className="relative shrink-0 size-10 rounded-full overflow-hidden border border-white/10 bg-zinc-800 flex items-center justify-center">
-                    <Disc className="size-5 text-amber-400 animate-spin-slow" />
+                    <motion.div
+                      initial={{ rotate: -45, scale: 0.85 }}
+                      animate={{ rotate: 0, scale: 1 }}
+                      transition={{ type: "spring", stiffness: 400, damping: 22 }}
+                      className="flex items-center justify-center"
+                    >
+                      <Disc className="size-5 text-amber-400 animate-spin-slow" />
+                    </motion.div>
                   </div>
 
                   <div className="flex flex-col text-left min-w-0">
@@ -96,7 +103,7 @@ export function TunesSection({ tunes }: TunesSectionProps) {
 
         {/* Interactive Overlapping Accordion Album Stack (Tommy Smith Style) */}
         <div className="relative z-10 flex items-center justify-center w-full min-h-[260px] py-4 overflow-x-auto scrollbar-none px-4">
-          <div className="flex items-center justify-center -space-x-12 sm:-space-x-16 hover:-space-x-6 transition-[space] duration-300 ease-out">
+          <div className="flex items-center justify-center -space-x-12 sm:-space-x-16 hover:-space-x-6 transition-all duration-250 ease-out">
             {tunes.map((t, idx) => {
               const isHovered = hoveredIndex === idx;
               const isSelected = selectedIndex === idx;
@@ -117,7 +124,8 @@ export function TunesSection({ tunes }: TunesSectionProps) {
                   style={{
                     zIndex: isHovered ? 40 : isSelected ? 30 : idx + 10,
                   }}
-                  className="relative shrink-0 aspect-[2/3] w-[140px] sm:w-[170px] rounded-2xl overflow-hidden shadow-2xl border border-white/10 cursor-pointer focus:outline-none transition-shadow hover:shadow-[0_16px_36px_rgba(0,0,0,0.7)] group"
+                  aria-label={`Select track ${t.title} by ${t.artist}`}
+                  className="relative shrink-0 aspect-[2/3] w-[140px] sm:w-[170px] rounded-2xl overflow-hidden shadow-2xl border border-white/10 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-900 transition-shadow hover:shadow-[0_16px_36px_rgba(0,0,0,0.7)] group"
                 >
                   {/* Album Cover Media */}
                   {t.coverImage ? (

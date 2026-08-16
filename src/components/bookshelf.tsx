@@ -47,7 +47,7 @@ export function Bookshelf({ books }: BookshelfProps) {
 
         {/* Selected Book Showcase Preview (When Expanded/Selected) */}
         <div className="relative z-10 w-full max-w-[680px] flex flex-col md:flex-row items-center justify-between gap-6 mb-8 min-h-[160px]">
-          <AnimatePresence mode="wait">
+          <AnimatePresence mode="wait" initial={false}>
             {activeBook && (
               <motion.div
                 key={activeBook._id || activeBook.title}
@@ -124,49 +124,61 @@ export function Bookshelf({ books }: BookshelfProps) {
             const spineWidth = 28 + (idx % 4) * 4;
 
             return (
-              <motion.button
-                key={b._id || b.title || idx}
-                onClick={() => setSelectedBook(b)}
-                onMouseEnter={() => setHoveredBook(b)}
-                onMouseLeave={() => setHoveredBook(null)}
-                animate={{
-                  y: isHovered ? -16 : isSelected ? -8 : 0,
-                  rotateZ: isHovered ? (idx % 2 === 0 ? -1.5 : 1.5) : 0,
-                  scale: isHovered ? 1.05 : 1,
-                }}
-                transition={{ type: "spring", stiffness: 380, damping: 24 }}
-                style={{
-                  height: `${spineHeight}px`,
-                  width: `${spineWidth}px`,
-                  backgroundColor: b.spineColor || "#ff4500",
-                }}
-                className="relative shrink-0 rounded-t-md rounded-b-[2px] shadow-md border-x border-t border-white/20 cursor-pointer flex flex-col items-center justify-between py-3.5 px-1 group focus:outline-none transition-shadow hover:shadow-[0_12px_24px_rgba(0,0,0,0.5)]"
-              >
-                {/* 3D Spine Lighting Highlight */}
-                <div className="absolute inset-0 bg-gradient-to-r from-white/25 via-transparent to-black/30 pointer-events-none rounded-t-md" />
-
-                {/* Vertical Book Title Text */}
-                <div className="flex-1 flex items-center justify-center overflow-hidden w-full">
-                  <span
-                    style={{
-                      color: b.spineTextColor || "#ffffff",
-                      writingMode: "vertical-rl",
-                      transform: "rotate(180deg)",
-                    }}
-                    className="font-display font-medium text-xs tracking-tight whitespace-nowrap overflow-hidden text-ellipsis max-h-[170px]"
-                  >
-                    {b.title}
-                  </span>
-                </div>
-
-                {/* Author Initials at Spine Base */}
-                <span
-                  style={{ color: b.spineTextColor || "#ffffff" }}
-                  className="font-mono text-[9px] font-semibold uppercase tracking-wider opacity-85 shrink-0 pt-1"
+              <div key={b._id || b.title || idx} className="relative flex flex-col items-center shrink-0">
+                <motion.button
+                  onClick={() => setSelectedBook(b)}
+                  onMouseEnter={() => setHoveredBook(b)}
+                  onMouseLeave={() => setHoveredBook(null)}
+                  animate={{
+                    y: isHovered ? -16 : isSelected ? -8 : 0,
+                    rotateZ: isHovered ? (idx % 2 === 0 ? -1.5 : 1.5) : 0,
+                    scale: isHovered ? 1.05 : 1,
+                  }}
+                  transition={{ type: "spring", stiffness: 380, damping: 24 }}
+                  style={{
+                    height: `${spineHeight}px`,
+                    width: `${spineWidth}px`,
+                    backgroundColor: b.spineColor || "#ff4500",
+                  }}
+                  aria-label={`Select ${b.title} by ${b.author}`}
+                  className="relative shrink-0 rounded-t-md rounded-b-[2px] shadow-md border-x border-t border-white/20 cursor-pointer flex flex-col items-center justify-between py-3.5 px-1 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-900 transition-shadow hover:shadow-[0_12px_24px_rgba(0,0,0,0.5)] z-10"
                 >
-                  {b.authorInitials || b.author.substring(0, 3)}
-                </span>
-              </motion.button>
+                  {/* 3D Spine Lighting Highlight */}
+                  <div className="absolute inset-0 bg-gradient-to-r from-white/25 via-transparent to-black/30 pointer-events-none rounded-t-md" />
+
+                  {/* Vertical Book Title Text */}
+                  <div className="flex-1 flex items-center justify-center overflow-hidden w-full">
+                    <span
+                      style={{
+                        color: b.spineTextColor || "#ffffff",
+                        writingMode: "vertical-rl",
+                        transform: "rotate(180deg)",
+                      }}
+                      className="font-display font-medium text-xs tracking-tight whitespace-nowrap overflow-hidden text-ellipsis max-h-[170px]"
+                    >
+                      {b.title}
+                    </span>
+                  </div>
+
+                  {/* Author Initials at Spine Base */}
+                  <span
+                    style={{ color: b.spineTextColor || "#ffffff" }}
+                    className="font-mono text-[9px] font-semibold uppercase tracking-wider opacity-85 shrink-0 pt-1"
+                  >
+                    {b.authorInitials || b.author.substring(0, 3)}
+                  </span>
+                </motion.button>
+
+                {/* 3D Shelf Contact Shadow */}
+                <motion.div
+                  animate={{
+                    scaleX: isHovered ? 0.6 : isSelected ? 0.8 : 1,
+                    opacity: isHovered ? 0.15 : isSelected ? 0.35 : 0.5,
+                  }}
+                  transition={{ type: "spring", stiffness: 380, damping: 24 }}
+                  className="absolute -bottom-0.5 inset-x-1 h-1.5 rounded-full bg-black/90 blur-[2px] pointer-events-none z-0"
+                />
+              </div>
             );
           })}
         </div>

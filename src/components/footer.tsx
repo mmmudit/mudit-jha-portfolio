@@ -51,7 +51,7 @@ export function Footer() {
           </p>
           <motion.div
             animate={{ y: [0, 5, 0] }}
-            transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut" }}
+            transition={{ duration: 2.6, repeat: Infinity, ease: [0.45, 0, 0.55, 1] }}
             className="text-willow-grey flex items-center justify-center -mt-1"
           >
             <svg
@@ -68,24 +68,25 @@ export function Footer() {
         </div>
 
         {/* Social Links Row */}
-        <div className="relative flex flex-wrap items-center justify-between w-full font-sans font-semibold text-[20px] sm:text-[30px] md:text-[40px] lg:text-[46px] tracking-[-1px] leading-none text-willow-grey">
-          {socialLinks.map((link, index) => (
-            <div key={link.label} className="inline-flex items-center gap-3 sm:gap-5 md:gap-7">
-              {index > 0 && (
-                <span className="text-willow-grey text-[16px] sm:text-[22px] md:text-[28px] select-none opacity-80" aria-hidden="true">
-                  •
-                </span>
-              )}
-
+        <div className="relative flex flex-col md:flex-row items-center justify-center md:justify-between gap-y-3 sm:gap-y-4 md:gap-y-0 w-full font-sans font-semibold text-[26px] sm:text-[32px] md:text-[38px] lg:text-[46px] tracking-[-1px] leading-tight md:leading-none text-willow-grey">
+          {socialLinks.map((link) => (
+            <div
+              key={link.label}
+              className="flex items-center justify-center w-full md:w-auto"
+            >
               <div className="relative inline-flex items-center">
                 <a
                   href={link.href}
                   onClick={(e) => handleEmailClick(e, link.href)}
                   target={link.href.startsWith("mailto:") ? undefined : "_blank"}
                   rel={link.href.startsWith("mailto:") ? undefined : "noopener noreferrer"}
-                  className="pressable transition-all duration-200 hover:text-rust-grey focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-willow-grey/50 rounded-sm"
+                  className="pressable transition-colors duration-200 hover:text-rust-grey focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-willow-grey/50 rounded-sm"
                 >
-                  {link.label}
+                  {link.label === "Email" && copied ? (
+                    <span className="text-emerald-800">Copied!</span>
+                  ) : (
+                    link.label.toLowerCase()
+                  )}
                 </a>
 
                 {/* Copied Feedback for Email */}
