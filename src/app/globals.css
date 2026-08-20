@@ -1,5 +1,4 @@
 @import "tailwindcss";
-@import "tailwindcss";
 @import "shadcn/tailwind.css";
 
 :root {
@@ -215,4 +214,121 @@ body {
 /* Intro preloader zero-flash dismissal */
 html.intro-dismissed #intro-overlay {
   display: none !important;
+}
+
+/* Cursor Click 3-Dash Spark Animation with Fast Smooth Color Cycling */
+@keyframes cursorSparkPop {
+  0% {
+    transform: scale(0.35);
+    opacity: 0;
+  }
+
+  15% {
+    transform: scale(1);
+    opacity: 1;
+  }
+
+  70% {
+    transform: scale(1.18);
+    opacity: 0.95;
+  }
+
+  100% {
+    transform: scale(1.35);
+    opacity: 0;
+  }
+}
+
+@keyframes cursorColorCycle {
+  0% {
+    stroke: #e35342;
+  }
+
+  16% {
+    stroke: #f59e0b;
+  }
+
+  33% {
+    stroke: #10b981;
+  }
+
+  50% {
+    stroke: #06b6d4;
+  }
+
+  66% {
+    stroke: #6366f1;
+  }
+
+  83% {
+    stroke: #ec4899;
+  }
+
+  100% {
+    stroke: #e35342;
+  }
+}
+
+@keyframes cursorRayTop {
+  0% {
+    transform: translate(0, 0);
+  }
+
+  100% {
+    transform: translate(6px, -6px);
+  }
+}
+
+@keyframes cursorRayMid {
+  0% {
+    transform: translate(0, 0);
+  }
+
+  100% {
+    transform: translate(-7px, 0px);
+  }
+}
+
+@keyframes cursorRayBot {
+  0% {
+    transform: translate(0, 0);
+  }
+
+  100% {
+    transform: translate(-3px, 6px);
+  }
+}
+
+.cursor-spark-container {
+  will-change: transform, opacity;
+  animation: cursorSparkPop 520ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.cursor-spark-line {
+  will-change: stroke, transform;
+  animation: cursorColorCycle 520ms linear forwards;
+}
+
+.cursor-spark-line-top {
+  animation: cursorColorCycle 520ms linear forwards,
+    cursorRayTop 520ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.cursor-spark-line-mid {
+  animation: cursorColorCycle 520ms linear forwards,
+    cursorRayMid 520ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.cursor-spark-line-bot {
+  animation: cursorColorCycle 520ms linear forwards,
+    cursorRayBot 520ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+  .cursor-spark-container,
+  .cursor-spark-line {
+    animation: none !important;
+    display: none !important;
+  }
 }

@@ -97,6 +97,32 @@ export const playItem = defineType({
       rows: 4,
     }),
     defineField({
+      name: "badge",
+      type: "string",
+      title: "Badge Label",
+      description: "e.g. 'Featured', 'Prototype', 'WebGL', 'OS Design'",
+    }),
+    defineField({
+      name: "href",
+      type: "url",
+      title: "External Project / Demo URL",
+      description: "Link opened when user clicks 'Open Project'",
+    }),
+    defineField({
+      name: "mediaUrl",
+      type: "string",
+      title: "Custom Media URL (Video or Image)",
+      description: "Direct URL to MP4/WebM video or image (e.g. /intro.mp4 or https://...)",
+    }),
+    defineField({
+      name: "video",
+      type: "file",
+      title: "Uploaded Video File (MP4/WebM)",
+      options: {
+        accept: "video/*",
+      },
+    }),
+    defineField({
       name: "order",
       type: "number",
       title: "Display Order",
