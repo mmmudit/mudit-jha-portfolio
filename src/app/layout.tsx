@@ -2,11 +2,13 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import { Figtree, Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import Script from "next/script";
 import AgentationClient from "../components/agentation-client";
 import PageTransition from "../components/PageTransition";
 import { Header } from "../components/header";
 import { GrainOverlay } from "../components/grain-overlay";
 import { IntroLoader } from "../components/IntroLoader";
+import { CursorClickEffect } from "../components/cursor-click-effect";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -36,14 +38,21 @@ export const metadata: Metadata = {
     "Design engineer & creative generalist. Building thoughtful things at the intersection of tech and human behavior.",
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <html
       lang="en"
+      suppressHydrationWarning
       className={`${geistSans.variable} ${geistMono.variable} ${figtree.variable} ${myFont.variable} h-full antialiased`}
     >
       <head>
-        <script
+        <Script
+          id="intro-dismiss-check"
+          strategy="beforeInteractive"
           dangerouslySetInnerHTML={{
             __html: `
               (function() {
@@ -65,6 +74,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <body className="min-h-full text-zinc-800 relative">
         <IntroLoader>
           <GrainOverlay />
+          <CursorClickEffect />
           <div className="sticky top-0 z-50 w-full px-6 pt-4 sm:px-14 sm:pt-6 pointer-events-none">
             <Header />
           </div>
@@ -77,6 +87,3 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     </html>
   );
 }
-
-
-
