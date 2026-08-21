@@ -1,4 +1,5 @@
 import { Intro } from "@/components/intro";
+import { SpaceFSOrbitHero } from "@/components/spacefs-orbit-hero";
 import { Divider } from "@/components/divider";
 import { Footer } from "@/components/footer";
 import { ProjectGrid } from "@/components/project-grid";
@@ -88,6 +89,7 @@ export default async function Home() {
     <main className="min-h-screen">
       <div className="flex w-full flex-col gap-12">
         <Intro />
+        {/* <SpaceFSOrbitHero /> */}
         <Divider />
 
         <ProjectGrid projects={projects} />
