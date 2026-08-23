@@ -332,26 +332,26 @@ export function AboutHeroSection() {
               {/* Soft overlay gradient */}
               <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent pointer-events-none" />
 
-              {/* Diagonal Signature Overlay Spanning Diagonally Over Entire Photo with Magical Stroke Animation */}
+              {/* Diagonal Signature Overlay Spanning Diagonally Over Entire Photo - Appears on Hover */}
               <motion.div
-                initial={{ opacity: 0.95, scale: 0.96 }}
+                initial={{ opacity: 0, scale: 0.94, rotate: -24 }}
                 animate={{
-                  opacity: isPolaroidHovered ? 1 : 0.95,
-                  scale: isPolaroidHovered ? 1.04 : 1,
-                  rotate: -12,
+                  opacity: isPolaroidHovered ? 1 : 0,
+                  scale: isPolaroidHovered ? 1.05 : 0.94,
+                  rotate: -24,
                 }}
-                transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-                className="absolute inset-0 flex items-center justify-center pointer-events-none z-10 p-3"
+                transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+                className="absolute inset-0 flex items-center justify-center pointer-events-none z-10 p-2"
               >
-                <div className="w-[92%] sm:w-[96%] aspect-[176/90] text-white drop-shadow-[0_4px_16px_rgba(0,0,0,0.7)] filter">
+                <div className="w-[95%] sm:w-[98%] aspect-[176/90] text-black drop-shadow-[0_2px_10px_rgba(255,255,255,0.45)] filter">
                   <MagicalStrokeReveal
                     trigger={isPolaroidHovered}
-                    autoPlayOnMount={true}
+                    autoPlayOnMount={false}
                     viewBox="0 0 176 90"
-                    strokeColor="#ffffff"
-                    fillColor="#ffffff"
+                    strokeColor="#000000"
+                    fillColor="#000000"
                     strokeWidth={1.8}
-                    duration={1800}
+                    duration={1500}
                     className="size-full"
                   />
                 </div>
