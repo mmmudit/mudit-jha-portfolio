@@ -7,7 +7,7 @@ import { Check } from "lucide-react";
 import { LiveClock } from "./live-clock";
 
 const socialLinks = [
-  { label: "Instagram", href: "https://www.instagram.com/mmmudit/" },
+  { label: "Insta", href: "https://www.instagram.com/mmmudit/" },
   { label: "LinkedIn", href: "https://www.linkedin.com/in/muditj3/" },
   { label: "Github", href: "https://github.com/mmmudit" },
   { label: "X", href: "https://x.com/MuditJ1" },

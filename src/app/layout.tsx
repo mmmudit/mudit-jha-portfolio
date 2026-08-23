@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import { Figtree, Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import Script from "next/script";
 import AgentationClient from "../components/agentation-client";
 import PageTransition from "../components/PageTransition";
 import { Header } from "../components/header";
@@ -50,24 +49,6 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} ${figtree.variable} ${myFont.variable} h-full antialiased`}
     >
       <head>
-        <Script
-          id="intro-dismiss-check"
-          strategy="beforeInteractive"
-          dangerouslySetInnerHTML={{
-            __html: `
-              (function() {
-                try {
-                  var seen = sessionStorage.getItem('portfolio_intro_seen');
-                  var forced = window.location.search.indexOf('intro') !== -1;
-                  var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-                  if (!forced && (seen === 'true' || reduced)) {
-                    document.documentElement.classList.add('intro-dismissed');
-                  }
-                } catch (e) {}
-              })();
-            `,
-          }}
-        />
         <link rel="preload" href="/intro.webm" as="video" type="video/webm" />
         <link rel="preload" href="/intro.mp4" as="video" type="video/mp4" />
       </head>

@@ -11,6 +11,13 @@ export function InteractiveTsuLogo() {
   const [manualBlink, setManualBlink] = useState(false);
   const shouldReduceMotion = useReducedMotion();
 
+  // Smooth springs for logo directional tilt & displacement (subtle alive motion)
+  const logoX = useSpring(0, { stiffness: 220, damping: 22 });
+  const logoY = useSpring(0, { stiffness: 220, damping: 22 });
+  const logoRotateX = useSpring(0, { stiffness: 220, damping: 22 });
+  const logoRotateY = useSpring(0, { stiffness: 220, damping: 22 });
+  const logoRotateZ = useSpring(0, { stiffness: 220, damping: 22 });
+
   // Smooth springs for pupil tracking (X, Y)
   const pupilX = useSpring(0, { stiffness: 280, damping: 22 });
   const pupilY = useSpring(0, { stiffness: 280, damping: 22 });
@@ -20,9 +27,10 @@ export function InteractiveTsuLogo() {
     router.prefetch("/design-system");
   }, [router]);
 
-  // Mouse / Pointer tracking
+  // Mouse / Pointer tracking for organic alive directional movement
   useEffect(() => {
     const handlePointerMove = (e: PointerEvent) => {
+      if (shouldReduceMotion) return;
       const el = containerRef.current;
       if (!el) return;
 
@@ -35,20 +43,57 @@ export function InteractiveTsuLogo() {
 
       const dist = Math.hypot(dx, dy);
 
-      const maxOffset = 7; // Max pupil shift in px
       if (dist === 0) {
+        logoX.set(0);
+        logoY.set(0);
+        logoRotateX.set(0);
+        logoRotateY.set(0);
+        logoRotateZ.set(0);
         pupilX.set(0);
         pupilY.set(0);
       } else {
-        const factor = Math.min(dist / 350, 1);
-        pupilX.set((dx / dist) * maxOffset * factor);
-        pupilY.set((dy / dist) * maxOffset * factor);
+        const dirX = dx / dist;
+        const dirY = dy / dist;
+
+        // Viewport scale factor with smooth sinusoidal falloff
+        const maxDist = Math.max(window.innerWidth, window.innerHeight) * 0.7;
+        const influence = Math.min(dist / maxDist, 1);
+        const factor = Math.sin((influence * Math.PI) / 2);
+
+        // Subtle head translation (up to 3px)
+        logoX.set(dirX * 3.2 * factor);
+        logoY.set(dirY * 2.8 * factor);
+
+        // Subtle 3D tilt looking towards cursor
+        logoRotateX.set(-dirY * 7.5 * factor);
+        logoRotateY.set(dirX * 8.5 * factor);
+        logoRotateZ.set(dirX * 2.5 * factor);
+
+        // Pupil shift for deep parallax
+        const pupilFactor = Math.min(dist / 280, 1);
+        const maxPupilOffset = 7;
+        pupilX.set(dirX * maxPupilOffset * pupilFactor);
+        pupilY.set(dirY * maxPupilOffset * pupilFactor);
       }
     };
 
+    const handlePointerLeave = () => {
+      logoX.set(0);
+      logoY.set(0);
+      logoRotateX.set(0);
+      logoRotateY.set(0);
+      logoRotateZ.set(0);
+      pupilX.set(0);
+      pupilY.set(0);
+    };
+
     window.addEventListener("pointermove", handlePointerMove);
-    return () => window.removeEventListener("pointermove", handlePointerMove);
-  }, [pupilX, pupilY]);
+    document.addEventListener("mouseleave", handlePointerLeave);
+    return () => {
+      window.removeEventListener("pointermove", handlePointerMove);
+      document.removeEventListener("mouseleave", handlePointerLeave);
+    };
+  }, [shouldReduceMotion, logoX, logoY, logoRotateX, logoRotateY, logoRotateZ, pupilX, pupilY]);
 
   const handleManualBlink = () => {
     setManualBlink(true);
@@ -88,8 +133,17 @@ export function InteractiveTsuLogo() {
       }}
       whileHover={{ scale: shouldReduceMotion ? 1 : 1.08 }}
       whileTap={{ scale: shouldReduceMotion ? 1 : 0.96 }}
+      style={{
+        x: logoX,
+        y: logoY,
+        rotateX: logoRotateX,
+        rotateY: logoRotateY,
+        rotateZ: logoRotateZ,
+        transformPerspective: 800,
+        transformStyle: "preserve-3d",
+      }}
       transition={{ type: "spring", stiffness: 450, damping: 25 }}
-      className="size-[48px] sm:size-[56px] shrink-0 flex items-center justify-center relative select-none cursor-pointer group"
+      className="size-[48px] sm:size-[56px] shrink-0 flex items-center justify-center relative select-none cursor-pointer group will-change-transform"
       aria-label="Mudit Jha Logo - Interactive Blinking Toon Eyes"
     >
       {/*
