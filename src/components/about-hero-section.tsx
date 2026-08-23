@@ -146,7 +146,7 @@ export function AboutHeroSection() {
             className="flex flex-col gap-2.5 pt-2 max-w-[620px]"
           >
             {/* Top Toolbar: Socials (Left) & Quick Links (Right) */}
-            <div className="flex items-center justify-between px-1 text-[#b5a993]">
+            <div className="flex items-center justify-between px-1 text-[#82745d]">
               {/* Left Social Icons */}
               <div className="flex items-center gap-1">
                 {/* X / Twitter */}

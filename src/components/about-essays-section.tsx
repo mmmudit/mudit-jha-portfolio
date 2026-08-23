@@ -134,7 +134,7 @@ export function AboutEssaysSection() {
       <div className="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-12 items-start">
         {/* Left Column: Heading */}
         <div className="md:col-span-4 lg:col-span-5">
-          <h2 className="font-display text-[30px] sm:text-[36px] font-medium leading-tight text-[#d1c5ad] tracking-tight text-balance">
+          <h2 className="font-display text-[30px] sm:text-[36px] font-medium leading-tight text-[#8a7c64] tracking-tight text-balance">
             essays i’ve written
           </h2>
         </div>

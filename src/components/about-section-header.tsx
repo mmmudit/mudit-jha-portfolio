@@ -44,7 +44,7 @@ export function AboutSectionHeader({
   return (
     <div className="flex flex-wrap items-center justify-between gap-3 sm:gap-4 select-none w-full">
       {/* Title */}
-      <h2 className="font-display text-[26px] sm:text-[34px] md:text-[36px] font-medium leading-tight text-[#d1c5ad] tracking-tight text-balance">
+      <h2 className="font-display text-[26px] sm:text-[34px] md:text-[36px] font-medium leading-tight text-[#8a7c64] tracking-tight text-balance">
         {title}
       </h2>
 
@@ -55,7 +55,7 @@ export function AboutSectionHeader({
           <button
             type="button"
             onClick={() => setIsYearOpen(!isYearOpen)}
-            className="pressable inline-flex items-center gap-2 rounded-full border border-[#d9d0bb] bg-[#fbfaf5]/60 px-3.5 py-1 text-sm sm:text-base font-medium text-[#c4b598] hover:border-[#b8a786] hover:text-[#9e8b67] hover:bg-[#f3eedf]/50 active:scale-[0.96] transition-[transform,color,background-color,border-color] duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#d9d0bb]"
+            className="pressable inline-flex items-center gap-2 rounded-full border border-[#d9d0bb] bg-[#fbfaf5]/60 px-3.5 py-1 text-sm sm:text-base font-medium text-[#8a7c64] hover:border-[#b8a786] hover:text-zinc-900 hover:bg-[#f3eedf]/50 active:scale-[0.96] transition-[transform,color,background-color,border-color] duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#d9d0bb]"
             aria-expanded={isYearOpen}
             aria-haspopup="listbox"
           >
@@ -110,7 +110,7 @@ export function AboutSectionHeader({
             <button
               type="button"
               onClick={() => setIsCategoryOpen(!isCategoryOpen)}
-              className="pressable inline-flex items-center gap-2 rounded-full border border-[#d9d0bb] bg-[#fbfaf5]/60 px-3.5 py-1 text-sm sm:text-base font-medium text-[#c4b598] hover:border-[#b8a786] hover:text-[#9e8b67] hover:bg-[#f3eedf]/50 active:scale-[0.96] transition-[transform,color,background-color,border-color] duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#d9d0bb]"
+              className="pressable inline-flex items-center gap-2 rounded-full border border-[#d9d0bb] bg-[#fbfaf5]/60 px-3.5 py-1 text-sm sm:text-base font-medium text-[#8a7c64] hover:border-[#b8a786] hover:text-zinc-900 hover:bg-[#f3eedf]/50 active:scale-[0.96] transition-[transform,color,background-color,border-color] duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#d9d0bb]"
               aria-expanded={isCategoryOpen}
               aria-haspopup="listbox"
             >

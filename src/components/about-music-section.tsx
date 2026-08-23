@@ -251,7 +251,7 @@ export function AboutMusicSection() {
                           transition: { type: "spring", stiffness: 350, damping: 22 },
                         }}
                         whileTap={{ scale: 0.96 }}
-                        className="group relative size-[142px] sm:size-[152px] rounded-[16px] bg-white border border-[#c8d5bb] flex flex-col items-center justify-center overflow-hidden shadow-[0px_2px_8px_rgba(0,0,0,0.25)] block z-10 cursor-pointer"
+                        className="group relative size-[142px] sm:size-[152px] rounded-[16px] bg-white border border-willow-grey/60 flex flex-col items-center justify-center overflow-hidden shadow-[0px_2px_8px_rgba(0,0,0,0.25)] block z-10 cursor-pointer"
                       >
                         {/* Album Cover Art from Spotify */}
                         {album.coverImage ? (

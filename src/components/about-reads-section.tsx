@@ -227,7 +227,7 @@ export function AboutReadsSection() {
                           transition: { type: "spring", stiffness: 350, damping: 22 },
                         }}
                         whileTap={{ scale: 0.96 }}
-                        className="relative w-full saturate-50 h-[220px] sm:h-[233px] rounded-[16px] bg-[#121214] saturate-10 grayscale-50 group-hover:saturate-100 text-white overflow-hidden shadow-[0px_4px_16px_rgba(0,0,0,0.18)] border border-zinc-200/80 ring-1 ring-black/10 cursor-pointer transition-[filter] duration-300"
+                        className="relative w-full saturate-50 h-[220px] sm:h-[233px] rounded-[16px] bg-[#121214] group-hover:saturate-100 text-white overflow-hidden shadow-[0px_4px_16px_rgba(0,0,0,0.18)] border border-zinc-200/80 ring-1 ring-black/10 cursor-pointer transition-[filter] duration-300"
                       >
                         {/* Currently Reading Floating Pill Tag */}
                         {isCurrentlyReading && (
@@ -337,7 +337,7 @@ export function AboutReadsSection() {
                     <span key={idx} className="flex items-center gap-6">
                       <span className="text-zinc-900 font-medium">{hoveredBook.title}{hoveredBook.author ? ` by ${hoveredBook.author}` : ""}:</span>
                       <span className="italic text-zinc-700">“{activeQuote}”</span>
-                      <span className="text-[#a8b899] font-normal not-italic">|</span>
+                      <span className="text-willow-grey font-normal not-italic">|</span>
                     </span>
                   ))}
                 </motion.div>
