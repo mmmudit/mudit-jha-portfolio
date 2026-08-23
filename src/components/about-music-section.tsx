@@ -96,7 +96,7 @@ export function AboutMusicSection() {
   const isTwoRows = tracks.length > 6;
 
   return (
-    <section className="relative w-full py-4 select-none flex flex-col gap-6">
+    <section className="relative w-full py-4 flex flex-col gap-6">
       {/* Header with dynamic Year dropdown */}
       <AboutSectionHeader
         title={
@@ -250,7 +250,7 @@ export function AboutMusicSection() {
                           scale: 1.02,
                           transition: { type: "spring", stiffness: 350, damping: 22 },
                         }}
-                        whileTap={{ scale: 0.98 }}
+                        whileTap={{ scale: 0.96 }}
                         className="group relative size-[142px] sm:size-[152px] rounded-[16px] bg-white border border-[#c8d5bb] flex flex-col items-center justify-center overflow-hidden shadow-[0px_2px_8px_rgba(0,0,0,0.25)] block z-10 cursor-pointer"
                       >
                         {/* Album Cover Art from Spotify */}
@@ -260,6 +260,7 @@ export function AboutMusicSection() {
                               src={album.coverImage}
                               alt={album.title}
                               fill
+                              unoptimized
                               draggable={false}
                               className="object-cover size-full group-hover:scale-105 saturate-50 group-hover:saturate-100 transition-transform duration-300 ease-out pointer-events-none select-none"
                               sizes="(max-width: 768px) 142px, 152px"

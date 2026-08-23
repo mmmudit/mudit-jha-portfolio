@@ -111,7 +111,7 @@ export function AboutMomentsSection() {
 
   return (
     <section
-      className="relative w-full py-4 select-none flex flex-col gap-6"
+      className="relative w-full py-4 flex flex-col gap-6"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       tabIndex={0}
@@ -233,7 +233,7 @@ export function AboutMomentsSection() {
                             </span>
                           )}
                         </div>
-                        <span className="text-[11px] font-mono font-medium text-[#c8d5bb] bg-black/60 px-2 py-0.5 rounded-full border border-white/10">
+                        <span className="tabular-nums text-[11px] font-mono font-medium text-[#c8d5bb] bg-black/60 px-2 py-0.5 rounded-full border border-white/10">
                           {moment.year}
                         </span>
                       </motion.div>

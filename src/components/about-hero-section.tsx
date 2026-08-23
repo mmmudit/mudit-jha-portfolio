@@ -87,7 +87,7 @@ export function AboutHeroSection() {
           >
             <h1
               ref={headingRef}
-              className="font-display text-[38px] sm:text-[48px] font-semibold tracking-[-0.5px] text-zinc-900 leading-none cursor-default"
+              className="font-display text-[38px] sm:text-[48px] font-semibold tracking-[-0.5px] text-zinc-900 leading-none cursor-default text-balance"
             >
               mudit jha
             </h1>
@@ -129,11 +129,11 @@ export function AboutHeroSection() {
             {...fadeUp(0.08)}
             className="flex flex-col gap-3.5 font-display text-[16px] sm:text-[18px] font-medium leading-relaxed sm:leading-[1.65] text-[#6b6b6e] tracking-[-0.1px] text-pretty max-w-[700px]"
           >
-            <p>
+            <p className="text-pretty">
               Design engineer &amp; creative generalist. Building thoughtful things at the
               intersection of tech and human behavior.
             </p>
-            <p>
+            <p className="text-pretty">
               I craft digital software with an obsessive focus on tactile materials, spatial flow,
               and fluid motion physics. Currently exploring spatial computing, interactive Web Audio
               shaders, and high-craft design systems.
@@ -260,8 +260,8 @@ export function AboutHeroSection() {
                 type="text"
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
-                placeholder="A role, a project, an idea, or just a hello. Say what's on your mind."
-                className="w-full bg-transparent text-[13px] sm:text-[14px] text-zinc-800 placeholder:text-zinc-400/90 focus:outline-none pr-3 font-display"
+                placeholder="A role, a project, an idea, or just a hello. Say what’s on your mind."
+                className="w-full bg-transparent text-[16px] sm:text-[14px] text-zinc-800 placeholder:text-zinc-400/90 focus:outline-none pr-3 font-display"
               />
 
               <button
@@ -344,7 +344,7 @@ export function AboutHeroSection() {
                   className="w-[125px] sm:w-[140px] h-[34px]"
                 />
               </div>
-              <span className="text-[14px] font-sans font-medium text-zinc-400">
+              <span className="tabular-nums text-[14px] font-sans font-medium text-zinc-400">
                 2026
               </span>
             </div>

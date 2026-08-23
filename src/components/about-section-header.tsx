@@ -44,7 +44,7 @@ export function AboutSectionHeader({
   return (
     <div className="flex flex-wrap items-center justify-between gap-3 sm:gap-4 select-none w-full">
       {/* Title */}
-      <h2 className="font-display text-[26px] sm:text-[34px] md:text-[36px] font-medium leading-tight text-[#d1c5ad] tracking-tight">
+      <h2 className="font-display text-[26px] sm:text-[34px] md:text-[36px] font-medium leading-tight text-[#d1c5ad] tracking-tight text-balance">
         {title}
       </h2>
 
@@ -59,7 +59,7 @@ export function AboutSectionHeader({
             aria-expanded={isYearOpen}
             aria-haspopup="listbox"
           >
-            <span>{currentYear}</span>
+            <span className="tabular-nums">{currentYear}</span>
             <ChevronsUpDown className="size-3.5 opacity-70" />
           </button>
 
@@ -86,7 +86,7 @@ export function AboutSectionHeader({
                       onClick={() => handleSelectYear(year)}
                       className="flex w-full items-center justify-between rounded-lg px-3 py-1.5 text-xs sm:text-sm font-medium text-zinc-700 hover:bg-[#eae3d2]/60 hover:text-zinc-900 transition-colors"
                     >
-                      <span>{year}</span>
+                      <span className="tabular-nums">{year}</span>
                       {currentYear === year && (
                         <motion.span
                           initial={{ scale: 0.5, opacity: 0 }}

@@ -130,11 +130,11 @@ export function AboutEssaysSection() {
   const [isExpanded, setIsExpanded] = useState(false);
 
   return (
-    <section className="relative w-full py-4 select-none">
+    <section className="relative w-full py-4">
       <div className="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-12 items-start">
         {/* Left Column: Heading */}
         <div className="md:col-span-4 lg:col-span-5">
-          <h2 className="font-display text-[30px] sm:text-[36px] font-medium leading-tight text-[#d1c5ad] tracking-tight">
+          <h2 className="font-display text-[30px] sm:text-[36px] font-medium leading-tight text-[#d1c5ad] tracking-tight text-balance">
             essays i’ve written
           </h2>
         </div>
@@ -184,7 +184,7 @@ export function AboutEssaysSection() {
 
                 {/* Right: Date */}
                 <div className="shrink-0 flex items-center gap-2 text-right">
-                  <span className="font-display text-[11px] sm:text-[12px] text-zinc-400 font-normal">
+                  <span className="tabular-nums font-display text-[11px] sm:text-[12px] text-zinc-400 font-normal">
                     {item.date}
                   </span>
                   <ExternalLink className="size-3 text-zinc-400 opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-[transform,opacity] duration-200 ease-out hidden sm:block" />
@@ -229,7 +229,7 @@ export function AboutEssaysSection() {
                       </div>
                     </div>
                     <div className="shrink-0 flex items-center gap-2 text-right">
-                      <span className="font-display text-[11px] sm:text-[12px] text-zinc-400 font-normal">
+                      <span className="tabular-nums font-display text-[11px] sm:text-[12px] text-zinc-400 font-normal">
                         {item.date}
                       </span>
                       <ExternalLink className="size-3 text-zinc-400 opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-[transform,opacity] duration-200 ease-out hidden sm:block" />

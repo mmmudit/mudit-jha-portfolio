@@ -135,7 +135,7 @@ export function AboutReadsSection() {
   const isTwoRows = filteredBooks.length > 5;
 
   return (
-    <section className="relative w-full py-4 select-none flex flex-col gap-6">
+    <section className="relative w-full py-4 flex flex-col gap-6">
       {/* Header with Year and Category Filter Dropdowns */}
       <AboutSectionHeader
         title={
