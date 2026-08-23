@@ -85,7 +85,9 @@ export function AboutHeroSection() {
             {...fadeUp(0)}
             className="flex flex-wrap items-baseline gap-3.5 sm:gap-4"
           >
-            <h1
+            <h1 data-cuelume-hover="ready"
+              data-cuelume-press
+              data-cuelume-release
               ref={headingRef}
               className="font-display text-[38px] sm:text-[48px] font-semibold tracking-[-0.5px] text-zinc-900 leading-none cursor-default text-balance"
             >
@@ -306,6 +308,7 @@ export function AboutHeroSection() {
         {/* Right Column: Physical Polaroid / Tilted Photo Card */}
         <div className="lg:col-span-4 flex justify-center lg:justify-end pt-4 lg:pt-0">
           <motion.div
+            data-magnetic-card
             initial={{ opacity: 0, rotate: -8, scale: 0.95 }}
             animate={{ opacity: 1, rotate: -5, scale: 1 }}
             onMouseEnter={() => setIsPolaroidHovered(true)}

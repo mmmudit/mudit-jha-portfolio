@@ -92,6 +92,9 @@ export function ProjectCard({
           onMouseLeave={onMouseLeave}
           onFocus={onFocus}
           onBlur={onBlur}
+          data-cuelume-hover="ready"
+          data-cuelume-press
+          data-cuelume-release
           className={`project-card pressable group relative flex flex-col gap-3 items-start w-full cursor-pointer text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-400 focus-visible:ring-offset-4 rounded-[28px] transition-opacity duration-200 ease-out ${isDimmed ? "opacity-40" : "opacity-100"
             }`}
         >

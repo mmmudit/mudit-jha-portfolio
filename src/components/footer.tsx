@@ -5,6 +5,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Check } from "lucide-react";
 import { LiveClock } from "./live-clock";
+import { play } from "@/lib/sound";
 
 const socialLinks = [
   { label: "Insta", href: "https://www.instagram.com/mmmudit/" },
@@ -21,6 +22,7 @@ export function Footer() {
   const handleEmailClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     if (href.startsWith("mailto:")) {
       navigator.clipboard?.writeText("hello@muditjha.me");
+      play("success", { volume: 0.6 });
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     }
@@ -80,6 +82,9 @@ export function Footer() {
                   onClick={(e) => handleEmailClick(e, link.href)}
                   target={link.href.startsWith("mailto:") ? undefined : "_blank"}
                   rel={link.href.startsWith("mailto:") ? undefined : "noopener noreferrer"}
+                  data-cuelume-hover="tick"
+                  data-cuelume-press
+                  data-cuelume-release
                   className="pressable transition-colors duration-200 hover:text-rust-grey focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-willow-grey/50 rounded-sm"
                 >
                   {link.label === "Email" && copied ? (

@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef, useState, useCallback } from "react";
+import { play } from "@/lib/sound";
 
 const STORAGE_KEY = "portfolio_intro_seen";
 const SKIP_DELAY_MS = 800;
@@ -34,6 +35,7 @@ export function IntroLoader({ children }: IntroLoaderProps) {
     }
 
     setIsFadingOut(true);
+    play("ready", { volume: 0.4 });
 
     if (fadeTimerRef.current) clearTimeout(fadeTimerRef.current);
     fadeTimerRef.current = setTimeout(() => {

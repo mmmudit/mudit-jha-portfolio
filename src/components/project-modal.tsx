@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { X, ExternalLink } from "lucide-react";
+import { play } from "@/lib/sound";
 
 export type ProjectData = {
   _id?: string;
@@ -77,6 +78,7 @@ export function ProjectModal({ project, onClose }: ProjectModalProps) {
 
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
+        play("droplet", { volume: 0.45 });
         onClose();
         return;
       }
@@ -134,9 +136,15 @@ export function ProjectModal({ project, onClose }: ProjectModalProps) {
     }
   };
 
+  const handleClose = () => {
+    play("droplet", { volume: 0.45 });
+    onClose();
+  };
+
   const scrollToSection = (id: string) => {
     const el = document.getElementById(id);
     if (el && scrollContainerRef.current) {
+      play("page", { volume: 0.35 });
       el.scrollIntoView({ behavior: "smooth", block: "start" });
       setActiveSectionId(id);
     }
@@ -164,7 +172,7 @@ export function ProjectModal({ project, onClose }: ProjectModalProps) {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.18, ease: [0.22, 1, 0.36, 1] }}
-            onClick={onClose}
+            onClick={handleClose}
             className="fixed inset-0 bg-black/40 cursor-pointer"
             aria-hidden="true"
           />
@@ -227,7 +235,9 @@ export function ProjectModal({ project, onClose }: ProjectModalProps) {
 
                 <button
                   ref={closeButtonRef}
-                  onClick={onClose}
+                  onClick={handleClose}
+                  data-cuelume-hover="tick"
+                  data-cuelume-press
                   className="pressable p-2 text-zinc-500 hover:text-zinc-900 rounded-full hover:bg-black/5 active:scale-[0.96] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-400"
                   aria-label="Close modal"
                 >
@@ -393,13 +403,22 @@ export function ProjectModal({ project, onClose }: ProjectModalProps) {
                           href={project.href}
                           target="_blank"
                           rel="noopener noreferrer"
+                          data-cuelume-hover="chime"
+                          data-cuelume-press
                           className="inline-flex items-center gap-1 text-sm font-sans font-medium text-blue-600 hover:text-blue-700 transition-colors"
                         >
                           <span>Visit Site</span>
                           <ExternalLink className="size-3.5" />
                         </a>
                       ) : (
-                        <p className="text-sm font-sans text-zinc-400">Prototype</p>
+                        <span
+                          data-cuelume-hover="whisper"
+                          onClick={() => play("error", { volume: 0.35 })}
+                          className="text-sm font-sans text-zinc-400 cursor-not-allowed select-none"
+                          title="Prototype not publicly deployed"
+                        >
+                          Prototype
+                        </span>
                       )}
                     </div>
                   </motion.div>
@@ -457,6 +476,9 @@ export function ProjectModal({ project, onClose }: ProjectModalProps) {
                         href={project.href}
                         target="_blank"
                         rel="noopener noreferrer"
+                        data-cuelume-hover="chime"
+                        data-cuelume-press
+                        data-cuelume-release
                         className="pressable inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-zinc-900 text-white font-sans text-sm font-medium hover:bg-zinc-800 shadow-sm transition-all"
                       >
                         <span>Visit Live Site</span>
@@ -467,7 +489,9 @@ export function ProjectModal({ project, onClose }: ProjectModalProps) {
                     )}
 
                     <button
-                      onClick={onClose}
+                      onClick={handleClose}
+                      data-cuelume-hover="tick"
+                      data-cuelume-press
                       className="pressable px-5 py-2.5 rounded-full border border-zinc-300 text-zinc-800 font-sans text-sm font-medium hover:bg-black/5 transition-colors"
                     >
                       Close

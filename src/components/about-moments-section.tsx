@@ -4,6 +4,7 @@ import { useState, useCallback, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { AboutSectionHeader } from "./about-section-header";
+import { play } from "@/lib/sound";
 
 export interface MomentItem {
   id: string;
@@ -91,10 +92,12 @@ export function AboutMomentsSection() {
   const activeMoment = filteredMoments[currentIndex] || filteredMoments[defaultCenterIndex] || momentsData[0];
 
   const handlePrev = useCallback(() => {
+    play("page", { volume: 0.35 });
     setCurrentIndex((prev) => (prev > 0 ? prev - 1 : total - 1));
   }, [total]);
 
   const handleNext = useCallback(() => {
+    play("page", { volume: 0.35 });
     setCurrentIndex((prev) => (prev < total - 1 ? prev + 1 : 0));
   }, [total]);
 
@@ -174,7 +177,13 @@ export function AboutMomentsSection() {
             return (
               <motion.div
                 key={moment.id}
-                onClick={() => setCurrentIndex(index)}
+                data-magnetic-card
+                onClick={() => {
+                  if (currentIndex !== index) {
+                    play("page", { volume: 0.35 });
+                    setCurrentIndex(index);
+                  }
+                }}
                 initial={false}
                 animate={{
                   x,
@@ -268,6 +277,9 @@ export function AboutMomentsSection() {
           <button
             type="button"
             onClick={handlePrev}
+            data-cuelume-hover="tick"
+            data-cuelume-press
+            data-cuelume-release
             aria-label="Previous moment"
             className="pressable size-8 rounded-full border border-[#d9d0bb] bg-[#fbfaf5] flex items-center justify-center text-zinc-600 hover:text-zinc-900 hover:bg-[#eae3d2]/40 shadow-xs"
           >
@@ -280,7 +292,13 @@ export function AboutMomentsSection() {
               <button
                 key={i}
                 type="button"
-                onClick={() => setCurrentIndex(i)}
+                data-cuelume-press
+                onClick={() => {
+                  if (currentIndex !== i) {
+                    play("toggle", { volume: 0.35 });
+                    setCurrentIndex(i);
+                  }
+                }}
                 aria-label={`Go to slide ${i + 1}`}
                 className={`transition-all duration-300 rounded-full ${
                   currentIndex === i
@@ -294,6 +312,9 @@ export function AboutMomentsSection() {
           <button
             type="button"
             onClick={handleNext}
+            data-cuelume-hover="tick"
+            data-cuelume-press
+            data-cuelume-release
             aria-label="Next moment"
             className="pressable size-8 rounded-full border border-[#d9d0bb] bg-[#fbfaf5] flex items-center justify-center text-zinc-600 hover:text-zinc-900 hover:bg-[#eae3d2]/40 shadow-xs"
           >

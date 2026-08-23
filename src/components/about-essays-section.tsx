@@ -146,6 +146,10 @@ export function AboutEssaysSection() {
             {essays.map((item, index) => (
               <motion.a
                 key={item.id}
+                data-magnetic-card
+                data-cuelume-hover="tick"
+                data-cuelume-press
+                data-cuelume-release
                 href={item.link || "#"}
                 target={item.link?.startsWith("http") ? "_blank" : undefined}
                 rel={item.link?.startsWith("http") ? "noopener noreferrer" : undefined}
@@ -206,6 +210,10 @@ export function AboutEssaysSection() {
                 {additionalEssays.map((item, index) => (
                   <motion.a
                     key={item.id}
+                    data-magnetic-card
+                    data-cuelume-hover="tick"
+                    data-cuelume-press
+                    data-cuelume-release
                     href={item.link || "#"}
                     target={item.link?.startsWith("http") ? "_blank" : undefined}
                     rel={item.link?.startsWith("http") ? "noopener noreferrer" : undefined}
@@ -244,6 +252,7 @@ export function AboutEssaysSection() {
           <div className="flex items-center justify-center pt-5">
             <button
               type="button"
+              data-cuelume-toggle
               onClick={() => setIsExpanded(!isExpanded)}
               className="pressable inline-flex items-center gap-1.5 text-[12px] font-display font-normal text-zinc-400 hover:text-zinc-700 transition-colors py-1 px-3 rounded-full hover:bg-[#eae3d2]/40"
             >

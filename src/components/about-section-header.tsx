@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronsUpDown, Check } from "lucide-react";
+import { play } from "@/lib/sound";
 
 interface AboutSectionHeaderProps {
   title: React.ReactNode;
@@ -30,12 +31,22 @@ export function AboutSectionHeader({
   const [currentCategory, setCurrentCategory] = useState(selectedCategory);
 
   const handleSelectYear = (year: string) => {
+    if (year !== currentYear) {
+      play("loading", { volume: 0.35 });
+    } else {
+      play("toggle", { volume: 0.35 });
+    }
     setCurrentYear(year);
     onYearChange?.(year);
     setIsYearOpen(false);
   };
 
   const handleSelectCategory = (cat: string) => {
+    if (cat !== currentCategory) {
+      play("loading", { volume: 0.35 });
+    } else {
+      play("toggle", { volume: 0.35 });
+    }
     setCurrentCategory(cat);
     onCategoryChange?.(cat);
     setIsCategoryOpen(false);
@@ -54,7 +65,11 @@ export function AboutSectionHeader({
         <div className="relative">
           <button
             type="button"
-            onClick={() => setIsYearOpen(!isYearOpen)}
+            data-cuelume-toggle
+            onClick={() => {
+              play("toggle", { volume: 0.3 });
+              setIsYearOpen(!isYearOpen);
+            }}
             className="pressable inline-flex items-center gap-2 rounded-full border border-[#d9d0bb] bg-[#fbfaf5]/60 px-3.5 py-1 text-sm sm:text-base font-medium text-[#8a7c64] hover:border-[#b8a786] hover:text-zinc-900 hover:bg-[#f3eedf]/50 active:scale-[0.96] transition-[transform,color,background-color,border-color] duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#d9d0bb]"
             aria-expanded={isYearOpen}
             aria-haspopup="listbox"
@@ -109,7 +124,11 @@ export function AboutSectionHeader({
           <div className="relative">
             <button
               type="button"
-              onClick={() => setIsCategoryOpen(!isCategoryOpen)}
+              data-cuelume-toggle
+              onClick={() => {
+                play("toggle", { volume: 0.3 });
+                setIsCategoryOpen(!isCategoryOpen);
+              }}
               className="pressable inline-flex items-center gap-2 rounded-full border border-[#d9d0bb] bg-[#fbfaf5]/60 px-3.5 py-1 text-sm sm:text-base font-medium text-[#8a7c64] hover:border-[#b8a786] hover:text-zinc-900 hover:bg-[#f3eedf]/50 active:scale-[0.96] transition-[transform,color,background-color,border-color] duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#d9d0bb]"
               aria-expanded={isCategoryOpen}
               aria-haspopup="listbox"

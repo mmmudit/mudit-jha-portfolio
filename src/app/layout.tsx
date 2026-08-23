@@ -8,6 +8,7 @@ import { Header } from "../components/header";
 import { GrainOverlay } from "../components/grain-overlay";
 import { IntroLoader } from "../components/IntroLoader";
 import { CursorClickEffect } from "../components/cursor-click-effect";
+import { SoundProvider } from "../components/sound-provider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -54,6 +55,7 @@ export default function RootLayout({
       </head>
       <body className="min-h-full text-zinc-800 relative">
         <IntroLoader>
+          <SoundProvider />
           <GrainOverlay />
           <CursorClickEffect />
           <div className="sticky top-0 z-50 w-full px-6 pt-4 sm:px-14 sm:pt-6 pointer-events-none">

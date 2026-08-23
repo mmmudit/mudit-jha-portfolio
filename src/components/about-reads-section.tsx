@@ -197,6 +197,7 @@ export function AboutReadsSection() {
                   return (
                     <motion.div
                       key={bookKey}
+                      data-magnetic-card
                       layout
                       initial={{ opacity: 0, scale: 0.95, y: 10 }}
                       animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -214,6 +215,9 @@ export function AboutReadsSection() {
                         target="_blank"
                         rel="noopener noreferrer"
                         onClick={handleLinkClick}
+                        data-cuelume-hover="tick"
+                        data-cuelume-press
+                        data-cuelume-release
                         whileHover={{
                           y: -5,
                           scale: 1.02,

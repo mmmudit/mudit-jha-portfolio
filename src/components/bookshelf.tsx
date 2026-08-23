@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { ExternalLink, BookOpen } from "lucide-react";
+import { play } from "@/lib/sound";
 
 export type BookData = {
   _id?: string;
@@ -126,9 +127,15 @@ export function Bookshelf({ books }: BookshelfProps) {
             return (
               <div key={b._id || b.title || idx} className="relative flex flex-col items-center shrink-0">
                 <motion.button
-                  onClick={() => setSelectedBook(b)}
+                  onClick={() => {
+                    play("page", { volume: 0.35 });
+                    setSelectedBook(b);
+                  }}
                   onMouseEnter={() => setHoveredBook(b)}
                   onMouseLeave={() => setHoveredBook(null)}
+                  data-cuelume-hover="scan"
+                  data-cuelume-press
+                  data-cuelume-release
                   animate={{
                     y: isHovered ? -16 : isSelected ? -8 : 0,
                     rotateZ: isHovered ? (idx % 2 === 0 ? -1.5 : 1.5) : 0,

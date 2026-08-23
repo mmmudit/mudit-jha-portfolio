@@ -14,6 +14,7 @@ import {
 } from "@/lib/color-extract";
 import { YEARLY_SPOTIFY_PLAYLISTS, type SpotifyTrack } from "@/lib/spotify";
 import { useDragToScroll } from "@/hooks/use-drag-to-scroll";
+import { play } from "@/lib/sound";
 
 const DEFAULT_COLORS: AudioColorPalette = {
   primary: "#18181b",
@@ -82,6 +83,7 @@ export function AboutMusicSection() {
       } finally {
         if (!isCancelled) {
           setIsLoading(false);
+          play("ready", { volume: 0.25 });
         }
       }
     }
@@ -119,16 +121,14 @@ export function AboutMusicSection() {
       <div className="relative w-full overflow-hidden -mx-4 px-4 sm:mx-0 sm:px-0">
         {/* Left Blurred Gradient Edge */}
         <div
-          className={`pointer-events-none absolute left-0 top-0 bottom-0 w-8 sm:w-16 z-30 bg-gradient-to-r from-[#fbfaf5] via-[#fbfaf5]/80 to-transparent backdrop-blur-[2px] [mask-image:linear-gradient(to_right,black_20%,transparent_100%)] transition-opacity duration-300 ${
-            canScrollLeft ? "opacity-100" : "opacity-0"
-          }`}
+          className={`pointer-events-none absolute left-0 top-0 bottom-0 w-8 sm:w-16 z-30 bg-gradient-to-r from-[#fbfaf5] via-[#fbfaf5]/80 to-transparent backdrop-blur-[2px] [mask-image:linear-gradient(to_right,black_20%,transparent_100%)] transition-opacity duration-300 ${canScrollLeft ? "opacity-100" : "opacity-0"
+            }`}
         />
 
         {/* Right Blurred Gradient Edge */}
         <div
-          className={`pointer-events-none absolute right-0 top-0 bottom-0 w-8 sm:w-16 z-30 bg-gradient-to-l from-[#fbfaf5] via-[#fbfaf5]/80 to-transparent backdrop-blur-[2px] [mask-image:linear-gradient(to_left,black_20%,transparent_100%)] transition-opacity duration-300 ${
-            canScrollRight ? "opacity-100" : "opacity-0"
-          }`}
+          className={`pointer-events-none absolute right-0 top-0 bottom-0 w-8 sm:w-16 z-30 bg-gradient-to-l from-[#fbfaf5] via-[#fbfaf5]/80 to-transparent backdrop-blur-[2px] [mask-image:linear-gradient(to_left,black_20%,transparent_100%)] transition-opacity duration-300 ${canScrollRight ? "opacity-100" : "opacity-0"
+            }`}
         />
 
         <div
@@ -157,142 +157,146 @@ export function AboutMusicSection() {
               className={`grid ${isTwoRows ? "grid-rows-2" : "grid-rows-1"
                 } grid-flow-col gap-x-4 sm:gap-x-6 gap-y-6 auto-cols-max pb-3 pl-3 pt-6`}
             >
-            <AnimatePresence mode="popLayout">
-              {tracks.map((album, index) => {
-                const isHovered = hoveredId === album.id;
-                const cardColors =
-                  trackColorsMap[album.id] ||
-                  getHarmoniousPaletteFromSeed(album.id || album.title);
+              <AnimatePresence mode="popLayout">
+                {tracks.map((album, index) => {
+                  const isHovered = hoveredId === album.id;
+                  const cardColors =
+                    trackColorsMap[album.id] ||
+                    getHarmoniousPaletteFromSeed(album.id || album.title);
 
-                return (
-                  <motion.div
-                    key={album.id || `track-${index}`}
-                    layout
-                    initial={{ opacity: 0, scale: 0.95, y: 10 }}
-                    animate={{ opacity: 1, scale: 1, y: 0 }}
-                    exit={{ opacity: 0, scale: 0.95 }}
-                    transition={{
-                      duration: 0.22,
-                      delay: Math.min(index * 0.02, 0.3),
-                      ease: [0.22, 1, 0.36, 1],
-                    }}
-                    onMouseEnter={() => setHoveredId(album.id)}
-                    onMouseLeave={() => setHoveredId(null)}
-                    onFocus={() => setHoveredId(album.id)}
-                    onBlur={() => setHoveredId(null)}
-                    className="flex flex-col items-center w-[142px] sm:w-[152px]"
-                  >
-                    {/* Card + Rising Vinyl Disc Container */}
-                    <div className="relative w-[142px] sm:w-[152px] h-[180px] sm:h-[190px] flex items-end justify-center">
-                      {/* Realistic Rotating Vinyl Record - Slides upward on hover */}
-                      <motion.div
-                        initial={{ y: 0, opacity: 0 }}
-                        animate={{
-                          y: isHovered ? -30 : 0,
-                          opacity: isHovered ? 1 : 0,
-                          scale: isHovered ? 0.95 : 0.85,
-                        }}
-                        transition={{
-                          type: "spring",
-                          stiffness: 320,
-                          damping: 24,
-                          mass: 0.8,
-                        }}
-                        className="absolute top-2 size-[134px] sm:size-[144px] rounded-full z-0 flex items-center justify-center pointer-events-none shadow-[0_10px_24px_rgba(0,0,0,0.45)]"
-                        style={{
-                          background:
-                            "radial-gradient(circle, #27272a 0%, #18181b 30%, #09090b 70%, #000000 100%)",
-                          boxShadow: isHovered
-                            ? `0 0 0 1px rgba(255,255,255,0.1), 0 0 20px ${cardColors.primary}33, inset 0 0 0 10px #0c0c0e, inset 0 0 0 16px #18181b, inset 0 0 0 24px #09090b, inset 0 0 0 34px #18181b`
-                            : "0 0 0 1px rgba(255,255,255,0.08), inset 0 0 0 10px #0c0c0e, inset 0 0 0 16px #18181b, inset 0 0 0 24px #09090b, inset 0 0 0 34px #18181b",
-                        }}
-                      >
-                        {/* Spinning Disc Group with rotational deceleration */}
+                  return (
+                    <motion.div
+                      key={album.id || `track-${index}`}
+                      data-magnetic-card
+                      layout
+                      initial={{ opacity: 0, scale: 0.95, y: 10 }}
+                      animate={{ opacity: 1, scale: 1, y: 0 }}
+                      exit={{ opacity: 0, scale: 0.95 }}
+                      transition={{
+                        duration: 0.22,
+                        delay: Math.min(index * 0.02, 0.3),
+                        ease: [0.22, 1, 0.36, 1],
+                      }}
+                      onMouseEnter={() => setHoveredId(album.id)}
+                      onMouseLeave={() => setHoveredId(null)}
+                      onFocus={() => setHoveredId(album.id)}
+                      onBlur={() => setHoveredId(null)}
+                      className="flex flex-col items-center w-[142px] sm:w-[152px]"
+                    >
+                      {/* Card + Rising Vinyl Disc Container */}
+                      <div className="relative w-[142px] sm:w-[152px] h-[180px] sm:h-[190px] flex items-end justify-center">
+                        {/* Realistic Rotating Vinyl Record - Slides upward on hover */}
                         <motion.div
-                          animate={{ rotate: isHovered ? 360 : 0 }}
-                          transition={{
-                            repeat: isHovered ? Infinity : 0,
-                            duration: 3.2,
-                            ease: isHovered ? "linear" : "easeOut",
+                          initial={{ y: 0, opacity: 0 }}
+                          animate={{
+                            y: isHovered ? -30 : 0,
+                            opacity: isHovered ? 1 : 0,
+                            scale: isHovered ? 0.95 : 0.85,
                           }}
-                          className="relative size-full flex items-center justify-center"
+                          transition={{
+                            type: "spring",
+                            stiffness: 320,
+                            damping: 24,
+                            mass: 0.8,
+                          }}
+                          className="absolute top-2 size-[134px] sm:size-[144px] rounded-full z-0 flex items-center justify-center pointer-events-none shadow-[0_10px_24px_rgba(0,0,0,0.45)]"
+                          style={{
+                            background:
+                              "radial-gradient(circle, #27272a 0%, #18181b 30%, #09090b 70%, #000000 100%)",
+                            boxShadow: isHovered
+                              ? `0 0 0 1px rgba(255,255,255,0.1), 0 0 20px ${cardColors.primary}33, inset 0 0 0 10px #0c0c0e, inset 0 0 0 16px #18181b, inset 0 0 0 24px #09090b, inset 0 0 0 34px #18181b`
+                              : "0 0 0 1px rgba(255,255,255,0.08), inset 0 0 0 10px #0c0c0e, inset 0 0 0 16px #18181b, inset 0 0 0 24px #09090b, inset 0 0 0 34px #18181b",
+                          }}
                         >
-                          {/* Conic grooved light shimmer */}
-                          <div
-                            className="absolute inset-0 rounded-full opacity-35 pointer-events-none"
-                            style={{
-                              background:
-                                "conic-gradient(from 45deg, transparent 0deg, rgba(255,255,255,0.2) 60deg, transparent 120deg, rgba(255,255,255,0.2) 240deg, transparent 300deg)",
+                          {/* Spinning Disc Group with rotational deceleration */}
+                          <motion.div
+                            animate={{ rotate: isHovered ? 360 : 0 }}
+                            transition={{
+                              repeat: isHovered ? Infinity : 0,
+                              duration: 3.2,
+                              ease: isHovered ? "linear" : "easeOut",
                             }}
-                          />
-
-                          {/* Center Record Label Styled with Card's Unique Colors */}
-                          <div
-                            className="relative size-12 sm:size-14 rounded-full border-2 border-black/80 flex items-center justify-center shadow-inner overflow-hidden"
-                            style={{
-                              background: `radial-gradient(circle at 35% 35%, ${cardColors.highlight} 0%, ${cardColors.primary} 50%, ${cardColors.secondary} 100%)`,
-                              boxShadow: `0 0 12px ${cardColors.primary}66, inset 0 0 4px rgba(0,0,0,0.6)`,
-                            }}
+                            className="relative size-full flex items-center justify-center"
                           >
-                            <Disc className="size-4 text-black/70 opacity-80 drop-shadow-xs" />
-                            {/* Center Spindle Hole */}
-                            <div className="absolute size-2.5 rounded-full bg-black border border-white/30" />
-                          </div>
-                        </motion.div>
-                      </motion.div>
-
-                      {/* Main Album Jacket Card */}
-                      <motion.a
-                        href={album.link}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        onClick={handleLinkClick}
-                        whileHover={{
-                          y: -5,
-                          scale: 1.02,
-                          transition: { type: "spring", stiffness: 350, damping: 22 },
-                        }}
-                        whileTap={{ scale: 0.96 }}
-                        className="group relative size-[142px] sm:size-[152px] rounded-[16px] bg-white border border-willow-grey/60 flex flex-col items-center justify-center overflow-hidden shadow-[0px_2px_8px_rgba(0,0,0,0.25)] block z-10 cursor-pointer"
-                      >
-                        {/* Album Cover Art from Spotify */}
-                        {album.coverImage ? (
-                          <div className="relative size-full">
-                            <Image
-                              src={album.coverImage}
-                              alt={album.title}
-                              fill
-                              unoptimized
-                              draggable={false}
-                              className="object-cover size-full group-hover:scale-105 saturate-50 group-hover:saturate-100 transition-transform duration-300 ease-out pointer-events-none select-none"
-                              sizes="(max-width: 768px) 142px, 152px"
+                            {/* Conic grooved light shimmer */}
+                            <div
+                              className="absolute inset-0 rounded-full opacity-35 pointer-events-none"
+                              style={{
+                                background:
+                                  "conic-gradient(from 45deg, transparent 0deg, rgba(255,255,255,0.2) 60deg, transparent 120deg, rgba(255,255,255,0.2) 240deg, transparent 300deg)",
+                              }}
                             />
-                          </div>
-                        ) : (
-                          <div className="size-full bg-gradient-to-br from-zinc-900 to-black flex items-center justify-center p-3 text-center">
-                            <span className="font-serif font-bold text-[17px] text-white">
-                              {album.title}
-                            </span>
-                          </div>
-                        )}
 
-                        {/* Subtle paper finish overlay */}
-                        <div className="absolute inset-0 bg-radial from-transparent via-transparent to-black/10 pointer-events-none" />
+                            {/* Center Record Label Styled with Card's Unique Colors */}
+                            <div
+                              className="relative size-12 sm:size-14 rounded-full border-2 border-black/80 flex items-center justify-center shadow-inner overflow-hidden"
+                              style={{
+                                background: `radial-gradient(circle at 35% 35%, ${cardColors.highlight} 0%, ${cardColors.primary} 50%, ${cardColors.secondary} 100%)`,
+                                boxShadow: `0 0 12px ${cardColors.primary}66, inset 0 0 4px rgba(0,0,0,0.6)`,
+                              }}
+                            >
+                              <Disc className="size-4 text-black/70 opacity-80 drop-shadow-xs" />
+                              {/* Center Spindle Hole */}
+                              <div className="absolute size-2.5 rounded-full bg-black border border-white/30" />
+                            </div>
+                          </motion.div>
+                        </motion.div>
 
-                        {/* Parental Advisory label */}
-                        <div className="absolute bottom-2 right-2 z-10">
-                          <div className="px-1 py-0.5 rounded-[2px] bg-black/90 backdrop-blur-xs text-[6px] font-mono font-bold uppercase tracking-tighter text-white">
-                            PA
+                        {/* Main Album Jacket Card */}
+                        <motion.a
+                          href={album.link}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          onClick={handleLinkClick}
+                          data-cuelume-hover="bloom"
+                          data-cuelume-press
+                          data-cuelume-release
+                          whileHover={{
+                            y: -5,
+                            scale: 1.02,
+                            transition: { type: "spring", stiffness: 350, damping: 22 },
+                          }}
+                          whileTap={{ scale: 0.96 }}
+                          className="group relative size-[142px] sm:size-[152px] rounded-[16px] bg-white border border-willow-grey/60 flex flex-col items-center justify-center overflow-hidden shadow-[0px_2px_8px_rgba(0,0,0,0.25)] block z-10 cursor-pointer"
+                        >
+                          {/* Album Cover Art from Spotify */}
+                          {album.coverImage ? (
+                            <div className="relative size-full">
+                              <Image
+                                src={album.coverImage}
+                                alt={album.title}
+                                fill
+                                unoptimized
+                                draggable={false}
+                                className="object-cover size-full group-hover:scale-105 saturate-50 group-hover:saturate-100 transition-transform duration-300 ease-out pointer-events-none select-none"
+                                sizes="(max-width: 768px) 142px, 152px"
+                              />
+                            </div>
+                          ) : (
+                            <div className="size-full bg-gradient-to-br from-zinc-900 to-black flex items-center justify-center p-3 text-center">
+                              <span className="font-serif font-bold text-[17px] text-white">
+                                {album.title}
+                              </span>
+                            </div>
+                          )}
+
+                          {/* Subtle paper finish overlay */}
+                          <div className="absolute inset-0 bg-radial from-transparent via-transparent to-black/10 pointer-events-none" />
+
+                          {/* Parental Advisory label */}
+                          <div className="absolute bottom-2 right-2 z-10">
+                            <div className="px-1 py-0.5 rounded-[2px] bg-black/90 backdrop-blur-xs text-[6px] font-mono font-bold uppercase tracking-tighter text-white">
+                              PA
+                            </div>
                           </div>
-                        </div>
-                      </motion.a>
-                    </div>
-                  </motion.div>
-                );
-              })}
-            </AnimatePresence>
-          </motion.div>
-        )}
+                        </motion.a>
+                      </div>
+                    </motion.div>
+                  );
+                })}
+              </AnimatePresence>
+            </motion.div>
+          )}
         </div>
       </div>
 

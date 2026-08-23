@@ -39,6 +39,7 @@ import {
   HelpCircle,
   ArrowUpRight,
 } from "lucide-react";
+import { play } from "@/lib/sound";
 
 export type Carousel3DItem = {
   type: "image" | "video";
@@ -315,8 +316,17 @@ export function Carousel3D({
   };
 
   const handleKeyDown = useCallback((e: KeyboardEvent) => {
-    if (e.key === "ArrowLeft") { e.preventDefault(); animControlsRef.current?.stop(); snapToNearestCard(rotation.get() + stepAngle); }
-    else if (e.key === "ArrowRight") { e.preventDefault(); animControlsRef.current?.stop(); snapToNearestCard(rotation.get() - stepAngle); }
+    if (e.key === "ArrowLeft") {
+      e.preventDefault();
+      animControlsRef.current?.stop();
+      play("page", { volume: 0.35 });
+      snapToNearestCard(rotation.get() + stepAngle);
+    } else if (e.key === "ArrowRight") {
+      e.preventDefault();
+      animControlsRef.current?.stop();
+      play("page", { volume: 0.35 });
+      snapToNearestCard(rotation.get() - stepAngle);
+    }
   }, [rotation, stepAngle, snapToNearestCard]);
 
   useEffect(() => {
@@ -326,6 +336,7 @@ export function Carousel3D({
 
   const rotateToIndex = (targetIdx: number) => {
     animControlsRef.current?.stop();
+    play("toggle", { volume: 0.35 });
     const current = rotation.get();
     const currentNorm = normalizeAngle(-current);
     const targetNorm = targetIdx * stepAngle;
@@ -335,8 +346,19 @@ export function Carousel3D({
     animate(rotation, current - diff, { type: "spring", stiffness: 160, damping: 24, mass: 0.8 });
   };
 
-  const handleNext = () => { animControlsRef.current?.stop(); const current = rotation.get(); animate(rotation, Math.round((current - stepAngle) / stepAngle) * stepAngle, { type: "spring", stiffness: 170, damping: 26 }); };
-  const handlePrev = () => { animControlsRef.current?.stop(); const current = rotation.get(); animate(rotation, Math.round((current + stepAngle) / stepAngle) * stepAngle, { type: "spring", stiffness: 170, damping: 26 }); };
+  const handleNext = () => {
+    animControlsRef.current?.stop();
+    play("page", { volume: 0.35 });
+    const current = rotation.get();
+    animate(rotation, Math.round((current - stepAngle) / stepAngle) * stepAngle, { type: "spring", stiffness: 170, damping: 26 });
+  };
+
+  const handlePrev = () => {
+    animControlsRef.current?.stop();
+    play("page", { volume: 0.35 });
+    const current = rotation.get();
+    animate(rotation, Math.round((current + stepAngle) / stepAngle) * stepAngle, { type: "spring", stiffness: 170, damping: 26 });
+  };
 
   const ambientColors = useMemo(() => resolveAmbientColors(safeItems[activeIndex]), [safeItems, activeIndex]);
 
@@ -369,6 +391,7 @@ export function Carousel3D({
               onCardClick={() => {
                 if (hasDraggedRef.current) return;
                 if (idx === activeIndex) {
+                  play("bloom", { volume: 0.45 });
                   window.open(item.href || "#", "_blank");
                 } else {
                   rotateToIndex(idx);
@@ -468,6 +491,8 @@ export function Carousel3D({
           <button
             type="button"
             data-no-drag="true"
+            data-cuelume-hover="chime"
+            onClick={() => play("chime", { volume: 0.35 })}
             aria-label="Navigation help"
             className="size-8 rounded-full border border-zinc-300/80 bg-[#fbfaf5]/90 backdrop-blur-md shadow-sm text-xs font-mono font-medium text-zinc-600 hover:text-zinc-950 hover:bg-zinc-200/60 flex items-center justify-center transition-colors cursor-pointer"
           >

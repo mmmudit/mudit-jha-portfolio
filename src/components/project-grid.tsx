@@ -4,6 +4,7 @@ import { useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { ProjectCard } from "./project-card";
 import { ProjectModal, type ProjectData } from "./project-modal";
+import { play } from "@/lib/sound";
 
 export type ProjectGridProps = {
   projects: ProjectData[];
@@ -52,7 +53,10 @@ export function ProjectGrid({ projects }: ProjectGridProps) {
                 onMouseLeave={() => setHoveredId(null)}
                 onFocus={() => setHoveredId(id)}
                 onBlur={() => setHoveredId(null)}
-                onClick={() => setSelectedProject(project)}
+                onClick={() => {
+                  play("bloom", { volume: 0.45 });
+                  setSelectedProject(project);
+                }}
               />
             </motion.div>
           );

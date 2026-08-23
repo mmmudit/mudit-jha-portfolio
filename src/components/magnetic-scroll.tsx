@@ -3,20 +3,27 @@
 import { useEffect } from "react";
 
 /**
- * Ultra-gentle magnetic alignment:
- * Subtly glides the nearest section to center only when the user has settled
- * close to it, using a smooth decelerating ease curve that never fights the user.
+ * Ultra-gentle magnetic alignment & card hover auto-scroll:
+ * 1. Subtly glides the nearest section to center when the user finishes scrolling and idles.
+ * 2. Auto-scrolls smoothly to the section when the user hovers over any card within it.
+ * Uses a smooth quintic decelerating ease curve that never fights active user interaction.
  */
 export function MagneticScroll({
   selector = "[data-magnetic-section]",
+  cardSelector = "[data-magnetic-card], [data-magnetic-section] .group, [data-magnetic-section] article, [data-magnetic-section] [data-card]",
   offsetPx = 0,
   idleDelayMs = 380,
+  hoverDelayMs = 180,
   maxSnapDistanceRatio = 0.3,
+  enableHoverAutoScroll = true,
 }: {
   selector?: string;
+  cardSelector?: string;
   offsetPx?: number;
   idleDelayMs?: number;
+  hoverDelayMs?: number;
   maxSnapDistanceRatio?: number;
+  enableHoverAutoScroll?: boolean;
 }) {
   useEffect(() => {
     // Respect user reduced-motion preferences
@@ -27,6 +34,7 @@ export function MagneticScroll({
 
     let isUserActive = false;
     let idleTimer: NodeJS.Timeout | null = null;
+    let hoverTimer: NodeJS.Timeout | null = null;
     let animId: number | null = null;
 
     const stopGlide = () => {
@@ -40,11 +48,29 @@ export function MagneticScroll({
       isUserActive = true;
       stopGlide();
       if (idleTimer) clearTimeout(idleTimer);
+      if (hoverTimer) clearTimeout(hoverTimer);
     };
 
     const onUserInteractionEnd = () => {
       isUserActive = false;
       scheduleGlide();
+    };
+
+    const computeTargetScrollForSection = (section: HTMLElement): number => {
+      const rect = section.getBoundingClientRect();
+      const sectionTop = window.scrollY + rect.top;
+      const sectionHeight = rect.height;
+      const viewportHeight = window.innerHeight;
+
+      let targetScrollY: number;
+      if (sectionHeight > viewportHeight * 0.85) {
+        targetScrollY = sectionTop - 64 + offsetPx;
+      } else {
+        targetScrollY = sectionTop + sectionHeight / 2 - viewportHeight / 2 + offsetPx;
+      }
+
+      const maxScroll = document.documentElement.scrollHeight - viewportHeight;
+      return Math.max(0, Math.min(maxScroll, targetScrollY));
     };
 
     const findClosestSection = (): HTMLElement | null => {
@@ -112,21 +138,8 @@ export function MagneticScroll({
       const section = findClosestSection();
       if (!section) return;
 
-      const rect = section.getBoundingClientRect();
-      const sectionTop = window.scrollY + rect.top;
-      const sectionHeight = rect.height;
+      const targetScrollY = computeTargetScrollForSection(section);
       const viewportHeight = window.innerHeight;
-
-      let targetScrollY: number;
-      if (sectionHeight > viewportHeight * 0.85) {
-        targetScrollY = sectionTop - 64 + offsetPx;
-      } else {
-        targetScrollY = sectionTop + sectionHeight / 2 - viewportHeight / 2 + offsetPx;
-      }
-
-      const maxScroll = document.documentElement.scrollHeight - viewportHeight;
-      targetScrollY = Math.max(0, Math.min(maxScroll, targetScrollY));
-
       const currentScrollY = window.scrollY;
       const distance = Math.abs(targetScrollY - currentScrollY);
 
@@ -151,6 +164,46 @@ export function MagneticScroll({
       scheduleGlide();
     };
 
+    // Auto-scroll on card hover
+    const onPointerOver = (e: MouseEvent) => {
+      if (!enableHoverAutoScroll || isUserActive || animId !== null) return;
+
+      const target = e.target as HTMLElement | null;
+      if (!target) return;
+
+      const card = target.closest<HTMLElement>(cardSelector);
+      if (!card) return;
+
+      const section = card.closest<HTMLElement>(selector);
+      if (!section) return;
+
+      // Don't trigger if already aligned with this section
+      const targetScrollY = computeTargetScrollForSection(section);
+      const distance = Math.abs(targetScrollY - window.scrollY);
+      if (distance <= 24) return;
+
+      if (hoverTimer) clearTimeout(hoverTimer);
+
+      hoverTimer = setTimeout(() => {
+        if (isUserActive || animId !== null) return;
+        const currentTargetScroll = computeTargetScrollForSection(section);
+        const currentDistance = Math.abs(currentTargetScroll - window.scrollY);
+        if (currentDistance > 24) {
+          smoothGlideTo(currentTargetScroll);
+        }
+      }, hoverDelayMs);
+    };
+
+    const onPointerOut = (e: MouseEvent) => {
+      const relatedTarget = e.relatedTarget as HTMLElement | null;
+      if (!relatedTarget || !relatedTarget.closest(cardSelector)) {
+        if (hoverTimer) {
+          clearTimeout(hoverTimer);
+          hoverTimer = null;
+        }
+      }
+    };
+
     let wheelDebounce: NodeJS.Timeout | null = null;
     const onWheel = () => {
       onUserInteractionStart();
@@ -167,9 +220,15 @@ export function MagneticScroll({
     window.addEventListener("keyup", onUserInteractionEnd, { passive: true });
     window.addEventListener("scroll", onScroll, { passive: true });
 
+    if (enableHoverAutoScroll) {
+      document.addEventListener("mouseover", onPointerOver, { passive: true });
+      document.addEventListener("mouseout", onPointerOut, { passive: true });
+    }
+
     return () => {
       stopGlide();
       if (idleTimer) clearTimeout(idleTimer);
+      if (hoverTimer) clearTimeout(hoverTimer);
       if (wheelDebounce) clearTimeout(wheelDebounce);
       window.removeEventListener("wheel", onWheel);
       window.removeEventListener("touchstart", onUserInteractionStart);
@@ -177,8 +236,20 @@ export function MagneticScroll({
       window.removeEventListener("keydown", onUserInteractionStart);
       window.removeEventListener("keyup", onUserInteractionEnd);
       window.removeEventListener("scroll", onScroll);
+      if (enableHoverAutoScroll) {
+        document.removeEventListener("mouseover", onPointerOver);
+        document.removeEventListener("mouseout", onPointerOut);
+      }
     };
-  }, [selector, offsetPx, idleDelayMs, maxSnapDistanceRatio]);
+  }, [
+    selector,
+    cardSelector,
+    offsetPx,
+    idleDelayMs,
+    hoverDelayMs,
+    maxSnapDistanceRatio,
+    enableHoverAutoScroll,
+  ]);
 
   return null;
 }

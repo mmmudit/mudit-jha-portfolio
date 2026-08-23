@@ -63,6 +63,9 @@ export default function NavigationTabs({
           <Link
             key={tab.id}
             href={tab.href}
+            data-cuelume-hover="tick"
+            data-cuelume-press
+            data-cuelume-release
             className={clsx(
               "relative rounded-full px-[15px] py-[6px] text-[18px] tracking-[-1px] transition-colors duration-150 pressable focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-400 focus-visible:ring-offset-1 select-none",
               isActive

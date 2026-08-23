@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion, useSpring, useReducedMotion } from "framer-motion";
+import { play } from "@/lib/sound";
 
 export function InteractiveTsuLogo() {
   const router = useRouter();
@@ -105,6 +106,7 @@ export function InteractiveTsuLogo() {
       e.stopPropagation();
     }
     handleManualBlink();
+    play("arrival", { volume: 0.5 });
     router.push("/design-system");
   };
 
@@ -118,6 +120,7 @@ export function InteractiveTsuLogo() {
     } else {
       lastClickRef.current = now;
       handleManualBlink();
+      play("sparkle", { volume: 0.4 });
       router.prefetch("/design-system");
     }
   };

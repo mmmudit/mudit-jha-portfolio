@@ -22,6 +22,7 @@ import {
   ArrowUpRight,
   Play,
 } from "lucide-react";
+import { play } from "@/lib/sound";
 
 export function PlayPageClient({
   initialItems,
@@ -128,7 +129,9 @@ export function PlayPageClient({
     <div className="flex flex-col items-center justify-center text-center max-w-2xl mx-auto mb-4 pointer-events-auto">
       {/* Verified Badge Icon */}
       <motion.div
-        className="mb-3 flex items-center justify-center"
+        data-cuelume-hover="chime"
+        onClick={() => play("chime", { volume: 0.4 })}
+        className="mb-3 flex items-center justify-center cursor-pointer hover:scale-110 active:scale-95 transition-transform"
         initial={{ opacity: 0, y: 6 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
@@ -179,7 +182,11 @@ export function PlayPageClient({
         <div ref={dropdownRef} className="relative inline-block text-left">
           <button
             type="button"
-            onClick={() => setIsDropdownOpen((prev) => !prev)}
+            data-cuelume-toggle
+            onClick={() => {
+              play("toggle", { volume: 0.35 });
+              setIsDropdownOpen((prev) => !prev);
+            }}
             className="group inline-flex items-center gap-2.5 px-4 py-2 rounded-full border border-zinc-300/80 bg-[#fbfaf5]/90 backdrop-blur-md shadow-sm text-xs sm:text-sm font-medium text-zinc-800 hover:text-zinc-950 hover:bg-zinc-200/50 transition-all duration-200 cursor-pointer"
             aria-expanded={isDropdownOpen}
             aria-haspopup="true"
@@ -217,7 +224,9 @@ export function PlayPageClient({
                     <button
                       key={tab.id}
                       type="button"
+                      data-cuelume-press
                       onClick={() => {
+                        play("scan", { volume: 0.35 });
                         setSelectedFilter(tab.id);
                         setIsDropdownOpen(false);
                       }}
@@ -251,7 +260,11 @@ export function PlayPageClient({
         <div className="flex items-center p-1 rounded-full border border-zinc-300/80 bg-[#fbfaf5]/90 backdrop-blur-md shadow-sm">
           <button
             type="button"
-            onClick={() => setViewMode("flat")}
+            data-cuelume-press
+            onClick={() => {
+              if (viewMode !== "flat") play("toggle", { volume: 0.4 });
+              setViewMode("flat");
+            }}
             className={`relative flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs sm:text-sm font-medium transition-colors cursor-pointer ${
               viewMode === "flat"
                 ? "text-zinc-950 font-semibold"
@@ -271,7 +284,11 @@ export function PlayPageClient({
 
           <button
             type="button"
-            onClick={() => setViewMode("3d")}
+            data-cuelume-press
+            onClick={() => {
+              if (viewMode !== "3d") play("toggle", { volume: 0.4 });
+              setViewMode("3d");
+            }}
             className={`relative flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs sm:text-sm font-medium transition-colors cursor-pointer ${
               viewMode === "3d"
                 ? "text-zinc-950 font-semibold"
@@ -387,6 +404,7 @@ function FlatPlayCard({
   };
 
   const handleClick = () => {
+    play("bloom", { volume: 0.45 });
     window.open(
       item.href || "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
       "_blank"
@@ -399,6 +417,9 @@ function FlatPlayCard({
       onPointerEnter={handlePointerEnter}
       onPointerMove={handlePointerMove}
       onPointerLeave={handlePointerLeave}
+      data-cuelume-hover="whisper"
+      data-cuelume-press
+      data-cuelume-release
       className="group relative flex flex-col rounded-[26px] border border-zinc-300/80 bg-[#fbfaf5] p-3.5 shadow-[0_4px_20px_rgba(0,0,0,0.04)] hover:shadow-[0_12px_36px_rgba(0,0,0,0.09)] hover:-translate-y-1 transition-all duration-300 cursor-none select-none"
     >
       {/* Dynamic Cursor-Following "Open to view" Hover Pill (Unclipped) */}

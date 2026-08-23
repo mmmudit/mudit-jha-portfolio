@@ -63,6 +63,9 @@ export function Header() {
               ? {}
               : { type: "spring", stiffness: 420, damping: 30, mass: 0.8 }
           }
+          data-cuelume-hover="tick"
+          data-cuelume-press
+          data-cuelume-release
           className="pressable pointer-events-auto relative inline-flex shrink-0 items-center overflow-hidden rounded-full border-2 border-zinc-300"
           style={{ width: minW }}
         >

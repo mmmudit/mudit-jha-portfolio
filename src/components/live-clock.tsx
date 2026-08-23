@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { play } from "@/lib/sound";
 
 function TickingCharacter({ char, index }: { char: string; index: number }) {
   // Only animate numeric digits
@@ -54,10 +55,14 @@ export function LiveClock({ variant = "footer" }: LiveClockProps) {
 
   if (variant === "header") {
     return (
-      <div className="font-sans font-light text-[13px] sm:text-[15px] md:text-[16px] uppercase tracking-[-0.5px] leading-none text-[#7f7f80] inline-flex items-center gap-2 select-none">
+      <div
+        data-cuelume-hover="pulse"
+        onClick={() => play("pulse", { volume: 0.35 })}
+        className="font-sans font-light text-[13px] sm:text-[15px] md:text-[16px] uppercase tracking-[-0.5px] leading-none text-[#7f7f80] inline-flex items-center gap-2 select-none cursor-pointer group"
+      >
         <span className="relative inline-flex size-2.5 items-center justify-center shrink-0">
           <span className="green-pulse-ring" aria-hidden="true" />
-          <span className="relative size-1.5 rounded-full bg-status-green" />
+          <span className="relative size-1.5 rounded-full bg-status-green group-hover:scale-125 transition-transform" />
         </span>
         <span className="inline-flex items-center tabular-nums">
           {timeChars.length > 0 ? (
