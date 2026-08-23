@@ -246,6 +246,7 @@ export function AboutReadsSection() {
                               src={book.imageUrl}
                               alt={book.title}
                               fill
+                              unoptimized
                               draggable={false}
                               className="object-cover size-full group-hover:scale-105 transition-transform duration-300 ease-out pointer-events-none select-none"
                               sizes="(max-width: 768px) 142px, 152px"

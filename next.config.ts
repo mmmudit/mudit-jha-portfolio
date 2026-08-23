@@ -30,6 +30,36 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: "https",
+        hostname: "openlibrary.org",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "m.media-amazon.com",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "images-na.ssl-images-amazon.com",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "books.google.com",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "books.googleusercontent.com",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "lh3.googleusercontent.com",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
         hostname: "i.scdn.co",
         pathname: "/**",
       },
