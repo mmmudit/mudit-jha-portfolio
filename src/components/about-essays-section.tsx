@@ -247,7 +247,7 @@ export function AboutEssaysSection() {
               onClick={() => setIsExpanded(!isExpanded)}
               className="pressable inline-flex items-center gap-1.5 text-[12px] font-display font-normal text-zinc-400 hover:text-zinc-700 transition-colors py-1 px-3 rounded-full hover:bg-[#eae3d2]/40"
             >
-              <span>{isExpanded ? "Show less" : "View all"}</span>
+              <span>{isExpanded ? "Show fewer essays" : "View all essays"}</span>
               <ChevronDown
                 className={`size-3.5 transition-transform duration-200 ${
                   isExpanded ? "rotate-180" : ""

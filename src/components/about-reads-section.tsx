@@ -187,7 +187,9 @@ export function AboutReadsSection() {
           ) : filteredBooks.length === 0 ? (
             <div className="py-8 flex flex-col items-center justify-center text-zinc-400 gap-2">
               <BookOpen className="size-6 text-zinc-300" />
-              <p className="text-sm font-display">No books found for the selected filter.</p>
+              <p className="text-sm font-display text-center text-pretty max-w-[320px]">
+                No books found for this filter. Try selecting &ldquo;All&rdquo; or a different category.
+              </p>
             </div>
           ) : (
             <motion.div
@@ -227,7 +229,7 @@ export function AboutReadsSection() {
                           transition: { type: "spring", stiffness: 350, damping: 22 },
                         }}
                         whileTap={{ scale: 0.96 }}
-                        className="relative w-full saturate-50 h-[220px] sm:h-[233px] rounded-[16px] bg-[#121214] group-hover:saturate-100 text-white overflow-hidden shadow-[0px_4px_16px_rgba(0,0,0,0.18)] border border-zinc-200/80 ring-1 ring-black/10 cursor-pointer transition-[filter] duration-300"
+                        className="relative w-full  h-[220px] sm:h-[233px] rounded-[16px] bg-[#121214] group-hover:saturate-100 text-white overflow-hidden shadow-[0px_4px_16px_rgba(0,0,0,0.18)] border border-zinc-200/80 ring-1 ring-black/10 cursor-pointer transition-[filter] duration-300"
                       >
                         {/* Currently Reading Floating Pill Tag */}
                         {isCurrentlyReading && (

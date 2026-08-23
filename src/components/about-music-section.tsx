@@ -147,7 +147,9 @@ export function AboutMusicSection() {
           ) : tracks.length === 0 ? (
             <div className="py-8 flex flex-col items-center justify-center text-zinc-400 gap-2">
               <Music2 className="size-6 text-zinc-300" />
-              <p className="text-sm font-display">No tracks found for {selectedYear}.</p>
+              <p className="text-sm font-display text-center text-pretty max-w-[320px]">
+                No tracks found for {selectedYear}. Select another year to browse tunes.
+              </p>
             </div>
           ) : (
             <motion.div
