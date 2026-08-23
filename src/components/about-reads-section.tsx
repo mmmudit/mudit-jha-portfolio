@@ -123,15 +123,6 @@ export function AboutReadsSection() {
     hoveredBook?.notes?.trim() ||
     (hoveredBook ? `${hoveredBook.title} by ${hoveredBook.author || "Selected Read"}` : null);
 
-  // All valid quotes across the current library selection
-  const allQuotes = books
-    .filter((b) => Boolean(b.notes && b.notes.trim().length > 0))
-    .map((b) => ({
-      title: b.title,
-      author: b.author,
-      note: b.notes!.trim(),
-    }));
-
   const isTwoRows = filteredBooks.length > 5;
 
   return (
@@ -304,8 +295,8 @@ export function AboutReadsSection() {
         </div>
       </div>
 
-      {/* Bottom Notes/Quotes Marquee Banner */}
-      <div className="relative w-full min-h-[48px] flex items-center justify-center overflow-hidden py-1 px-4">
+      {/* Bottom Notes/Quotes Marquee Banner (Strictly visible only when hovering over a book card) */}
+      <div className="relative w-full h-[48px] flex items-center justify-center overflow-hidden py-1 px-4">
         <div
           className="w-full overflow-hidden whitespace-nowrap flex items-center"
           style={{
@@ -316,14 +307,13 @@ export function AboutReadsSection() {
           }}
         >
           <AnimatePresence mode="wait">
-            {hoveredBook && activeQuote ? (
-              /* Specific Hovered Book Notes/Quote Infinite Loop */
+            {hoveredBook && activeQuote && (
               <motion.div
                 key={`quote-${hoveredBook.id || hoveredBook.title}`}
-                initial={{ opacity: 0, y: 4 }}
+                initial={{ opacity: 0, y: 5 }}
                 animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -4 }}
-                transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
+                exit={{ opacity: 0, y: -5 }}
+                transition={{ duration: 0.18, ease: [0.22, 1, 0.36, 1] }}
                 className="w-full flex items-center"
               >
                 <motion.div
@@ -344,35 +334,7 @@ export function AboutReadsSection() {
                   ))}
                 </motion.div>
               </motion.div>
-            ) : allQuotes.length > 0 ? (
-              /* Ambient Ambient Library Marquee when Idle */
-              <motion.div
-                key="ambient-marquee"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.3 }}
-                className="w-full flex items-center"
-              >
-                <motion.div
-                  animate={{ x: ["0%", "-50%"] }}
-                  transition={{
-                    duration: 38,
-                    ease: "linear",
-                    repeat: Infinity,
-                  }}
-                  className="flex items-center gap-8 min-w-max text-[#71717a] font-display text-[14px] sm:text-[16px]"
-                >
-                  {[...allQuotes, ...allQuotes].map((item, idx) => (
-                    <span key={idx} className="flex items-center gap-8">
-                      <span className="text-zinc-800 font-medium">{item.title}{item.author ? ` by ${item.author}` : ""}:</span>
-                      <span className="italic">“{item.note}”</span>
-                      <span className="text-[#c8d5bb] font-normal not-italic">/</span>
-                    </span>
-                  ))}
-                </motion.div>
-              </motion.div>
-            ) : null}
+            )}
           </AnimatePresence>
         </div>
       </div>
