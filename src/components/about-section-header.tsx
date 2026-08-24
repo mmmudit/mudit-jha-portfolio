@@ -88,9 +88,9 @@ export function AboutSectionHeader({
                 />
 
                 <motion.div
-                  initial={{ opacity: 0, scale: 0.95, y: -4 }}
+                  initial={{ opacity: 0, scale: 0.97, y: -4 }}
                   animate={{ opacity: 1, scale: 1, y: 4 }}
-                  exit={{ opacity: 0, scale: 0.95, y: -4 }}
+                  exit={{ opacity: 0, scale: 0.97, y: -4 }}
                   transition={{ duration: 0.15, ease: [0.22, 1, 0.36, 1] }}
                   className="absolute right-0 top-full z-50 mt-1 min-w-[110px] overflow-hidden rounded-xl border border-[#d9d0bb] bg-[#fbfaf5] p-1 shadow-lg shadow-black/5 backdrop-blur-md"
                 >
@@ -104,7 +104,7 @@ export function AboutSectionHeader({
                       <span className="tabular-nums">{year}</span>
                       {currentYear === year && (
                         <motion.span
-                          initial={{ scale: 0.5, opacity: 0 }}
+                          initial={{ scale: 0.8, opacity: 0 }}
                           animate={{ scale: 1, opacity: 1 }}
                           transition={{ duration: 0.15, ease: [0.22, 1, 0.36, 1] }}
                         >
@@ -146,9 +146,9 @@ export function AboutSectionHeader({
                   />
 
                   <motion.div
-                    initial={{ opacity: 0, scale: 0.95, y: -4 }}
+                    initial={{ opacity: 0, scale: 0.97, y: -4 }}
                     animate={{ opacity: 1, scale: 1, y: 4 }}
-                    exit={{ opacity: 0, scale: 0.95, y: -4 }}
+                    exit={{ opacity: 0, scale: 0.97, y: -4 }}
                     transition={{ duration: 0.15, ease: [0.22, 1, 0.36, 1] }}
                     className="absolute right-0 top-full z-50 mt-1 min-w-[140px] max-w-[220px] max-h-[260px] overflow-y-auto rounded-xl border border-[#d9d0bb] bg-[#fbfaf5] p-1 shadow-lg shadow-black/5 backdrop-blur-md"
                   >
@@ -162,7 +162,7 @@ export function AboutSectionHeader({
                         <span className="truncate">{cat}</span>
                         {currentCategory === cat && (
                           <motion.span
-                            initial={{ scale: 0.5, opacity: 0 }}
+                            initial={{ scale: 0.8, opacity: 0 }}
                             animate={{ scale: 1, opacity: 1 }}
                             transition={{ duration: 0.15, ease: [0.22, 1, 0.36, 1] }}
                             className="shrink-0"

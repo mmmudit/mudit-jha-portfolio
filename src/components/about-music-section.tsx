@@ -169,12 +169,12 @@ export function AboutMusicSection() {
                       key={album.id || `track-${index}`}
                       data-magnetic-card
                       layout
-                      initial={{ opacity: 0, scale: 0.95, y: 10 }}
+                      initial={{ opacity: 0, scale: 0.96, y: 8 }}
                       animate={{ opacity: 1, scale: 1, y: 0 }}
-                      exit={{ opacity: 0, scale: 0.95 }}
+                      exit={{ opacity: 0, scale: 0.96 }}
                       transition={{
-                        duration: 0.22,
-                        delay: Math.min(index * 0.02, 0.3),
+                        duration: 0.25,
+                        delay: Math.min(index * 0.04, 0.24),
                         ease: [0.22, 1, 0.36, 1],
                       }}
                       onMouseEnter={() => setHoveredId(album.id)}
@@ -268,7 +268,7 @@ export function AboutMusicSection() {
                                 fill
                                 unoptimized
                                 draggable={false}
-                                className="object-cover size-full group-hover:scale-105 saturate-50 group-hover:saturate-100 transition-transform duration-300 ease-out pointer-events-none select-none"
+                                className="object-cover size-full group-hover:scale-105 saturate-50 group-hover:saturate-100 transition-[transform,filter] duration-300 ease-out pointer-events-none select-none"
                                 sizes="(max-width: 768px) 142px, 152px"
                               />
                             </div>

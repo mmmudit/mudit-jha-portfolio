@@ -171,7 +171,7 @@ export function ProjectModal({ project, onClose }: ProjectModalProps) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.18, ease: [0.22, 1, 0.36, 1] }}
+            transition={{ duration: 0.15, ease: [0.22, 1, 0.36, 1] }}
             onClick={handleClose}
             className="fixed inset-0 bg-black/40 cursor-pointer"
             aria-hidden="true"

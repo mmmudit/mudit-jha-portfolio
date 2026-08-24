@@ -5,6 +5,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Check } from "lucide-react";
 import { LiveClock } from "./live-clock";
+import { ToonLinkPreview } from "./toon-link-preview";
 import { play } from "@/lib/sound";
 
 const socialLinks = [
@@ -71,11 +72,9 @@ export function Footer() {
 
         {/* Social Links Row */}
         <div className="relative flex flex-col md:flex-row items-center justify-center md:justify-between gap-y-3 sm:gap-y-4 md:gap-y-0 w-full font-sans font-semibold text-[26px] sm:text-[32px] md:text-[38px] lg:text-[46px] tracking-[-1px] leading-tight md:leading-none text-willow-grey">
-          {socialLinks.map((link) => (
-            <div
-              key={link.label}
-              className="flex items-center justify-center w-full md:w-auto"
-            >
+          {socialLinks.map((link) => {
+            const isEmail = link.label === "Email";
+            const linkElement = (
               <div className="relative inline-flex items-center">
                 <a
                   href={link.href}
@@ -85,9 +84,9 @@ export function Footer() {
                   data-cuelume-hover="tick"
                   data-cuelume-press
                   data-cuelume-release
-                  className="pressable transition-colors duration-200 hover:text-rust-grey focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-willow-grey/50 rounded-sm"
+                  className="pressable transition-[transform,color] duration-150 hover:text-rust-grey active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-willow-grey/50 rounded-sm"
                 >
-                  {link.label === "Email" && copied ? (
+                  {isEmail && copied ? (
                     <span className="text-emerald-800">Copied!</span>
                   ) : (
                     link.label.toLowerCase()
@@ -95,7 +94,7 @@ export function Footer() {
                 </a>
 
                 {/* Copied Feedback for Email */}
-                {link.label === "Email" && (
+                {isEmail && (
                   <AnimatePresence initial={false}>
                     {copied && (
                       <motion.span
@@ -112,8 +111,29 @@ export function Footer() {
                   </AnimatePresence>
                 )}
               </div>
-            </div>
-          ))}
+            );
+
+            return (
+              <div
+                key={link.label}
+                className="flex items-center justify-center w-full md:w-auto"
+              >
+                {!isEmail ? (
+                  <ToonLinkPreview
+                    preview={{
+                      title: `Mudit Jha on ${link.label}`,
+                      url: link.href,
+                      category: `Social / ${link.label}`,
+                    }}
+                  >
+                    {linkElement}
+                  </ToonLinkPreview>
+                ) : (
+                  linkElement
+                )}
+              </div>
+            );
+          })}
         </div>
 
         {/* Divider Line */}

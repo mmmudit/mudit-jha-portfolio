@@ -153,9 +153,9 @@ export function AboutEssaysSection() {
                 href={item.link || "#"}
                 target={item.link?.startsWith("http") ? "_blank" : undefined}
                 rel={item.link?.startsWith("http") ? "noopener noreferrer" : undefined}
-                initial={{ opacity: 0, y: 6 }}
+                initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.2, delay: index * 0.03, ease: [0.22, 1, 0.36, 1] }}
+                transition={{ duration: 0.25, delay: index * 0.04, ease: [0.22, 1, 0.36, 1] }}
                 className="group flex items-center justify-between gap-4 py-3.5 px-2 -mx-2 rounded-xl hover:bg-[#eae3d2]/30 transition-colors"
               >
                 {/* Left: Icon + Title & Desc */}
@@ -220,7 +220,7 @@ export function AboutEssaysSection() {
                     initial={{ opacity: 0, y: 8 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -4 }}
-                    transition={{ duration: 0.2, delay: index * 0.04, ease: [0.22, 1, 0.36, 1] }}
+                    transition={{ duration: 0.25, delay: index * 0.04, ease: [0.22, 1, 0.36, 1] }}
                     className="group flex items-center justify-between gap-4 py-3.5 px-2 -mx-2 rounded-xl hover:bg-[#eae3d2]/30 transition-colors"
                   >
                     <div className="flex items-center gap-3.5 min-w-0">
@@ -254,7 +254,7 @@ export function AboutEssaysSection() {
               type="button"
               data-cuelume-toggle
               onClick={() => setIsExpanded(!isExpanded)}
-              className="pressable inline-flex items-center gap-1.5 text-[12px] font-display font-normal text-zinc-400 hover:text-zinc-700 transition-colors py-1 px-3 rounded-full hover:bg-[#eae3d2]/40"
+              className="pressable inline-flex items-center gap-1.5 text-[12px] font-display font-normal text-zinc-400 hover:text-zinc-700 active:scale-[0.96] transition-[transform,color,background-color] duration-150 py-1 px-3 rounded-full hover:bg-[#eae3d2]/40"
             >
               <span>{isExpanded ? "Show fewer essays" : "View all essays"}</span>
               <ChevronDown

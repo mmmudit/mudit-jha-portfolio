@@ -205,7 +205,7 @@ export function AboutMomentsSection() {
               >
                 {/* Solid 16:9 Card (Opaque, zero translucency, crisp shadow) */}
                 <div
-                  className={`relative size-full rounded-[18px] sm:rounded-[22px] overflow-hidden bg-zinc-950 transition-all duration-300 ${
+                  className={`relative size-full rounded-[18px] sm:rounded-[22px] overflow-hidden bg-zinc-950 transition-[box-shadow,filter] duration-300 ease-out ${
                     isCenter
                       ? "shadow-[0_24px_50px_-10px_rgba(0,0,0,0.45),0_0_0_1px_rgba(200,213,187,0.85)] brightness-100"
                       : "shadow-[0_12px_32px_rgba(0,0,0,0.35)] border border-black/40 brightness-[0.82]"

@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useState, useRef, useEffect } from "react";
 import { motion, useReducedMotion, AnimatePresence } from "framer-motion";
 import { MagicalStrokeReveal } from "./MagicalStrokeReveal";
+import { ToonLinkPreview } from "./toon-link-preview";
 import {
   MapPin,
   GraduationCap,
@@ -152,54 +153,102 @@ export function AboutHeroSection() {
               {/* Left Social Icons */}
               <div className="flex items-center gap-1">
                 {/* X / Twitter */}
-                <a
-                  href="https://x.com/MuditJ1"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="X profile"
-                  className="pressable p-1.5 rounded-md hover:text-zinc-800 hover:bg-[#eae3d2]/40 transition-colors"
+                <ToonLinkPreview
+                  preview={{
+                    title: "Mudit Jha (@MuditJ1)",
+                    url: "https://x.com/MuditJ1",
+                    category: "Social / X",
+                    icon: (
+                      <svg className="size-5 fill-current" viewBox="0 0 24 24">
+                        <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+                      </svg>
+                    ),
+                  }}
                 >
-                  <svg className="size-3.5 fill-current" viewBox="0 0 24 24">
-                    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
-                  </svg>
-                </a>
+                  <a
+                    href="https://x.com/MuditJ1"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="X profile"
+                    className="pressable p-1.5 rounded-md hover:text-zinc-800 hover:bg-[#eae3d2]/40 active:scale-[0.96] transition-[transform,color,background-color] duration-150 inline-flex items-center"
+                  >
+                    <svg className="size-3.5 fill-current" viewBox="0 0 24 24">
+                      <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+                    </svg>
+                  </a>
+                </ToonLinkPreview>
 
                 {/* GitHub */}
-                <a
-                  href="https://github.com/mmmudit"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="GitHub profile"
-                  className="pressable p-1.5 rounded-md hover:text-zinc-800 hover:bg-[#eae3d2]/40 transition-colors"
+                <ToonLinkPreview
+                  preview={{
+                    title: "Mudit Jha (mmmudit)",
+                    url: "https://github.com/mmmudit",
+                    category: "Code / GitHub",
+                    icon: (
+                      <svg className="size-5 fill-current" viewBox="0 0 24 24">
+                        <path fillRule="evenodd" clipRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" />
+                      </svg>
+                    ),
+                  }}
                 >
-                  <svg className="size-3.5 fill-current" viewBox="0 0 24 24">
-                    <path fillRule="evenodd" clipRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" />
-                  </svg>
-                </a>
+                  <a
+                    href="https://github.com/mmmudit"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="GitHub profile"
+                    className="pressable p-1.5 rounded-md hover:text-zinc-800 hover:bg-[#eae3d2]/40 active:scale-[0.96] transition-[transform,color,background-color] duration-150 inline-flex items-center"
+                  >
+                    <svg className="size-3.5 fill-current" viewBox="0 0 24 24">
+                      <path fillRule="evenodd" clipRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" />
+                    </svg>
+                  </a>
+                </ToonLinkPreview>
 
                 {/* LinkedIn */}
-                <a
-                  href="https://www.linkedin.com/in/muditj3/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="LinkedIn profile"
-                  className="pressable p-1.5 rounded-md hover:text-zinc-800 hover:bg-[#eae3d2]/40 transition-colors"
+                <ToonLinkPreview
+                  preview={{
+                    title: "Mudit Jha on LinkedIn",
+                    url: "https://www.linkedin.com/in/muditj3/",
+                    category: "Career / LinkedIn",
+                    icon: (
+                      <svg className="size-5 fill-current" viewBox="0 0 24 24">
+                        <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.46 8.76a1.64 1.64 0 1 0 0-3.28 1.64 1.64 0 0 0 0 3.28m1.4 9.74v-8.37H5.06v8.37h2.8z" />
+                      </svg>
+                    ),
+                  }}
                 >
-                  <svg className="size-3.5 fill-current" viewBox="0 0 24 24">
-                    <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.46 8.76a1.64 1.64 0 1 0 0-3.28 1.64 1.64 0 0 0 0 3.28m1.4 9.74v-8.37H5.06v8.37h2.8z" />
-                  </svg>
-                </a>
+                  <a
+                    href="https://www.linkedin.com/in/muditj3/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="LinkedIn profile"
+                    className="pressable p-1.5 rounded-md hover:text-zinc-800 hover:bg-[#eae3d2]/40 active:scale-[0.96] transition-[transform,color,background-color] duration-150 inline-flex items-center"
+                  >
+                    <svg className="size-3.5 fill-current" viewBox="0 0 24 24">
+                      <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.46 8.76a1.64 1.64 0 1 0 0-3.28 1.64 1.64 0 0 0 0 3.28m1.4 9.74v-8.37H5.06v8.37h2.8z" />
+                    </svg>
+                  </a>
+                </ToonLinkPreview>
 
                 {/* Letterboxd */}
-                <a
-                  href="https://letterboxd.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="Letterboxd profile"
-                  className="pressable p-1.5 rounded-md hover:text-zinc-800 hover:bg-[#eae3d2]/40 transition-colors"
+                <ToonLinkPreview
+                  preview={{
+                    title: "Mudit Jha on Letterboxd",
+                    url: "https://letterboxd.com",
+                    category: "Cinema / Diary",
+                    icon: <Film className="size-5" />,
+                  }}
                 >
-                  <Film className="size-3.5" />
-                </a>
+                  <a
+                    href="https://letterboxd.com"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="Letterboxd profile"
+                    className="pressable p-1.5 rounded-md hover:text-zinc-800 hover:bg-[#eae3d2]/40 active:scale-[0.96] transition-[transform,color,background-color] duration-150 inline-flex items-center"
+                  >
+                    <Film className="size-3.5" />
+                  </a>
+                </ToonLinkPreview>
               </div>
 
               {/* Right Quick Actions */}
@@ -217,9 +266,9 @@ export function AboutHeroSection() {
                   <AnimatePresence>
                     {copiedEmail && (
                       <motion.span
-                        initial={{ opacity: 0, y: 4, scale: 0.9 }}
+                        initial={{ opacity: 0, y: -16, scale: 0.96 }}
                         animate={{ opacity: 1, y: -24, scale: 1 }}
-                        exit={{ opacity: 0, y: -28, scale: 0.9 }}
+                        exit={{ opacity: 0, y: -28, scale: 0.96 }}
                         className="absolute left-1/2 -translate-x-1/2 inline-flex items-center gap-1 px-2 py-0.5 text-[11px] font-mono font-medium text-emerald-800 bg-emerald-100/90 backdrop-blur-sm rounded-full border border-emerald-300 shadow-sm whitespace-nowrap z-20"
                       >
                         <Check className="size-2.5 text-emerald-700" />
@@ -230,26 +279,44 @@ export function AboutHeroSection() {
                 </div>
 
                 {/* Book a call */}
-                <a
-                  href="https://cal.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="pressable inline-flex items-center gap-1.5 px-2 py-1 rounded-md hover:text-zinc-800 hover:bg-[#eae3d2]/40 active:scale-[0.96] transition-[transform,color,background-color] duration-150"
+                <ToonLinkPreview
+                  preview={{
+                    title: "Book a 1:1 Intro Call",
+                    url: "https://cal.com",
+                    category: "Schedule / Cal.com",
+                    icon: <Calendar className="size-5" />,
+                  }}
                 >
-                  <Calendar className="size-3.5 stroke-[1.75]" />
-                  <span>Book a call</span>
-                </a>
+                  <a
+                    href="https://cal.com"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="pressable inline-flex items-center gap-1.5 px-2 py-1 rounded-md hover:text-zinc-800 hover:bg-[#eae3d2]/40 active:scale-[0.96] transition-[transform,color,background-color] duration-150"
+                  >
+                    <Calendar className="size-3.5 stroke-[1.75]" />
+                    <span>Book a call</span>
+                  </a>
+                </ToonLinkPreview>
 
                 {/* CV */}
-                <a
-                  href="/resume.pdf"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="pressable inline-flex items-center gap-1.5 px-2 py-1 rounded-md hover:text-zinc-800 hover:bg-[#eae3d2]/40 active:scale-[0.96] transition-[transform,color,background-color] duration-150"
+                <ToonLinkPreview
+                  preview={{
+                    title: "Mudit Jha – Curriculum Vitae",
+                    url: "https://muditjha.me/resume.pdf",
+                    category: "Document / Resume",
+                    icon: <FileDown className="size-5" />,
+                  }}
                 >
-                  <FileDown className="size-3.5 stroke-[1.75]" />
-                  <span>CV</span>
-                </a>
+                  <a
+                    href="/resume.pdf"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="pressable inline-flex items-center gap-1.5 px-2 py-1 rounded-md hover:text-zinc-800 hover:bg-[#eae3d2]/40 active:scale-[0.96] transition-[transform,color,background-color] duration-150"
+                  >
+                    <FileDown className="size-3.5 stroke-[1.75]" />
+                    <span>CV</span>
+                  </a>
+                </ToonLinkPreview>
               </div>
             </div>
 
@@ -270,15 +337,15 @@ export function AboutHeroSection() {
                 type="submit"
                 disabled={isSending || !message.trim()}
                 aria-label="Send message"
-                className="pressable relative shrink-0 flex items-center justify-center size-8 rounded-full border border-zinc-300 bg-[#fbfaf5] text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100 disabled:opacity-40 disabled:pointer-events-none transition-[color,background-color,transform] duration-150 shadow-xs overflow-hidden active:scale-[0.95]"
+                className="pressable relative shrink-0 flex items-center justify-center size-8 rounded-full border border-zinc-300 bg-[#fbfaf5] text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100 disabled:opacity-40 disabled:pointer-events-none transition-[color,background-color,transform] duration-150 shadow-xs overflow-hidden active:scale-[0.96]"
               >
                 <AnimatePresence mode="wait" initial={false}>
                   {isSent ? (
                     <motion.div
                       key="sent-check"
-                      initial={{ opacity: 0, scale: 0.6, y: 8 }}
+                      initial={{ opacity: 0, scale: 0.85, y: 4 }}
                       animate={{ opacity: 1, scale: 1, y: 0 }}
-                      exit={{ opacity: 0, scale: 0.6, y: -8 }}
+                      exit={{ opacity: 0, scale: 0.85, y: -4 }}
                       transition={{ type: "spring", stiffness: 450, damping: 25 }}
                       className="text-emerald-700"
                     >
@@ -290,7 +357,7 @@ export function AboutHeroSection() {
                       initial={{ opacity: 0, y: 8 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -14 }}
-                      transition={{ duration: 0.18, ease: [0.22, 1, 0.36, 1] }}
+                      transition={{ duration: 0.15, ease: [0.22, 1, 0.36, 1] }}
                     >
                       <ArrowUp className="size-4 stroke-[2.2]" />
                     </motion.div>
@@ -329,7 +396,7 @@ export function AboutHeroSection() {
                 alt="Mudit Jha"
                 fill
                 priority
-                className="object-cover object-top transition-transform duration-500 ease-out group-hover/photo:scale-[1.03]"
+                className="object-cover object-top transition-transform duration-300 ease-out group-hover/photo:scale-[1.03]"
                 sizes="(max-width: 768px) 280px, 320px"
               />
               {/* Soft overlay gradient */}
@@ -337,10 +404,10 @@ export function AboutHeroSection() {
 
               {/* Diagonal Signature Overlay Spanning Diagonally Over Entire Photo - Appears on Hover */}
               <motion.div
-                initial={{ opacity: 0, scale: 0.94, rotate: -24 }}
+                initial={{ opacity: 0, scale: 0.96, rotate: -24 }}
                 animate={{
                   opacity: isPolaroidHovered ? 1 : 0,
-                  scale: isPolaroidHovered ? 1.05 : 0.94,
+                  scale: isPolaroidHovered ? 1.05 : 0.96,
                   rotate: -24,
                 }}
                 transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
