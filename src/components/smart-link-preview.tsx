@@ -159,9 +159,16 @@ export function SmartLinkPreview({
   }, [isOpen]);
 
   const CARD_WIDTH = variant === "compact" ? 280 : isEmail ? 360 : 312;
+  const CARD_HEIGHT = isEmail && variant === "card" ? 185 : variant === "compact" ? 40 : 250;
 
-  // The card MUST appear directly below the hovered item, almost touching the text
-  const top = triggerRect ? triggerRect.bottom + 3 : 0;
+  const spaceBelow = typeof window !== "undefined" ? window.innerHeight - (triggerRect?.bottom || 0) : 500;
+  const isFlipped = spaceBelow < CARD_HEIGHT + 15 && (triggerRect?.top || 0) > CARD_HEIGHT + 15;
+
+  const top = triggerRect
+    ? isFlipped
+      ? triggerRect.top - CARD_HEIGHT - 6
+      : triggerRect.bottom + 4
+    : 0;
 
   const left = triggerRect
     ? Math.max(
@@ -192,7 +199,13 @@ export function SmartLinkPreview({
           onMouseLeave={handleCardLeave}
         >
           {/* Invisible Hover Hit Bridge between trigger and card */}
-          <div className="absolute left-0 right-0 -top-2 h-3 bg-transparent pointer-events-auto" />
+          <div
+            className={
+              isFlipped
+                ? "absolute left-0 right-0 -bottom-2 h-3 bg-transparent pointer-events-auto"
+                : "absolute left-0 right-0 -top-2 h-3 bg-transparent pointer-events-auto"
+            }
+          />
 
           <motion.div
             initial={
@@ -201,7 +214,7 @@ export function SmartLinkPreview({
                 : {
                     opacity: 0,
                     scale: 0.96,
-                    y: -4,
+                    y: isFlipped ? 4 : -4,
                   }
             }
             animate={
@@ -219,7 +232,7 @@ export function SmartLinkPreview({
                 : {
                     opacity: 0,
                     scale: 0.96,
-                    y: -3,
+                    y: isFlipped ? 3 : -3,
                   }
             }
             transition={{
@@ -227,7 +240,7 @@ export function SmartLinkPreview({
               ease: EASE_OUT,
             }}
             style={{
-              transformOrigin: `${tailLeft}px 0px`,
+              transformOrigin: `${tailLeft}px ${isFlipped ? CARD_HEIGHT : 0}px`,
               width: variant === "compact" ? undefined : `${CARD_WIDTH}px`,
             }}
             className={
@@ -261,14 +274,29 @@ export function SmartLinkPreview({
                 {!isEmail && <ArrowUpRight className="size-3.5 text-zinc-400 shrink-0" />}
 
                 {/* Compact Pointer Tail */}
-                <div
-                  style={{ left: `${tailLeft - 6}px` }}
-                  className="absolute -top-[5px] w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-b-[5px] border-b-zinc-950 drop-shadow-[0_-1px_0_#18181b]"
-                />
-                <div
-                  style={{ left: `${tailLeft - 5}px` }}
-                  className="absolute -top-[4px] w-0 h-0 border-l-[5px] border-l-transparent border-r-[5px] border-r-transparent border-b-[4px] border-b-[#fffdfa]"
-                />
+                {isFlipped ? (
+                  <>
+                    <div
+                      style={{ left: `${tailLeft - 6}px` }}
+                      className="absolute -bottom-[5px] w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-t-[5px] border-t-zinc-950 drop-shadow-[0_1px_0_#18181b]"
+                    />
+                    <div
+                      style={{ left: `${tailLeft - 5}px` }}
+                      className="absolute -bottom-[4px] w-0 h-0 border-l-[5px] border-l-transparent border-r-[5px] border-r-transparent border-t-[4px] border-t-[#fffdfa]"
+                    />
+                  </>
+                ) : (
+                  <>
+                    <div
+                      style={{ left: `${tailLeft - 6}px` }}
+                      className="absolute -top-[5px] w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-b-[5px] border-b-zinc-950 drop-shadow-[0_-1px_0_#18181b]"
+                    />
+                    <div
+                      style={{ left: `${tailLeft - 5}px` }}
+                      className="absolute -top-[4px] w-0 h-0 border-l-[5px] border-l-transparent border-r-[5px] border-r-transparent border-b-[4px] border-b-[#fffdfa]"
+                    />
+                  </>
+                )}
               </>
             ) : isEmail ? (
               /* ── Figma Postcard Email Preview (Node 248:2982) ── */
@@ -364,15 +392,30 @@ export function SmartLinkPreview({
                   </div>
                 </div>
 
-                {/* Top Pointer Tail */}
-                <div
-                  style={{ left: `${tailLeft - 6}px` }}
-                  className="absolute -top-[5px] w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-b-[5px] border-b-zinc-950 drop-shadow-[0_-1px_0_#18181b]"
-                />
-                <div
-                  style={{ left: `${tailLeft - 5}px` }}
-                  className="absolute -top-[4px] w-0 h-0 border-l-[5px] border-l-transparent border-r-[5px] border-r-transparent border-b-[4px] border-b-[#fffdfb]"
-                />
+                {/* Top/Bottom Pointer Tail */}
+                {isFlipped ? (
+                  <>
+                    <div
+                      style={{ left: `${tailLeft - 6}px` }}
+                      className="absolute -bottom-[5px] w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-t-[5px] border-t-zinc-950 drop-shadow-[0_1px_0_#18181b]"
+                    />
+                    <div
+                      style={{ left: `${tailLeft - 5}px` }}
+                      className="absolute -bottom-[4px] w-0 h-0 border-l-[5px] border-l-transparent border-r-[5px] border-r-transparent border-t-[4px] border-t-[#fffdfb]"
+                    />
+                  </>
+                ) : (
+                  <>
+                    <div
+                      style={{ left: `${tailLeft - 6}px` }}
+                      className="absolute -top-[5px] w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-b-[5px] border-b-zinc-950 drop-shadow-[0_-1px_0_#18181b]"
+                    />
+                    <div
+                      style={{ left: `${tailLeft - 5}px` }}
+                      className="absolute -top-[4px] w-0 h-0 border-l-[5px] border-l-transparent border-r-[5px] border-r-transparent border-b-[4px] border-b-[#fffdfb]"
+                    />
+                  </>
+                )}
               </div>
             ) : (
               <>
@@ -447,15 +490,30 @@ export function SmartLinkPreview({
                   )}
                 </div>
 
-                {/* Top Pointer Tail pointing up snugly to hovered text */}
-                <div
-                  style={{ left: `${tailLeft - 6}px` }}
-                  className="absolute -top-[5px] w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-b-[5px] border-b-zinc-950 drop-shadow-[0_-1px_0_#18181b]"
-                />
-                <div
-                  style={{ left: `${tailLeft - 5}px` }}
-                  className="absolute -top-[4px] w-0 h-0 border-l-[5px] border-l-transparent border-r-[5px] border-r-transparent border-b-[4px] border-b-[#fffdfa]"
-                />
+                {/* Top/Bottom Pointer Tail */}
+                {isFlipped ? (
+                  <>
+                    <div
+                      style={{ left: `${tailLeft - 6}px` }}
+                      className="absolute -bottom-[5px] w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-t-[5px] border-t-zinc-950 drop-shadow-[0_1px_0_#18181b]"
+                    />
+                    <div
+                      style={{ left: `${tailLeft - 5}px` }}
+                      className="absolute -bottom-[4px] w-0 h-0 border-l-[5px] border-l-transparent border-r-[5px] border-r-transparent border-t-[4px] border-t-[#fffdfa]"
+                    />
+                  </>
+                ) : (
+                  <>
+                    <div
+                      style={{ left: `${tailLeft - 6}px` }}
+                      className="absolute -top-[5px] w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-b-[5px] border-b-zinc-950 drop-shadow-[0_-1px_0_#18181b]"
+                    />
+                    <div
+                      style={{ left: `${tailLeft - 5}px` }}
+                      className="absolute -top-[4px] w-0 h-0 border-l-[5px] border-l-transparent border-r-[5px] border-r-transparent border-b-[4px] border-b-[#fffdfa]"
+                    />
+                  </>
+                )}
               </>
             )}
           </motion.div>

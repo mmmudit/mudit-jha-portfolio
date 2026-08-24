@@ -118,7 +118,7 @@ export function Footer() {
                 key={link.label}
                 className="flex items-center justify-center w-full md:w-auto"
               >
-                <SmartLinkPreview url={link.href} variant="compact">
+                <SmartLinkPreview url={link.href} variant={isEmail ? "card" : "compact"}>
                   {linkElement}
                 </SmartLinkPreview>
               </div>
