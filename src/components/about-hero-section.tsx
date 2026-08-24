@@ -4,7 +4,8 @@ import Image from "next/image";
 import { useState, useRef, useEffect } from "react";
 import { motion, useReducedMotion, AnimatePresence } from "framer-motion";
 import { MagicalStrokeReveal } from "./MagicalStrokeReveal";
-import { ToonLinkPreview } from "./toon-link-preview";
+import { SmartLinkPreview } from "./smart-link-preview";
+import { EmailPreviewBadge } from "./email-preview-badge";
 import {
   MapPin,
   GraduationCap,
@@ -153,18 +154,7 @@ export function AboutHeroSection() {
               {/* Left Social Icons */}
               <div className="flex items-center gap-1">
                 {/* X / Twitter */}
-                <ToonLinkPreview
-                  preview={{
-                    title: "Mudit Jha (@MuditJ1)",
-                    url: "https://x.com/MuditJ1",
-                    category: "Social / X",
-                    icon: (
-                      <svg className="size-5 fill-current" viewBox="0 0 24 24">
-                        <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
-                      </svg>
-                    ),
-                  }}
-                >
+                <SmartLinkPreview url="https://x.com/MuditJ1">
                   <a
                     href="https://x.com/MuditJ1"
                     target="_blank"
@@ -176,21 +166,10 @@ export function AboutHeroSection() {
                       <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
                     </svg>
                   </a>
-                </ToonLinkPreview>
+                </SmartLinkPreview>
 
                 {/* GitHub */}
-                <ToonLinkPreview
-                  preview={{
-                    title: "Mudit Jha (mmmudit)",
-                    url: "https://github.com/mmmudit",
-                    category: "Code / GitHub",
-                    icon: (
-                      <svg className="size-5 fill-current" viewBox="0 0 24 24">
-                        <path fillRule="evenodd" clipRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" />
-                      </svg>
-                    ),
-                  }}
-                >
+                <SmartLinkPreview url="https://github.com/mmmudit">
                   <a
                     href="https://github.com/mmmudit"
                     target="_blank"
@@ -202,21 +181,10 @@ export function AboutHeroSection() {
                       <path fillRule="evenodd" clipRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" />
                     </svg>
                   </a>
-                </ToonLinkPreview>
+                </SmartLinkPreview>
 
                 {/* LinkedIn */}
-                <ToonLinkPreview
-                  preview={{
-                    title: "Mudit Jha on LinkedIn",
-                    url: "https://www.linkedin.com/in/muditj3/",
-                    category: "Career / LinkedIn",
-                    icon: (
-                      <svg className="size-5 fill-current" viewBox="0 0 24 24">
-                        <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.46 8.76a1.64 1.64 0 1 0 0-3.28 1.64 1.64 0 0 0 0 3.28m1.4 9.74v-8.37H5.06v8.37h2.8z" />
-                      </svg>
-                    ),
-                  }}
-                >
+                <SmartLinkPreview url="https://www.linkedin.com/in/muditj3/">
                   <a
                     href="https://www.linkedin.com/in/muditj3/"
                     target="_blank"
@@ -228,17 +196,10 @@ export function AboutHeroSection() {
                       <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.46 8.76a1.64 1.64 0 1 0 0-3.28 1.64 1.64 0 0 0 0 3.28m1.4 9.74v-8.37H5.06v8.37h2.8z" />
                     </svg>
                   </a>
-                </ToonLinkPreview>
+                </SmartLinkPreview>
 
                 {/* Letterboxd */}
-                <ToonLinkPreview
-                  preview={{
-                    title: "Mudit Jha on Letterboxd",
-                    url: "https://letterboxd.com",
-                    category: "Cinema / Diary",
-                    icon: <Film className="size-5" />,
-                  }}
-                >
+                <SmartLinkPreview url="https://letterboxd.com">
                   <a
                     href="https://letterboxd.com"
                     target="_blank"
@@ -248,45 +209,40 @@ export function AboutHeroSection() {
                   >
                     <Film className="size-3.5" />
                   </a>
-                </ToonLinkPreview>
+                </SmartLinkPreview>
               </div>
 
               {/* Right Quick Actions */}
               <div className="flex items-center gap-1 sm:gap-2 text-[12px] font-sans">
-                {/* Email button with copy state */}
-                <div className="relative inline-flex items-center">
-                  <button
-                    type="button"
-                    onClick={handleCopyEmail}
-                    className="pressable inline-flex items-center gap-1.5 px-2 py-1 rounded-md hover:text-zinc-800 hover:bg-[#eae3d2]/40 active:scale-[0.96] transition-[transform,color,background-color] duration-150"
-                  >
-                    <Mail className="size-3.5 stroke-[1.75]" />
-                    <span>{copiedEmail ? "Copied!" : "Email"}</span>
-                  </button>
-                  <AnimatePresence>
-                    {copiedEmail && (
-                      <motion.span
-                        initial={{ opacity: 0, y: -16, scale: 0.96 }}
-                        animate={{ opacity: 1, y: -24, scale: 1 }}
-                        exit={{ opacity: 0, y: -28, scale: 0.96 }}
-                        className="absolute left-1/2 -translate-x-1/2 inline-flex items-center gap-1 px-2 py-0.5 text-[11px] font-mono font-medium text-emerald-800 bg-emerald-100/90 backdrop-blur-sm rounded-full border border-emerald-300 shadow-sm whitespace-nowrap z-20"
-                      >
-                        <Check className="size-2.5 text-emerald-700" />
-                        <span>Copied hello@muditjha.me</span>
-                      </motion.span>
-                    )}
-                  </AnimatePresence>
-                </div>
+                {/* Email button with copy state and rich preview */}
+                <EmailPreviewBadge>
+                  <div className="relative inline-flex items-center">
+                    <button
+                      type="button"
+                      onClick={handleCopyEmail}
+                      className="pressable inline-flex items-center gap-1.5 px-2 py-1 rounded-md hover:text-zinc-800 hover:bg-[#eae3d2]/40 active:scale-[0.96] transition-[transform,color,background-color] duration-150"
+                    >
+                      <Mail className="size-3.5 stroke-[1.75]" />
+                      <span>{copiedEmail ? "Copied!" : "Email"}</span>
+                    </button>
+                    <AnimatePresence>
+                      {copiedEmail && (
+                        <motion.span
+                          initial={{ opacity: 0, y: -16, scale: 0.96 }}
+                          animate={{ opacity: 1, y: -24, scale: 1 }}
+                          exit={{ opacity: 0, y: -28, scale: 0.96 }}
+                          className="absolute left-1/2 -translate-x-1/2 inline-flex items-center gap-1 px-2 py-0.5 text-[11px] font-mono font-medium text-emerald-800 bg-emerald-100/90 backdrop-blur-sm rounded-full border border-emerald-300 shadow-sm whitespace-nowrap z-20"
+                        >
+                          <Check className="size-2.5 text-emerald-700" />
+                          <span>Copied hello@muditjha.me</span>
+                        </motion.span>
+                      )}
+                    </AnimatePresence>
+                  </div>
+                </EmailPreviewBadge>
 
                 {/* Book a call */}
-                <ToonLinkPreview
-                  preview={{
-                    title: "Book a 1:1 Intro Call",
-                    url: "https://cal.com",
-                    category: "Schedule / Cal.com",
-                    icon: <Calendar className="size-5" />,
-                  }}
-                >
+                <SmartLinkPreview url="https://cal.com">
                   <a
                     href="https://cal.com"
                     target="_blank"
@@ -296,17 +252,10 @@ export function AboutHeroSection() {
                     <Calendar className="size-3.5 stroke-[1.75]" />
                     <span>Book a call</span>
                   </a>
-                </ToonLinkPreview>
+                </SmartLinkPreview>
 
                 {/* CV */}
-                <ToonLinkPreview
-                  preview={{
-                    title: "Mudit Jha – Curriculum Vitae",
-                    url: "https://muditjha.me/resume.pdf",
-                    category: "Document / Resume",
-                    icon: <FileDown className="size-5" />,
-                  }}
-                >
+                <SmartLinkPreview url="https://muditjha.me/resume.pdf" fallbackTitle="Mudit Jha – Curriculum Vitae" fallbackDescription="Design engineering, product architecture, and human-centered research resume.">
                   <a
                     href="/resume.pdf"
                     target="_blank"
@@ -316,7 +265,7 @@ export function AboutHeroSection() {
                     <FileDown className="size-3.5 stroke-[1.75]" />
                     <span>CV</span>
                   </a>
-                </ToonLinkPreview>
+                </SmartLinkPreview>
               </div>
             </div>
 

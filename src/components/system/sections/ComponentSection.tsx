@@ -9,6 +9,9 @@ import NavigationTabs from "../../NavigationTabs";
 import { LiveClock } from "../../live-clock";
 import { ProjectCard } from "../../project-card";
 import { Divider } from "../../divider";
+import { SmartLinkPreview } from "../../smart-link-preview";
+import { EmailPreviewBadge } from "../../email-preview-badge";
+import { LinkPreview } from "../../LinkPreview";
 
 export function ComponentSection() {
   const [chatHover, setChatHover] = useState(false);
@@ -234,7 +237,92 @@ export function ComponentSection() {
           </div>
         </div>
 
-        {/* 7. Divider Line */}
+        {/* 7. Smart Link Preview Badges */}
+        <div className="p-6 bg-[#fbfaf5] rounded-2xl border border-zinc-300 shadow-xs">
+          <div className="flex items-center justify-between mb-4 pb-2 border-b border-zinc-200">
+            <div>
+              <h3 className="font-sans font-semibold text-base text-zinc-900">
+                Link Previews &amp; Social Badges (`&lt;SmartLinkPreview /&gt;`)
+              </h3>
+              <p className="text-xs text-zinc-500">
+                Standard hover cards with live OpenGraph metadata extraction (favicon, domain, cover image, title, and description) in the warm paper theme.
+              </p>
+            </div>
+            <code className="text-xs font-mono text-zinc-500">src/components/smart-link-preview.tsx</code>
+          </div>
+          <div className="flex flex-wrap items-center justify-center gap-6 p-8 bg-white/70 rounded-xl border border-zinc-200">
+            <SmartLinkPreview url="https://x.com/MuditJ1">
+              <span className="px-3.5 py-1.5 rounded-full bg-white hover:bg-zinc-100 border border-zinc-950 text-zinc-900 font-mono text-xs font-bold transition-colors cursor-pointer inline-flex items-center gap-1.5 shadow-[2px_2px_0px_#18181b]">
+                <span>X / Twitter</span>
+                <span className="text-zinc-400">↗</span>
+              </span>
+            </SmartLinkPreview>
+
+            <SmartLinkPreview url="https://github.com/mmmudit">
+              <span className="px-3.5 py-1.5 rounded-full bg-white hover:bg-zinc-100 border border-zinc-950 text-zinc-900 font-mono text-xs font-bold transition-colors cursor-pointer inline-flex items-center gap-1.5 shadow-[2px_2px_0px_#18181b]">
+                <span>GitHub</span>
+                <span className="text-zinc-400">↗</span>
+              </span>
+            </SmartLinkPreview>
+
+            <SmartLinkPreview url="https://cal.com">
+              <span className="px-3.5 py-1.5 rounded-full bg-white hover:bg-zinc-100 border border-zinc-950 text-zinc-900 font-mono text-xs font-bold transition-colors cursor-pointer inline-flex items-center gap-1.5 shadow-[2px_2px_0px_#18181b]">
+                <span>cal.com</span>
+                <span className="text-zinc-400">↗</span>
+              </span>
+            </SmartLinkPreview>
+
+            <EmailPreviewBadge>
+              <span className="px-3.5 py-1.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-300 font-mono text-xs font-bold hover:bg-emerald-100 transition-colors cursor-pointer inline-flex items-center gap-1.5 shadow-xs">
+                <span>Email Badge</span>
+                <span className="text-emerald-600">↗</span>
+              </span>
+            </EmailPreviewBadge>
+          </div>
+        </div>
+
+        {/* 8. Accessible Radix LinkPreview (<LinkPreview />) */}
+        <div className="p-6 bg-[#fbfaf5] rounded-2xl border border-zinc-300 shadow-xs">
+          <div className="flex items-center justify-between mb-4 pb-2 border-b border-zinc-200">
+            <div>
+              <h3 className="font-sans font-semibold text-base text-zinc-900">
+                Accessible Radix Link Preview (`&lt;LinkPreview /&gt;`)
+              </h3>
+              <p className="text-xs text-zinc-500">
+                Built on `@radix-ui/react-hover-card` with full keyboard ARIA focus support, 200ms intent delay, server-side OpenGraph scraper, and Framer Motion spring physics.
+              </p>
+            </div>
+            <code className="text-xs font-mono text-zinc-500">src/components/LinkPreview.tsx</code>
+          </div>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-6 p-8 bg-white/70 rounded-xl border border-zinc-200 text-sm font-sans text-zinc-700">
+            <p className="text-center sm:text-left leading-relaxed">
+              Check out reference designs on{" "}
+              <LinkPreview
+                href="https://cali.so"
+                className="font-semibold text-zinc-900 underline underline-offset-4 decoration-zinc-400 hover:decoration-zinc-900 transition-colors"
+              >
+                cali.so
+              </LinkPreview>
+              , explore tools on{" "}
+              <LinkPreview
+                href="https://github.com"
+                className="font-semibold text-zinc-900 underline underline-offset-4 decoration-zinc-400 hover:decoration-zinc-900 transition-colors"
+              >
+                GitHub
+              </LinkPreview>
+              , or read writing on{" "}
+              <LinkPreview
+                href="https://substack.com/@mmmudit"
+                className="font-semibold text-zinc-900 underline underline-offset-4 decoration-zinc-400 hover:decoration-zinc-900 transition-colors"
+              >
+                Substack
+              </LinkPreview>
+              .
+            </p>
+          </div>
+        </div>
+
+        {/* 9. Divider Line */}
         <div className="p-6 bg-[#fbfaf5] rounded-2xl border border-zinc-300 shadow-xs">
           <div className="flex items-center justify-between mb-4 pb-2 border-b border-zinc-200">
             <div>

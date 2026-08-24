@@ -43,9 +43,9 @@ export function Header() {
           </div>
         </div>
 
-        {/* Right: Contact email button */}
+        {/* Right: Contact email button (Direct click to mailto, no preview popover) */}
         <motion.a
-          href="mailto:hello@muditjha.com"
+          href="mailto:hello@muditjha.me"
           aria-label="Email Mudit Jha"
           onHoverStart={() => setHover(true)}
           onHoverEnd={() => setHover(false)}
@@ -54,9 +54,9 @@ export function Header() {
             reduce
               ? {}
               : {
-                width: hover ? expandedW : minW,
-                backgroundColor: hover ? "#e6e6e6" : "#fbfaf5",
-              }
+                  width: hover ? expandedW : minW,
+                  backgroundColor: hover ? "#e6e6e6" : "#fbfaf5",
+                }
           }
           transition={
             reduce
@@ -80,12 +80,12 @@ export function Header() {
                     reduce
                       ? {}
                       : {
-                        transform: hover
-                          ? "translateX(0px) scale(1)"
-                          : "translateX(8px) scale(0.96)",
-                        filter: hover ? "blur(0px)" : "blur(2px)",
-                        opacity: hover ? 1 : 0,
-                      }
+                          transform: hover
+                            ? "translateX(0px) scale(1)"
+                            : "translateX(8px) scale(0.96)",
+                          filter: hover ? "blur(0px)" : "blur(2px)",
+                          opacity: hover ? 1 : 0,
+                        }
                   }
                   transition={
                     reduce ? {} : { duration: 0.15, ease: [0.22, 1, 0.36, 1] }
@@ -103,10 +103,10 @@ export function Header() {
                     reduce
                       ? {}
                       : {
-                        color: hover ? "#374151" : "#9CA3AF",
-                        rotate: hover ? 5 : 0,
-                        backgroundColor: hover ? "#e6e6e6" : "#fbfaf5",
-                      }
+                          color: hover ? "#374151" : "#9CA3AF",
+                          rotate: hover ? 5 : 0,
+                          backgroundColor: hover ? "#e6e6e6" : "#fbfaf5",
+                        }
                   }
                   transition={
                     reduce ? {} : { duration: 0.15, ease: [0.22, 1, 0.36, 1] }
@@ -140,5 +140,3 @@ export function Header() {
     </>
   );
 }
-
-

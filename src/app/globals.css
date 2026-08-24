@@ -2,14 +2,14 @@
 @import "shadcn/tailwind.css";
 
 :root {
-  --dough: #fbfaf5;
-  --willow-grey: #c8d5bb;
-  --rust-grey: #47585c;
-  --button-primary: #52525b;
-  --button-secondary: #7f7f80;
-  --zinc-800: #27272a;
-  --zinc-300: #d4d4d8;
-  --status-green: #31b564;
+  --dough: oklch(0.985 0.007 95.8);
+  --willow-grey: oklch(0.852 0.035 127.5);
+  --rust-grey: oklch(0.435 0.024 205.2);
+  --button-primary: oklch(0.428 0.010 286.0);
+  --button-secondary: oklch(0.579 0.003 286.0);
+  --zinc-800: oklch(0.248 0.007 286.0);
+  --zinc-300: oklch(0.869 0.005 286.0);
+  --status-green: oklch(0.686 0.170 148.5);
   --background: var(--dough);
   --foreground: var(--zinc-800);
 }
@@ -37,7 +37,7 @@ body {
 }
 
 body {
-  background: linear-gradient(180deg, #FBFBF5 71.63%, #E1E5DE 100%);
+  background: linear-gradient(180deg, oklch(0.985 0.007 95.8) 71.63%, oklch(0.908 0.010 137.2) 100%);
   color: var(--foreground);
   font-family: var(--font-geist-sans), system-ui, sans-serif;
   /* Soft warm paper finish */
@@ -47,7 +47,7 @@ body {
 
 /* Paper Card Utility: Tactile layered shadows & subtle edge stroke */
 .paper-card {
-  background-color: #fbfaf5;
+  background-color: var(--dough);
   box-shadow:
     0 1px 2px rgba(0, 0, 0, 0.03),
     0 4px 16px rgba(0, 0, 0, 0.04),
@@ -56,12 +56,12 @@ body {
 
 .dot-grid {
   background-color: var(--dough);
-  background-image: radial-gradient(circle, rgba(200, 213, 187, 0.55) 1px, transparent 1px);
+  background-image: radial-gradient(circle, oklch(0.852 0.035 127.5 / 0.55) 1px, transparent 1px);
   background-size: 20px 20px;
 }
 
 .gradient-divider {
-  background: rgba(200, 213, 187, 0.35);
+  background: oklch(0.852 0.035 127.5 / 0.35);
 }
 
 
@@ -241,31 +241,31 @@ html.intro-dismissed #intro-overlay {
 
 @keyframes cursorColorCycle {
   0% {
-    stroke: #e35342;
+    stroke: oklch(0.612 0.207 28.5);
   }
 
   16% {
-    stroke: #f59e0b;
+    stroke: oklch(0.755 0.177 69.8);
   }
 
   33% {
-    stroke: #10b981;
+    stroke: oklch(0.704 0.155 160.8);
   }
 
   50% {
-    stroke: #06b6d4;
+    stroke: oklch(0.722 0.134 219.5);
   }
 
   66% {
-    stroke: #6366f1;
+    stroke: oklch(0.585 0.233 277.1);
   }
 
   83% {
-    stroke: #ec4899;
+    stroke: oklch(0.656 0.241 354.3);
   }
 
   100% {
-    stroke: #e35342;
+    stroke: oklch(0.612 0.207 28.5);
   }
 }
 

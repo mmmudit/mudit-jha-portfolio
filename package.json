@@ -10,6 +10,7 @@
     "agentation:server": "cross-env NODE_ENV=development npx -y agentation-mcp server"
   },
   "dependencies": {
+    "@radix-ui/react-hover-card": "^1.1.23",
     "@radix-ui/react-popover": "^1.1.23",
     "@radix-ui/react-tooltip": "^1.2.16",
     "@sanity/image-url": "^1.1.0",

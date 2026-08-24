@@ -12,6 +12,7 @@ export interface BaseToken {
 
 export interface ColorToken extends BaseToken {
   hex: string;
+  oklch?: string;
   variable?: string;
   category: "brand" | "neutral" | "functional" | "spine" | "gradient";
 }
@@ -63,8 +64,9 @@ export const COLOR_TOKENS: ColorToken[] = [
   {
     id: "color-dough",
     name: "Dough",
-    value: "#fbfaf5",
+    value: "oklch(0.985 0.007 95.8)",
     hex: "#fbfaf5",
+    oklch: "oklch(0.985 0.007 95.8)",
     variable: "--dough",
     className: "bg-dough text-dough",
     usage: "Primary tactile paper background across the entire site, base cards & modals",
@@ -75,8 +77,9 @@ export const COLOR_TOKENS: ColorToken[] = [
   {
     id: "color-willow-grey",
     name: "Willow Grey",
-    value: "#c8d5bb",
+    value: "oklch(0.852 0.035 127.5)",
     hex: "#c8d5bb",
+    oklch: "oklch(0.852 0.035 127.5)",
     variable: "--willow-grey",
     className: "bg-willow-grey text-willow-grey",
     usage: "Active navigation pill, 'human' accent word, footer headline & social links, shimmer accent",
@@ -87,8 +90,9 @@ export const COLOR_TOKENS: ColorToken[] = [
   {
     id: "color-rust-grey",
     name: "Rust Grey",
-    value: "#47585c",
+    value: "oklch(0.435 0.024 205.2)",
     hex: "#47585c",
+    oklch: "oklch(0.435 0.024 205.2)",
     variable: "--rust-grey",
     className: "bg-rust-grey text-rust-grey",
     usage: "Timestamps, quotes, hover state for footer word links, secondary text accents",
@@ -99,8 +103,9 @@ export const COLOR_TOKENS: ColorToken[] = [
   {
     id: "color-zinc-800",
     name: "Zinc 800",
-    value: "#27272a",
+    value: "oklch(0.248 0.007 286.0)",
     hex: "#27272a",
+    oklch: "oklch(0.248 0.007 286.0)",
     variable: "--zinc-800",
     className: "text-zinc-800 bg-zinc-800",
     usage: "Display headings ('mudit jha', 'about'), primary readable typography",
@@ -111,8 +116,9 @@ export const COLOR_TOKENS: ColorToken[] = [
   {
     id: "color-button-secondary",
     name: "Button Secondary (Muted Grey)",
-    value: "#7f7f80",
+    value: "oklch(0.579 0.003 286.0)",
     hex: "#7f7f80",
+    oklch: "oklch(0.579 0.003 286.0)",
     variable: "--button-secondary",
     className: "text-button-secondary",
     usage: "Hero bio subtitle descriptions, live clock HUD, changelog footer date",
@@ -123,8 +129,9 @@ export const COLOR_TOKENS: ColorToken[] = [
   {
     id: "color-zinc-300",
     name: "Zinc 300",
-    value: "#d4d4d8",
+    value: "oklch(0.869 0.005 286.0)",
     hex: "#d4d4d8",
+    oklch: "oklch(0.869 0.005 286.0)",
     variable: "--zinc-300",
     className: "border-zinc-300 text-zinc-300",
     usage: "Header 'let’s chat' pill border, navigation container subtle strokes",
@@ -135,8 +142,9 @@ export const COLOR_TOKENS: ColorToken[] = [
   {
     id: "color-status-green",
     name: "Status Green",
-    value: "#31b564",
+    value: "oklch(0.686 0.170 148.5)",
     hex: "#31b564",
+    oklch: "oklch(0.686 0.170 148.5)",
     variable: "--status-green",
     className: "bg-status-green text-status-green",
     usage: "Minneapolis live clock real-time pulsing dot",
@@ -147,8 +155,9 @@ export const COLOR_TOKENS: ColorToken[] = [
   {
     id: "color-button-primary",
     name: "Button Primary (Graphite)",
-    value: "#52525b",
+    value: "oklch(0.428 0.010 286.0)",
     hex: "#52525b",
+    oklch: "oklch(0.428 0.010 286.0)",
     variable: "--button-primary",
     className: "bg-button-primary text-button-primary",
     usage: "DESIGN.md token, book spine palette",
@@ -159,8 +168,9 @@ export const COLOR_TOKENS: ColorToken[] = [
   {
     id: "color-body-gradient-bottom",
     name: "Sage Paper Mist (Gradient Bottom)",
-    value: "#E1E5DE",
+    value: "oklch(0.908 0.010 137.2)",
     hex: "#E1E5DE",
+    oklch: "oklch(0.908 0.010 137.2)",
     className: "bg-[#E1E5DE]",
     usage: "Body background vertical linear gradient endpoint (71.63% → 100%)",
     tag: "one-off",

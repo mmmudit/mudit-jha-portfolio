@@ -5,7 +5,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Check } from "lucide-react";
 import { LiveClock } from "./live-clock";
-import { ToonLinkPreview } from "./toon-link-preview";
+import { SmartLinkPreview } from "./smart-link-preview";
 import { play } from "@/lib/sound";
 
 const socialLinks = [
@@ -13,7 +13,7 @@ const socialLinks = [
   { label: "LinkedIn", href: "https://www.linkedin.com/in/muditj3/" },
   { label: "Github", href: "https://github.com/mmmudit" },
   { label: "X", href: "https://x.com/MuditJ1" },
-  { label: "Substack", href: "https://substack.com/@mmmudit" },
+  { label: "Substack", href: "https://mmmudit.substack.com/" },
   { label: "Email", href: "mailto:hello@muditjha.me" },
 ] as const;
 
@@ -118,19 +118,9 @@ export function Footer() {
                 key={link.label}
                 className="flex items-center justify-center w-full md:w-auto"
               >
-                {!isEmail ? (
-                  <ToonLinkPreview
-                    preview={{
-                      title: `Mudit Jha on ${link.label}`,
-                      url: link.href,
-                      category: `Social / ${link.label}`,
-                    }}
-                  >
-                    {linkElement}
-                  </ToonLinkPreview>
-                ) : (
-                  linkElement
-                )}
+                <SmartLinkPreview url={link.href} variant="compact">
+                  {linkElement}
+                </SmartLinkPreview>
               </div>
             );
           })}
