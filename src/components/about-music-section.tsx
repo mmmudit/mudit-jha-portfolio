@@ -283,12 +283,6 @@ export function AboutMusicSection() {
                           {/* Subtle paper finish overlay */}
                           <div className="absolute inset-0 bg-radial from-transparent via-transparent to-black/10 pointer-events-none" />
 
-                          {/* Parental Advisory label */}
-                          <div className="absolute bottom-2 right-2 z-10">
-                            <div className="px-1 py-0.5 rounded-[2px] bg-black/90 backdrop-blur-xs text-[6px] font-mono font-bold uppercase tracking-tighter text-white">
-                              PA
-                            </div>
-                          </div>
                         </motion.a>
                       </div>
                     </motion.div>
