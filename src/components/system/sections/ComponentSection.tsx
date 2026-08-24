@@ -34,7 +34,7 @@ export function ComponentSection() {
       <div className="flex flex-col gap-10">
         {/* 1. Interactive Toon Eye Logo */}
         <div className="p-6 bg-[#fbfaf5] rounded-2xl border border-zinc-300 shadow-xs">
-          <div className="flex items-center justify-between mb-4 pb-2 border-b border-zinc-200">
+          <div className="flex items-center justify-between mb-5">
             <div>
               <h3 className="font-sans font-semibold text-base text-zinc-900">
                 Interactive Toon Eye Logo (`&lt;InteractiveTsuLogo /&gt;`)
@@ -52,7 +52,7 @@ export function ComponentSection() {
 
         {/* 2. Floating Navigation Bar & Tabs */}
         <div className="p-6 bg-[#fbfaf5] rounded-2xl border border-zinc-300 shadow-xs">
-          <div className="flex items-center justify-between mb-4 pb-2 border-b border-zinc-200">
+          <div className="flex items-center justify-between mb-5">
             <div>
               <h3 className="font-sans font-semibold text-base text-zinc-900">
                 Navigation Tabs (`&lt;NavigationTabs /&gt;`)
@@ -72,7 +72,7 @@ export function ComponentSection() {
 
         {/* 3. Live Clock (Both Variants) */}
         <div className="p-6 bg-[#fbfaf5] rounded-2xl border border-zinc-300 shadow-xs">
-          <div className="flex items-center justify-between mb-4 pb-2 border-b border-zinc-200">
+          <div className="flex items-center justify-between mb-5">
             <div>
               <h3 className="font-sans font-semibold text-base text-zinc-900">
                 Live Clock HUD (`&lt;LiveClock /&gt;`)
@@ -97,7 +97,7 @@ export function ComponentSection() {
 
         {/* 4. Let's Chat Expandable Contact Pill Button */}
         <div className="p-6 bg-[#fbfaf5] rounded-2xl border border-zinc-300 shadow-xs">
-          <div className="flex items-center justify-between mb-4 pb-2 border-b border-zinc-200">
+          <div className="flex items-center justify-between mb-5">
             <div>
               <h3 className="font-sans font-semibold text-base text-zinc-900">
                 Header Contact Email Pill
@@ -170,7 +170,7 @@ export function ComponentSection() {
 
         {/* 5. Live Project Card Instance */}
         <div className="p-6 bg-[#fbfaf5] rounded-2xl border border-zinc-300 shadow-xs">
-          <div className="flex items-center justify-between mb-4 pb-2 border-b border-zinc-200">
+          <div className="flex items-center justify-between mb-5">
             <div>
               <h3 className="font-sans font-semibold text-base text-zinc-900">
                 Project Card (`&lt;ProjectCard /&gt;`)
@@ -195,7 +195,7 @@ export function ComponentSection() {
 
         {/* 6. Email Copied Micro-Toast */}
         <div className="p-6 bg-[#fbfaf5] rounded-2xl border border-zinc-300 shadow-xs">
-          <div className="flex items-center justify-between mb-4 pb-2 border-b border-zinc-200">
+          <div className="flex items-center justify-between mb-5">
             <div>
               <h3 className="font-sans font-semibold text-base text-zinc-900">
                 Copied Feedback Pill Toast
@@ -239,7 +239,7 @@ export function ComponentSection() {
 
         {/* 7. Smart Link Preview Badges */}
         <div className="p-6 bg-[#fbfaf5] rounded-2xl border border-zinc-300 shadow-xs">
-          <div className="flex items-center justify-between mb-4 pb-2 border-b border-zinc-200">
+          <div className="flex items-center justify-between mb-5">
             <div>
               <h3 className="font-sans font-semibold text-base text-zinc-900">
                 Link Previews &amp; Social Badges (`&lt;SmartLinkPreview /&gt;`)
@@ -283,7 +283,7 @@ export function ComponentSection() {
 
         {/* 8. Accessible Radix LinkPreview (<LinkPreview />) */}
         <div className="p-6 bg-[#fbfaf5] rounded-2xl border border-zinc-300 shadow-xs">
-          <div className="flex items-center justify-between mb-4 pb-2 border-b border-zinc-200">
+          <div className="flex items-center justify-between mb-5">
             <div>
               <h3 className="font-sans font-semibold text-base text-zinc-900">
                 Accessible Radix Link Preview (`&lt;LinkPreview /&gt;`)
@@ -324,7 +324,7 @@ export function ComponentSection() {
 
         {/* 9. Divider Line */}
         <div className="p-6 bg-[#fbfaf5] rounded-2xl border border-zinc-300 shadow-xs">
-          <div className="flex items-center justify-between mb-4 pb-2 border-b border-zinc-200">
+          <div className="flex items-center justify-between mb-5">
             <div>
               <h3 className="font-sans font-semibold text-base text-zinc-900">
                 Gradient Divider (`&lt;Divider /&gt;`)

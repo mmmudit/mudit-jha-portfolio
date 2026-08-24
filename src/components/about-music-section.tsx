@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Image from "next/image";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { Disc, Music2 } from "lucide-react";
 import { AboutSectionHeader } from "./about-section-header";
 import { TextFlip } from "./text-flip";
@@ -24,6 +24,7 @@ const DEFAULT_COLORS: AudioColorPalette = {
 };
 
 export function AboutMusicSection() {
+  const reduce = useReducedMotion();
   const [tracks, setTracks] = useState<SpotifyTrack[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedYear, setSelectedYear] = useState("2026");
@@ -136,7 +137,7 @@ export function AboutMusicSection() {
           className="relative w-full overflow-x-auto no-scrollbar pt-6 pb-2 cursor-grab active:cursor-grabbing select-none"
         >
           {isLoading ? (
-            <div className="grid grid-rows-2 grid-flow-col gap-x-4 sm:gap-x-6 gap-y-10 auto-cols-max py-4 pl-3">
+            <div className="grid grid-rows-2 grid-flow-col gap-x-4 sm:gap-x-6 gap-y-10 auto-cols-max py-4 ps-3">
               {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
                 <div
                   key={i}
@@ -155,7 +156,7 @@ export function AboutMusicSection() {
             <motion.div
               layout
               className={`grid ${isTwoRows ? "grid-rows-2" : "grid-rows-1"
-                } grid-flow-col gap-x-4 sm:gap-x-6 gap-y-6 auto-cols-max pb-3 pl-3 pt-6`}
+                } grid-flow-col gap-x-4 sm:gap-x-6 gap-y-6 auto-cols-max pb-3 ps-3 pt-6`}
             >
               <AnimatePresence mode="popLayout">
                 {tracks.map((album, index) => {
@@ -187,11 +188,11 @@ export function AboutMusicSection() {
                       <div className="relative w-[142px] sm:w-[152px] h-[180px] sm:h-[190px] flex items-end justify-center">
                         {/* Realistic Rotating Vinyl Record - Slides upward on hover */}
                         <motion.div
-                          initial={{ y: 0, opacity: 0 }}
+                          initial={reduce ? { opacity: 0 } : { y: 0, opacity: 0, scale: 0.94 }}
                           animate={{
-                            y: isHovered ? -30 : 0,
+                            y: isHovered && !reduce ? -30 : 0,
                             opacity: isHovered ? 1 : 0,
-                            scale: isHovered ? 0.95 : 0.85,
+                            scale: isHovered ? 0.97 : 0.94,
                           }}
                           transition={{
                             type: "spring",
@@ -208,15 +209,11 @@ export function AboutMusicSection() {
                               : "0 0 0 1px rgba(255,255,255,0.08), inset 0 0 0 10px #0c0c0e, inset 0 0 0 16px #18181b, inset 0 0 0 24px #09090b, inset 0 0 0 34px #18181b",
                           }}
                         >
-                          {/* Spinning Disc Group with rotational deceleration */}
-                          <motion.div
-                            animate={{ rotate: isHovered ? 360 : 0 }}
-                            transition={{
-                              repeat: isHovered ? Infinity : 0,
-                              duration: 3.2,
-                              ease: isHovered ? "linear" : "easeOut",
-                            }}
-                            className="relative size-full flex items-center justify-center"
+                          {/* Spinning Disc Group with continuous forward momentum */}
+                          <div
+                            className={`relative size-full flex items-center justify-center ${
+                              isHovered && !reduce ? "animate-[spin_3.6s_linear_infinite]" : ""
+                            }`}
                           >
                             {/* Conic grooved light shimmer */}
                             <div
@@ -239,7 +236,7 @@ export function AboutMusicSection() {
                               {/* Center Spindle Hole */}
                               <div className="absolute size-2.5 rounded-full bg-black border border-white/30" />
                             </div>
-                          </motion.div>
+                          </div>
                         </motion.div>
 
                         {/* Main Album Jacket Card */}

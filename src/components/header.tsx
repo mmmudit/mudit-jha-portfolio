@@ -72,7 +72,7 @@ export function Header() {
           <div className="relative h-[54px] w-full">
             <div className="absolute inset-0">
               {/* Left-aligned text (hidden by default) */}
-              <div className="absolute inset-0 flex items-center justify-start pl-4">
+              <div className="absolute inset-0 flex items-center justify-start ps-4">
                 <motion.span
                   className="whitespace-nowrap text-sm font-bold tracking-[0.01em] text-zinc-800"
                   initial={false}
@@ -96,7 +96,7 @@ export function Header() {
               </div>
 
               {/* Icon fixed at right */}
-              <div className="absolute inset-0 flex items-center justify-end pr-2.5 pointer-events-none">
+              <div className="absolute inset-0 flex items-center justify-end pe-2.5 pointer-events-none">
                 <motion.span
                   initial={false}
                   animate={

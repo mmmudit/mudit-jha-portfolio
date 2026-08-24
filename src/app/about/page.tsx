@@ -17,7 +17,7 @@ export default function AboutPage() {
 
       <div className="flex w-full flex-col gap-14 sm:gap-20">
         {/* 1. Hero & Bio Profile Section */}
-        <section data-magnetic-section className="w-full scroll-mt-24">
+        <section className="w-full">
           <AboutHeroSection />
         </section>
 

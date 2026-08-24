@@ -58,7 +58,7 @@ export default function RootLayout({
           <SoundProvider />
           <GrainOverlay />
           <CursorClickEffect />
-          <div className="sticky top-0 z-50 w-full px-6 pt-4 sm:px-14 sm:pt-6 pointer-events-none">
+          <div className="sticky top-0 z-50 w-full px-6 pt-[calc(1rem+env(safe-area-inset-top,0px))] sm:px-14 sm:pt-[calc(1.5rem+env(safe-area-inset-top,0px))] pointer-events-none">
             <Header />
           </div>
           <div className="mx-auto flex w-full max-w-[1334px] flex-col px-6 sm:px-14 pt-8">

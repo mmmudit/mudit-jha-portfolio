@@ -12,9 +12,9 @@ export default function PageTransition({ children }: { children: ReactNode }) {
     <AnimatePresence mode="popLayout" initial={false}>
       <motion.div
         key={pathname}
-        initial={{ opacity: 0, y: reduce ? 0 : 8, filter: reduce ? "blur(0px)" : "blur(4px)" }}
-        animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-        exit={{ opacity: 0, y: reduce ? 0 : -8, filter: reduce ? "blur(0px)" : "blur(4px)" }}
+        initial={{ opacity: 0, y: reduce ? 0 : 8, filter: reduce ? "none" : "blur(4px)" }}
+        animate={{ opacity: 1, y: 0, filter: "none" }}
+        exit={{ opacity: 0, y: reduce ? 0 : -8, filter: reduce ? "none" : "blur(4px)" }}
         transition={
           reduce
             ? { duration: 0.15 }

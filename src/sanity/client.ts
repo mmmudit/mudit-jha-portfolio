@@ -1,6 +1,6 @@
 const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID || "mr1ttplh";
 const dataset = process.env.NEXT_PUBLIC_SANITY_DATASET || "production";
-const apiVersion = "2026-08-09";
+const apiVersion = "2024-01-01";
 
 export const client = {
   async fetch<T>(query: string, params: Record<string, any> = {}, options: any = {}): Promise<T> {

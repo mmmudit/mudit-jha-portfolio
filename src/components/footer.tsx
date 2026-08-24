@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { Check } from "lucide-react";
 import { LiveClock } from "./live-clock";
 import { SmartLinkPreview } from "./smart-link-preview";
@@ -19,6 +19,7 @@ const socialLinks = [
 
 export function Footer() {
   const [copied, setCopied] = useState(false);
+  const reduce = useReducedMotion();
 
   const handleEmailClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     if (href.startsWith("mailto:")) {
@@ -84,7 +85,7 @@ export function Footer() {
                   data-cuelume-hover="tick"
                   data-cuelume-press
                   data-cuelume-release
-                  className="pressable transition-[transform,color] duration-150 hover:text-rust-grey active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-willow-grey/50 rounded-sm"
+                  className="pressable transition-[transform,color] duration-150 [@media(hover:hover)]:hover:text-rust-grey active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-willow-grey/50 rounded-sm"
                 >
                   {isEmail && copied ? (
                     <span className="text-emerald-800">Copied!</span>
@@ -98,10 +99,10 @@ export function Footer() {
                   <AnimatePresence initial={false}>
                     {copied && (
                       <motion.span
-                        initial={{ opacity: 0, y: 8, scale: 0.9 }}
-                        animate={{ opacity: 1, y: 0, scale: 1 }}
-                        exit={{ opacity: 0, y: -4, scale: 0.9 }}
-                        transition={{ type: "spring", duration: 0.25, bounce: 0 }}
+                        initial={reduce ? { opacity: 0 } : { opacity: 0, y: 6, scale: 0.96 }}
+                        animate={reduce ? { opacity: 1 } : { opacity: 1, y: 0, scale: 1 }}
+                        exit={reduce ? { opacity: 0 } : { opacity: 0, y: -4, scale: 0.96 }}
+                        transition={{ type: "spring", duration: 0.22, bounce: 0 }}
                         className="absolute left-1/2 -top-9 -translate-x-1/2 inline-flex items-center gap-1 px-2.5 py-1 text-xs font-mono font-medium text-emerald-800 bg-emerald-100/90 backdrop-blur-sm rounded-full border border-emerald-300 shadow-sm whitespace-nowrap z-20"
                       >
                         <Check className="size-3 text-emerald-700" />
@@ -142,14 +143,14 @@ export function Footer() {
         </div>
 
         {/* Bottom Metadata Bar (In-flow at the bottom of the page, high z-index above blur) */}
-        <div className="relative z-30 mb-7 flex flex-col sm:flex-row items-center justify-between w-full gap-4 text-[#7f7f80] text-[13px] sm:text-[14px] md:text-[15px] tracking-tight">
+        <div className="relative z-30 mb-7 grid grid-cols-1 sm:grid-cols-3 items-center w-full gap-4 text-[#7f7f80] text-[13px] sm:text-[14px] md:text-[15px] tracking-tight">
           {/* Left: Live Clock + Status Dot */}
           <div className="flex items-center justify-center sm:justify-start">
             <LiveClock />
           </div>
 
-          {/* Center: Copyright (Always exactly centered to the page) */}
-          <div className="sm:absolute sm:left-1/2 sm:-translate-x-1/2 flex items-center justify-center lowercase font-sans font-light tracking-[-0.5px]">
+          {/* Center: Copyright (Centered in middle grid track) */}
+          <div className="flex items-center justify-center lowercase font-sans font-light tracking-[-0.5px]">
             <a
               href="https://muditjha.me"
               className="pressable transition-opacity [@media(hover:hover)]:hover:opacity-70"

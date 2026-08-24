@@ -96,12 +96,16 @@ export function AboutHeroSection() {
               mudit jha
             </h1>
             <motion.span
-              animate={{
-                opacity: isHeadingNear ? 1 : 0,
-                x: isHeadingNear ? 0 : -6,
-                filter: isHeadingNear ? "blur(0px)" : "blur(2px)",
-              }}
-              transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+              animate={
+                reduce
+                  ? { opacity: isHeadingNear ? 1 : 0 }
+                  : {
+                      opacity: isHeadingNear ? 1 : 0,
+                      transform: isHeadingNear ? "translateX(0px)" : "translateX(-6px)",
+                      filter: isHeadingNear ? "blur(0px)" : "blur(2px)",
+                    }
+              }
+              transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
               className="font-sans text-[15px] sm:text-[16px] text-zinc-500 font-normal select-none pointer-events-none"
             >
               / MOO-dit JHAH /
@@ -150,7 +154,7 @@ export function AboutHeroSection() {
             className="flex flex-col gap-2.5 pt-2 max-w-[620px]"
           >
             {/* Top Toolbar: Socials (Left) & Quick Links (Right) */}
-            <div className="flex items-center justify-between px-1 text-[#82745d]">
+            <div className="flex flex-wrap items-center justify-between gap-y-2 px-1 text-[#82745d]">
               {/* Left Social Icons */}
               <div className="flex items-center gap-1">
                 {/* X / Twitter */}
@@ -228,9 +232,10 @@ export function AboutHeroSection() {
                     <AnimatePresence>
                       {copiedEmail && (
                         <motion.span
-                          initial={{ opacity: 0, y: -16, scale: 0.96 }}
-                          animate={{ opacity: 1, y: -24, scale: 1 }}
-                          exit={{ opacity: 0, y: -28, scale: 0.96 }}
+                          initial={reduce ? { opacity: 0 } : { opacity: 0, y: -16, scale: 0.96 }}
+                          animate={reduce ? { opacity: 1 } : { opacity: 1, y: -24, scale: 1 }}
+                          exit={reduce ? { opacity: 0 } : { opacity: 0, y: -28, scale: 0.96 }}
+                          transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
                           className="absolute left-1/2 -translate-x-1/2 inline-flex items-center gap-1 px-2 py-0.5 text-[11px] font-mono font-medium text-emerald-800 bg-emerald-100/90 backdrop-blur-sm rounded-full border border-emerald-300 shadow-sm whitespace-nowrap z-20"
                         >
                           <Check className="size-2.5 text-emerald-700" />
@@ -272,7 +277,7 @@ export function AboutHeroSection() {
             {/* Interactive Message Input Box */}
             <form
               onSubmit={handleSendMessage}
-              className="relative flex items-center w-full rounded-[14px] border border-[#d9d0bb]/80 bg-[#f7f5ed]/80 shadow-[0_2px_12px_rgba(0,0,0,0.03)] focus-within:border-zinc-400 focus-within:ring-2 focus-within:ring-zinc-400/20 transition-[border-color,box-shadow] duration-200 p-2 pl-4"
+              className="relative flex items-center w-full rounded-[14px] border border-[#d9d0bb]/80 bg-[#f7f5ed]/80 shadow-[0_2px_12px_rgba(0,0,0,0.03)] focus-within:border-zinc-400 focus-within:ring-2 focus-within:ring-zinc-400/20 transition-[border-color,box-shadow] duration-200 p-2 ps-4"
             >
               <input
                 type="text"
@@ -324,7 +329,6 @@ export function AboutHeroSection() {
         {/* Right Column: Physical Polaroid / Tilted Photo Card */}
         <div className="lg:col-span-4 flex justify-center lg:justify-end pt-4 lg:pt-0">
           <motion.div
-            data-magnetic-card
             initial={{ opacity: 0, rotate: -8, scale: 0.95 }}
             animate={{ opacity: 1, rotate: -5, scale: 1 }}
             onMouseEnter={() => setIsPolaroidHovered(true)}

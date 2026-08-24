@@ -79,6 +79,8 @@ export const PLAY_ITEMS_QUERY = `*[_type == "playItem" && !(_id in path("drafts.
   x,
   y,
   width,
+  size,
+  rotation,
   "image": image.asset->url,
   "video": video.asset->url,
   mediaUrl,
