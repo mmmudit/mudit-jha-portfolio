@@ -24,7 +24,7 @@ export default function AboutPage() {
         <Divider />
 
         {/* 2. Essays I've Written Section */}
-        <section data-magnetic-section className="w-full scroll-mt-24">
+        <section className="w-full scroll-mt-24">
           <AboutEssaysSection />
         </section>
 

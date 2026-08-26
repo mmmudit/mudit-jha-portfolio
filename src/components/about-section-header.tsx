@@ -89,9 +89,18 @@ export function AboutSectionHeader({
 
                 <motion.div
                   initial={{ opacity: 0, scale: 0.97, y: -4 }}
-                  animate={{ opacity: 1, scale: 1, y: 4 }}
-                  exit={{ opacity: 0, scale: 0.97, y: -4 }}
-                  transition={{ duration: 0.15, ease: [0.22, 1, 0.36, 1] }}
+                  animate={{
+                    opacity: 1,
+                    scale: 1,
+                    y: 4,
+                    transition: { duration: 0.25, ease: [0.22, 1, 0.36, 1] },
+                  }}
+                  exit={{
+                    opacity: 0,
+                    scale: 0.97,
+                    y: -4,
+                    transition: { duration: 0.15, ease: [0.22, 1, 0.36, 1] },
+                  }}
                   className="absolute right-0 top-full z-50 mt-1 min-w-[110px] overflow-hidden rounded-xl border border-[#d9d0bb] bg-[#fbfaf5] p-1 shadow-lg shadow-black/5 backdrop-blur-md"
                 >
                   {years.map((year) => (
@@ -147,9 +156,18 @@ export function AboutSectionHeader({
 
                   <motion.div
                     initial={{ opacity: 0, scale: 0.97, y: -4 }}
-                    animate={{ opacity: 1, scale: 1, y: 4 }}
-                    exit={{ opacity: 0, scale: 0.97, y: -4 }}
-                    transition={{ duration: 0.15, ease: [0.22, 1, 0.36, 1] }}
+                    animate={{
+                      opacity: 1,
+                      scale: 1,
+                      y: 4,
+                      transition: { duration: 0.25, ease: [0.22, 1, 0.36, 1] },
+                    }}
+                    exit={{
+                      opacity: 0,
+                      scale: 0.97,
+                      y: -4,
+                      transition: { duration: 0.15, ease: [0.22, 1, 0.36, 1] },
+                    }}
                     className="absolute right-0 top-full z-50 mt-1 min-w-[140px] max-w-[220px] max-h-[260px] overflow-y-auto rounded-xl border border-[#d9d0bb] bg-[#fbfaf5] p-1 shadow-lg shadow-black/5 backdrop-blur-md"
                   >
                     {categories.map((cat) => (

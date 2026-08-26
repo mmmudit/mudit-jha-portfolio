@@ -31,7 +31,7 @@ export function Footer() {
   };
 
   return (
-    <footer className="relative w-screen left-1/2 -translate-x-1/2 px-6 sm:px-14 select-none">
+    <footer className="relative w-screen left-1/2 -translate-x-1/2 px-6 sm:px-14 pb-[max(1.5rem,env(safe-area-inset-bottom))] select-none">
       {/* Subtle Frost Blur Gradient Overlay with Color Willow (Spanning entire viewport width) */}
       <div
         className="absolute inset-0 pointer-events-none -z-10 select-none transition-[backdrop-filter,opacity] duration-250 ease-out"
@@ -54,8 +54,12 @@ export function Footer() {
             say hi!
           </p>
           <motion.div
-            animate={{ y: [0, 5, 0] }}
-            transition={{ duration: 2.6, repeat: Infinity, ease: [0.45, 0, 0.55, 1] }}
+            animate={reduce ? undefined : { y: [0, 5, 0] }}
+            transition={
+              reduce
+                ? undefined
+                : { duration: 2.6, repeat: Infinity, ease: [0.45, 0, 0.55, 1] }
+            }
             className="text-willow-grey flex items-center justify-center -mt-1"
           >
             <svg
@@ -156,7 +160,7 @@ export function Footer() {
 
           {/* Right: Changelog */}
           <div className="flex items-center justify-center sm:justify-end uppercase font-sans font-light tracking-[-0.5px]">
-            <span>CHANGELOG: 09-03-2026</span>
+            <span>Changelog: 09-03-2026</span>
           </div>
         </div>
 

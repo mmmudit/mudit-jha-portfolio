@@ -76,7 +76,7 @@ export function LiveClock({ variant = "footer" }: LiveClockProps) {
           )}
         </span>
         <span aria-hidden="true" className="text-[#7f7f80]/60 font-sans mx-0.5">•</span>
-        <span aria-hidden="true" className="text-[#7f7f80] font-sans">Minneapolis • GMT -05:00</span>
+        <span aria-hidden="true" className="text-[#7f7f80] font-sans">Minneapolis • GMT −05:00</span>
       </time>
     );
   }

@@ -66,7 +66,7 @@ export function Header() {
           data-cuelume-hover="tick"
           data-cuelume-press
           data-cuelume-release
-          className="pressable pointer-events-auto relative inline-flex shrink-0 items-center overflow-hidden rounded-full border-2 border-zinc-300"
+          className="pressable pointer-events-auto relative inline-flex shrink-0 items-center overflow-hidden rounded-full border-2 border-zinc-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-400 focus-visible:ring-offset-2"
           style={{ width: minW }}
         >
           <div className="relative h-[54px] w-full">
