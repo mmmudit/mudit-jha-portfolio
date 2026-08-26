@@ -9,6 +9,7 @@
     "lint": "eslint",
     "studio": "npm run dev --prefix studio-portfolio",
     "studio:build": "npm run build --prefix studio-portfolio",
+    "studio:import": "npm run import:play --prefix studio-portfolio",
     "agentation:server": "cross-env NODE_ENV=development npx -y agentation-mcp server"
   },
   "dependencies": {

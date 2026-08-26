@@ -171,7 +171,7 @@ export function AboutReadsSection() {
               {[1, 2, 3, 4, 5, 6].map((i) => (
                 <div
                   key={i}
-                  className="w-[142px] sm:w-[152px] h-[220px] sm:h-[233px] rounded-[16px] bg-zinc-200/50 animate-pulse"
+                  className="w-[142px] sm:w-[152px] h-[220px] sm:h-[233px] rounded-[16px] t-skeleton border border-zinc-300/40"
                 />
               ))}
             </div>
@@ -186,7 +186,7 @@ export function AboutReadsSection() {
             <motion.div
               layout
               className={`grid ${isTwoRows ? "grid-rows-2" : "grid-rows-1"
-                } grid-flow-col gap-x-4 sm:gap-x-6 gap-y-6 auto-cols-max pb-3 pl-3 pt-2`}
+                } grid-flow-col gap-x-4 sm:gap-x-6 gap-y-6 auto-cols-max pb-3 pl-3 pt-2 t-skeleton-reveal`}
             >
               <AnimatePresence mode="popLayout">
                 {filteredBooks.map((book, index) => {

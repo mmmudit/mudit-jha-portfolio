@@ -286,27 +286,43 @@ export function AboutMomentsSection() {
             <ChevronLeft className="size-4" />
           </button>
 
-          {/* Dots */}
-          <div className="flex items-center gap-2">
-            {filteredMoments.map((_, i) => (
-              <button
-                key={i}
-                type="button"
-                data-cuelume-press
-                onClick={() => {
-                  if (currentIndex !== i) {
-                    play("toggle", { volume: 0.35 });
-                    setCurrentIndex(i);
-                  }
-                }}
-                aria-label={`Go to slide ${i + 1}`}
-                className={`transition-all duration-300 rounded-full ${
-                  currentIndex === i
-                    ? "w-6 h-2 bg-[#8c9c7e]"
-                    : "size-2 bg-zinc-300 hover:bg-zinc-400"
-                }`}
-              />
-            ))}
+          {/* Dots with layout spring pill */}
+          <div className="relative flex items-center gap-1.5 p-1">
+            {filteredMoments.map((_, i) => {
+              const isActive = currentIndex === i;
+              return (
+                <button
+                  key={i}
+                  type="button"
+                  data-cuelume-press
+                  onClick={() => {
+                    if (currentIndex !== i) {
+                      play("toggle", { volume: 0.35 });
+                      setCurrentIndex(i);
+                    }
+                  }}
+                  aria-label={`Go to slide ${i + 1}`}
+                  className="relative min-w-[36px] min-h-[36px] sm:min-w-[40px] sm:min-h-[40px] flex items-center justify-center cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-400 rounded-full"
+                >
+                  {/* Inactive Dot */}
+                  <span className="size-1.5 rounded-full bg-zinc-300 transition-colors duration-150 hover:bg-zinc-400" />
+
+                  {/* Active Morphing Pill */}
+                  {isActive && (
+                    <motion.span
+                      layoutId="active-moment-dot"
+                      className="absolute inset-x-2 inset-y-3.5 sm:inset-y-4 rounded-full bg-[#8c9c7e] shadow-xs pointer-events-none"
+                      transition={{
+                        type: "spring",
+                        stiffness: 420,
+                        damping: 30,
+                        mass: 0.8,
+                      }}
+                    />
+                  )}
+                </button>
+              );
+            })}
           </div>
 
           <button

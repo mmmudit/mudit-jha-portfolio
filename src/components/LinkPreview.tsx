@@ -118,31 +118,30 @@ export function LinkPreview({
                     ? { opacity: 0 }
                     : {
                         opacity: 0,
-                        scale: 0.96,
-                        y: -4,
-                      }
-                }
-                animate={
-                  reduce
-                    ? { opacity: 1 }
-                    : {
-                        opacity: 1,
-                        scale: 1,
+                        scale: 0.97,
                         y: 0,
                       }
                 }
+                animate={{
+                  opacity: 1,
+                  scale: 1,
+                  y: 0,
+                }}
                 exit={
                   reduce
                     ? { opacity: 0 }
                     : {
                         opacity: 0,
-                        scale: 0.96,
-                        y: -3,
+                        scale: 0.99,
+                        y: 0,
                       }
                 }
                 transition={{
-                  duration: 0.15,
-                  ease: EASE_OUT,
+                  duration: reduce ? 0.1 : 0.16,
+                  ease: [0.22, 1, 0.36, 1],
+                }}
+                style={{
+                  transformOrigin: "var(--radix-hover-card-content-transform-origin)",
                 }}
                 className="z-[999999] w-[312px] rounded-[18px] border-[1.5px] border-zinc-950 bg-[#fffdfa] p-3 shadow-[4px_4px_0px_#18181b] overflow-hidden select-none will-change-transform flex flex-col gap-2.5"
               >

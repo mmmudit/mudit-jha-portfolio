@@ -15,9 +15,10 @@ export const playItem = defineType({
       name: "category",
       type: "string",
       title: "Category",
-      description: "e.g. 'prototypes', 'interactive', 'shaders', 'notes'",
+      description: "e.g. 'folder', 'prototypes', 'interactive', 'shaders', 'notes'",
       options: {
         list: [
+          { title: "Tactile 3D Folder", value: "folder" },
           { title: "Prototypes", value: "prototypes" },
           { title: "Interactive", value: "interactive" },
           { title: "Shaders", value: "shaders" },
@@ -60,7 +61,28 @@ export const playItem = defineType({
       name: "width",
       type: "number",
       title: "Card Width (px)",
-      initialValue: 360,
+      initialValue: 340,
+    }),
+    defineField({
+      name: "size",
+      type: "string",
+      title: "Card Size Tier",
+      description: "sm (180px), md (260px), lg (340px flagship)",
+      options: {
+        list: [
+          { title: "Small (180px)", value: "sm" },
+          { title: "Medium (260px)", value: "md" },
+          { title: "Large (340px Flagship)", value: "lg" },
+        ],
+      },
+      initialValue: "md",
+    }),
+    defineField({
+      name: "rotation",
+      type: "number",
+      title: "Organic Rotation (degrees: -6 to 6)",
+      description: "e.g. -2.8, 3.6",
+      initialValue: 0,
     }),
     defineField({
       name: "image",
@@ -80,6 +102,7 @@ export const playItem = defineType({
       title: "Interactive Card Type",
       options: {
         list: [
+          { title: "Tactile 3D Folder Card", value: "folder" },
           { title: "Standard Image", value: "image" },
           { title: "Interactive Polaroid Camera", value: "interactive-polaroid" },
           { title: "Web Audio Synthesizer", value: "audio-node" },
@@ -89,6 +112,27 @@ export const playItem = defineType({
         ],
       },
       initialValue: "image",
+    }),
+    defineField({
+      name: "itemCount",
+      type: "string",
+      title: "Folder Asset Count",
+      description: "e.g. '12 Assets', '8 Presets' (used when category or type is 'folder')",
+      initialValue: "12 Assets",
+    }),
+    defineField({
+      name: "accentColor",
+      type: "string",
+      title: "Folder Accent Color Hex",
+      description: "e.g. '#6366f1' or '#10b981'",
+      initialValue: "#6366f1",
+    }),
+    defineField({
+      name: "tags",
+      type: "array",
+      of: [{ type: "string" }],
+      title: "Folder Tags / Badges",
+      description: "Tags displayed on folder flaps (e.g. ['Framer Motion', '3D Canvas'])",
     }),
     defineField({
       name: "details",

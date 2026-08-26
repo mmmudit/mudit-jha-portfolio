@@ -24,7 +24,12 @@ const SCATTER_POSITIONS = [
   { top: 1380, left: 420,  rotation: 3.2,  width: 260 }, // SW Corner
 ];
 
-function resolveFallbackMedia(item: any): { imageSrc?: string; videoSrc?: string; type: "image" | "video" | "note" } {
+function resolveFallbackMedia(item: any): { imageSrc?: string; videoSrc?: string; type: "image" | "video" | "note" | "folder" } {
+  if (item.type === "folder" || item.category === "folder" || item.type === "folder-card") {
+    const imageSrc = item.image || item.src || item.mediaUrl || "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1200&auto=format&fit=crop";
+    return { type: "folder", imageSrc };
+  }
+
   if (item.type === "note") {
     return { type: "note" };
   }
@@ -111,11 +116,15 @@ export default async function PlayPage() {
           rotation,
           size,
           width,
-          tag: item.tag || item.category || configOverride?.tag || "Interactive",
+          tag: item.tag || (item.category === "folder" ? "Tactile Folder" : item.category) || configOverride?.tag || "Interactive",
           badge: item.badge || configOverride?.badge || undefined,
           year: item.year || configOverride?.year || "2025",
           details: item.details || item.description || configOverride?.details || "",
           href: item.href || item.link || configOverride?.href || undefined,
+          category: item.category || configOverride?.category,
+          itemCount: item.itemCount || configOverride?.itemCount,
+          accentColor: item.accentColor || configOverride?.accentColor,
+          tags: item.tags || configOverride?.tags,
         };
       })
     : [];

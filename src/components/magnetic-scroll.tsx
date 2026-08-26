@@ -15,7 +15,7 @@ export function MagneticScroll({
   idleDelayMs = 380,
   hoverDelayMs = 180,
   maxSnapDistanceRatio = 0.3,
-  enableHoverAutoScroll = true,
+  enableHoverAutoScroll = false,
 }: {
   selector?: string;
   cardSelector?: string;

@@ -2,9 +2,18 @@
 
 import React, { useState, useRef, useEffect, useCallback } from "react";
 import Image from "next/image";
-import { motion, useMotionValue, useSpring, useReducedMotion, AnimatePresence } from "framer-motion";
+import {
+  motion,
+  useMotionValue,
+  useSpring,
+  useVelocity,
+  useTransform,
+  useReducedMotion,
+  AnimatePresence,
+} from "framer-motion";
 import { Hand, Sparkles, X, ArrowUpRight, Play, Maximize2 } from "lucide-react";
 import { play } from "@/lib/sound";
+import { TactileFolderCard } from "@/components/TactileFolderCard";
 
 import { PlaygroundCardSize, SIZE_DIMENSIONS } from "@/lib/generateScatterLayout";
 
@@ -12,7 +21,7 @@ export interface DragCanvasItem {
   id: string;
   imageSrc?: string;
   videoSrc?: string;
-  type?: "image" | "video" | "note";
+  type?: "image" | "video" | "note" | "folder";
   title: string;
   caption?: string;
   description?: string;
@@ -30,6 +39,9 @@ export interface DragCanvasItem {
   badge?: string;
   details?: string;
   category?: string;
+  itemCount?: number | string;
+  accentColor?: string;
+  tags?: string[];
 }
 
 export interface DragCanvasProps {
@@ -89,13 +101,17 @@ export const DEFAULT_DRAG_ITEMS: DragCanvasItem[] = [
       "A custom WebGL canvas implementation simulating analog film development curves, grain density, and light leaks in real-time.",
     href: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
   },
-  // 3. East Spatial Workspace
+  // 3. East Spatial Workspace (Tactile Folder Card)
   {
     id: "canvas-os",
-    title: "Canvas OS & Nodes",
-    caption: "Infinite spatial workspace with physics-based card links and gesture flow.",
+    title: "Canvas OS & Spatial Nodes",
+    caption: "Infinite spatial workspace with physics-based node links, gesture flow, and spring depth.",
     imageSrc: "/assets/projects/canvas_os.png",
-    type: "image",
+    type: "folder",
+    category: "folder",
+    itemCount: "16 Nodes",
+    accentColor: "#c8d5bb",
+    tags: ["Spatial UI", "Canvas OS", "Gesture Physics"],
     size: "lg",
     top: 840,
     left: 1820,
@@ -103,7 +119,7 @@ export const DEFAULT_DRAG_ITEMS: DragCanvasItem[] = [
     y: 840,
     rotation: -1.5,
     width: 340,
-    tag: "Interface",
+    tag: "Spatial OS",
     badge: "OS Design",
     year: "2025",
     details:
@@ -246,9 +262,25 @@ export function DragCanvas({
   const mouseNormX = useMotionValue(0);
   const mouseNormY = useMotionValue(0);
 
-  // Lower stiffness spring (stiffness: 60, damping: 20) for slow, drifting ambient parallax
-  const ambientX = useSpring(mouseNormX, { stiffness: 60, damping: 20 });
-  const ambientY = useSpring(mouseNormY, { stiffness: 60, damping: 20 });
+  // Responsive, fluid spring for prominent cursor parallax (stiffness: 120, damping: 22)
+  const ambientX = useSpring(mouseNormX, { stiffness: 120, damping: 22 });
+  const ambientY = useSpring(mouseNormY, { stiffness: 120, damping: 22 });
+
+  // Reverse shallow parallax for the background dot grid to create genuine 3D depth
+  const bgNormX = useMotionValue(0);
+  const bgNormY = useMotionValue(0);
+  const bgAmbientX = useSpring(bgNormX, { stiffness: 90, damping: 24 });
+  const bgAmbientY = useSpring(bgNormY, { stiffness: 90, damping: 24 });
+
+  // Velocity-driven physical inertia tilt for an elastic sheet feel
+  const xVelocity = useVelocity(panX);
+  const yVelocity = useVelocity(panY);
+
+  const rawTiltX = useTransform(yVelocity, [-2000, 2000], [3.5, -3.5]);
+  const rawTiltY = useTransform(xVelocity, [-2000, 2000], [-3.5, 3.5]);
+
+  const tiltX = useSpring(rawTiltX, { stiffness: 320, damping: 22 });
+  const tiltY = useSpring(rawTiltY, { stiffness: 320, damping: 22 });
 
   // Dismiss one-time instructional hint and persist in sessionStorage
   const dismissHint = useCallback(() => {
@@ -311,6 +343,8 @@ export function DragCanvas({
     if (reduce) {
       mouseNormX.set(0);
       mouseNormY.set(0);
+      bgNormX.set(0);
+      bgNormY.set(0);
       return;
     }
 
@@ -319,6 +353,8 @@ export function DragCanvas({
       if (isDragging) {
         mouseNormX.set(0);
         mouseNormY.set(0);
+        bgNormX.set(0);
+        bgNormY.set(0);
         return;
       }
 
@@ -326,14 +362,18 @@ export function DragCanvas({
       const normX = e.clientX / window.innerWidth - 0.5;
       const normY = e.clientY / window.innerHeight - 0.5;
 
-      // Map to small ambient offset (max ~15px range: -15px to +15px)
-      mouseNormX.set(normX * 30);
-      mouseNormY.set(normY * 30);
+      // Map to stronger, noticeable ambient parallax (±45px range)
+      mouseNormX.set(normX * 45);
+      mouseNormY.set(normY * 45);
+
+      // Inverse background layer movement for rich spatial depth
+      bgNormX.set(normX * -24);
+      bgNormY.set(normY * -24);
     };
 
     window.addEventListener("mousemove", handleMouseMove, { passive: true });
     return () => window.removeEventListener("mousemove", handleMouseMove);
-  }, [isDragging, reduce, mouseNormX, mouseNormY]);
+  }, [isDragging, reduce, mouseNormX, mouseNormY, bgNormX, bgNormY]);
 
   // Support trackpad & mouse wheel panning
   const handleWheel = (e: React.WheelEvent) => {
@@ -357,6 +397,8 @@ export function DragCanvas({
     // Zero out ambient parallax targets while dragging
     mouseNormX.set(0);
     mouseNormY.set(0);
+    bgNormX.set(0);
+    bgNormY.set(0);
     if (showHint) dismissHint();
   };
 
@@ -376,32 +418,42 @@ export function DragCanvas({
     <div
       ref={containerRef}
       onWheel={handleWheel}
-      className={`relative w-full overflow-hidden select-none bg-[#fbfaf5] ${
-        isDragging ? "cursor-grabbing" : "cursor-grab"
-      } ${className}`}
+      style={{ perspective: 1200 }}
+      className={`relative w-full overflow-hidden select-none bg-[#fbfaf5] ${isDragging ? "cursor-grabbing" : "cursor-grab"
+        } ${className}`}
     >
-      {/* Subtle Dot Grid Canvas Pattern */}
-      <div
-        className="absolute inset-0 pointer-events-none opacity-40"
+      {/* Dynamic 3D Dot Grid with Inverse Parallax Depth */}
+      <motion.div
         style={{
+          x: bgAmbientX,
+          y: bgAmbientY,
           backgroundImage:
             "radial-gradient(circle, rgba(120, 130, 110, 0.45) 1.5px, transparent 1.5px)",
           backgroundSize: "28px 28px",
         }}
+        className="absolute -inset-12 pointer-events-none opacity-40 transform-gpu"
       />
 
-      {/* Inner Draggable Canvas */}
+      {/* Inner Draggable Canvas with Elastic Physics & 3D Inertia Tilt */}
       <motion.div
         drag={dragAxis === "both" ? true : dragAxis}
         dragConstraints={constraints}
-        dragElastic={reduce ? 0 : dragElastic}
+        dragElastic={reduce ? 0 : 0.38}
         dragMomentum={!reduce}
+        dragTransition={{
+          bounceStiffness: 340,
+          bounceDamping: 18,
+          power: 0.28,
+          timeConstant: 220,
+        }}
         onDragStart={handleDragStart}
         onDragEnd={handleDragEnd}
         whileTap={{ cursor: "grabbing" }}
         style={{
           x: panX,
           y: panY,
+          rotateX: reduce ? 0 : tiltX,
+          rotateY: reduce ? 0 : tiltY,
           width: canvasWidth,
           height: canvasHeight,
         }}
@@ -547,6 +599,7 @@ function CanvasImageCard({
   onItemClick?: (item: DragCanvasItem) => void;
 }) {
   const [isHovered, setIsHovered] = useState(false);
+  const [mediaLoaded, setMediaLoaded] = useState(false);
   const reduce = useReducedMotion();
 
   const sizeWidth = item.size ? SIZE_DIMENSIONS[item.size] : undefined;
@@ -557,6 +610,46 @@ function CanvasImageCard({
   const topStyle = typeof topVal === "number" ? `${topVal}px` : topVal;
   const leftStyle = typeof leftVal === "number" ? `${leftVal}px` : leftVal;
   const rot = item.rotation ?? 0;
+
+  if (item.type === "folder" || item.category === "folder") {
+    return (
+      <motion.div
+        initial={false}
+        animate={{
+          rotate: isHovered && !reduce ? rot * 0.4 : rot,
+          zIndex: isHovered ? 40 : 15,
+        }}
+        transition={{
+          type: "spring",
+          stiffness: 380,
+          damping: 26,
+          mass: 0.8,
+        }}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+        style={{
+          position: "absolute",
+          top: topStyle,
+          left: leftStyle,
+          width: widthStyle,
+        }}
+        className="group select-none cursor-pointer will-change-transform"
+      >
+        <TactileFolderCard
+          title={item.title}
+          category={item.tag || "Interactive"}
+          date={item.year || "2026"}
+          itemCount={item.itemCount || "12 Assets"}
+          previewImage={item.imageSrc || "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1200&auto=format&fit=crop"}
+          description={item.caption || item.description || item.details || ""}
+          tags={item.tags || (item.tag ? [item.tag] : ["Interactive", "3D Canvas"])}
+          accentColor={item.accentColor || "#6366f1"}
+          href={item.href}
+          onClick={() => onItemClick?.(item)}
+        />
+      </motion.div>
+    );
+  }
 
   if (item.type === "note") {
     return (
@@ -606,9 +699,9 @@ function CanvasImageCard({
       }}
       transition={{
         type: "spring",
-        stiffness: 380,
-        damping: 26,
-        mass: 0.8,
+        stiffness: 420,
+        damping: 20,
+        mass: 0.7,
       }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
@@ -624,9 +717,8 @@ function CanvasImageCard({
       <div className="relative rounded-[22px] bg-white p-3 border border-zinc-300/80 shadow-[0_8px_24px_rgba(0,0,0,0.06),0_1px_3px_rgba(0,0,0,0.04)] transition-shadow duration-300 group-hover:shadow-[0_16px_40px_rgba(0,0,0,0.12)]">
         {/* Media Container with 16:10 or Custom Aspect Ratio */}
         <div
-          className={`relative w-full rounded-[14px] overflow-hidden bg-zinc-900 border border-zinc-200/80 ${
-            item.aspect || "aspect-[16/10]"
-          }`}
+          className={`relative w-full rounded-[14px] overflow-hidden bg-zinc-100 dark:bg-zinc-800 border border-zinc-200/80 ${item.aspect || "aspect-[16/10]"
+            }`}
         >
           {item.type === "video" || item.videoSrc ? (
             <video
@@ -635,7 +727,10 @@ function CanvasImageCard({
               loop
               muted
               playsInline
-              className="size-full object-cover pointer-events-none select-none transition-transform duration-500 ease-out group-hover:scale-105"
+              preload="metadata"
+              onCanPlay={() => setMediaLoaded(true)}
+              className={`size-full object-cover pointer-events-none select-none transition-all duration-500 ease-out group-hover:scale-105 ${mediaLoaded ? "opacity-100" : "opacity-0"
+                }`}
             />
           ) : item.imageSrc ? (
             <Image
@@ -644,7 +739,9 @@ function CanvasImageCard({
               fill
               sizes="(max-width: 768px) 300px, 460px"
               draggable={false}
-              className="object-cover size-full pointer-events-none select-none transition-transform duration-500 ease-out group-hover:scale-105"
+              onLoad={() => setMediaLoaded(true)}
+              className={`object-cover size-full pointer-events-none select-none transition-all duration-500 ease-out group-hover:scale-105 ${mediaLoaded ? "opacity-100" : "opacity-0"
+                }`}
             />
           ) : null}
 
@@ -667,9 +764,8 @@ function CanvasImageCard({
 
           {/* Frosted Caption Overlay — Fades in on Hover */}
           <div
-            className={`absolute inset-x-0 bottom-0 z-20 pointer-events-none p-3.5 pt-8 bg-gradient-to-t from-black/80 via-black/40 to-transparent transition-all duration-200 ease-out ${
-              isHovered ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2"
-            }`}
+            className={`absolute inset-x-0 bottom-0 z-20 pointer-events-none p-3.5 pt-8 bg-gradient-to-t from-black/80 via-black/40 to-transparent transition-all duration-200 ease-out ${isHovered ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2"
+              }`}
           >
             <h3 className="font-display font-bold text-sm text-white tracking-tight leading-snug drop-shadow-xs flex items-center justify-between">
               <span>{item.title}</span>

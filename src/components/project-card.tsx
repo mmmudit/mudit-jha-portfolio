@@ -1,8 +1,6 @@
-"use client";
-
+import React, { useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { useRef, useState } from "react";
 import { motion, useScroll, useTransform, useReducedMotion } from "framer-motion";
 
 export type ProjectCardProps = {
@@ -26,7 +24,7 @@ export type ProjectCardProps = {
   onBlur?: () => void;
 };
 
-export function ProjectCard({
+export const ProjectCard = React.forwardRef<HTMLDivElement, ProjectCardProps>(function ProjectCard({
   title,
   slug,
   year = "2025",
@@ -44,8 +42,8 @@ export function ProjectCard({
   onMouseLeave,
   onFocus,
   onBlur,
-}: ProjectCardProps) {
-  const containerRef = useRef<HTMLDivElement>(null);
+}: ProjectCardProps, ref) {
+  const containerRef = useRef<HTMLDivElement | null>(null);
   const [imageLoaded, setImageLoaded] = useState(false);
   const reduce = useReducedMotion();
 
@@ -71,7 +69,14 @@ export function ProjectCard({
   };
 
   return (
-    <div ref={containerRef} className="w-full">
+    <div
+      ref={(node) => {
+        containerRef.current = node;
+        if (typeof ref === "function") ref(node);
+        else if (ref) (ref as React.MutableRefObject<HTMLDivElement | null>).current = node;
+      }}
+      className="w-full"
+    >
       <motion.div
         style={
           reduce
@@ -83,7 +88,7 @@ export function ProjectCard({
               rotate,
             }
         }
-        className="w-full"
+        className="w-full transform-gpu will-change-transform"
       >
         <Link
           href={href}
@@ -209,4 +214,4 @@ export function ProjectCard({
       </motion.div>
     </div>
   );
-}
+});

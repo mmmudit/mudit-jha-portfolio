@@ -55,7 +55,9 @@ export function LiveClock({ variant = "footer" }: LiveClockProps) {
 
   if (variant === "header") {
     return (
-      <div
+      <time
+        dateTime={time}
+        aria-label={`Current time in Minneapolis: ${time || "Loading"}`}
         data-cuelume-hover="pulse"
         onClick={() => play("pulse", { volume: 0.35 })}
         className="font-sans font-light text-[13px] sm:text-[15px] md:text-[16px] uppercase tracking-[-0.5px] leading-none text-[#7f7f80] inline-flex items-center gap-2 select-none cursor-pointer group"
@@ -64,7 +66,7 @@ export function LiveClock({ variant = "footer" }: LiveClockProps) {
           <span className="green-pulse-ring" aria-hidden="true" />
           <span className="relative size-1.5 rounded-full bg-status-green group-hover:scale-125 transition-transform" />
         </span>
-        <span className="inline-flex items-center tabular-nums">
+        <span aria-hidden="true" className="inline-flex items-center tabular-nums">
           {timeChars.length > 0 ? (
             timeChars.map((char, i) => (
               <TickingCharacter key={i} char={char} index={i} />
@@ -73,16 +75,20 @@ export function LiveClock({ variant = "footer" }: LiveClockProps) {
             <span>--:--:-- --</span>
           )}
         </span>
-        <span className="text-[#7f7f80]/60 font-sans mx-0.5">•</span>
-        <span className="text-[#7f7f80] font-sans">Minneapolis • GMT -05:00</span>
-      </div>
+        <span aria-hidden="true" className="text-[#7f7f80]/60 font-sans mx-0.5">•</span>
+        <span aria-hidden="true" className="text-[#7f7f80] font-sans">Minneapolis • GMT -05:00</span>
+      </time>
     );
   }
 
   return (
-    <div className="font-sans font-light text-[13px] sm:text-[15px] md:text-[16px] uppercase tracking-[-0.5px] leading-none text-[#7f7f80] inline-flex items-center gap-2 select-none">
-      <span className="text-[#7f7f80] font-sans">Mudit Standard Time:</span>
-      <span className="inline-flex items-center tabular-nums">
+    <time
+      dateTime={time}
+      aria-label={`Mudit Standard Time: ${time || "Loading"}`}
+      className="font-sans font-light text-[13px] sm:text-[15px] md:text-[16px] uppercase tracking-[-0.5px] leading-none text-[#7f7f80] inline-flex items-center gap-2 select-none"
+    >
+      <span aria-hidden="true" className="text-[#7f7f80] font-sans">Mudit Standard Time:</span>
+      <span aria-hidden="true" className="inline-flex items-center tabular-nums">
         {timeChars.length > 0 ? (
           timeChars.map((char, i) => (
             <TickingCharacter key={i} char={char} index={i} />
@@ -91,6 +97,6 @@ export function LiveClock({ variant = "footer" }: LiveClockProps) {
           <span>--:--:-- --</span>
         )}
       </span>
-    </div>
+    </time>
   );
 }

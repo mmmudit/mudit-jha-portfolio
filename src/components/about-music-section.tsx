@@ -141,7 +141,7 @@ export function AboutMusicSection() {
               {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
                 <div
                   key={i}
-                  className="w-[142px] sm:w-[152px] h-[180px] sm:h-[190px] rounded-[16px] bg-zinc-200/50 animate-pulse"
+                  className="w-[142px] sm:w-[152px] h-[180px] sm:h-[190px] rounded-[16px] t-skeleton border border-zinc-300/40"
                 />
               ))}
             </div>
@@ -156,7 +156,7 @@ export function AboutMusicSection() {
             <motion.div
               layout
               className={`grid ${isTwoRows ? "grid-rows-2" : "grid-rows-1"
-                } grid-flow-col gap-x-4 sm:gap-x-6 gap-y-6 auto-cols-max pb-3 ps-3 pt-6`}
+                } grid-flow-col gap-x-4 sm:gap-x-6 gap-y-6 auto-cols-max pb-3 ps-3 pt-6 t-skeleton-reveal`}
             >
               <AnimatePresence mode="popLayout">
                 {tracks.map((album, index) => {

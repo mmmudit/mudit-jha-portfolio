@@ -87,6 +87,9 @@ export const PLAY_ITEMS_QUERY = `*[_type == "playItem" && !(_id in path("drafts.
   "src": coalesce(mediaUrl, video.asset->url, image.asset->url),
   gradient,
   type,
+  itemCount,
+  accentColor,
+  tags,
   details,
   order
 }`;

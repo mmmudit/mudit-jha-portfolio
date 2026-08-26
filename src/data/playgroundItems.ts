@@ -29,7 +29,11 @@ export interface PlaygroundItemConfig {
   description?: string;
   imageSrc?: string;
   videoSrc?: string;
-  type?: "image" | "video" | "note";
+  type?: "image" | "video" | "note" | "folder";
+  category?: string;
+  itemCount?: number | string;
+  accentColor?: string;
+  tags?: string[];
   size: PlaygroundCardSize;
   x: number; // canvas pixel x (left)
   y: number; // canvas pixel y (top)
@@ -83,23 +87,50 @@ export const PLAYGROUND_CONFIG_ITEMS: PlaygroundItemConfig[] = [
     href: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
   },
 
-  // 3. Right Mid Flagship (East Spatial Workspace)
+  // 3. Right Mid Flagship (East Spatial Workspace - Tactile Folder Card)
   {
     id: "canvas-os",
-    title: "Canvas OS & Nodes",
-    caption: "Infinite spatial workspace with physics-based card links and gesture flow.",
+    title: "Canvas OS & Spatial Nodes",
+    caption: "Infinite spatial workspace with physics-based node links, gesture flow, and spring depth.",
     imageSrc: "/assets/projects/canvas_os.png",
-    type: "image",
+    type: "folder",
+    category: "folder",
+    itemCount: "16 Nodes",
+    accentColor: "#c8d5bb",
+    tags: ["Spatial UI", "Canvas OS", "Gesture Physics"],
     size: "lg",
     x: 1820,
     y: 840,
     rotation: -1.5,
-    tag: "Interface",
+    tag: "Spatial OS",
     badge: "OS Design",
     year: "2025",
     details:
       "An experiment in infinite visual node mapping, bi-directional connections, and spring-driven card layout algorithms.",
     href: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+  },
+
+  // 3b. Northeast Spatial 3D Folder Card (Tactile Archive)
+  {
+    id: "spatial-interface-folder",
+    title: "Spatial Interface Systems",
+    caption: "Tactile 3D folder archive with physical hover opening, Z-space depth planes, and spring cursor tilt.",
+    imageSrc: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1200&auto=format&fit=crop",
+    type: "folder",
+    category: "folder",
+    itemCount: "12 Assets",
+    accentColor: "#6366f1",
+    tags: ["Framer Motion", "3D Canvas", "WebGPU"],
+    size: "lg",
+    x: 2180,
+    y: 420,
+    rotation: -2.2,
+    tag: "Tactile 3D Folder",
+    badge: "Interactive",
+    year: "2026",
+    details:
+      "Physics-based folder opening kinematics matching weirdfolders.com aesthetics with -32deg hinged flap and -75px elevated media card.",
+    href: "/prototypes/folder-card",
   },
 
   // 4. Left Mid Hardware UI (West Thermal Print)
@@ -119,6 +150,29 @@ export const PLAYGROUND_CONFIG_ITEMS: PlaygroundItemConfig[] = [
     details:
       "Translating screen time analytics into physical receipts with itemized application usage, pickup metrics, and digital wellbeing summaries.",
     href: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+  },
+
+  // 4b. Northwest Hardware & Sound 3D Folder Card
+  {
+    id: "hardware-sound-folder",
+    title: "Tactile Sound & Hardware Dossier",
+    caption: "Haptic auditory feedback engines paired with low-latency WebAudio oscillators and 3D folder mechanics.",
+    imageSrc: "https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=1200&auto=format&fit=crop",
+    type: "folder",
+    category: "folder",
+    itemCount: "8 Presets",
+    accentColor: "#10b981",
+    tags: ["WebAudio", "Haptics", "DSP"],
+    size: "lg",
+    x: 520,
+    y: 680,
+    rotation: 2.8,
+    tag: "Tactile 3D Folder",
+    badge: "Hardware UI",
+    year: "2026",
+    details:
+      "Multi-leaf tactile folder archive exploring zero-latency physical audio synthesis and mechanical spring responses.",
+    href: "/prototypes/folder-card",
   },
 
   // 5. Bottom-Left Shader (South-West 3D Glare Card)

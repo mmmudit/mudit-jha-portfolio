@@ -103,9 +103,16 @@ export function Footer() {
                         animate={reduce ? { opacity: 1 } : { opacity: 1, y: 0, scale: 1 }}
                         exit={reduce ? { opacity: 0 } : { opacity: 0, y: -4, scale: 0.96 }}
                         transition={{ type: "spring", duration: 0.22, bounce: 0 }}
-                        className="absolute left-1/2 -top-9 -translate-x-1/2 inline-flex items-center gap-1 px-2.5 py-1 text-xs font-mono font-medium text-emerald-800 bg-emerald-100/90 backdrop-blur-sm rounded-full border border-emerald-300 shadow-sm whitespace-nowrap z-20"
+                        className="absolute left-1/2 -top-9 -translate-x-1/2 inline-flex items-center gap-1.5 px-3 py-1 text-xs font-mono font-medium text-emerald-800 bg-emerald-100/95 backdrop-blur-sm rounded-full border border-emerald-300 shadow-sm whitespace-nowrap z-20"
                       >
-                        <Check className="size-3 text-emerald-700" />
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="text-emerald-700">
+                          <motion.path
+                            d="M20 6L9 17l-5-5"
+                            initial={{ pathLength: 0 }}
+                            animate={{ pathLength: 1 }}
+                            transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1], delay: 0.05 }}
+                          />
+                        </svg>
                         <span>Copied</span>
                       </motion.span>
                     )}
@@ -130,20 +137,8 @@ export function Footer() {
         {/* Divider Line */}
         <div className="w-full h-px bg-gradient-to-r from-transparent via-[#c8d5bb]/80 to-transparent" />
 
-        {/* Giant "mudit" Wordmark Asset */}
-        <div className="relative flex items-center justify-center w-full pt-2 overflow-visible">
-          <Image
-            src="/assets/mudit-wordmark.png"
-            alt="mudit"
-            width={1024}
-            height={449}
-            priority
-            className="w-full max-w-[1100px] h-auto object-contain pointer-events-none select-none drop-shadow-sm"
-          />
-        </div>
-
-        {/* Bottom Metadata Bar (In-flow at the bottom of the page, high z-index above blur) */}
-        <div className="relative z-30 mb-7 grid grid-cols-1 sm:grid-cols-3 items-center w-full gap-4 text-[#7f7f80] text-[13px] sm:text-[14px] md:text-[15px] tracking-tight">
+        {/* Metadata Bar (Live Clock, Copyright, Changelog) */}
+        <div className="relative z-30 pt-1 grid grid-cols-1 sm:grid-cols-3 items-center w-full gap-4 text-[#7f7f80] text-[13px] sm:text-[14px] md:text-[15px] tracking-tight">
           {/* Left: Live Clock + Status Dot */}
           <div className="flex items-center justify-center sm:justify-start">
             <LiveClock />
@@ -161,8 +156,20 @@ export function Footer() {
 
           {/* Right: Changelog */}
           <div className="flex items-center justify-center sm:justify-end uppercase font-sans font-light tracking-[-0.5px]">
-            <span>CHANGELOG: 09-03-2003</span>
+            <span>CHANGELOG: 09-03-2026</span>
           </div>
+        </div>
+
+        {/* Giant "mudit" Wordmark Asset (Bottom Anchor) */}
+        <div className="relative flex items-center justify-center w-full pt-2 overflow-visible">
+          <Image
+            src="/assets/mudit-wordmark.png"
+            alt="mudit"
+            width={1024}
+            height={449}
+            priority
+            className="w-full max-w-[1100px] h-auto object-contain pointer-events-none select-none drop-shadow-sm"
+          />
         </div>
       </div>
     </footer>

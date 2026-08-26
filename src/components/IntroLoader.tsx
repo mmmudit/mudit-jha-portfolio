@@ -12,12 +12,26 @@ interface IntroLoaderProps {
 }
 
 export function IntroLoader({ children }: IntroLoaderProps) {
-  // Default to true so initial SSR / HTML has the overlay immediately covering the page
-  const [isOverlayActive, setIsOverlayActive] = useState(true);
-  // isFadingOut triggers the opacity-0 transition
+  // Check synchronously if already seen in session or marked dismissed to prevent initial flash
+  const [isOverlayActive, setIsOverlayActive] = useState(() => {
+    if (typeof window === "undefined") return true;
+    try {
+      if (document.documentElement.classList.contains("intro-dismissed")) return false;
+      const seen = sessionStorage.getItem(STORAGE_KEY);
+      if (seen === "true") return false;
+      const isMobile = window.matchMedia("(max-width: 767px)").matches;
+      if (isMobile) return false;
+      const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      if (prefersReduced) return false;
+    } catch {
+      // Fallback
+    }
+    return true;
+  });
+
   const [isFadingOut, setIsFadingOut] = useState(false);
-  // canSkip enables skip button and whole-screen tap-to-skip after delay
   const [canSkip, setCanSkip] = useState(false);
+  const [isVideoReady, setIsVideoReady] = useState(false);
 
   const videoRef = useRef<HTMLVideoElement>(null);
   const skipTimerRef = useRef<NodeJS.Timeout | null>(null);
@@ -156,9 +170,12 @@ export function IntroLoader({ children }: IntroLoaderProps) {
             muted
             playsInline
             preload="auto"
+            onCanPlay={() => setIsVideoReady(true)}
             onEnded={completeIntro}
             onError={completeIntro}
-            className="w-full h-full object-cover pointer-events-none"
+            className={`w-full h-full object-cover pointer-events-none transition-opacity duration-500 ease-out ${
+              isVideoReady ? "opacity-100" : "opacity-0"
+            }`}
           >
             <source src="/intro.webm" type="video/webm" />
             <source src="/intro.mp4" type="video/mp4" />

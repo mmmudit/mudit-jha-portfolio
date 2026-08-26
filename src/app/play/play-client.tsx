@@ -5,6 +5,7 @@ import { createPortal } from "react-dom";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { DragCanvas, DragCanvasItem } from "@/components/DragCanvas";
+import { TactileFolderCard } from "@/components/TactileFolderCard";
 import { Sparkles, ArrowUpRight, Play } from "lucide-react";
 import { play } from "@/lib/sound";
 
@@ -143,6 +144,27 @@ function MobilePlayCard({
   item: DragCanvasItem;
   onClick: () => void;
 }) {
+  const [mediaLoaded, setMediaLoaded] = useState(false);
+
+  if (item.type === "folder" || item.category === "folder") {
+    return (
+      <div className="w-full flex justify-center py-2">
+        <TactileFolderCard
+          title={item.title}
+          category={item.tag || "Interactive"}
+          date={item.year || "2026"}
+          itemCount={item.itemCount || "12 Assets"}
+          previewImage={item.imageSrc || "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1200&auto=format&fit=crop"}
+          description={item.caption || item.description || item.details || ""}
+          tags={item.tags || (item.tag ? [item.tag] : ["Interactive", "3D Canvas"])}
+          accentColor={item.accentColor || "#6366f1"}
+          href={item.href}
+          onClick={onClick}
+        />
+      </div>
+    );
+  }
+
   if (item.type === "note") {
     return (
       <div
@@ -187,7 +209,7 @@ function MobilePlayCard({
       </div>
 
       {/* Media Aspect */}
-      <div className="relative w-full aspect-[16/10] rounded-[16px] overflow-hidden bg-zinc-900 border border-zinc-200 shadow-inner mb-2.5">
+      <div className="relative w-full aspect-[16/10] rounded-[16px] overflow-hidden bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 shadow-inner mb-2.5">
         {item.type === "video" || item.videoSrc ? (
           <video
             src={item.videoSrc || "/intro.mp4"}
@@ -195,7 +217,11 @@ function MobilePlayCard({
             loop
             muted
             playsInline
-            className="size-full object-cover"
+            preload="metadata"
+            onCanPlay={() => setMediaLoaded(true)}
+            className={`size-full object-cover transition-opacity duration-300 ease-out ${
+              mediaLoaded ? "opacity-100" : "opacity-0"
+            }`}
           />
         ) : item.imageSrc ? (
           <Image
@@ -203,7 +229,10 @@ function MobilePlayCard({
             alt={item.title}
             fill
             sizes="100vw"
-            className="object-cover"
+            onLoad={() => setMediaLoaded(true)}
+            className={`object-cover size-full transition-opacity duration-300 ease-out ${
+              mediaLoaded ? "opacity-100" : "opacity-0"
+            }`}
           />
         ) : null}
 

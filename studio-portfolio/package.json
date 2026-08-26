@@ -8,6 +8,7 @@
     "start": "sanity start",
     "build": "sanity build",
     "deploy": "sanity deploy",
+    "import:play": "sanity dataset import playItems.ndjson production --replace",
     "typegen": "sanity schemas extract --force && sanity typegen generate"
   },
   "dependencies": {

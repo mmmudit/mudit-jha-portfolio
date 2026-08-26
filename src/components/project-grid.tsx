@@ -1,9 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import React, { useState, useRef } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { ProjectCard } from "./project-card";
-import { ProjectModal, type ProjectData } from "./project-modal";
+import { ProjectModal, type ProjectData, type ActiveProjectCardState } from "./project-modal";
 import { play } from "@/lib/sound";
 
 export type ProjectGridProps = {
@@ -11,9 +11,49 @@ export type ProjectGridProps = {
 };
 
 export function ProjectGrid({ projects }: ProjectGridProps) {
-  const [selectedProject, setSelectedProject] = useState<ProjectData | null>(null);
+  const [activeCard, setActiveCard] = useState<ActiveProjectCardState | null>(null);
   const [hoveredId, setHoveredId] = useState<string | number | null>(null);
+  const cardRefs = useRef<Record<string, HTMLDivElement | null>>({});
   const reduce = useReducedMotion();
+
+  const handleCardClick = (project: ProjectData, projectKey: string) => {
+    const el = cardRefs.current[projectKey];
+    if (el) {
+      const r = el.getBoundingClientRect();
+      const origin = {
+        top: r.top,
+        left: r.left,
+        width: r.width,
+        height: r.height,
+      };
+
+      const targetW = Math.min(940, window.innerWidth * 0.94);
+      const targetH = Math.min(window.innerHeight * 0.88, 680);
+      const targetTop = (window.innerHeight - targetH) / 2;
+      const targetLeft = (window.innerWidth - targetW) / 2;
+
+      const target = {
+        top: targetTop,
+        left: targetLeft,
+        width: targetW,
+        height: targetH,
+      };
+
+      play("bloom", { volume: 0.45 });
+      setActiveCard({ project, origin, target });
+    } else {
+      const targetW = Math.min(940, window.innerWidth * 0.94);
+      const targetH = Math.min(window.innerHeight * 0.88, 680);
+      const targetTop = (window.innerHeight - targetH) / 2;
+      const targetLeft = (window.innerWidth - targetW) / 2;
+      play("bloom", { volume: 0.45 });
+      setActiveCard({
+        project,
+        origin: { top: targetTop, left: targetLeft, width: targetW, height: targetH },
+        target: { top: targetTop, left: targetLeft, width: targetW, height: targetH },
+      });
+    }
+  };
 
   return (
     <>
@@ -23,6 +63,7 @@ export function ProjectGrid({ projects }: ProjectGridProps) {
       >
         {projects.map((project, index) => {
           const id = project._id || project.id || index;
+          const projectKey = String(id);
           const isDimmed = hoveredId !== null && hoveredId !== id;
 
           return (
@@ -38,6 +79,9 @@ export function ProjectGrid({ projects }: ProjectGridProps) {
               className="w-full"
             >
               <ProjectCard
+                ref={(el) => {
+                  cardRefs.current[projectKey] = el;
+                }}
                 index={index}
                 title={project.title}
                 slug={project.slug}
@@ -53,20 +97,17 @@ export function ProjectGrid({ projects }: ProjectGridProps) {
                 onMouseLeave={() => setHoveredId(null)}
                 onFocus={() => setHoveredId(id)}
                 onBlur={() => setHoveredId(null)}
-                onClick={() => {
-                  play("bloom", { volume: 0.45 });
-                  setSelectedProject(project);
-                }}
+                onClick={() => handleCardClick(project, projectKey)}
               />
             </motion.div>
           );
         })}
       </section>
 
-      {/* Modal Page Component */}
+      {/* 3D Slow & Savory Weighted Horizon Morph Overlay */}
       <ProjectModal
-        project={selectedProject}
-        onClose={() => setSelectedProject(null)}
+        activeCard={activeCard}
+        onClose={() => setActiveCard(null)}
       />
     </>
   );
