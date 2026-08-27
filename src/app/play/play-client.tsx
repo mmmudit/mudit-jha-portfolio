@@ -75,7 +75,7 @@ export function PlayPageClient({
             <button
               type="button"
               onClick={() => {
-                play("pop", { volume: 0.4 });
+                play("toggle", { volume: 0.4 });
                 setViewMode("grid");
               }}
               data-cuelume-hover="tick"
@@ -149,7 +149,7 @@ export function PlayPageClient({
             <button
               type="button"
               onClick={() => {
-                play("pop", { volume: 0.4 });
+                play("toggle", { volume: 0.4 });
                 setViewMode("canvas");
               }}
               data-cuelume-hover="tick"
