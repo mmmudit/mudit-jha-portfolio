@@ -108,18 +108,17 @@ body {
   0% {
     background-position: -200% 0;
   }
+
   100% {
     background-position: 200% 0;
   }
 }
 
 .t-skeleton {
-  background: linear-gradient(
-    90deg,
-    oklch(0.852 0.035 127.5 / 0.12) 0%,
-    oklch(0.852 0.035 127.5 / 0.30) 50%,
-    oklch(0.852 0.035 127.5 / 0.12) 100%
-  );
+  background: linear-gradient(90deg,
+      oklch(0.852 0.035 127.5 / 0.12) 0%,
+      oklch(0.852 0.035 127.5 / 0.30) 50%,
+      oklch(0.852 0.035 127.5 / 0.12) 100%);
   background-size: 200% 100%;
   animation: skeletonShimmer var(--skel-dur) var(--ease-linear) infinite;
   will-change: background-position;
@@ -134,6 +133,7 @@ body {
     opacity: 0;
     transform: translateY(4px) scale(0.99);
   }
+
   100% {
     opacity: 1;
     transform: translateY(0) scale(1);
@@ -144,36 +144,42 @@ body {
 .t-skel {
   position: relative;
 }
+
 .t-skel-skeleton,
 .t-skel-content {
   position: absolute;
   inset: 0;
 }
+
 .t-skel-skeleton {
   z-index: 1;
   opacity: 1;
   filter: blur(0);
   transition:
     opacity var(--duration-slow) var(--ease-in-out),
-    filter  var(--duration-slow) var(--ease-in-out);
+    filter var(--duration-slow) var(--ease-in-out);
 }
+
 .t-skel-content {
   z-index: 2;
   opacity: 0;
   filter: blur(var(--blur-small));
   transition:
     opacity var(--duration-slow) var(--ease-in-out),
-    filter  var(--duration-slow) var(--ease-in-out);
+    filter var(--duration-slow) var(--ease-in-out);
 }
+
 .t-skel.is-revealed .t-skel-skeleton {
   opacity: 0;
   filter: blur(var(--blur-small));
   pointer-events: none;
 }
+
 .t-skel.is-revealed .t-skel-content {
   opacity: 1;
   filter: blur(0);
 }
+
 .t-skel.is-resetting .t-skel-skeleton,
 .t-skel.is-resetting .t-skel-content {
   transition: none !important;
@@ -185,19 +191,18 @@ body {
   display: inline-block;
   color: var(--zinc-800);
 }
+
 .t-shimmer::before {
   content: attr(data-text);
   position: absolute;
   inset: 0;
   pointer-events: none;
-  background-image: linear-gradient(
-    90deg,
-    transparent 0%,
-    transparent 40%,
-    rgba(255, 255, 255, 0.85) 50%,
-    transparent 60%,
-    transparent 100%
-  );
+  background-image: linear-gradient(90deg,
+      transparent 0%,
+      transparent 40%,
+      rgba(255, 255, 255, 0.85) 50%,
+      transparent 60%,
+      transparent 100%);
   background-size: 400% 100%;
   background-repeat: no-repeat;
   -webkit-background-clip: text;
@@ -206,9 +211,15 @@ body {
   -webkit-text-fill-color: transparent;
   animation: t-shimmer var(--shimmer-dur) var(--ease-linear) infinite;
 }
+
 @keyframes t-shimmer {
-  0%   { background-position: 100% 0; }
-  100% { background-position: 0% 0; }
+  0% {
+    background-position: 100% 0;
+  }
+
+  100% {
+    background-position: 0% 0;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -216,15 +227,18 @@ body {
     animation: none !important;
     background: oklch(0.852 0.035 127.5 / 0.2) !important;
   }
+
   .t-skeleton-reveal {
     animation: none !important;
     opacity: 1 !important;
     transform: none !important;
   }
+
   .t-skel-skeleton,
   .t-skel-content {
     transition: none !important;
   }
+
   .t-shimmer::before {
     animation: none !important;
   }

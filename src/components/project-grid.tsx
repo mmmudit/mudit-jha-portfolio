@@ -12,12 +12,32 @@ export type ProjectGridProps = {
 
 export function ProjectGrid({ projects }: ProjectGridProps) {
   const [activeCard, setActiveCard] = useState<ActiveProjectCardState | null>(null);
+  const [currentIdx, setCurrentIdx] = useState<number | null>(null);
   const [hoveredId, setHoveredId] = useState<string | number | null>(null);
   const cardRefs = useRef<Record<string, HTMLDivElement | null>>({});
   const reduce = useReducedMotion();
 
-  const handleCardClick = (project: ProjectData, projectKey: string) => {
+  const openProjectAtIndex = (index: number) => {
+    if (!projects || projects.length === 0) return;
+    const boundedIdx = (index + projects.length) % projects.length;
+    const project = projects[boundedIdx];
+    const id = project._id || project.id || boundedIdx;
+    const projectKey = String(id);
+    setCurrentIdx(boundedIdx);
+
     const el = cardRefs.current[projectKey];
+    const targetW = Math.min(940, window.innerWidth * 0.94);
+    const targetH = Math.min(window.innerHeight * 0.88, 680);
+    const targetTop = (window.innerHeight - targetH) / 2;
+    const targetLeft = (window.innerWidth - targetW) / 2;
+
+    const target = {
+      top: targetTop,
+      left: targetLeft,
+      width: targetW,
+      height: targetH,
+    };
+
     if (el) {
       const r = el.getBoundingClientRect();
       const origin = {
@@ -26,34 +46,80 @@ export function ProjectGrid({ projects }: ProjectGridProps) {
         width: r.width,
         height: r.height,
       };
-
-      const targetW = Math.min(940, window.innerWidth * 0.94);
-      const targetH = Math.min(window.innerHeight * 0.88, 680);
-      const targetTop = (window.innerHeight - targetH) / 2;
-      const targetLeft = (window.innerWidth - targetW) / 2;
-
-      const target = {
-        top: targetTop,
-        left: targetLeft,
-        width: targetW,
-        height: targetH,
-      };
-
       play("bloom", { volume: 0.45 });
       setActiveCard({ project, origin, target });
     } else {
-      const targetW = Math.min(940, window.innerWidth * 0.94);
-      const targetH = Math.min(window.innerHeight * 0.88, 680);
-      const targetTop = (window.innerHeight - targetH) / 2;
-      const targetLeft = (window.innerWidth - targetW) / 2;
       play("bloom", { volume: 0.45 });
       setActiveCard({
         project,
-        origin: { top: targetTop, left: targetLeft, width: targetW, height: targetH },
-        target: { top: targetTop, left: targetLeft, width: targetW, height: targetH },
+        origin: target,
+        target,
       });
     }
   };
+
+  const handleCardClick = (project: ProjectData, projectKey: string, index: number) => {
+    setCurrentIdx(index);
+    openProjectAtIndex(index);
+  };
+
+  // Keyboard navigation for grid and modal: J / K / Arrows / Enter
+  React.useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Ignore if typing in text inputs or modifier keys are held
+      if (
+        /^(INPUT|TEXTAREA|SELECT)$/.test((e.target as HTMLElement)?.tagName) ||
+        (e.target as HTMLElement)?.isContentEditable ||
+        e.metaKey ||
+        e.ctrlKey ||
+        e.altKey
+      ) {
+        return;
+      }
+
+      const isNextKey = e.key === "ArrowRight" || e.key === "ArrowDown" || e.key === "j" || e.key === "J";
+      const isPrevKey = e.key === "ArrowLeft" || e.key === "ArrowUp" || e.key === "k" || e.key === "K";
+
+      if (isNextKey) {
+        e.preventDefault();
+        if (activeCard !== null && currentIdx !== null) {
+          // Modal is open: flip to next case study
+          openProjectAtIndex(currentIdx + 1);
+        } else {
+          // Grid view: navigate cards
+          const nextIdx = currentIdx === null ? 0 : (currentIdx + 1) % projects.length;
+          setCurrentIdx(nextIdx);
+          const nextProject = projects[nextIdx];
+          const nextKey = String(nextProject._id || nextProject.id || nextIdx);
+          setHoveredId(nextProject._id || nextProject.id || nextIdx);
+          cardRefs.current[nextKey]?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+          play("tick", { volume: 0.35 });
+        }
+      } else if (isPrevKey) {
+        e.preventDefault();
+        if (activeCard !== null && currentIdx !== null) {
+          // Modal is open: flip to prev case study
+          openProjectAtIndex(currentIdx - 1);
+        } else {
+          // Grid view: navigate cards
+          const prevIdx = currentIdx === null ? projects.length - 1 : (currentIdx - 1 + projects.length) % projects.length;
+          setCurrentIdx(prevIdx);
+          const prevProject = projects[prevIdx];
+          const prevKey = String(prevProject._id || prevProject.id || prevIdx);
+          setHoveredId(prevProject._id || prevProject.id || prevIdx);
+          cardRefs.current[prevKey]?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+          play("tick", { volume: 0.35 });
+        }
+      } else if ((e.key === "Enter" || e.key === " ") && activeCard === null && currentIdx !== null) {
+        // Enter / Space opens the highlighted card
+        e.preventDefault();
+        openProjectAtIndex(currentIdx);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [activeCard, currentIdx, projects]);
 
   return (
     <>
@@ -97,7 +163,7 @@ export function ProjectGrid({ projects }: ProjectGridProps) {
                 onMouseLeave={() => setHoveredId(null)}
                 onFocus={() => setHoveredId(id)}
                 onBlur={() => setHoveredId(null)}
-                onClick={() => handleCardClick(project, projectKey)}
+                onClick={() => handleCardClick(project, projectKey, index)}
               />
             </motion.div>
           );
@@ -107,7 +173,25 @@ export function ProjectGrid({ projects }: ProjectGridProps) {
       {/* 3D Slow & Savory Weighted Horizon Morph Overlay */}
       <ProjectModal
         activeCard={activeCard}
-        onClose={() => setActiveCard(null)}
+        projects={projects}
+        currentIndex={currentIdx ?? 0}
+        totalCount={projects.length}
+        onSelectProject={(idx) => {
+          openProjectAtIndex(idx);
+        }}
+        onNext={() => {
+          if (currentIdx !== null) {
+            openProjectAtIndex(currentIdx + 1);
+          }
+        }}
+        onPrev={() => {
+          if (currentIdx !== null) {
+            openProjectAtIndex(currentIdx - 1);
+          }
+        }}
+        onClose={() => {
+          setActiveCard(null);
+        }}
       />
     </>
   );

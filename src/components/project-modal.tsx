@@ -3,8 +3,8 @@
 import React, { useEffect, useRef, useState, useCallback } from "react";
 import Image from "next/image";
 import { createPortal } from "react-dom";
-import { motion, useReducedMotion } from "framer-motion";
-import { X, ExternalLink } from "lucide-react";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
+import { X, ExternalLink, ChevronLeft, ChevronRight } from "lucide-react";
 import { play } from "@/lib/sound";
 import { ProjectCard } from "./project-card";
 
@@ -44,6 +44,12 @@ export type ProjectModalProps = {
   project?: ProjectData | null;
   activeCard?: ActiveProjectCardState | null;
   onClose: () => void;
+  onPrev?: () => void;
+  onNext?: () => void;
+  onSelectProject?: (index: number) => void;
+  projects?: ProjectData[];
+  currentIndex?: number;
+  totalCount?: number;
 };
 
 const SECTIONS = [
@@ -57,12 +63,23 @@ const SECTIONS = [
 
 const CINEMATIC_GENTLE_EASE = [0.19, 1, 0.22, 1] as [number, number, number, number];
 
-export function ProjectModal({ project: fallbackProject, activeCard: propActiveCard, onClose }: ProjectModalProps) {
+export function ProjectModal({
+  project: fallbackProject,
+  activeCard: propActiveCard,
+  onClose,
+  onPrev,
+  onNext,
+  onSelectProject,
+  projects,
+  currentIndex = 0,
+  totalCount,
+}: ProjectModalProps) {
   const [mounted, setMounted] = useState(false);
   const [isFlipped, setIsFlipped] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
   const [activeSectionId, setActiveSectionId] = useState("sec-media");
   const [hoveredSectionId, setHoveredSectionId] = useState<string | null>(null);
+  const [hoveredAvatarIdx, setHoveredAvatarIdx] = useState<number | null>(null);
 
   const modalRef = useRef<HTMLDivElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
@@ -144,6 +161,20 @@ export function ProjectModal({ project: fallbackProject, activeCard: propActiveC
         return;
       }
 
+      // Next / Prev shortcuts: J / K / Left / Right
+      if (!e.metaKey && !e.ctrlKey && !e.altKey) {
+        if (e.key === "ArrowRight" || e.key === "j" || e.key === "J") {
+          e.preventDefault();
+          onNext?.();
+          return;
+        }
+        if (e.key === "ArrowLeft" || e.key === "k" || e.key === "K") {
+          e.preventDefault();
+          onPrev?.();
+          return;
+        }
+      }
+
       // Trap Tab focus inside modal dialog
       if (e.key === "Tab" && modalRef.current) {
         const focusables = modalRef.current.querySelectorAll<HTMLElement>(
@@ -170,7 +201,7 @@ export function ProjectModal({ project: fallbackProject, activeCard: propActiveC
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [activeCard, handleClose]);
+  }, [activeCard, handleClose, onNext, onPrev]);
 
   // Track active section on scroll inside modal
   const handleScroll = () => {
@@ -402,16 +433,118 @@ export function ProjectModal({ project: fallbackProject, activeCard: propActiveC
                     </span>
                   </div>
 
-                  <button
-                    ref={closeButtonRef}
-                    onClick={handleClose}
-                    data-cuelume-hover="tick"
-                    data-cuelume-press
-                    className="pressable p-2 text-zinc-500 hover:text-zinc-900 rounded-full hover:bg-black/5 active:scale-[0.96] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-400 cursor-pointer"
-                    aria-label="Close modal [Esc]"
-                  >
-                    <X className="size-5" />
-                  </button>
+                  <div className="flex items-center gap-2.5">
+                    {/* Caleb Wu Style Project Avatar Stack Navigation Pill */}
+                    {projects && projects.length > 1 && (
+                      <nav
+                        className="group/pill flex items-center gap-2.5 px-3 py-1.5 rounded-full bg-white/90 border border-black/10 shadow-[0_2px_12px_rgba(0,0,0,0.06)] backdrop-blur-md transition-all duration-200 select-none"
+                        aria-label="Project switcher"
+                      >
+                        {/* Status Count e.g. "1 of 6" */}
+                        <span className="text-[12px] sm:text-[13px] font-sans font-normal text-zinc-500 tracking-tight whitespace-nowrap pl-0.5">
+                          {(currentIndex ?? 0) + 1} of {projects.length}
+                        </span>
+
+                        {/* Interactive Overlapping Avatar Icons */}
+                        <div className="flex items-center -space-x-2 group-hover/pill:-space-x-0.5 transition-[margin,gap] duration-200 ease-out pl-0.5">
+                          {projects.map((p, idx) => {
+                            const isActive = (currentIndex ?? 0) === idx;
+                            const isHovered = hoveredAvatarIdx === idx;
+                            const title = p.title || `Project ${idx + 1}`;
+                            return (
+                              <div key={p._id || p.id || p.slug || idx} className="relative flex items-center justify-center">
+                                {/* Hover Preview Tooltip Pill in SmartLinkPreview Paper Style */}
+                                <AnimatePresence>
+                                  {isHovered && (
+                                    <motion.div
+                                      initial={{ opacity: 0, y: -4, scale: 0.96 }}
+                                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                                      exit={{ opacity: 0, y: -2, scale: 0.96 }}
+                                      transition={{ duration: 0.16, ease: [0.22, 1, 0.36, 1] }}
+                                      className="absolute top-full mt-3 z-50 pointer-events-none"
+                                    >
+                                      <div className="relative inline-flex items-center gap-2 px-3 py-1.5 rounded-full border-[1.5px] border-zinc-950 bg-[#fffdfa] shadow-[3px_3px_0px_#18181b] whitespace-nowrap will-change-transform select-none">
+                                        {/* Top Pointer Tail */}
+                                        <div className="absolute -top-[5px] left-1/2 -translate-x-1/2 w-0 h-0 border-l-[5px] border-l-transparent border-r-[5px] border-r-transparent border-b-[5px] border-b-zinc-950 drop-shadow-[0_-1px_0_#18181b]" />
+                                        <div className="absolute -top-[4px] left-1/2 -translate-x-1/2 w-0 h-0 border-l-[4px] border-l-transparent border-r-[4px] border-r-transparent border-b-[4px] border-b-[#fffdfa]" />
+
+                                        {/* Icon Thumbnail */}
+                                        {p.image && (
+                                          <div className="relative size-3.5 rounded-full overflow-hidden border border-zinc-950/20 shrink-0">
+                                            <Image src={p.image} alt="" fill sizes="16px" className="object-cover" />
+                                          </div>
+                                        )}
+
+                                        {/* Project Title */}
+                                        <span className="font-mono text-[12px] font-bold text-zinc-950 tracking-tight">
+                                          {title}
+                                        </span>
+
+                                        {/* Keyboard Shortcut Indicator */}
+                                        <span className="font-mono text-[10px] text-zinc-400 font-medium tracking-tight">
+                                          [{idx + 1}]
+                                        </span>
+                                      </div>
+                                    </motion.div>
+                                  )}
+                                </AnimatePresence>
+
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    play("page", { volume: 0.35 });
+                                    onSelectProject?.(idx);
+                                  }}
+                                  onMouseEnter={() => setHoveredAvatarIdx(idx)}
+                                  onMouseLeave={() => setHoveredAvatarIdx(null)}
+                                  onFocus={() => setHoveredAvatarIdx(idx)}
+                                  onBlur={() => setHoveredAvatarIdx(null)}
+                                  title={`${title} [${idx + 1}]`}
+                                  aria-label={`Switch to ${title}`}
+                                  aria-current={isActive ? "true" : undefined}
+                                  className={`relative size-6 sm:size-[26px] rounded-full overflow-hidden border-[1.5px] border-white bg-zinc-100 transition-all duration-200 ease-out cursor-pointer ${
+                                    isActive
+                                      ? "grayscale-0 opacity-100 ring-1 ring-black/10 scale-105 z-20 shadow-sm"
+                                      : "grayscale opacity-45 hover:grayscale-0 hover:opacity-100 hover:scale-115 hover:z-30"
+                                  } focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-black/10`}
+                                >
+                                  {p.image ? (
+                                    <Image
+                                      src={p.image}
+                                      alt={title}
+                                      fill
+                                      sizes="32px"
+                                      className="size-full object-cover pointer-events-none"
+                                    />
+                                  ) : (
+                                    <div
+                                      className={`size-full bg-gradient-to-br ${
+                                        p.gradient || "from-zinc-300 to-zinc-400"
+                                      } flex items-center justify-center font-mono text-[9px] font-bold text-zinc-700`}
+                                    >
+                                      {title.charAt(0)}
+                                    </div>
+                                  )}
+                                </button>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </nav>
+                    )}
+
+                    <button
+                      ref={closeButtonRef}
+                      onClick={handleClose}
+                      data-cuelume-hover="tick"
+                      data-cuelume-press
+                      className="pressable p-2 text-zinc-500 hover:text-zinc-900 rounded-full hover:bg-black/5 active:scale-[0.96] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-400 cursor-pointer"
+                      aria-label="Close modal [Esc]"
+                      title="Close [Esc]"
+                    >
+                      <X className="size-5" />
+                    </button>
+                  </div>
                 </div>
 
                 {/* Main Body Grid Layout: Left Vertical Navigation Minimap & Right Scroll Content */}
