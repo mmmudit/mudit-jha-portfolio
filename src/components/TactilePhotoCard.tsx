@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useRef, useState, useCallback, KeyboardEvent } from "react";
+import React, { useRef, useState, useEffect, useCallback, KeyboardEvent } from "react";
 import Image from "next/image";
 import {
   motion,
@@ -55,25 +55,59 @@ export function TactilePhotoCard({
   const [isFocused, setIsFocused] = useState(false);
   const prefersReducedMotion = useReducedMotion();
 
-  // Combined elevation state (active on mouse hover or keyboard focus)
+  // Combined elevation state (active on mouse hover, touch, or keyboard focus)
   const isElevated = isHovered || isFocused;
 
-  // Normalized cursor coordinates (-0.5 to 0.5 from center)
+  // Normalized coordinates (-0.5 to 0.5 from center)
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
 
   // Physics Spring configuration matching the portfolio tactile motion scale
-  const tiltSpringConfig = { stiffness: 260, damping: 20, mass: 0.6 };
+  const tiltSpringConfig = { stiffness: 220, damping: 22, mass: 0.6 };
   const smoothMouseX = useSpring(mouseX, tiltSpringConfig);
   const smoothMouseY = useSpring(mouseY, tiltSpringConfig);
 
-  // Map normalized cursor offsets to rotation angles (-14deg to 14deg)
-  const rotateX = useTransform(smoothMouseY, [-0.5, 0.5], [14, -14]);
-  const rotateY = useTransform(smoothMouseX, [-0.5, 0.5], [-14, 14]);
+  // Map normalized offsets to rotation angles (-16deg to 16deg)
+  const rotateX = useTransform(smoothMouseY, [-0.5, 0.5], [16, -16]);
+  const rotateY = useTransform(smoothMouseX, [-0.5, 0.5], [-16, 16]);
 
   // Subtle dynamic ambient glare across the glossy photo surface
   const glareX = useTransform(smoothMouseX, [-0.5, 0.5], ["0%", "100%"]);
   const glareY = useTransform(smoothMouseY, [-0.5, 0.5], ["0%", "100%"]);
+
+  // ─────────────────────────────────────────────────────────────
+  // MOBILE GYROSCOPE / DEVICE ORIENTATION TRACKING
+  // ─────────────────────────────────────────────────────────────
+  useEffect(() => {
+    if (prefersReducedMotion) return;
+
+    const handleOrientation = (e: DeviceOrientationEvent) => {
+      if (e.gamma === null || e.beta === null) return;
+
+      // Gamma: Left-to-right roll [-90, 90] -> map [-30, 30] to [-0.5, 0.5]
+      const clampedGamma = Math.min(Math.max(e.gamma, -32), 32);
+      const normX = clampedGamma / 64;
+
+      // Beta: Front-to-back pitch [-180, 180], typical natural handheld reading angle is ~45deg
+      const restingBeta = 45;
+      const deltaBeta = e.beta - restingBeta;
+      const clampedBeta = Math.min(Math.max(deltaBeta, -32), 32);
+      const normY = clampedBeta / 64;
+
+      mouseX.set(normX);
+      mouseY.set(normY);
+    };
+
+    if (typeof window !== "undefined" && "DeviceOrientationEvent" in window) {
+      window.addEventListener("deviceorientation", handleOrientation, { passive: true });
+    }
+
+    return () => {
+      if (typeof window !== "undefined" && "DeviceOrientationEvent" in window) {
+        window.removeEventListener("deviceorientation", handleOrientation);
+      }
+    };
+  }, [mouseX, mouseY, prefersReducedMotion]);
 
   const handleMouseMove = useCallback(
     (e: React.MouseEvent<HTMLDivElement>) => {
@@ -91,6 +125,45 @@ export function TactilePhotoCard({
     [mouseX, mouseY, prefersReducedMotion]
   );
 
+  const handleTouchMove = useCallback(
+    (e: React.TouchEvent<HTMLDivElement>) => {
+      if (prefersReducedMotion || !cardRef.current || e.touches.length === 0) return;
+      const touch = e.touches[0];
+      const rect = cardRef.current.getBoundingClientRect();
+      const clientX = touch.clientX - rect.left;
+      const clientY = touch.clientY - rect.top;
+
+      const normX = Math.min(Math.max(clientX / rect.width - 0.5, -0.5), 0.5);
+      const normY = Math.min(Math.max(clientY / rect.height - 0.5, -0.5), 0.5);
+
+      mouseX.set(normX);
+      mouseY.set(normY);
+    },
+    [mouseX, mouseY, prefersReducedMotion]
+  );
+
+  const handleTouchStart = useCallback(() => {
+    setIsHovered(true);
+    // Request iOS 13+ device orientation permission if required
+    if (
+      typeof window !== "undefined" &&
+      typeof (DeviceOrientationEvent as any)?.requestPermission === "function"
+    ) {
+      (DeviceOrientationEvent as any)
+        .requestPermission()
+        .then((permission: string) => {
+          if (permission === "granted") {
+            // Orientation events will now stream actively
+          }
+        })
+        .catch(() => {});
+    }
+  }, []);
+
+  const handleTouchEnd = useCallback(() => {
+    setIsHovered(false);
+  }, []);
+
   const handleMouseEnter = useCallback(() => {
     setIsHovered(true);
     play("sparkle");
@@ -98,7 +171,6 @@ export function TactilePhotoCard({
 
   const handleMouseLeave = useCallback(() => {
     setIsHovered(false);
-    // Smoothly spring-reset rotations back to 0 without snapping
     mouseX.set(0);
     mouseY.set(0);
   }, [mouseX, mouseY]);
@@ -142,11 +214,14 @@ export function TactilePhotoCard({
         onMouseMove={handleMouseMove}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
         onFocus={handleFocus}
         onBlur={handleBlur}
         onClick={handleClick}
         onKeyDown={handleKeyDown}
-        className="group block relative w-[280px] sm:w-[320px] aspect-[4/5] cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-zinc-400 focus-visible:ring-offset-4 focus-visible:ring-offset-[#fbfaf5] rounded-[26px] active:scale-[0.98] transition-transform duration-150"
+        className="group block relative w-[280px] sm:w-[320px] aspect-[4/5] cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-zinc-400 focus-visible:ring-offset-4 focus-visible:ring-offset-[#fbfaf5] rounded-[26px] active:scale-[0.98] transition-transform duration-150 touch-none"
         style={{ transformStyle: "preserve-3d" }}
       >
         {/* Dynamic Paper Contact Shadow (expands & softens when elevated) */}

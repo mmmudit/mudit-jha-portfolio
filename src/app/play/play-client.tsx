@@ -15,11 +15,22 @@ export function PlayPageClient({
   items: DragCanvasItem[];
 }) {
   const [portalContainer, setPortalContainer] = useState<HTMLElement | null>(null);
+  const [viewMode, setViewMode] = useState<"canvas" | "grid">("canvas");
+  const [isMobile, setIsMobile] = useState(false);
 
-  // Create a dedicated portal container element on mount,
-  // and explicitly remove it on unmount — this ensures the canvas
-  // disappears immediately when navigating away, even if
-  // AnimatePresence keeps the page component alive during its exit.
+  // Initialize responsive view mode: gallery grid on mobile, interactive canvas on desktop
+  useEffect(() => {
+    const mql = window.matchMedia("(max-width: 767px)");
+    const update = () => {
+      setIsMobile(mql.matches);
+    };
+    update();
+    setViewMode(mql.matches ? "grid" : "canvas");
+    mql.addEventListener("change", update);
+    return () => mql.removeEventListener("change", update);
+  }, []);
+
+  // Create dedicated portal container element on mount
   useEffect(() => {
     const el = document.createElement("div");
     el.id = "play-portal-root";
@@ -40,14 +51,12 @@ export function PlayPageClient({
   };
 
   // ─────────────────────────────────────────────────────────────
-  // 1. DESKTOP & TABLET (md+): Portaled to document.body so it's
-  //    never affected by layout wrapper padding, PageTransition
-  //    transforms/filters, or any other ancestor containing blocks.
+  // 1. INTERACTIVE CANVAS (Portaled full-screen view)
   // ─────────────────────────────────────────────────────────────
-  const desktopCanvas = portalContainer
+  const canvasElement = portalContainer && viewMode === "canvas"
     ? createPortal(
         <div
-          className="hidden md:block fixed inset-0 w-screen h-[100dvh] z-0 overflow-hidden select-none bg-[#fbfaf5]"
+          className="fixed inset-0 w-screen h-[100dvh] z-0 overflow-hidden select-none bg-[#fbfaf5]"
           id="play-canvas-portal"
         >
           <DragCanvas
@@ -60,6 +69,27 @@ export function PlayPageClient({
             showCenterHero={true}
             onItemClick={handleCardClick}
           />
+
+          {/* Floating Mode Switcher Button when Canvas is active */}
+          <div className="fixed top-20 sm:top-24 left-1/2 -translate-x-1/2 z-40 pointer-events-auto select-none">
+            <button
+              type="button"
+              onClick={() => {
+                play("pop", { volume: 0.4 });
+                setViewMode("grid");
+              }}
+              data-cuelume-hover="tick"
+              data-cuelume-press
+              className="pressable inline-flex items-center gap-2 px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-full border border-zinc-300/90 bg-[#fbfaf5]/90 backdrop-blur-md text-xs sm:text-[13px] font-mono font-medium text-zinc-800 shadow-[0_4px_20px_rgba(0,0,0,0.08)] active:scale-95 transition-all hover:bg-white hover:border-zinc-400 cursor-pointer"
+            >
+              <span className="size-2 rounded-full bg-emerald-500 animate-pulse" />
+              <span>Interactive Mode</span>
+              <span className="text-zinc-400">•</span>
+              <span className="text-zinc-600 hover:text-zinc-950 font-semibold underline underline-offset-2">
+                Switch to Gallery
+              </span>
+            </button>
+          </div>
         </div>,
         portalContainer
       )
@@ -67,71 +97,86 @@ export function PlayPageClient({
 
   return (
     <>
-      {/* Desktop canvas — portaled to document.body */}
-      {desktopCanvas}
+      {/* Interactive Drag Canvas — portaled to document.body when active */}
+      {canvasElement}
 
       {/* ─────────────────────────────────────────────────────────────
-          2. MOBILE & SMALL SCREEN VIEW (<md):
-             Clean in-flow vertical scrollable grid layout
+          2. GALLERY GRID VIEW (Responsive 1/2/3-column view)
          ───────────────────────────────────────────────────────────── */}
-      <div className="block md:hidden w-full min-h-screen pb-24 pt-4">
-        {/* Mobile Header Block */}
-        <div className="flex flex-col items-center justify-center text-center max-w-md mx-auto mb-8 px-2">
-          {/* Verified Badge Icon */}
-          <motion.div
-            data-cuelume-hover="chime"
-            onClick={() => play("chime", { volume: 0.4 })}
-            className="mb-3 flex items-center justify-center cursor-pointer active:scale-95 transition-transform"
-            initial={{ opacity: 0, y: 6 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
-          >
-            <svg
-              width="44"
-              height="44"
-              viewBox="0 0 24 24"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-              className="drop-shadow-sm"
+      {viewMode === "grid" && (
+        <div className="w-full min-h-screen pb-28 pt-4">
+          {/* Header Block */}
+          <div className="flex flex-col items-center justify-center text-center max-w-xl mx-auto mb-10 px-2">
+            {/* Verified Badge Icon */}
+            <motion.div
+              data-cuelume-hover="chime"
+              onClick={() => play("chime", { volume: 0.4 })}
+              className="mb-3 flex items-center justify-center cursor-pointer active:scale-95 transition-transform"
+              initial={{ opacity: 0, y: 6 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
             >
-              <path
-                d="M22.5 12.5c0-1.58-.875-2.95-2.148-3.66.152-.51.238-1.05.238-1.61 0-2.9-2.35-5.25-5.25-5.25-.56 0-1.1.086-1.61.238C12.95 1.025 11.58.15 10 .15c-1.58 0-2.95.875-3.66 2.148-.51-.152-1.05-.238-1.61-.238-2.9 0-5.25 2.35-5.25 5.25 0 .56.086 1.1.238 1.61C1.025 9.55.15 10.92.15 12.5c0 1.58.875 2.95 2.148 3.66-.152.51-.238 1.05-.238 1.61 0 2.9 2.35 5.25 5.25 5.25 0 .56-.086 1.1-.238-1.61 1.273-.71 2.148-2.08 2.148-3.66z"
-                fill="#c8d5bb"
+              <svg
+                width="44"
+                height="44"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                className="drop-shadow-sm"
+              >
+                <path
+                  d="M22.5 12.5c0-1.58-.875-2.95-2.148-3.66.152-.51.238-1.05.238-1.61 0-2.9-2.35-5.25-5.25-5.25-.56 0-1.1.086-1.61.238C12.95 1.025 11.58.15 10 .15c-1.58 0-2.95.875-3.66 2.148-.51-.152-1.05-.238-1.61-.238-2.9 0-5.25 2.35-5.25 5.25 0 .56.086 1.1.238 1.61C1.025 9.55.15 10.92.15 12.5c0 1.58.875 2.95 2.148 3.66-.152.51-.238 1.05-.238 1.61 0 2.9 2.35 5.25 5.25 5.25 0 .56-.086 1.1-.238-1.61 1.273-.71 2.148-2.08 2.148-3.66z"
+                  fill="#c8d5bb"
+                />
+                <path
+                  d="M10.2 16.2l-3.7-3.7 1.4-1.4 2.3 2.3 5.3-5.3 1.4 1.4-6.7 6.7z"
+                  fill="#ffffff"
+                />
+              </svg>
+            </motion.div>
+
+            {/* Title */}
+            <h1 className="font-hand text-5xl sm:text-6xl font-medium tracking-[-2px] text-zinc-900 mb-2">
+              Mudit&apos;s Playground
+            </h1>
+
+            {/* Subtitle */}
+            <p className="font-display text-zinc-600 text-base sm:text-lg leading-relaxed font-normal max-w-lg">
+              Unpublished design experiments, spatial UI prototypes, video studies, and real-time shaders.
+            </p>
+
+            {/* Mode Switcher Button */}
+            <button
+              type="button"
+              onClick={() => {
+                play("pop", { volume: 0.4 });
+                setViewMode("canvas");
+              }}
+              data-cuelume-hover="tick"
+              data-cuelume-press
+              className="pressable mt-4 inline-flex items-center gap-2 px-4 py-2 rounded-full border border-zinc-300/90 bg-[#fbfaf5] text-[12px] sm:text-[13px] font-mono font-medium text-zinc-800 shadow-[0_2px_10px_rgba(0,0,0,0.04)] active:scale-95 transition-all hover:bg-white hover:border-zinc-400 cursor-pointer select-none"
+              aria-label="Switch to interactive canvas mode"
+            >
+              <Sparkles className="size-3.5 text-amber-600 animate-pulse" />
+              <span className="font-semibold tracking-wide uppercase">
+                {isMobile ? "Switch to Interactive Mode" : "Switch to Interactive Canvas"}
+              </span>
+              <span className="text-[11px] font-sans text-zinc-400">• {items.length} Items</span>
+            </button>
+          </div>
+
+          {/* Responsive Gallery Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
+            {items.map((item) => (
+              <MobilePlayCard
+                key={item.id}
+                item={item}
+                onClick={() => handleCardClick(item)}
               />
-              <path
-                d="M10.2 16.2l-3.7-3.7 1.4-1.4 2.3 2.3 5.3-5.3 1.4 1.4-6.7 6.7z"
-                fill="#ffffff"
-              />
-            </svg>
-          </motion.div>
-
-          {/* Title */}
-          <h1 className="font-hand text-5xl font-medium tracking-[-2px] text-zinc-900 mb-2">
-            Mudit&apos;s Playground
-          </h1>
-
-          {/* Subtitle */}
-          <p className="font-display text-zinc-600 text-base leading-relaxed font-normal">
-            Unpublished design experiments, spatial UI prototypes, video studies, and real-time shaders.
-          </p>
-
-          <div className="mt-4 inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-zinc-300/80 bg-[#fbfaf5] text-[11px] font-mono text-zinc-500 shadow-xs">
-            <Sparkles className="size-3 text-amber-600" />
-            <span>{items.length} PLAYGROUND EXPERIMENTS</span>
+            ))}
           </div>
         </div>
-
-        {/* Mobile Vertical Grid */}
-        <div className="grid grid-cols-1 gap-5 w-full">
-          {items.map((item) => (
-            <MobilePlayCard
-              key={item.id}
-              item={item}
-              onClick={() => handleCardClick(item)}
-            />
-          ))}
-        </div>
-      </div>
+      )}
     </>
   );
 }

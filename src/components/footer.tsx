@@ -31,7 +31,7 @@ export function Footer() {
   };
 
   return (
-    <footer className="relative w-screen left-1/2 -translate-x-1/2 px-6 sm:px-14 pb-[max(1.5rem,env(safe-area-inset-bottom))] select-none">
+    <footer className="relative w-screen left-1/2 -translate-x-1/2 px-6 sm:px-14 pb-0 sm:pb-[max(1.5rem,env(safe-area-inset-bottom))] select-none">
       {/* Subtle Frost Blur Gradient Overlay with Color Willow (Spanning entire viewport width) */}
       <div
         className="absolute inset-0 pointer-events-none -z-10 select-none transition-[backdrop-filter,opacity] duration-250 ease-out"

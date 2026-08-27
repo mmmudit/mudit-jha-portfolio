@@ -63,7 +63,7 @@ export function LiveClock({ variant = "footer" }: LiveClockProps) {
         aria-label={`Current time in Minneapolis: ${time || "Loading"}`}
         data-cuelume-hover="pulse"
         onClick={() => play("pulse", { volume: 0.35 })}
-        className="group relative flex flex-col items-center gap-3 shrink-0 self-center md:self-auto py-3 px-6 select-none cursor-pointer"
+        className="group relative flex flex-col items-start md:items-center gap-2.5 md:gap-3 shrink-0 self-start md:self-auto py-1 md:py-3 px-0 md:px-6 select-none cursor-pointer"
       >
         {/* Soft Radial Ambient Halo */}
         <div
@@ -75,10 +75,12 @@ export function LiveClock({ variant = "footer" }: LiveClockProps) {
         />
 
         {/* Free-Floating 3D Globe */}
-        <PulsingGlobe size={120} className="group-hover:scale-105 transition-transform duration-300" />
+        <div className="scale-[0.8] origin-left md:scale-100 md:origin-center transition-transform duration-300">
+          <PulsingGlobe size={120} className="group-hover:scale-105 transition-transform duration-300" />
+        </div>
 
         {/* Telemetry Stack (No pills, no borders) */}
-        <div className="flex flex-col items-center gap-0.5 pt-1 text-center">
+        <div className="flex flex-col items-start md:items-center gap-0.5 pt-0.5 md:pt-1 text-left md:text-center">
           <div className="flex items-center gap-2 font-mono text-[13px] font-medium text-zinc-800 tracking-tight tabular-nums">
             <span aria-hidden="true" className="inline-flex items-center">
               {timeChars.length > 0 ? (

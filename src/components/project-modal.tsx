@@ -3,7 +3,14 @@
 import React, { useEffect, useRef, useState, useCallback } from "react";
 import Image from "next/image";
 import { createPortal } from "react-dom";
-import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
+import {
+  motion,
+  AnimatePresence,
+  useReducedMotion,
+  useMotionValue,
+  useTransform,
+  type PanInfo,
+} from "framer-motion";
 import { X, ExternalLink, ChevronLeft, ChevronRight } from "lucide-react";
 import { play } from "@/lib/sound";
 import { ProjectCard } from "./project-card";
@@ -86,6 +93,33 @@ export function ProjectModal({
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const prefersReducedMotion = useReducedMotion();
 
+  // Tinder Swipe Gesture Motion Values & Transforms
+  const dragX = useMotionValue(0);
+  const dragRotate = useTransform(dragX, [-260, 0, 260], [-8, 0, 8]);
+  const dragScale = useTransform(dragX, [-260, 0, 260], [0.98, 1, 0.98]);
+  const nextIndicatorOpacity = useTransform(dragX, [-90, -30, 0], [1, 0.7, 0]);
+  const prevIndicatorOpacity = useTransform(dragX, [0, 30, 90], [0, 0.7, 1]);
+
+  const handleDragEnd = (
+    _event: MouseEvent | TouchEvent | PointerEvent,
+    info: PanInfo
+  ) => {
+    const threshold = 55;
+    const velocityThreshold = 220;
+
+    if (info.offset.x < -threshold || info.velocity.x < -velocityThreshold) {
+      if (onNext) {
+        play("page", { volume: 0.4 });
+        onNext();
+      }
+    } else if (info.offset.x > threshold || info.velocity.x > velocityThreshold) {
+      if (onPrev) {
+        play("page", { volume: 0.4 });
+        onPrev();
+      }
+    }
+  };
+
   // Normalize active card data from props
   const activeCard: ActiveProjectCardState | null = propActiveCard
     ? propActiveCard
@@ -93,16 +127,16 @@ export function ProjectModal({
     ? {
         project: fallbackProject,
         origin: {
-          top: typeof window !== "undefined" ? (window.innerHeight - 680) / 2 : 100,
-          left: typeof window !== "undefined" ? (window.innerWidth - 940) / 2 : 100,
-          width: 940,
-          height: 680,
+          top: typeof window !== "undefined" ? (window.innerHeight - Math.min(window.innerHeight <= 640 ? window.innerHeight - 36 : window.innerHeight * 0.88, 680)) / 2 : 100,
+          left: typeof window !== "undefined" ? (window.innerWidth - Math.min(window.innerWidth <= 640 ? window.innerWidth - 24 : window.innerWidth * 0.92, 940)) / 2 : 100,
+          width: typeof window !== "undefined" ? Math.min(window.innerWidth <= 640 ? window.innerWidth - 24 : window.innerWidth * 0.92, 940) : 940,
+          height: typeof window !== "undefined" ? Math.min(window.innerHeight <= 640 ? window.innerHeight - 36 : window.innerHeight * 0.88, 680) : 680,
         },
         target: {
-          top: typeof window !== "undefined" ? (window.innerHeight - 680) / 2 : 100,
-          left: typeof window !== "undefined" ? (window.innerWidth - 940) / 2 : 100,
-          width: 940,
-          height: 680,
+          top: typeof window !== "undefined" ? (window.innerHeight - Math.min(window.innerHeight <= 640 ? window.innerHeight - 36 : window.innerHeight * 0.88, 680)) / 2 : 100,
+          left: typeof window !== "undefined" ? (window.innerWidth - Math.min(window.innerWidth <= 640 ? window.innerWidth - 24 : window.innerWidth * 0.92, 940)) / 2 : 100,
+          width: typeof window !== "undefined" ? Math.min(window.innerWidth <= 640 ? window.innerWidth - 24 : window.innerWidth * 0.92, 940) : 940,
+          height: typeof window !== "undefined" ? Math.min(window.innerHeight <= 640 ? window.innerHeight - 36 : window.innerHeight * 0.88, 680) : 680,
         },
       }
     : null;
@@ -333,8 +367,35 @@ export function ProjectModal({
           }
           transition={isClosing ? closeTransition : openTransition}
           onAnimationComplete={handleAnimationComplete}
+          drag="x"
+          dragDirectionLock
+          dragConstraints={{ left: 0, right: 0 }}
+          dragElastic={0.65}
+          onDragEnd={handleDragEnd}
+          style={{
+            x: dragX,
+            rotate: dragRotate,
+            scale: dragScale,
+          }}
           className="pointer-events-auto relative will-change-transform"
         >
+          {/* Left / Prev Swipe Floating Indicator (Tinder Style) */}
+          <motion.div
+            style={{ opacity: prevIndicatorOpacity }}
+            className="absolute -left-3 top-1/2 -translate-y-1/2 z-50 pointer-events-none px-3 py-1.5 rounded-full bg-zinc-950/90 backdrop-blur-md text-white font-mono text-xs font-semibold shadow-2xl flex items-center gap-1.5 border border-white/20 select-none"
+          >
+            <ChevronLeft className="size-4 text-emerald-400" />
+            <span>Prev</span>
+          </motion.div>
+
+          {/* Right / Next Swipe Floating Indicator (Tinder Style) */}
+          <motion.div
+            style={{ opacity: nextIndicatorOpacity }}
+            className="absolute -right-3 top-1/2 -translate-y-1/2 z-50 pointer-events-none px-3 py-1.5 rounded-full bg-zinc-950/90 backdrop-blur-md text-white font-mono text-xs font-semibold shadow-2xl flex items-center gap-1.5 border border-white/20 select-none"
+          >
+            <span>Next</span>
+            <ChevronRight className="size-4 text-emerald-400" />
+          </motion.div>
           {/* Inner 3D Flipper (Slow & Savory Horizon Flip) */}
           <motion.div
             initial={{ rotateY: 0 }}
@@ -415,33 +476,38 @@ export function ProjectModal({
                 transform: prefersReducedMotion ? "none" : "rotateY(180deg)",
                 pointerEvents: isFlipped ? "auto" : "none",
               }}
-              className={`absolute inset-0 w-full h-full rounded-[28px] p-[1.5px] bg-gradient-to-br ${gradientPreset} shadow-[0_25px_60px_rgba(0,0,0,0.25)] flex flex-col overflow-hidden select-text`}
+              className={`absolute inset-0 w-full h-full rounded-[22px] sm:rounded-[28px] p-[1.5px] bg-gradient-to-br ${gradientPreset} shadow-[0_25px_60px_rgba(0,0,0,0.25)] flex flex-col overflow-hidden select-text`}
             >
               {/* Inner Modal Content Container */}
-              <div className="relative flex flex-col size-full overflow-hidden rounded-[26.5px] bg-[#fbfaf5] text-zinc-800 text-left">
+              <div className="relative flex flex-col size-full overflow-hidden rounded-[20.5px] sm:rounded-[26.5px] bg-[#fbfaf5] text-zinc-800 text-left">
+                {/* Mobile Drag Pill Handle */}
+                <div className="sm:hidden pt-2.5 pb-0 flex justify-center items-center w-full shrink-0 bg-[#fbfaf5]">
+                  <div className="w-9 h-1 rounded-full bg-zinc-300" />
+                </div>
+
                 {/* Modal Top Header */}
-                <div className="flex items-center justify-between px-6 pt-5 pb-4 border-b border-black/5 shrink-0 bg-[#fbfaf5] z-20">
-                  <div className="flex items-center gap-2.5">
+                <div className="flex items-center justify-between px-4 sm:px-6 pt-2.5 sm:pt-5 pb-3 sm:pb-4 border-b border-black/5 shrink-0 bg-[#fbfaf5] z-20">
+                  <div className="flex items-center gap-2 min-w-0">
                     <h3
                       id="modal-project-title"
-                      className="font-display text-xl sm:text-2xl font-semibold text-zinc-900 tracking-tight"
+                      className="font-display text-lg sm:text-2xl font-semibold text-zinc-900 tracking-tight truncate max-w-[130px] sm:max-w-none"
                     >
                       {project.title}
                     </h3>
-                    <span className="px-2.5 py-0.5 text-xs font-mono font-medium tracking-wide uppercase bg-zinc-200/70 text-zinc-700 rounded-full">
+                    <span className="px-2 py-0.5 text-[10px] sm:text-xs font-mono font-medium tracking-wide uppercase bg-zinc-200/70 text-zinc-700 rounded-full shrink-0">
                       {project.year || "2025"}
                     </span>
                   </div>
 
-                  <div className="flex items-center gap-2.5">
+                  <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
                     {/* Caleb Wu Style Project Avatar Stack Navigation Pill */}
                     {projects && projects.length > 1 && (
                       <nav
-                        className="group/pill flex items-center gap-2.5 px-3 py-1.5 rounded-full bg-white/90 border border-black/10 shadow-[0_2px_12px_rgba(0,0,0,0.06)] backdrop-blur-md transition-all duration-200 select-none"
+                        className="group/pill flex items-center gap-1 sm:gap-2.5 px-2 sm:px-3 py-1 sm:py-1.5 rounded-full bg-white/90 border border-black/10 shadow-[0_2px_12px_rgba(0,0,0,0.06)] backdrop-blur-md transition-all duration-200 select-none"
                         aria-label="Project switcher"
                       >
-                        {/* Status Count e.g. "1 of 6" */}
-                        <span className="text-[12px] sm:text-[13px] font-sans font-normal text-zinc-500 tracking-tight whitespace-nowrap pl-0.5">
+                        {/* Status Count e.g. "1 of 6" (hidden on small mobile to fit) */}
+                        <span className="hidden sm:inline text-[12px] sm:text-[13px] font-sans font-normal text-zinc-500 tracking-tight whitespace-nowrap pl-0.5">
                           {(currentIndex ?? 0) + 1} of {projects.length}
                         </span>
 
@@ -502,7 +568,7 @@ export function ProjectModal({
                                   title={`${title} [${idx + 1}]`}
                                   aria-label={`Switch to ${title}`}
                                   aria-current={isActive ? "true" : undefined}
-                                  className={`relative size-6 sm:size-[26px] rounded-full overflow-hidden border-[1.5px] border-white bg-zinc-100 transition-all duration-200 ease-out cursor-pointer ${
+                                  className={`relative size-5 sm:size-[26px] rounded-full overflow-hidden border-[1.5px] border-white bg-zinc-100 transition-all duration-200 ease-out cursor-pointer ${
                                     isActive
                                       ? "grayscale-0 opacity-100 ring-1 ring-black/10 scale-105 z-20 shadow-sm"
                                       : "grayscale opacity-45 hover:grayscale-0 hover:opacity-100 hover:scale-115 hover:z-30"
@@ -538,7 +604,7 @@ export function ProjectModal({
                       onClick={handleClose}
                       data-cuelume-hover="tick"
                       data-cuelume-press
-                      className="pressable p-2 text-zinc-500 hover:text-zinc-900 rounded-full hover:bg-black/5 active:scale-[0.96] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-400 cursor-pointer"
+                      className="pressable p-1.5 sm:p-2 text-zinc-500 hover:text-zinc-900 rounded-full hover:bg-black/5 active:scale-[0.96] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-400 cursor-pointer"
                       aria-label="Close modal [Esc]"
                       title="Close [Esc]"
                     >
@@ -620,12 +686,12 @@ export function ProjectModal({
                   <div
                     ref={scrollContainerRef}
                     onScroll={handleScroll}
-                    className="flex-1 p-6 sm:p-8 overflow-y-auto space-y-8 scroll-smooth overscroll-contain"
+                    className="flex-1 p-4 sm:p-6 md:p-8 overflow-y-auto space-y-6 sm:space-y-8 scroll-smooth overscroll-contain touch-auto"
                   >
                     {/* Section 0: Media Preview */}
                     <div
                       id="sec-media"
-                      className="relative aspect-[16/9] w-full rounded-[22px] overflow-hidden bg-zinc-100 border border-black/5 shadow-sm scroll-mt-6"
+                      className="relative aspect-[16/9] w-full rounded-[16px] sm:rounded-[22px] overflow-hidden bg-zinc-100 border border-black/5 shadow-sm scroll-mt-6"
                     >
                       {project.image ? (
                         <Image
@@ -642,7 +708,7 @@ export function ProjectModal({
 
                     {/* Section 1: Tagline / Subtitle */}
                     <div id="sec-overview" className="scroll-mt-6">
-                      <p className="font-display text-lg sm:text-xl font-medium leading-relaxed text-zinc-800 text-pretty">
+                      <p className="font-display text-base sm:text-xl font-medium leading-snug sm:leading-relaxed text-zinc-800 text-pretty">
                         {project.description}
                       </p>
                     </div>
@@ -650,37 +716,37 @@ export function ProjectModal({
                     {/* Section 2: Metadata Grid */}
                     <div
                       id="sec-details"
-                      className="grid grid-cols-2 sm:grid-cols-4 gap-6 pt-6 border-t border-black/5 scroll-mt-6"
+                      className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6 pt-4 sm:pt-6 border-t border-black/5 scroll-mt-6"
                     >
                       <div>
-                        <p className="text-xs font-sans font-semibold uppercase tracking-wider text-zinc-400 mb-1">
+                        <p className="text-[11px] sm:text-xs font-sans font-semibold uppercase tracking-wider text-zinc-400 mb-0.5 sm:mb-1">
                           Role
                         </p>
-                        <p className="text-sm font-sans font-medium text-zinc-800">
+                        <p className="text-xs sm:text-sm font-sans font-medium text-zinc-800">
                           {project.role || "Design Engineer"}
                         </p>
                       </div>
 
                       <div>
-                        <p className="text-xs font-sans font-semibold uppercase tracking-wider text-zinc-400 mb-1">
+                        <p className="text-[11px] sm:text-xs font-sans font-semibold uppercase tracking-wider text-zinc-400 mb-0.5 sm:mb-1">
                           Timeline
                         </p>
-                        <p className="text-sm font-sans font-medium text-zinc-800">
+                        <p className="text-xs sm:text-sm font-sans font-medium text-zinc-800">
                           {project.timeline || project.year || "2025"}
                         </p>
                       </div>
 
                       <div>
-                        <p className="text-xs font-sans font-semibold uppercase tracking-wider text-zinc-400 mb-1">
+                        <p className="text-[11px] sm:text-xs font-sans font-semibold uppercase tracking-wider text-zinc-400 mb-0.5 sm:mb-1">
                           Category
                         </p>
-                        <p className="text-sm font-sans font-medium text-zinc-800">
+                        <p className="text-xs sm:text-sm font-sans font-medium text-zinc-800">
                           {project.category || "Interface & System"}
                         </p>
                       </div>
 
                       <div>
-                        <p className="text-xs font-sans font-semibold uppercase tracking-wider text-zinc-400 mb-1">
+                        <p className="text-[11px] sm:text-xs font-sans font-semibold uppercase tracking-wider text-zinc-400 mb-0.5 sm:mb-1">
                           Live Link
                         </p>
                         {project.href && project.href !== "#" ? (
@@ -688,13 +754,13 @@ export function ProjectModal({
                             href={project.href}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="inline-flex items-center gap-1 text-sm font-sans font-medium text-blue-600 hover:text-blue-700 transition-colors"
+                            className="inline-flex items-center gap-1 text-xs sm:text-sm font-sans font-medium text-blue-600 hover:text-blue-700 transition-colors"
                           >
                             <span>Visit Site</span>
-                            <ExternalLink className="size-3.5" />
+                            <ExternalLink className="size-3 sm:size-3.5" />
                           </a>
                         ) : (
-                          <span className="text-sm font-sans text-zinc-400 select-none">
+                          <span className="text-xs sm:text-sm font-sans text-zinc-400 select-none">
                             Prototype
                           </span>
                         )}
@@ -702,32 +768,32 @@ export function ProjectModal({
                     </div>
 
                     {/* Full Case Study Narrative Sections */}
-                    <div className="space-y-8 pt-4 font-sans border-t border-black/5">
-                      <div id="sec-vision" className="space-y-2.5 scroll-mt-6">
-                        <h4 className="text-base font-semibold text-zinc-900 font-display">
+                    <div className="space-y-6 sm:space-y-8 pt-4 font-sans border-t border-black/5">
+                      <div id="sec-vision" className="space-y-2 sm:space-y-2.5 scroll-mt-6">
+                        <h4 className="text-sm sm:text-base font-semibold text-zinc-900 font-display">
                           01. Overview & Vision
                         </h4>
-                        <p className="text-sm sm:text-base leading-relaxed text-zinc-600 text-pretty">
+                        <p className="text-xs sm:text-base leading-relaxed text-zinc-600 text-pretty">
                           {project.overview ||
                             `${project.title} was built to explore tactile digital surfaces and fluid spatial physics. By combining physical material feedback with modern web animation standards, it turns routine interactions into memorable moments of delight.`}
                         </p>
                       </div>
 
-                      <div id="sec-challenge" className="space-y-2.5 scroll-mt-6">
-                        <h4 className="text-base font-semibold text-zinc-900 font-display">
+                      <div id="sec-challenge" className="space-y-2 sm:space-y-2.5 scroll-mt-6">
+                        <h4 className="text-sm sm:text-base font-semibold text-zinc-900 font-display">
                           02. The Design Challenge
                         </h4>
-                        <p className="text-sm sm:text-base leading-relaxed text-zinc-600 text-pretty">
+                        <p className="text-xs sm:text-base leading-relaxed text-zinc-600 text-pretty">
                           {project.challenge ||
                             "Traditional web interfaces often suffer from rigid layout transitions and generic hover states. The challenge was creating a responsive design system that feels physical, alive, and effortless across both desktop pointer devices and mobile touch viewports."}
                         </p>
                       </div>
 
-                      <div id="sec-execution" className="space-y-2.5 scroll-mt-6">
-                        <h4 className="text-base font-semibold text-zinc-900 font-display">
+                      <div id="sec-execution" className="space-y-2 sm:space-y-2.5 scroll-mt-6">
+                        <h4 className="text-sm sm:text-base font-semibold text-zinc-900 font-display">
                           03. Craft & Execution
                         </h4>
-                        <p className="text-sm sm:text-base leading-relaxed text-zinc-600 text-pretty">
+                        <p className="text-xs sm:text-base leading-relaxed text-zinc-600 text-pretty">
                           {project.solution ||
                             "Implemented custom Framer Motion spring physics, OKLCH color token palettes, and subpixel optic typography scaling. Micro-interactions were tuned for zero latency and natural interruptibility."}
                         </p>
@@ -735,16 +801,16 @@ export function ProjectModal({
                     </div>
 
                     {/* Modal Footer Bar */}
-                    <div className="flex items-center justify-between gap-3 pt-6 border-t border-black/5">
+                    <div className="flex items-center justify-between gap-3 pt-4 sm:pt-6 border-t border-black/5">
                       {project.href && project.href !== "#" ? (
                         <a
                           href={project.href}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="pressable inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-zinc-900 text-white font-sans text-sm font-medium hover:bg-zinc-800 shadow-sm transition-all"
+                          className="pressable inline-flex items-center gap-1.5 sm:gap-2 px-4 sm:px-5 py-2 sm:py-2.5 rounded-full bg-zinc-900 text-white font-sans text-xs sm:text-sm font-medium hover:bg-zinc-800 shadow-sm transition-all"
                         >
                           <span>Visit Live Site</span>
-                          <ExternalLink className="size-4" />
+                          <ExternalLink className="size-3.5 sm:size-4" />
                         </a>
                       ) : (
                         <div />
@@ -752,7 +818,7 @@ export function ProjectModal({
 
                       <button
                         onClick={handleClose}
-                        className="pressable px-5 py-2.5 rounded-full border border-zinc-300 text-zinc-800 font-sans text-sm font-medium hover:bg-black/5 transition-colors cursor-pointer"
+                        className="pressable px-4 sm:px-5 py-2 sm:py-2.5 rounded-full border border-zinc-300 text-zinc-800 font-sans text-xs sm:text-sm font-medium hover:bg-black/5 transition-colors cursor-pointer"
                       >
                         Close
                       </button>

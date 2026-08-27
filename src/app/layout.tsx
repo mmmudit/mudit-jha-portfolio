@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
 import { Figtree, Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
@@ -31,6 +31,13 @@ const myFont = localFont({
   variable: "--font-myfont",
   display: "swap",
 });
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+  themeColor: "#fbfaf5",
+};
 
 export const metadata: Metadata = {
   title: "Mudit Jha — Design Engineer",

@@ -1,31 +1,82 @@
 "use client";
 
 import { motion, useReducedMotion } from "framer-motion";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import NavigationTabs from "./NavigationTabs";
 import { InteractiveTsuLogo } from "./tsu-logo";
 
 export function Header() {
   const [hover, setHover] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+  const [isAtBoundary, setIsAtBoundary] = useState(true);
   const reduce = useReducedMotion();
+
+  useEffect(() => {
+    const mql = window.matchMedia("(max-width: 767px)");
+    const onChange = () => setIsMobile(mql.matches);
+    onChange();
+    mql.addEventListener("change", onChange);
+    return () => mql.removeEventListener("change", onChange);
+  }, []);
+
+  // Track start / end of page for mobile pill expansion
+  useEffect(() => {
+    const handleScroll = () => {
+      if (typeof window === "undefined") return;
+      const scrollY = window.scrollY || document.documentElement.scrollTop;
+      const viewportHeight = window.innerHeight;
+      const totalHeight = document.documentElement.scrollHeight;
+
+      const atTop = scrollY <= 60;
+      const atBottom = scrollY + viewportHeight >= totalHeight - 90;
+
+      setIsAtBoundary(atTop || atBottom);
+    };
+
+    handleScroll();
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    window.addEventListener("resize", handleScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("resize", handleScroll);
+    };
+  }, []);
 
   const minW = 56;
   const expandedW = 125;
+  const isExpanded = isMobile ? isAtBoundary || hover : hover;
 
   return (
     <>
-      {/* Top Progressive Gradient Blur Overlay (Decreasing Top-to-Bottom) */}
+      {/* Top Progressive Gradient Blur Overlay (Full-bleed across notch and screen edges) */}
       <div
-        className="fixed top-0 inset-x-0 h-36 sm:h-44 pt-[env(safe-area-inset-top,0px)] -z-10 pointer-events-none select-none transition-[backdrop-filter,opacity] duration-250 ease-out"
+        className="fixed top-0 left-0 right-0 w-full h-44 sm:h-52 -z-10 pointer-events-none select-none transition-[backdrop-filter,opacity] duration-250 ease-out"
         style={{
           background:
-            "linear-gradient(to bottom, rgba(251, 250, 245, 0.92) 0%, rgba(251, 250, 245, 0.4) 60%, rgba(251, 250, 245, 0) 100%)",
-          backdropFilter: "blur(16px)",
-          WebkitBackdropFilter: "blur(16px)",
+            "linear-gradient(to bottom, rgba(251, 250, 245, 0.96) 0%, rgba(251, 250, 245, 0.92) calc(env(safe-area-inset-top, 0px) + 3.2rem), rgba(251, 250, 245, 0.45) 80%, rgba(251, 250, 245, 0) 100%)",
+          backdropFilter: "blur(20px)",
+          WebkitBackdropFilter: "blur(20px)",
           maskImage:
-            "linear-gradient(to bottom, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0.5) 60%, rgba(0, 0, 0, 0) 100%)",
+            "linear-gradient(to bottom, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 1) calc(env(safe-area-inset-top, 0px) + 2.8rem), rgba(0, 0, 0, 0.45) 82%, rgba(0, 0, 0, 0) 100%)",
           WebkitMaskImage:
-            "linear-gradient(to bottom, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0.5) 60%, rgba(0, 0, 0, 0) 100%)",
+            "linear-gradient(to bottom, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 1) calc(env(safe-area-inset-top, 0px) + 2.8rem), rgba(0, 0, 0, 0.45) 82%, rgba(0, 0, 0, 0) 100%)",
+        }}
+        aria-hidden="true"
+      />
+
+      {/* Bottom Progressive Gradient Blur Overlay for Mobile Dock (Full-bleed across home indicator and bottom edges) */}
+      <div
+        className="fixed bottom-0 left-0 right-0 w-full h-40 sm:h-48 -z-10 pointer-events-none select-none transition-[backdrop-filter,opacity] duration-250 ease-out md:hidden"
+        style={{
+          background:
+            "linear-gradient(to top, rgba(251, 250, 245, 0.96) 0%, rgba(251, 250, 245, 0.92) calc(env(safe-area-inset-bottom, 0px) + 3.6rem), rgba(251, 250, 245, 0.45) 80%, rgba(251, 250, 245, 0) 100%)",
+          backdropFilter: "blur(20px)",
+          WebkitBackdropFilter: "blur(20px)",
+          maskImage:
+            "linear-gradient(to top, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 1) calc(env(safe-area-inset-bottom, 0px) + 3.2rem), rgba(0, 0, 0, 0.45) 82%, rgba(0, 0, 0, 0) 100%)",
+          WebkitMaskImage:
+            "linear-gradient(to top, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 1) calc(env(safe-area-inset-bottom, 0px) + 3.2rem), rgba(0, 0, 0, 0.45) 82%, rgba(0, 0, 0, 0) 100%)",
         }}
         aria-hidden="true"
       />
@@ -36,14 +87,14 @@ export function Header() {
           <InteractiveTsuLogo />
         </div>
 
-        {/* Center: Navigation Bar (Floating Pill - Absolutely Centered so button animation never shifts it) */}
-        <div className="absolute left-1/2 -translate-x-1/2 flex items-center justify-center pointer-events-auto">
-          <div className="rounded-full border border-zinc-300/70 bg-[#fbfaf5]/85 backdrop-blur-md p-1 shadow-[0_4px_20px_rgba(0,0,0,0.06)]">
+        {/* Center: Navigation Bar (Bottom-centered floating dock on mobile, absolutely centered in header on desktop) */}
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 mb-[env(safe-area-inset-bottom,0px)] md:static md:bottom-auto md:left-auto md:translate-x-0 md:absolute md:left-1/2 md:-translate-x-1/2 flex items-center justify-center pointer-events-auto z-50">
+          <div className="rounded-full border border-zinc-300/70 bg-[#fbfaf5]/90 backdrop-blur-md p-1 shadow-[0_8px_30px_rgba(0,0,0,0.12),0_2px_8px_rgba(0,0,0,0.04)] md:shadow-[0_4px_20px_rgba(0,0,0,0.06)]">
             <NavigationTabs />
           </div>
         </div>
 
-        {/* Right: Contact email button (Direct click to mailto, no preview popover) */}
+        {/* Right: Contact email button (Always expanded on mobile, hover-expanded on desktop) */}
         <motion.a
           href="mailto:hello@muditjha.me"
           aria-label="Email Mudit Jha"
@@ -52,9 +103,9 @@ export function Header() {
           initial={false}
           animate={
             reduce
-              ? {}
+              ? { width: isExpanded ? expandedW : minW }
               : {
-                  width: hover ? expandedW : minW,
+                  width: isExpanded ? expandedW : minW,
                   backgroundColor: hover ? "#e6e6e6" : "#fbfaf5",
                 }
           }
@@ -67,24 +118,23 @@ export function Header() {
           data-cuelume-press
           data-cuelume-release
           className="pressable pointer-events-auto relative inline-flex shrink-0 items-center overflow-hidden rounded-full border-2 border-zinc-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-400 focus-visible:ring-offset-2"
-          style={{ width: minW }}
         >
           <div className="relative h-[54px] w-full">
             <div className="absolute inset-0">
-              {/* Left-aligned text (hidden by default) */}
+              {/* Left-aligned text */}
               <div className="absolute inset-0 flex items-center justify-start ps-4">
                 <motion.span
                   className="whitespace-nowrap text-sm font-bold tracking-[0.01em] text-zinc-800"
                   initial={false}
                   animate={
                     reduce
-                      ? {}
+                      ? { opacity: isExpanded ? 1 : 0 }
                       : {
-                          transform: hover
+                          transform: isExpanded
                             ? "translateX(0px) scale(1)"
                             : "translateX(8px) scale(0.96)",
-                          filter: hover ? "blur(0px)" : "blur(2px)",
-                          opacity: hover ? 1 : 0,
+                          filter: isExpanded ? "blur(0px)" : "blur(2px)",
+                          opacity: isExpanded ? 1 : 0,
                         }
                   }
                   transition={
@@ -103,9 +153,9 @@ export function Header() {
                     reduce
                       ? {}
                       : {
-                          color: hover ? "#374151" : "#9CA3AF",
-                          rotate: hover ? 5 : 0,
-                          backgroundColor: hover ? "#e6e6e6" : "#fbfaf5",
+                          color: isExpanded ? "#374151" : "#9CA3AF",
+                          rotate: isExpanded && hover ? 5 : 0,
+                          backgroundColor: isExpanded && hover ? "#e6e6e6" : "#fbfaf5",
                         }
                   }
                   transition={

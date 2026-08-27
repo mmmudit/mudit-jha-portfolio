@@ -26,8 +26,12 @@ export function ProjectGrid({ projects }: ProjectGridProps) {
     setCurrentIdx(boundedIdx);
 
     const el = cardRefs.current[projectKey];
-    const targetW = Math.min(940, window.innerWidth * 0.94);
-    const targetH = Math.min(window.innerHeight * 0.88, 680);
+    const targetW = typeof window !== "undefined"
+      ? Math.min(940, window.innerWidth <= 640 ? window.innerWidth - 24 : window.innerWidth * 0.92)
+      : 940;
+    const targetH = typeof window !== "undefined"
+      ? Math.min(window.innerHeight <= 640 ? window.innerHeight - 36 : window.innerHeight * 0.88, 680)
+      : 680;
     const targetTop = (window.innerHeight - targetH) / 2;
     const targetLeft = (window.innerWidth - targetW) / 2;
 

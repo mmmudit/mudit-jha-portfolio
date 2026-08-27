@@ -20,8 +20,8 @@ export function Intro() {
   });
 
   return (
-    <section className="flex flex-col md:flex-row items-start md:items-center justify-between gap-10 mt-20 sm:mt-28 md:mt-40">
-      <div className="flex flex-col gap-4 max-w-[650px]">
+    <section className="flex flex-col md:flex-row items-start md:items-center justify-between gap-8 md:gap-10 mt-14 sm:mt-24 md:mt-40">
+      <div className="flex flex-col gap-4 max-w-[650px] order-2 md:order-1">
         <motion.h1
           {...fadeUp(0)}
           className="font-display text-[48px] sm:text-[56px] font-semibold tracking-[-3px] text-zinc-800 text-balance"
@@ -43,7 +43,7 @@ export function Intro() {
       </div>
 
       {/* Pure Aura Hero Celestial Anchor */}
-      <motion.div {...fadeUp(0.06)} className="self-center md:self-auto">
+      <motion.div {...fadeUp(0.06)} className="self-start md:self-auto order-1 md:order-2">
         <LiveClock variant="header" />
       </motion.div>
     </section>
