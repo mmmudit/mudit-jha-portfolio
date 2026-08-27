@@ -5,7 +5,7 @@ import { play } from "@/lib/sound";
 
 const STORAGE_KEY = "portfolio_intro_seen";
 const SKIP_DELAY_MS = 800;
-const FADE_DURATION_MS = 1000;
+const FADE_DURATION_MS = 500;
 
 interface IntroLoaderProps {
   children?: React.ReactNode;
@@ -200,4 +200,3 @@ export function IntroLoader({ children }: IntroLoaderProps) {
 }
 
 export default IntroLoader;
-

@@ -313,10 +313,10 @@ export function AboutMusicSection() {
             {hoveredTrack && (
               <motion.p
                 key={hoveredTrack.id}
-                initial={{ opacity: 0, y: 3 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -2 }}
-                transition={{ duration: 0.16, ease: [0.22, 1, 0.36, 1] }}
+                initial={{ opacity: 0, y: 4, filter: "blur(2px)" }}
+                animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                exit={{ opacity: 0, y: -4, filter: "blur(2px)" }}
+                transition={{ duration: 0.15, ease: "easeInOut" }}
                 className="font-display font-normal text-[13px] sm:text-[14px] text-[#7f7f80] tracking-[0.08px]"
               >
                 <span className="text-zinc-900 font-medium">{hoveredTrack.title}</span>

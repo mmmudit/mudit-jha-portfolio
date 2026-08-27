@@ -90,7 +90,7 @@ export function LinkPreview({
   const activeImage = !imgError ? (data?.image || fallbackImage) : undefined;
 
   return (
-    <HoverCard.Root openDelay={200} closeDelay={150} onOpenChange={handleOpenChange}>
+    <HoverCard.Root openDelay={80} closeDelay={0} onOpenChange={handleOpenChange}>
       <HoverCard.Trigger asChild>
         <a
           href={href}
@@ -126,20 +126,24 @@ export function LinkPreview({
                   opacity: 1,
                   scale: 1,
                   y: 0,
+                  transition: {
+                    duration: reduce ? 0.1 : 0.25,
+                    ease: [0.22, 1, 0.36, 1],
+                  },
                 }}
                 exit={
                   reduce
-                    ? { opacity: 0 }
+                    ? {
+                        opacity: 0,
+                        transition: { duration: 0.1, ease: [0.22, 1, 0.36, 1] },
+                      }
                     : {
                         opacity: 0,
                         scale: 0.99,
                         y: 0,
+                        transition: { duration: 0.15, ease: [0.22, 1, 0.36, 1] },
                       }
                 }
-                transition={{
-                  duration: reduce ? 0.1 : 0.16,
-                  ease: [0.22, 1, 0.36, 1],
-                }}
                 style={{
                   transformOrigin: "var(--radix-hover-card-content-transform-origin)",
                 }}

@@ -202,7 +202,7 @@ export function AboutReadsSection() {
                       initial={{ opacity: 0, scale: 0.95, y: 10 }}
                       animate={{ opacity: 1, scale: 1, y: 0 }}
                       exit={{ opacity: 0, scale: 0.95 }}
-                      transition={{ duration: 0.22, delay: index * 0.03, ease: [0.22, 1, 0.36, 1] }}
+                      transition={{ duration: 0.22, delay: index * 0.04, ease: [0.22, 1, 0.36, 1] }}
                       onMouseEnter={() => setHoveredId(bookKey)}
                       onMouseLeave={() => setHoveredId(null)}
                       onFocus={() => setHoveredId(bookKey)}
@@ -276,7 +276,7 @@ export function AboutReadsSection() {
                                 }
                                 transition={{
                                   duration: 0.16,
-                                  delay: isHovered ? i * 0.035 : 0,
+                                  delay: isHovered ? i * 0.04 : 0,
                                   ease: [0.22, 1, 0.36, 1],
                                 }}
                               >
@@ -314,10 +314,10 @@ export function AboutReadsSection() {
             {hoveredBook && activeQuote && (
               <motion.div
                 key={`quote-${hoveredBook.id || hoveredBook.title}`}
-                initial={{ opacity: 0, y: 5 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -5 }}
-                transition={{ duration: 0.18, ease: [0.22, 1, 0.36, 1] }}
+                initial={{ opacity: 0, y: 4, filter: "blur(2px)" }}
+                animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                exit={{ opacity: 0, y: -4, filter: "blur(2px)" }}
+                transition={{ duration: 0.15, ease: "easeInOut" }}
                 className="w-full flex items-center"
               >
                 <motion.div

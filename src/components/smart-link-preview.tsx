@@ -18,7 +18,7 @@ export interface SmartLinkPreviewProps {
   fallbackImage?: string;
 }
 
-const EASE_OUT = [0.23, 1, 0.32, 1] as const;
+const EASE_OUT = [0.22, 1, 0.36, 1] as const;
 
 export function SmartLinkPreview({
   url,
@@ -104,7 +104,7 @@ export function SmartLinkPreview({
       updatePosition();
       setIsOpen(true);
       play("tick", { volume: 0.18 });
-    }, 50);
+    }, 80);
   };
 
   const handleMouseLeave = () => {
@@ -116,7 +116,7 @@ export function SmartLinkPreview({
     leaveTimeoutRef.current = setTimeout(() => {
       setIsOpen(false);
       setTriggerRect(null);
-    }, 180);
+    }, 0);
   };
 
   const handleCardEnter = () => {
@@ -132,7 +132,7 @@ export function SmartLinkPreview({
     leaveTimeoutRef.current = setTimeout(() => {
       setIsOpen(false);
       setTriggerRect(null);
-    }, 160);
+    }, 0);
   };
 
   const handleCopyEmail = (e: React.MouseEvent) => {
@@ -213,32 +213,36 @@ export function SmartLinkPreview({
                 ? { opacity: 0 }
                 : {
                     opacity: 0,
-                    scale: 0.96,
+                    scale: 0.97,
                     y: isFlipped ? 4 : -4,
                   }
             }
             animate={
               reduce
-                ? { opacity: 1 }
+                ? {
+                    opacity: 1,
+                    transition: { duration: 0.1, ease: EASE_OUT },
+                  }
                 : {
                     opacity: 1,
                     scale: 1,
                     y: 0,
+                    transition: { duration: 0.25, ease: EASE_OUT },
                   }
             }
             exit={
               reduce
-                ? { opacity: 0 }
+                ? {
+                    opacity: 0,
+                    transition: { duration: 0.1, ease: EASE_OUT },
+                  }
                 : {
                     opacity: 0,
-                    scale: 0.96,
+                    scale: 0.99,
                     y: isFlipped ? 3 : -3,
+                    transition: { duration: 0.15, ease: EASE_OUT },
                   }
             }
-            transition={{
-              duration: 0.15,
-              ease: EASE_OUT,
-            }}
             style={{
               transformOrigin: `${tailLeft}px ${isFlipped ? CARD_HEIGHT : 0}px`,
               width: variant === "compact" ? undefined : `${CARD_WIDTH}px`,

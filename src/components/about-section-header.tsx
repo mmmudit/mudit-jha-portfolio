@@ -97,7 +97,7 @@ export function AboutSectionHeader({
                   }}
                   exit={{
                     opacity: 0,
-                    scale: 0.97,
+                    scale: 0.99,
                     y: -4,
                     transition: { duration: 0.15, ease: [0.22, 1, 0.36, 1] },
                   }}
@@ -164,7 +164,7 @@ export function AboutSectionHeader({
                     }}
                     exit={{
                       opacity: 0,
-                      scale: 0.97,
+                      scale: 0.99,
                       y: -4,
                       transition: { duration: 0.15, ease: [0.22, 1, 0.36, 1] },
                     }}

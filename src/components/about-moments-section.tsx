@@ -260,10 +260,10 @@ export function AboutMomentsSection() {
             {isHovered && (
               <motion.p
                 key={activeMoment.id}
-                initial={{ opacity: 0, y: 4 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -4 }}
-                transition={{ duration: 0.18, ease: [0.22, 1, 0.36, 1] }}
+                initial={{ opacity: 0, y: 4, filter: "blur(2px)" }}
+                animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                exit={{ opacity: 0, y: -4, filter: "blur(2px)" }}
+                transition={{ duration: 0.15, ease: "easeInOut" }}
                 className="font-display font-medium text-[13px] sm:text-[14px] text-[#7f7f80] text-center tracking-[0.08px]"
               >
                 {activeMoment.name} — {activeMoment.location || activeMoment.year}
@@ -382,10 +382,10 @@ export function AboutMomentsSection() {
             /* Static Centered Takeaway when not hovered */
             <motion.p
               key={`quote-${activeMoment.id}`}
-              initial={{ opacity: 0, y: 4 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -4 }}
-              transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
+              initial={{ opacity: 0, y: 4, filter: "blur(2px)" }}
+              animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+              exit={{ opacity: 0, y: -4, filter: "blur(2px)" }}
+              transition={{ duration: 0.15, ease: "easeInOut" }}
               className="font-display italic text-[15px] sm:text-[17px] text-[#7f7f80] font-normal text-center max-w-[850px] truncate"
             >
               “{activeMoment.quote}”

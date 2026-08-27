@@ -320,7 +320,7 @@ export function AboutHeroSection() {
                       initial={
                         reduce
                           ? { opacity: 0 }
-                          : { opacity: 0, scale: 0.3, filter: "blur(3px)" }
+                          : { opacity: 0, scale: 0.3, filter: "blur(2px)" }
                       }
                       animate={
                         reduce
@@ -330,9 +330,9 @@ export function AboutHeroSection() {
                       exit={
                         reduce
                           ? { opacity: 0 }
-                          : { opacity: 0, scale: 0.3, filter: "blur(3px)" }
+                          : { opacity: 0, scale: 0.3, filter: "blur(2px)" }
                       }
-                      transition={{ duration: 0.16, ease: [0.22, 1, 0.36, 1] }}
+                      transition={{ duration: 0.25, ease: "easeInOut" }}
                       className="text-emerald-700"
                     >
                       <Check className="size-4 stroke-[2.5]" aria-hidden="true" />
@@ -343,7 +343,7 @@ export function AboutHeroSection() {
                       initial={
                         reduce
                           ? { opacity: 0 }
-                          : { opacity: 0, scale: 0.3, filter: "blur(3px)" }
+                          : { opacity: 0, scale: 0.3, filter: "blur(2px)" }
                       }
                       animate={
                         reduce
@@ -353,9 +353,9 @@ export function AboutHeroSection() {
                       exit={
                         reduce
                           ? { opacity: 0 }
-                          : { opacity: 0, scale: 0.3, filter: "blur(3px)" }
+                          : { opacity: 0, scale: 0.3, filter: "blur(2px)" }
                       }
-                      transition={{ duration: 0.16, ease: [0.22, 1, 0.36, 1] }}
+                      transition={{ duration: 0.25, ease: "easeInOut" }}
                     >
                       <ArrowUp className="size-4 stroke-[2.2]" aria-hidden="true" />
                     </motion.div>
@@ -371,7 +371,7 @@ export function AboutHeroSection() {
         </div>
 
         {/* Right Column: Physical Polaroid / Interactive 3D Photo Card */}
-        <div className="lg:col-span-4 flex justify-center lg:justify-end pt-4 lg:pt-0">
+        <div className="order-first lg:order-none lg:col-span-4 flex justify-center lg:justify-end pt-4 lg:pt-0">
           <TactilePhotoCard />
         </div>
       </div>

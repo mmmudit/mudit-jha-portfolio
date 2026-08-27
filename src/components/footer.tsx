@@ -104,9 +104,29 @@ export function Footer() {
                     {copied && (
                       <motion.span
                         initial={reduce ? { opacity: 0 } : { opacity: 0, y: 6, scale: 0.96 }}
-                        animate={reduce ? { opacity: 1 } : { opacity: 1, y: 0, scale: 1 }}
-                        exit={reduce ? { opacity: 0 } : { opacity: 0, y: -4, scale: 0.96 }}
-                        transition={{ type: "spring", duration: 0.22, bounce: 0 }}
+                        animate={
+                          reduce
+                            ? { opacity: 1, transition: { duration: 0.15 } }
+                            : {
+                                opacity: 1,
+                                y: 0,
+                                scale: 1,
+                                transition: { type: "spring", duration: 0.5, bounce: 0 },
+                              }
+                        }
+                        exit={
+                          reduce
+                            ? { opacity: 0, transition: { duration: 0.15 } }
+                            : {
+                                opacity: 0,
+                                y: -4,
+                                scale: 0.96,
+                                transition: {
+                                  duration: 0.35,
+                                  ease: [0.22, 1, 0.36, 1],
+                                },
+                              }
+                        }
                         className="absolute left-1/2 -top-9 -translate-x-1/2 inline-flex items-center gap-1.5 px-3 py-1 text-xs font-mono font-medium text-emerald-800 bg-emerald-100/95 backdrop-blur-sm rounded-full border border-emerald-300 shadow-sm whitespace-nowrap z-20"
                       >
                         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="text-emerald-700">
@@ -114,7 +134,7 @@ export function Footer() {
                             d="M20 6L9 17l-5-5"
                             initial={{ pathLength: 0 }}
                             animate={{ pathLength: 1 }}
-                            transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1], delay: 0.05 }}
+                            transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1], delay: 0.08 }}
                           />
                         </svg>
                         <span>Copied</span>

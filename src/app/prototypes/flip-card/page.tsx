@@ -892,7 +892,7 @@ function VariantWeightedHorizon({ keyTrigger, openDuration, closeDuration }: { k
               key={project.id}
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.35, delay: index * 0.05, ease: EASE_OUT }}
+              transition={{ duration: 0.35, delay: index * 0.04, ease: EASE_OUT }}
               className="w-full"
             >
               <WorkPageCard
@@ -957,7 +957,7 @@ function VariantArcCoinToss({ keyTrigger, openDuration, closeDuration }: { keyTr
               key={project.id}
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.35, delay: index * 0.05, ease: EASE_OUT }}
+              transition={{ duration: 0.35, delay: index * 0.04, ease: EASE_OUT }}
               className="w-full"
             >
               <WorkPageCard
@@ -1022,7 +1022,7 @@ function VariantVerticalBookfold({ keyTrigger, openDuration, closeDuration }: { 
               key={project.id}
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.35, delay: index * 0.05, ease: EASE_OUT }}
+              transition={{ duration: 0.35, delay: index * 0.04, ease: EASE_OUT }}
               className="w-full"
             >
               <WorkPageCard
@@ -1087,7 +1087,7 @@ function VariantElasticSpin({ keyTrigger, openDuration, closeDuration }: { keyTr
               key={project.id}
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.35, delay: index * 0.05, ease: EASE_OUT }}
+              transition={{ duration: 0.35, delay: index * 0.04, ease: EASE_OUT }}
               className="w-full"
             >
               <WorkPageCard
@@ -1405,4 +1405,3 @@ export default function FlipCardPrototypePage() {
     </div>
   );
 }
-

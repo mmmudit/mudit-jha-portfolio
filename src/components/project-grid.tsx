@@ -73,7 +73,7 @@ export function ProjectGrid({ projects }: ProjectGridProps) {
               animate={reduce ? { opacity: 1 } : { opacity: 1, y: 0 }}
               transition={{
                 duration: reduce ? 0.15 : 0.25,
-                delay: reduce ? 0 : Math.min(index * 0.05, 0.3),
+                delay: reduce ? 0 : Math.min(index * 0.04, 0.24),
                 ease: [0.22, 1, 0.36, 1],
               }}
               className="w-full"

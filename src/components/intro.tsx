@@ -26,14 +26,14 @@ export function Intro() {
       </motion.div>
 
       <motion.h1
-        {...fadeUp(0.05)}
+        {...fadeUp(0.04)}
         className="font-display text-[48px] font-semibold tracking-[-3px] text-zinc-800 text-balance"
       >
         mudit jha
       </motion.h1>
 
       <motion.p
-        {...fadeUp(0.1)}
+        {...fadeUp(0.08)}
         className="shimmer shimmer-spread-16 shimmer-angle-45 shimmer-color-[#c8d5bb] shimmer-duration-7500 max-w-[800px] font-display text-[26px] font-medium leading-[1.3] tracking-[-0.1px] text-button-secondary text-pretty"
       >
         Design engineer &amp; creative generalist. Building thoughtful things at the

@@ -5,17 +5,16 @@ import type { Transition, Variants } from "framer-motion";
 import { AnimatePresence, motion } from "framer-motion";
 
 const defaultVariants: Variants = {
-  initial: { y: "-20%", opacity: 0, filter: "blur(1px)" },
+  initial: { y: -4, opacity: 0, filter: "blur(2px)" },
   animate: {
-    y: "0%",
+    y: 0,
     opacity: 1,
     filter: "blur(0px)",
   },
   exit: {
-    y: "40%",
+    y: 4,
     opacity: 0,
-    filter: "blur(1px)",
-    transition: { ease: "easeOut" },
+    filter: "blur(2px)",
   },
 };
 
@@ -38,7 +37,7 @@ export type TextFlipProps = {
   interval?: number;
   /**
    * Motion transition configuration.
-   * @defaultValue { duration: 0.3 }
+   * @defaultValue { duration: 0.15, ease: "easeInOut" }
    * */
   transition?: Transition;
   /** Motion variants for enter/exit animations. */
@@ -63,7 +62,7 @@ export function TextFlip({
   children,
 
   interval = 2.5,
-  transition = { duration: 0.3 },
+  transition = { duration: 0.15, ease: "easeInOut" },
   variants = defaultVariants,
   play = true,
   pauseWhenFar = true,
