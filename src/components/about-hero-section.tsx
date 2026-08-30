@@ -153,7 +153,7 @@ export function AboutHeroSection() {
           {/* Quick Contact & Action Box Container */}
           <motion.div
             {...fadeUp(0.12)}
-            className="flex flex-col gap-2.5 pt-2 max-w-[620px]"
+            className="flex flex-col gap-2.5 pt-2 w-full max-w-[620px]"
           >
             {/* Top Toolbar: Socials (Left) & Quick Links (Right) */}
             <div className="flex flex-wrap items-center justify-between gap-y-2 px-0.5 text-[#82745d]">

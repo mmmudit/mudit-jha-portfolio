@@ -4,9 +4,12 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronsUpDown, Check } from "lucide-react";
 import { play } from "@/lib/sound";
+import { useAboutEye } from "@/context/about-eye-context";
+import { InteractiveTsuLogo } from "./tsu-logo";
 
 interface AboutSectionHeaderProps {
   title: React.ReactNode;
+  sectionId?: string;
   selectedYear?: string;
   onYearChange?: (year: string) => void;
   years?: string[];
@@ -17,6 +20,7 @@ interface AboutSectionHeaderProps {
 
 export function AboutSectionHeader({
   title,
+  sectionId,
   selectedYear = "2026",
   onYearChange,
   years = ["2026", "2025", "2024", "All"],
@@ -29,6 +33,7 @@ export function AboutSectionHeader({
 
   const [isCategoryOpen, setIsCategoryOpen] = useState(false);
   const [currentCategory, setCurrentCategory] = useState(selectedCategory);
+  const { activeSection } = useAboutEye();
 
   const handleSelectYear = (year: string) => {
     if (year !== currentYear) {
@@ -53,14 +58,34 @@ export function AboutSectionHeader({
   };
 
   return (
-    <div className="flex flex-wrap items-center justify-between gap-3 sm:gap-4 select-none w-full">
+    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 select-none w-full">
       {/* Title */}
-      <h2 className="font-display text-[26px] sm:text-[34px] md:text-[36px] font-medium leading-tight text-[#8a7c64] tracking-tight text-balance">
-        {title}
-      </h2>
+      <div className="relative min-w-0" data-about-heading={sectionId}>
+        {sectionId && (
+          <div className="hidden md:flex absolute -left-[64px] top-1/2 -translate-y-1/2 size-[56px] pointer-events-auto z-30 items-center justify-center">
+            {activeSection === sectionId && (
+              <motion.div
+                layoutId="about-tsu-eye"
+                transition={{
+                  type: "spring",
+                  stiffness: 240,
+                  damping: 22,
+                  mass: 0.85,
+                }}
+                className="size-full"
+              >
+                <InteractiveTsuLogo />
+              </motion.div>
+            )}
+          </div>
+        )}
+        <h2 className="font-display text-[26px] sm:text-[34px] md:text-[36px] font-medium leading-tight text-zinc-800 tracking-tight text-balance">
+          {title}
+        </h2>
+      </div>
 
-      {/* Filters Group (Right-Aligned) */}
-      <div className="flex items-center gap-2 sm:gap-3 shrink-0 ml-auto">
+      {/* Filters Group (Left-aligned on stacked mobile, Right-aligned on desktop) */}
+      <div className="flex items-center gap-2 sm:gap-3 shrink-0 self-start sm:self-auto sm:ml-auto">
         {/* Year Pill Dropdown */}
         <div className="relative">
           <button

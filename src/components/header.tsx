@@ -4,12 +4,14 @@ import { motion, useReducedMotion } from "framer-motion";
 import { useState, useEffect } from "react";
 import NavigationTabs from "./NavigationTabs";
 import { InteractiveTsuLogo } from "./tsu-logo";
+import { useAboutEye } from "@/context/about-eye-context";
 
 export function Header() {
   const [hover, setHover] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [isAtBoundary, setIsAtBoundary] = useState(true);
   const reduce = useReducedMotion();
+  const { activeSection, isAbout } = useAboutEye();
 
   useEffect(() => {
     const mql = window.matchMedia("(max-width: 767px)");
@@ -47,21 +49,13 @@ export function Header() {
   const expandedW = 125;
   const isExpanded = isMobile ? isAtBoundary || hover : hover;
 
+  const showEyeInHeader = !isAbout || activeSection === "hero";
+
   return (
     <>
-      {/* Top Progressive Gradient Blur Overlay (Full-bleed across notch and screen edges) */}
+      {/* Top Solid Translucent Header Background on Mobile */}
       <div
-        className="fixed top-0 left-0 right-0 w-full h-44 sm:h-52 -z-10 pointer-events-none select-none transition-[backdrop-filter,opacity] duration-250 ease-out"
-        style={{
-          background:
-            "linear-gradient(to bottom, rgba(251, 250, 245, 0.96) 0%, rgba(251, 250, 245, 0.92) calc(env(safe-area-inset-top, 0px) + 3.2rem), rgba(251, 250, 245, 0.45) 80%, rgba(251, 250, 245, 0) 100%)",
-          backdropFilter: "blur(20px)",
-          WebkitBackdropFilter: "blur(20px)",
-          maskImage:
-            "linear-gradient(to bottom, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 1) calc(env(safe-area-inset-top, 0px) + 2.8rem), rgba(0, 0, 0, 0.45) 82%, rgba(0, 0, 0, 0) 100%)",
-          WebkitMaskImage:
-            "linear-gradient(to bottom, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 1) calc(env(safe-area-inset-top, 0px) + 2.8rem), rgba(0, 0, 0, 0.45) 82%, rgba(0, 0, 0, 0) 100%)",
-        }}
+        className="fixed top-0 left-0 right-0 w-full h-[calc(5rem+env(safe-area-inset-top,0px))] -z-10 pointer-events-none select-none bg-[#fbfaf5]/50 backdrop-blur-md  md:hidden"
         aria-hidden="true"
       />
 
@@ -82,9 +76,22 @@ export function Header() {
       />
 
       <header className="relative z-10 flex items-center justify-between w-full pointer-events-none">
-        {/* Left: Interactive Eye Toon Logo */}
-        <div className="pointer-events-auto">
-          <InteractiveTsuLogo />
+        {/* Left: Interactive Eye Toon Logo in Header */}
+        <div className="size-[48px] sm:size-[56px] shrink-0 pointer-events-auto z-30">
+          {showEyeInHeader && (
+            <motion.div
+              layoutId="about-tsu-eye"
+              transition={{
+                type: "spring",
+                stiffness: 240,
+                damping: 22,
+                mass: 0.85,
+              }}
+              className="size-full"
+            >
+              <InteractiveTsuLogo />
+            </motion.div>
+          )}
         </div>
 
         {/* Center: Navigation Bar (Bottom-centered floating dock on mobile, absolutely centered in header on desktop) */}
@@ -94,7 +101,7 @@ export function Header() {
           </div>
         </div>
 
-        {/* Right: Contact email button (Always expanded on mobile, hover-expanded on desktop) */}
+        {/* Right: Contact email button (Always expanded on mobile at top/bottom, hover-expanded on desktop) */}
         <motion.a
           href="mailto:hello@muditjha.me"
           aria-label="Email Mudit Jha"
@@ -105,9 +112,9 @@ export function Header() {
             reduce
               ? { width: isExpanded ? expandedW : minW }
               : {
-                  width: isExpanded ? expandedW : minW,
-                  backgroundColor: hover ? "#e6e6e6" : "#fbfaf5",
-                }
+                width: isExpanded ? expandedW : minW,
+                backgroundColor: hover ? "#e6e6e6" : "#fbfaf5",
+              }
           }
           transition={
             reduce
@@ -130,12 +137,12 @@ export function Header() {
                     reduce
                       ? { opacity: isExpanded ? 1 : 0 }
                       : {
-                          transform: isExpanded
-                            ? "translateX(0px) scale(1)"
-                            : "translateX(8px) scale(0.96)",
-                          filter: isExpanded ? "blur(0px)" : "blur(2px)",
-                          opacity: isExpanded ? 1 : 0,
-                        }
+                        transform: isExpanded
+                          ? "translateX(0px) scale(1)"
+                          : "translateX(8px) scale(0.96)",
+                        filter: isExpanded ? "blur(0px)" : "blur(2px)",
+                        opacity: isExpanded ? 1 : 0,
+                      }
                   }
                   transition={
                     reduce ? {} : { duration: 0.15, ease: [0.22, 1, 0.36, 1] }
@@ -153,10 +160,10 @@ export function Header() {
                     reduce
                       ? {}
                       : {
-                          color: isExpanded ? "#374151" : "#9CA3AF",
-                          rotate: isExpanded && hover ? 5 : 0,
-                          backgroundColor: isExpanded && hover ? "#e6e6e6" : "#fbfaf5",
-                        }
+                        color: isExpanded ? "#374151" : "#9CA3AF",
+                        rotate: isExpanded && hover ? 5 : 0,
+                        backgroundColor: isExpanded && hover ? "#e6e6e6" : "#fbfaf5",
+                      }
                   }
                   transition={
                     reduce ? {} : { duration: 0.15, ease: [0.22, 1, 0.36, 1] }
@@ -190,3 +197,4 @@ export function Header() {
     </>
   );
 }
+

@@ -123,6 +123,7 @@ export function AboutMomentsSection() {
     >
       {/* Section Header with year dropdown */}
       <AboutSectionHeader
+        sectionId="moments"
         title="moments that stuck"
         selectedYear={selectedYear}
         onYearChange={setSelectedYear}

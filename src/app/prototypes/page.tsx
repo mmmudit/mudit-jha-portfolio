@@ -5,10 +5,26 @@ import { ArrowLeft, ArrowUpRight, Sparkles, Layers, Folder, Maximize2 } from "lu
 
 const PROTOTYPES = [
   {
+    title: "About Page Section Header Colors",
+    slug: "about-headers",
+    description: "Live color palette and contrast exploration for About page section headers and Typewriter scripts.",
+    badge: "NEW",
+    icon: Sparkles,
+    href: "/prototypes/about-headers",
+  },
+  {
+    title: "Looping Particle Globe System",
+    slug: "particle-globe",
+    description: "Interactive 3D particle sphere system with magnetic repulsion, orbital astrolabe rings, world matrix radar, and fluid vortex field.",
+    badge: "NEW",
+    icon: Sparkles,
+    href: "/prototypes/particle-globe",
+  },
+  {
     title: "3D Flip-to-Modal Work Card",
     slug: "flip-card",
     description: "Interactive 3D flip card component with physical spring turn and expanding modal morph for work page projects.",
-    badge: "NEW",
+    badge: "ACTIVE",
     icon: Maximize2,
     href: "/prototypes/flip-card",
   },

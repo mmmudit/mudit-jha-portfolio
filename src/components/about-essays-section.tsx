@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown, ExternalLink } from "lucide-react";
+import { useAboutEye } from "@/context/about-eye-context";
+import { InteractiveTsuLogo } from "./tsu-logo";
 
 interface EssayItem {
   id: string;
@@ -128,13 +130,30 @@ const additionalEssays: EssayItem[] = [
 
 export function AboutEssaysSection() {
   const [isExpanded, setIsExpanded] = useState(false);
+  const { activeSection } = useAboutEye();
 
   return (
     <section className="relative w-full py-4">
       <div className="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-12 items-start">
         {/* Left Column: Heading */}
-        <div className="md:col-span-4 lg:col-span-5">
-          <h2 className="font-display text-[30px] sm:text-[36px] font-medium leading-tight text-[#8a7c64] tracking-tight text-balance">
+        <div className="md:col-span-4 lg:col-span-5 relative" data-about-heading="essays">
+          <div className="hidden md:flex absolute -left-[64px] top-1/2 -translate-y-1/2 size-[56px] pointer-events-auto z-30 items-center justify-center">
+            {activeSection === "essays" && (
+              <motion.div
+                layoutId="about-tsu-eye"
+                transition={{
+                  type: "spring",
+                  stiffness: 240,
+                  damping: 22,
+                  mass: 0.85,
+                }}
+                className="size-full"
+              >
+                <InteractiveTsuLogo />
+              </motion.div>
+            )}
+          </div>
+          <h2 className="font-display text-[30px] sm:text-[36px] font-medium leading-tight text-zinc-800 tracking-tight text-balance">
             essays i’ve written
           </h2>
         </div>
@@ -258,9 +277,8 @@ export function AboutEssaysSection() {
             >
               <span>{isExpanded ? "Show fewer essays" : "View all essays"}</span>
               <ChevronDown
-                className={`size-3.5 transition-transform duration-200 ${
-                  isExpanded ? "rotate-180" : ""
-                }`}
+                className={`size-3.5 transition-transform duration-200 ${isExpanded ? "rotate-180" : ""
+                  }`}
               />
             </button>
           </div>

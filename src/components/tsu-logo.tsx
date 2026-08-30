@@ -13,15 +13,15 @@ export function InteractiveTsuLogo() {
   const shouldReduceMotion = useReducedMotion();
 
   // Smooth springs for logo directional tilt & displacement (subtle alive motion)
-  const logoX = useSpring(0, { stiffness: 220, damping: 22 });
-  const logoY = useSpring(0, { stiffness: 220, damping: 22 });
-  const logoRotateX = useSpring(0, { stiffness: 220, damping: 22 });
-  const logoRotateY = useSpring(0, { stiffness: 220, damping: 22 });
-  const logoRotateZ = useSpring(0, { stiffness: 220, damping: 22 });
+  const logoX = useSpring(0, { stiffness: 240, damping: 20 });
+  const logoY = useSpring(0, { stiffness: 240, damping: 20 });
+  const logoRotateX = useSpring(0, { stiffness: 240, damping: 20 });
+  const logoRotateY = useSpring(0, { stiffness: 240, damping: 20 });
+  const logoRotateZ = useSpring(0, { stiffness: 240, damping: 20 });
 
   // Smooth springs for pupil tracking (X, Y)
-  const pupilX = useSpring(0, { stiffness: 280, damping: 22 });
-  const pupilY = useSpring(0, { stiffness: 280, damping: 22 });
+  const pupilX = useSpring(0, { stiffness: 300, damping: 20 });
+  const pupilY = useSpring(0, { stiffness: 300, damping: 20 });
 
   // Prefetch /design-system route immediately on mount for instant zero-latency transition
   useEffect(() => {
@@ -57,24 +57,25 @@ export function InteractiveTsuLogo() {
         const dirY = dy / dist;
 
         // Viewport scale factor with smooth sinusoidal falloff
-        const maxDist = Math.max(window.innerWidth, window.innerHeight) * 0.7;
+        const maxDist = Math.max(window.innerWidth, window.innerHeight) * 0.65;
         const influence = Math.min(dist / maxDist, 1);
         const factor = Math.sin((influence * Math.PI) / 2);
 
-        // Subtle head translation (up to 3px)
-        logoX.set(dirX * 3.2 * factor);
-        logoY.set(dirY * 2.8 * factor);
+        // Enhanced head translation (up to ~6.5px)
+        logoX.set(dirX * 6.5 * factor);
+        logoY.set(dirY * 5.5 * factor);
 
-        // Subtle 3D tilt looking towards cursor
-        logoRotateX.set(-dirY * 7.5 * factor);
-        logoRotateY.set(dirX * 8.5 * factor);
-        logoRotateZ.set(dirX * 2.5 * factor);
+        // Pronounced 3D tilt looking towards cursor
+        logoRotateX.set(-dirY * 16 * factor);
+        logoRotateY.set(dirX * 18 * factor);
+        logoRotateZ.set(dirX * 5 * factor);
 
-        // Pupil shift for deep parallax
-        const pupilFactor = Math.min(dist / 280, 1);
-        const maxPupilOffset = 7;
-        pupilX.set(dirX * maxPupilOffset * pupilFactor);
-        pupilY.set(dirY * maxPupilOffset * pupilFactor);
+        // Deeper pupil shift for vivid parallax tracking
+        const pupilFactor = Math.min(dist / 320, 1);
+        const maxPupilOffsetX = 13.5;
+        const maxPupilOffsetY = 15;
+        pupilX.set(dirX * maxPupilOffsetX * pupilFactor);
+        pupilY.set(dirY * maxPupilOffsetY * pupilFactor);
       }
     };
 

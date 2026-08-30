@@ -9,6 +9,7 @@ import { GrainOverlay } from "../components/grain-overlay";
 import { IntroLoader } from "../components/IntroLoader";
 import { CursorClickEffect } from "../components/cursor-click-effect";
 import { SoundProvider } from "../components/sound-provider";
+import { AboutEyeProvider } from "../context/about-eye-context";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -62,16 +63,18 @@ export default function RootLayout({
       </head>
       <body className="min-h-full text-zinc-800 relative">
         <IntroLoader>
-          <SoundProvider />
-          <GrainOverlay />
-          <CursorClickEffect />
-          <div className="sticky top-0 z-50 w-full px-6 pt-[calc(1rem+env(safe-area-inset-top,0px))] sm:px-14 sm:pt-[calc(1.5rem+env(safe-area-inset-top,0px))] pointer-events-none">
-            <Header />
-          </div>
-          <div className="mx-auto flex w-full max-w-[1334px] flex-col px-6 sm:px-14 pt-8">
-            <PageTransition>{children}</PageTransition>
-          </div>
-          <AgentationClient />
+          <AboutEyeProvider>
+            <SoundProvider />
+            <GrainOverlay />
+            <CursorClickEffect />
+            <div className="sticky md:relative top-0 z-50 w-full px-6 pt-[calc(1rem+env(safe-area-inset-top,0px))] sm:px-14 sm:pt-[calc(1.5rem+env(safe-area-inset-top,0px))] pointer-events-none">
+              <Header />
+            </div>
+            <div className="mx-auto flex w-full max-w-[1334px] flex-col px-6 sm:px-14 pt-8">
+              <PageTransition>{children}</PageTransition>
+            </div>
+            <AgentationClient />
+          </AboutEyeProvider>
         </IntroLoader>
       </body>
     </html>

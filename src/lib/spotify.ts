@@ -55,9 +55,12 @@ export async function fetchSpotifyPlaylist(
     const nextData = JSON.parse(nextDataMatch[1]);
     const rawTracks = nextData.props?.pageProps?.state?.data?.entity?.trackList || [];
 
+    // Reverse tracks so most recently added songs appear first
+    const orderedTracks = [...rawTracks].reverse();
+
     // Fetch oEmbed in parallel for all tracks to get official high-res album cover images
     const tracks: SpotifyTrack[] = await Promise.all(
-      rawTracks.map(async (t: any) => {
+      orderedTracks.map(async (t: any) => {
         const trackId = (t.uri || "").replace("spotify:track:", "");
         let coverImage: string | undefined = undefined;
 

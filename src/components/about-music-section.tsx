@@ -5,7 +5,7 @@ import Image from "next/image";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { Disc, Music2 } from "lucide-react";
 import { AboutSectionHeader } from "./about-section-header";
-import { TextFlip } from "./text-flip";
+import Typewriter from "@/components/fancy/text/typewriter";
 import { PixelAudioVisualizer } from "./PixelAudioVisualizer";
 import {
   extractColorsFromImage,
@@ -29,18 +29,78 @@ export function AboutMusicSection() {
   const [isLoading, setIsLoading] = useState(true);
   const [selectedYear, setSelectedYear] = useState("2026");
   const [hoveredId, setHoveredId] = useState<string | null>(null);
+  const [centerActiveId, setCenterActiveId] = useState<string | null>(null);
+  const [isMobile, setIsMobile] = useState(false);
   const [trackColorsMap, setTrackColorsMap] = useState<Record<string, AudioColorPalette>>({});
 
   const { containerRef, handleLinkClick, canScrollLeft, canScrollRight } = useDragToScroll();
+
+  useEffect(() => {
+    const mql = window.matchMedia("(max-width: 767px)");
+    const onChange = () => setIsMobile(mql.matches);
+    onChange();
+    mql.addEventListener("change", onChange);
+    return () => mql.removeEventListener("change", onChange);
+  }, []);
 
   const availableYears = Array.from(
     new Set([...Object.keys(YEARLY_SPOTIFY_PLAYLISTS), "All"])
   );
 
-  const hoveredTrack = tracks.find((t) => t.id === hoveredId);
+  // Active track is determined by center item on mobile, and hover on desktop
+  const activeId = isMobile ? (centerActiveId || (tracks[0]?.id ?? null)) : hoveredId;
+  const activeTrack = tracks.find((t) => t.id === activeId);
   const currentColors =
-    (hoveredTrack && trackColorsMap[hoveredTrack.id]) ||
-    (hoveredTrack ? getHarmoniousPaletteFromSeed(hoveredTrack.id || hoveredTrack.title) : DEFAULT_COLORS);
+    (activeTrack && trackColorsMap[activeTrack.id]) ||
+    (activeTrack ? getHarmoniousPaletteFromSeed(activeTrack.id || activeTrack.title) : DEFAULT_COLORS);
+
+  // Track centered card on mobile scroll
+  useEffect(() => {
+    if (!isMobile) return;
+    const el = containerRef.current;
+    if (!el) return;
+
+    const updateCenterCard = () => {
+      const containerRect = el.getBoundingClientRect();
+      const containerCenterX = containerRect.left + containerRect.width / 2;
+
+      const cardElements = el.querySelectorAll<HTMLElement>("[data-music-card]");
+      let closestId: string | null = null;
+      let minDistance = Infinity;
+
+      cardElements.forEach((card) => {
+        const cardRect = card.getBoundingClientRect();
+        const cardCenterX = cardRect.left + cardRect.width / 2;
+        const distance = Math.abs(containerCenterX - cardCenterX);
+
+        if (distance < minDistance) {
+          minDistance = distance;
+          closestId = card.getAttribute("data-music-card");
+        }
+      });
+
+      if (closestId && closestId !== centerActiveId) {
+        setCenterActiveId(closestId);
+      }
+    };
+
+    updateCenterCard();
+
+    let rafId: number;
+    const onScroll = () => {
+      cancelAnimationFrame(rafId);
+      rafId = requestAnimationFrame(updateCenterCard);
+    };
+
+    el.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll, { passive: true });
+
+    return () => {
+      cancelAnimationFrame(rafId);
+      el.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+    };
+  }, [isMobile, tracks, centerActiveId]);
 
   useEffect(() => {
     let isCancelled = false;
@@ -102,15 +162,18 @@ export function AboutMusicSection() {
     <section className="relative w-full py-4 flex flex-col gap-6">
       {/* Header with dynamic Year dropdown */}
       <AboutSectionHeader
+        sectionId="music"
         title={
-          <span className="inline-flex items-baseline gap-[0.25em] flex-wrap">
+          <span className="inline-flex items-baseline gap-[0.25em] flex-wrap text-zinc-800">
             <span>sounds that keep me</span>
-            <TextFlip className="font-hand font-bold text-[36px]">
-              <span>focused.</span>
-              <span>calm.</span>
-              <span>fueled.</span>
-              <span>energized.</span>
-            </TextFlip>
+            <Typewriter
+              text={["focused.", "calm.", "fueled.", "energized."]}
+              className="font-hand font-bold text-[36px] text-rust-grey"
+              speed={65}
+              deleteSpeed={35}
+              waitTime={2200}
+              cursorClassName="text-[#8a7c64] font-light ml-0.5"
+            />
           </span>
         }
         selectedYear={selectedYear}
@@ -134,10 +197,10 @@ export function AboutMusicSection() {
 
         <div
           ref={containerRef}
-          className="relative w-full overflow-x-auto no-scrollbar pt-6 pb-2 cursor-grab active:cursor-grabbing select-none"
+          className="relative w-full overflow-x-auto no-scrollbar pt-6 pb-2 cursor-grab active:cursor-grabbing select-none snap-x snap-mandatory sm:snap-none"
         >
           {isLoading ? (
-            <div className="grid grid-rows-2 grid-flow-col gap-x-4 sm:gap-x-6 gap-y-10 auto-cols-max py-4 ps-3">
+            <div className="grid grid-rows-1 sm:grid-rows-2 grid-flow-col gap-x-4 sm:gap-x-6 gap-y-10 auto-cols-max py-4 px-[calc(50vw-71px)] sm:px-0 sm:ps-3">
               {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
                 <div
                   key={i}
@@ -155,12 +218,12 @@ export function AboutMusicSection() {
           ) : (
             <motion.div
               layout
-              className={`grid ${isTwoRows ? "grid-rows-2" : "grid-rows-1"
-                } grid-flow-col gap-x-4 sm:gap-x-6 gap-y-6 auto-cols-max pb-3 ps-3 pt-6 t-skeleton-reveal`}
+              className={`grid grid-rows-1 ${isTwoRows ? "sm:grid-rows-2" : "sm:grid-rows-1"
+                } grid-flow-col gap-x-4 sm:gap-x-6 gap-y-6 auto-cols-max pb-3 px-[calc(50vw-71px)] sm:px-0 sm:ps-3 pt-6 t-skeleton-reveal`}
             >
               <AnimatePresence mode="popLayout">
                 {tracks.map((album, index) => {
-                  const isHovered = hoveredId === album.id;
+                  const isCardActive = isMobile ? activeId === album.id : hoveredId === album.id;
                   const cardColors =
                     trackColorsMap[album.id] ||
                     getHarmoniousPaletteFromSeed(album.id || album.title);
@@ -169,30 +232,37 @@ export function AboutMusicSection() {
                     <motion.div
                       key={album.id || `track-${index}`}
                       data-magnetic-card
+                      data-music-card={album.id}
                       layout
                       initial={{ opacity: 0, scale: 0.96, y: 8 }}
-                      animate={{ opacity: 1, scale: 1, y: 0 }}
+                      animate={{
+                        opacity: isMobile ? (isCardActive ? 1 : 0.4) : 1,
+                        filter: isMobile ? (isCardActive ? "blur(0px)" : "blur(1.5px)") : "blur(0px)",
+                        scale: isMobile ? (isCardActive ? 1.02 : 0.94) : 1,
+                        y: 0,
+                      }}
                       exit={{ opacity: 0, scale: 0.96 }}
                       transition={{
-                        duration: 0.25,
-                        delay: Math.min(index * 0.04, 0.24),
-                        ease: [0.22, 1, 0.36, 1],
+                        opacity: { duration: 0.2 },
+                        filter: { duration: 0.2 },
+                        scale: { duration: 0.2 },
+                        layout: { duration: 0.25 },
                       }}
-                      onMouseEnter={() => setHoveredId(album.id)}
-                      onMouseLeave={() => setHoveredId(null)}
+                      onMouseEnter={() => !isMobile && setHoveredId(album.id)}
+                      onMouseLeave={() => !isMobile && setHoveredId(null)}
                       onFocus={() => setHoveredId(album.id)}
                       onBlur={() => setHoveredId(null)}
-                      className="flex flex-col items-center w-[142px] sm:w-[152px]"
+                      className="flex flex-col items-center w-[142px] sm:w-[152px] snap-center"
                     >
                       {/* Card + Rising Vinyl Disc Container */}
                       <div className="relative w-[142px] sm:w-[152px] h-[180px] sm:h-[190px] flex items-end justify-center">
-                        {/* Realistic Rotating Vinyl Record - Slides upward on hover */}
+                        {/* Realistic Rotating Vinyl Record - Slides upward on active/hover */}
                         <motion.div
                           initial={reduce ? { opacity: 0 } : { y: 0, opacity: 0, scale: 0.94 }}
                           animate={{
-                            y: isHovered && !reduce ? -30 : 0,
-                            opacity: isHovered ? 1 : 0,
-                            scale: isHovered ? 0.97 : 0.94,
+                            y: isCardActive && !reduce ? -30 : 0,
+                            opacity: isCardActive ? 1 : 0,
+                            scale: isCardActive ? 0.97 : 0.94,
                           }}
                           transition={{
                             type: "spring",
@@ -204,16 +274,15 @@ export function AboutMusicSection() {
                           style={{
                             background:
                               "radial-gradient(circle, #27272a 0%, #18181b 30%, #09090b 70%, #000000 100%)",
-                            boxShadow: isHovered
+                            boxShadow: isCardActive
                               ? `0 0 0 1px rgba(255,255,255,0.1), 0 0 20px ${cardColors.primary}33, inset 0 0 0 10px #0c0c0e, inset 0 0 0 16px #18181b, inset 0 0 0 24px #09090b, inset 0 0 0 34px #18181b`
                               : "0 0 0 1px rgba(255,255,255,0.08), inset 0 0 0 10px #0c0c0e, inset 0 0 0 16px #18181b, inset 0 0 0 24px #09090b, inset 0 0 0 34px #18181b",
                           }}
                         >
                           {/* Spinning Disc Group with continuous forward momentum */}
                           <div
-                            className={`relative size-full flex items-center justify-center ${
-                              isHovered && !reduce ? "animate-[spin_3.6s_linear_infinite]" : ""
-                            }`}
+                            className={`relative size-full flex items-center justify-center ${isCardActive && !reduce ? "animate-[spin_3.6s_linear_infinite]" : ""
+                              }`}
                           >
                             {/* Conic grooved light shimmer */}
                             <div
@@ -265,7 +334,8 @@ export function AboutMusicSection() {
                                 fill
                                 unoptimized
                                 draggable={false}
-                                className="object-cover size-full group-hover:scale-105 saturate-50 group-hover:saturate-100 transition-[transform,filter] duration-300 ease-out pointer-events-none select-none"
+                                className={`object-cover size-full transition-[transform,filter] duration-300 ease-out pointer-events-none select-none ${isCardActive ? "saturate-100 scale-100" : "saturate-40"
+                                  }`}
                                 sizes="(max-width: 768px) 142px, 152px"
                               />
                             </div>
@@ -302,25 +372,25 @@ export function AboutMusicSection() {
             blockSize={4}
             gap={2}
             speed={0.065}
-            triggerKey={hoveredTrack?.id || "idle"}
-            active={!!hoveredTrack}
+            triggerKey={activeTrack?.id || "idle"}
+            active={!!activeTrack}
           />
         </div>
 
         {/* Dynamic Caption Text with Crossfade */}
         <div className="h-6 flex items-center justify-center mt-1.5">
           <AnimatePresence mode="wait">
-            {hoveredTrack && (
+            {activeTrack && (
               <motion.p
-                key={hoveredTrack.id}
+                key={activeTrack.id}
                 initial={{ opacity: 0, y: 4, filter: "blur(2px)" }}
                 animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
                 exit={{ opacity: 0, y: -4, filter: "blur(2px)" }}
                 transition={{ duration: 0.15, ease: "easeInOut" }}
                 className="font-display font-normal text-[13px] sm:text-[14px] text-[#7f7f80] tracking-[0.08px]"
               >
-                <span className="text-zinc-900 font-medium">{hoveredTrack.title}</span>
-                {hoveredTrack.artist && ` — ${hoveredTrack.artist}`}
+                <span className="text-zinc-900 font-medium">{activeTrack.title}</span>
+                {activeTrack.artist && ` — ${activeTrack.artist}`}
               </motion.p>
             )}
           </AnimatePresence>
