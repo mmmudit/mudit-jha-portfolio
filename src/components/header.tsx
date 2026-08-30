@@ -59,21 +59,7 @@ export function Header() {
         aria-hidden="true"
       />
 
-      {/* Bottom Progressive Gradient Blur Overlay for Mobile Dock (Full-bleed across home indicator and bottom edges) */}
-      <div
-        className="fixed bottom-0 left-0 right-0 w-full h-40 sm:h-48 -z-10 pointer-events-none select-none transition-[backdrop-filter,opacity] duration-250 ease-out md:hidden"
-        style={{
-          background:
-            "linear-gradient(to top, rgba(251, 250, 245, 0.96) 0%, rgba(251, 250, 245, 0.92) calc(env(safe-area-inset-bottom, 0px) + 3.6rem), rgba(251, 250, 245, 0.45) 80%, rgba(251, 250, 245, 0) 100%)",
-          backdropFilter: "blur(20px)",
-          WebkitBackdropFilter: "blur(20px)",
-          maskImage:
-            "linear-gradient(to top, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 1) calc(env(safe-area-inset-bottom, 0px) + 3.2rem), rgba(0, 0, 0, 0.45) 82%, rgba(0, 0, 0, 0) 100%)",
-          WebkitMaskImage:
-            "linear-gradient(to top, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 1) calc(env(safe-area-inset-bottom, 0px) + 3.2rem), rgba(0, 0, 0, 0.45) 82%, rgba(0, 0, 0, 0) 100%)",
-        }}
-        aria-hidden="true"
-      />
+
 
       <header className="relative z-10 flex items-center justify-between w-full pointer-events-none">
         {/* Left: Interactive Eye Toon Logo in Header */}
