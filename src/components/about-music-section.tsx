@@ -164,11 +164,11 @@ export function AboutMusicSection() {
       <AboutSectionHeader
         sectionId="music"
         title={
-          <span className="inline-flex items-baseline gap-[0.25em] flex-wrap text-zinc-800">
+          <span className="inline-flex items-baseline gap-[0.2em] whitespace-nowrap text-zinc-800">
             <span>sounds that keep me</span>
             <Typewriter
               text={["focused.", "calm.", "fueled.", "energized."]}
-              className="font-hand font-bold text-[36px] text-rust-grey"
+              className="font-hand font-bold text-[22px] xs:text-[25px] sm:text-[36px] text-rust-grey"
               speed={65}
               deleteSpeed={35}
               waitTime={2200}

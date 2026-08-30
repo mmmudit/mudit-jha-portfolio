@@ -79,7 +79,7 @@ export function AboutSectionHeader({
             )}
           </div>
         )}
-        <h2 className="font-display text-[26px] sm:text-[34px] md:text-[36px] font-medium leading-tight text-zinc-800 tracking-tight text-balance">
+        <h2 className="font-display text-[20px] xs:text-[23px] sm:text-[34px] md:text-[36px] font-medium leading-tight text-zinc-800 tracking-tight whitespace-nowrap">
           {title}
         </h2>
       </div>

@@ -153,7 +153,7 @@ export function AboutEssaysSection() {
               </motion.div>
             )}
           </div>
-          <h2 className="font-display text-[30px] sm:text-[36px] font-medium leading-tight text-zinc-800 tracking-tight text-balance">
+          <h2 className="font-display text-[22px] xs:text-[25px] sm:text-[36px] font-medium leading-tight text-zinc-800 tracking-tight whitespace-nowrap">
             essays i’ve written
           </h2>
         </div>
