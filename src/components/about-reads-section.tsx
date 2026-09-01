@@ -101,6 +101,17 @@ export function AboutReadsSection() {
       return dateB.localeCompare(dateA);
     });
 
+  const { row1Books, row2Books } = useMemo(() => {
+    if (filteredBooks.length <= 7) {
+      return { row1Books: filteredBooks, row2Books: [] };
+    }
+    const row1Count = Math.max(7, Math.ceil(filteredBooks.length / 2));
+    return {
+      row1Books: filteredBooks.slice(0, row1Count),
+      row2Books: filteredBooks.slice(row1Count),
+    };
+  }, [filteredBooks]);
+
   useEffect(() => {
     if (!isMobile) return;
     const el = containerRef.current;
@@ -185,10 +196,12 @@ export function AboutReadsSection() {
           className="relative w-full overflow-x-auto no-scrollbar py-2 cursor-grab active:cursor-grabbing select-none snap-x snap-mandatory sm:snap-none"
         >
           {isLoading ? (
-            <div className="grid grid-rows-1 sm:grid-rows-2 grid-flow-col gap-x-4 sm:gap-x-6 gap-y-6 auto-cols-max py-4 px-[calc(50vw-71px)] sm:px-0 sm:pl-3">
-              {[1, 2, 3, 4, 5, 6].map((i) => (
-                <div key={i} className="w-[142px] sm:w-[152px] h-[220px] sm:h-[233px] rounded-[16px] t-skeleton border border-zinc-300/40" />
-              ))}
+            <div className="flex flex-col gap-y-6 py-4 px-[calc(50vw-71px)] sm:px-0 sm:pl-3 min-w-max">
+              <div className="flex items-center gap-x-4 sm:gap-x-6 min-w-max">
+                {[1, 2, 3, 4, 5, 6].map((i) => (
+                  <div key={i} className="w-[142px] sm:w-[152px] h-[220px] sm:h-[233px] rounded-[16px] t-skeleton border border-zinc-300/40" />
+                ))}
+              </div>
             </div>
           ) : filteredBooks.length === 0 ? (
             <div className="py-8 flex flex-col items-center justify-center text-zinc-400 gap-2">
@@ -196,89 +209,247 @@ export function AboutReadsSection() {
               <p className="text-sm font-display text-center text-pretty max-w-[320px]">No books found for this filter.</p>
             </div>
           ) : (
-            <motion.div
-              layout
-              className={`grid grid-rows-1 ${isTwoRows ? "sm:grid-rows-2" : "sm:grid-rows-1"} grid-flow-col gap-x-4 sm:gap-x-6 gap-y-6 auto-cols-max pb-3 px-[calc(50vw-71px)] sm:px-0 sm:pl-3 pt-2 t-skeleton-reveal`}
-            >
-              <AnimatePresence mode="popLayout">
-                {filteredBooks.map((book, index) => {
-                  const bookKey = book.id || book.title || `book-${index}`;
-                  const isCardActive = isMobile ? activeId === bookKey : hoveredId === bookKey;
-                  const { isCurrentlyReading } = getBookStatusInfo(book);
+            <div className="flex flex-col gap-y-6 pb-3 px-[calc(50vw-71px)] sm:px-0 sm:pl-3 pt-2 t-skeleton-reveal min-w-max">
+              {isMobile ? (
+                <div className="flex items-center gap-x-4 min-w-max">
+                  {filteredBooks.map((book, index) => {
+                    const bookKey = book.id || book.title || `book-${index}`;
+                    const isCardActive = activeId === bookKey;
+                    const { isCurrentlyReading } = getBookStatusInfo(book);
 
-                  return (
-                    <motion.div
-                      key={bookKey}
-                      data-magnetic-card
-                      data-book-card={bookKey}
-                      layout
-                      initial={{ opacity: 0, scale: 0.95, y: 10 }}
-                      animate={{
-                        opacity: isMobile ? (isCardActive ? 1 : 0.4) : 1,
-                        filter: isMobile ? (isCardActive ? "blur(0px)" : "blur(1.5px)") : "blur(0px)",
-                        scale: isMobile ? (isCardActive ? 1.02 : 0.94) : 1,
-                        y: 0,
-                      }}
-                      exit={{ opacity: 0, scale: 0.95 }}
-                      transition={{
-                        opacity: { duration: 0.2 },
-                        filter: { duration: 0.2 },
-                        scale: { duration: 0.2 },
-                        layout: { duration: 0.25 },
-                      }}
-                      onMouseEnter={() => !isMobile && setHoveredId(bookKey)}
-                      onMouseLeave={() => !isMobile && setHoveredId(null)}
-                      onFocus={() => setHoveredId(bookKey)}
-                      onBlur={() => setHoveredId(null)}
-                      className="flex flex-col items-center w-[142px] sm:w-[152px] group snap-center"
-                    >
-                      <motion.a
-                        href={book.link || "#"}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        onClick={handleLinkClick}
-                        whileHover={{ y: -5, scale: 1.02, transition: { type: "spring", stiffness: 350, damping: 22 } }}
-                        whileTap={{ scale: 0.96 }}
-                        className="relative w-[142px] sm:w-[152px] h-[220px] sm:h-[233px] rounded-[16px] bg-[#fbfaf5] border border-zinc-200 flex flex-col overflow-hidden shadow-md z-10 cursor-pointer"
+                    return (
+                      <motion.div
+                        key={bookKey}
+                        data-magnetic-card
+                        data-book-card={bookKey}
+                        layout
+                        initial={{ opacity: 0, scale: 0.95, y: 10 }}
+                        animate={{
+                          opacity: isCardActive ? 1 : 0.4,
+                          filter: isCardActive ? "blur(0px)" : "blur(1.5px)",
+                          scale: isCardActive ? 1.02 : 0.94,
+                          y: 0,
+                        }}
+                        exit={{ opacity: 0, scale: 0.95 }}
+                        transition={{
+                          opacity: { duration: 0.2 },
+                          filter: { duration: 0.2 },
+                          scale: { duration: 0.2 },
+                          layout: { duration: 0.25 },
+                        }}
+                        className="flex flex-col items-center w-[142px] group snap-center"
                       >
-                        {book.imageUrl ? (
-                          <div className="relative size-full">
-                            <Image
-                              src={book.imageUrl}
-                              alt={book.title}
-                              fill
-                              unoptimized
-                              draggable={false}
-                              className={`object-cover size-full transition-[transform,filter] duration-300 ease-out ${isCardActive ? "saturate-100 scale-100" : "saturate-40"}`}
-                              sizes="(max-width: 768px) 142px, 152px"
-                            />
+                        <motion.a
+                          href={book.link || "#"}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          onClick={handleLinkClick}
+                          whileTap={{ scale: 0.96 }}
+                          className="relative w-[142px] h-[220px] rounded-[16px] bg-[#fbfaf5] border border-zinc-200 flex flex-col overflow-hidden shadow-md z-10 cursor-pointer"
+                        >
+                          {book.imageUrl ? (
+                            <div className="relative size-full">
+                              <Image
+                                src={book.imageUrl}
+                                alt={book.title}
+                                fill
+                                unoptimized
+                                draggable={false}
+                                className={`object-cover size-full transition-[transform,filter] duration-300 ease-out ${isCardActive ? "saturate-100 scale-100" : "saturate-40"}`}
+                                sizes="142px"
+                              />
+                            </div>
+                          ) : (
+                            <div className="size-full bg-zinc-800 flex flex-col items-center justify-center p-4 text-center">
+                              <span className="font-bold text-white text-[15px]">{book.title}</span>
+                            </div>
+                          )}
+                          {isCurrentlyReading && (
+                            <div className="absolute top-2.5 left-2.5 z-20">
+                              <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-black/80 backdrop-blur-md text-[9px] font-medium text-emerald-300">
+                                <span className="size-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                                Reading
+                              </span>
+                            </div>
+                          )}
+                          <div className={`absolute inset-x-0 bottom-0 h-[80%] rounded-b-[16px] bg-gradient-to-t from-black/70 to-transparent flex items-end justify-center pb-3 transition-opacity duration-200 z-20 ${isCardActive ? "opacity-100" : "opacity-0"}`}>
+                            <div className="flex items-center gap-0.5">
+                              {Array.from({ length: book.rating || 5 }).map((_, i) => (
+                                <Star key={i} fill="currentColor" className="size-4 text-amber-400" />
+                              ))}
+                            </div>
                           </div>
-                        ) : (
-                          <div className="size-full bg-zinc-800 flex flex-col items-center justify-center p-4 text-center">
-                            <span className="font-bold text-white text-[15px]">{book.title}</span>
-                          </div>
-                        )}
-                        {isCurrentlyReading && (
-                          <div className="absolute top-2.5 left-2.5 z-20">
-                            <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-black/80 backdrop-blur-md text-[9px] font-medium text-emerald-300">
-                              <span className="size-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                              Reading
-                            </span>
-                          </div>
-                        )}
-                        <div className={`absolute inset-x-0 bottom-0 h-[80%] rounded-b-[16px] bg-gradient-to-t from-black/70 to-transparent flex items-end justify-center pb-3 transition-opacity duration-200 z-20 ${isCardActive ? "opacity-100" : "opacity-0"}`}>
-                          <div className="flex items-center gap-0.5">
-                            {Array.from({ length: book.rating || 5 }).map((_, i) => (
-                              <Star key={i} fill="currentColor" className="size-4 text-amber-400" />
-                            ))}
-                          </div>
-                        </div>
-                      </motion.a>
-                    </motion.div>
-                  );
-                })}
-              </AnimatePresence>
-            </motion.div>
+                        </motion.a>
+                      </motion.div>
+                    );
+                  })}
+                </div>
+              ) : (
+                <>
+                  {/* Row 1: Always filled first */}
+                  <div className="flex items-center gap-x-6 min-w-max">
+                    {row1Books.map((book, index) => {
+                      const bookKey = book.id || book.title || `book-${index}`;
+                      const isCardActive = hoveredId === bookKey;
+                      const { isCurrentlyReading } = getBookStatusInfo(book);
+
+                      return (
+                        <motion.div
+                          key={bookKey}
+                          data-magnetic-card
+                          data-book-card={bookKey}
+                          layout
+                          initial={{ opacity: 0, scale: 0.95, y: 10 }}
+                          animate={{
+                            opacity: 1,
+                            filter: "blur(0px)",
+                            scale: 1,
+                            y: 0,
+                          }}
+                          exit={{ opacity: 0, scale: 0.95 }}
+                          transition={{
+                            opacity: { duration: 0.2 },
+                            filter: { duration: 0.2 },
+                            scale: { duration: 0.2 },
+                            layout: { duration: 0.25 },
+                          }}
+                          onMouseEnter={() => setHoveredId(bookKey)}
+                          onMouseLeave={() => setHoveredId(null)}
+                          onFocus={() => setHoveredId(bookKey)}
+                          onBlur={() => setHoveredId(null)}
+                          className="flex flex-col items-center w-[152px] group snap-center"
+                        >
+                          <motion.a
+                            href={book.link || "#"}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            onClick={handleLinkClick}
+                            whileHover={{ y: -5, scale: 1.02, transition: { type: "spring", stiffness: 350, damping: 22 } }}
+                            whileTap={{ scale: 0.96 }}
+                            className="relative w-[152px] h-[233px] rounded-[16px] bg-[#fbfaf5] border border-zinc-200 flex flex-col overflow-hidden shadow-md z-10 cursor-pointer"
+                          >
+                            {book.imageUrl ? (
+                              <div className="relative size-full">
+                                <Image
+                                  src={book.imageUrl}
+                                  alt={book.title}
+                                  fill
+                                  unoptimized
+                                  draggable={false}
+                                  className={`object-cover size-full transition-[transform,filter] duration-300 ease-out ${isCardActive ? "saturate-100 scale-100" : "saturate-40"}`}
+                                  sizes="152px"
+                                />
+                              </div>
+                            ) : (
+                              <div className="size-full bg-zinc-800 flex flex-col items-center justify-center p-4 text-center">
+                                <span className="font-bold text-white text-[15px]">{book.title}</span>
+                              </div>
+                            )}
+                            {isCurrentlyReading && (
+                              <div className="absolute top-2.5 left-2.5 z-20">
+                                <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-black/80 backdrop-blur-md text-[9px] font-medium text-emerald-300">
+                                  <span className="size-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                                  Reading
+                                </span>
+                              </div>
+                            )}
+                            <div className={`absolute inset-x-0 bottom-0 h-[80%] rounded-b-[16px] bg-gradient-to-t from-black/70 to-transparent flex items-end justify-center pb-3 transition-opacity duration-200 z-20 ${isCardActive ? "opacity-100" : "opacity-0"}`}>
+                              <div className="flex items-center gap-0.5">
+                                {Array.from({ length: book.rating || 5 }).map((_, i) => (
+                                  <Star key={i} fill="currentColor" className="size-4 text-amber-400" />
+                                ))}
+                              </div>
+                            </div>
+                          </motion.a>
+                        </motion.div>
+                      );
+                    })}
+                  </div>
+
+                  {/* Row 2: Populated only when Row 1 is filled */}
+                  {row2Books.length > 0 && (
+                    <div className="flex items-center gap-x-6 min-w-max">
+                      {row2Books.map((book, index) => {
+                        const bookKey = book.id || book.title || `book-r2-${index}`;
+                        const isCardActive = hoveredId === bookKey;
+                        const { isCurrentlyReading } = getBookStatusInfo(book);
+
+                        return (
+                          <motion.div
+                            key={bookKey}
+                            data-magnetic-card
+                            data-book-card={bookKey}
+                            layout
+                            initial={{ opacity: 0, scale: 0.95, y: 10 }}
+                            animate={{
+                              opacity: 1,
+                              filter: "blur(0px)",
+                              scale: 1,
+                              y: 0,
+                            }}
+                            exit={{ opacity: 0, scale: 0.95 }}
+                            transition={{
+                              opacity: { duration: 0.2 },
+                              filter: { duration: 0.2 },
+                              scale: { duration: 0.2 },
+                              layout: { duration: 0.25 },
+                            }}
+                            onMouseEnter={() => setHoveredId(bookKey)}
+                            onMouseLeave={() => setHoveredId(null)}
+                            onFocus={() => setHoveredId(bookKey)}
+                            onBlur={() => setHoveredId(null)}
+                            className="flex flex-col items-center w-[152px] group snap-center"
+                          >
+                            <motion.a
+                              href={book.link || "#"}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              onClick={handleLinkClick}
+                              whileHover={{ y: -5, scale: 1.02, transition: { type: "spring", stiffness: 350, damping: 22 } }}
+                              whileTap={{ scale: 0.96 }}
+                              className="relative w-[152px] h-[233px] rounded-[16px] bg-[#fbfaf5] border border-zinc-200 flex flex-col overflow-hidden shadow-md z-10 cursor-pointer"
+                            >
+                              {book.imageUrl ? (
+                                <div className="relative size-full">
+                                  <Image
+                                    src={book.imageUrl}
+                                    alt={book.title}
+                                    fill
+                                    unoptimized
+                                    draggable={false}
+                                    className={`object-cover size-full transition-[transform,filter] duration-300 ease-out ${isCardActive ? "saturate-100 scale-100" : "saturate-40"}`}
+                                    sizes="152px"
+                                  />
+                                </div>
+                              ) : (
+                                <div className="size-full bg-zinc-800 flex flex-col items-center justify-center p-4 text-center">
+                                  <span className="font-bold text-white text-[15px]">{book.title}</span>
+                                </div>
+                              )}
+                              {isCurrentlyReading && (
+                                <div className="absolute top-2.5 left-2.5 z-20">
+                                  <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-black/80 backdrop-blur-md text-[9px] font-medium text-emerald-300">
+                                    <span className="size-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                                    Reading
+                                  </span>
+                                </div>
+                              )}
+                              <div className={`absolute inset-x-0 bottom-0 h-[80%] rounded-b-[16px] bg-gradient-to-t from-black/70 to-transparent flex items-end justify-center pb-3 transition-opacity duration-200 z-20 ${isCardActive ? "opacity-100" : "opacity-0"}`}>
+                                <div className="flex items-center gap-0.5">
+                                  {Array.from({ length: book.rating || 5 }).map((_, i) => (
+                                    <Star key={i} fill="currentColor" className="size-4 text-amber-400" />
+                                  ))}
+                                </div>
+                              </div>
+                            </motion.a>
+                          </motion.div>
+                        );
+                      })}
+                    </div>
+                  )}
+                </>
+              )}
+            </div>
           )}
         </div>
       </div>

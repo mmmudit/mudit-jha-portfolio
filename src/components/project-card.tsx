@@ -97,9 +97,6 @@ export const ProjectCard = React.forwardRef<HTMLDivElement, ProjectCardProps>(fu
           onMouseLeave={onMouseLeave}
           onFocus={onFocus}
           onBlur={onBlur}
-          data-cuelume-hover="ready"
-          data-cuelume-press
-          data-cuelume-release
           className={`project-card pressable group relative flex flex-col gap-3 items-start w-full cursor-pointer text-left focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-black/10 dark:focus-visible:ring-white/10 focus-visible:ring-offset-1 rounded-[28px] transition-opacity duration-200 ease-out ${isDimmed ? "opacity-40" : "opacity-100"
             }`}
         >

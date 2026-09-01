@@ -163,9 +163,19 @@ export function ProjectGrid({ projects }: ProjectGridProps) {
                 actionText={project.actionText}
                 priority={index < 2}
                 isDimmed={isDimmed}
-                onMouseEnter={() => setHoveredId(id)}
+                onMouseEnter={() => {
+                  if (hoveredId !== id) {
+                    play("ready", { volume: 0.35 });
+                  }
+                  setHoveredId(id);
+                }}
                 onMouseLeave={() => setHoveredId(null)}
-                onFocus={() => setHoveredId(id)}
+                onFocus={() => {
+                  if (hoveredId !== id) {
+                    play("ready", { volume: 0.35 });
+                  }
+                  setHoveredId(id);
+                }}
                 onBlur={() => setHoveredId(null)}
                 onClick={() => handleCardClick(project, projectKey, index)}
               />

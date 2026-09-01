@@ -11,7 +11,7 @@ import {
   useTransform,
   type PanInfo,
 } from "framer-motion";
-import { X, ExternalLink, ChevronLeft, ChevronRight } from "lucide-react";
+import { Maximize2, Minimize2, ExternalLink, ChevronLeft, ChevronRight, ArrowLeft } from "lucide-react";
 import { play } from "@/lib/sound";
 import { ProjectCard } from "./project-card";
 
@@ -32,6 +32,7 @@ export type ProjectData = {
   overview?: string;
   challenge?: string;
   solution?: string;
+  impact?: string;
 };
 
 export interface CardRect {
@@ -60,12 +61,12 @@ export type ProjectModalProps = {
 };
 
 const SECTIONS = [
-  { id: "sec-media", label: "Media Preview" },
-  { id: "sec-overview", label: "Tagline & Intro" },
-  { id: "sec-details", label: "Project Details" },
-  { id: "sec-vision", label: "01. Vision" },
-  { id: "sec-challenge", label: "02. Challenge" },
-  { id: "sec-execution", label: "03. Execution" },
+  { id: "sec-overview", label: "Overview" },
+  { id: "sec-details", label: "Details" },
+  { id: "sec-vision", label: "Vision" },
+  { id: "sec-challenge", label: "Challenge" },
+  { id: "sec-execution", label: "Solution" },
+  { id: "sec-reflection", label: "Reflection" },
 ];
 
 const CINEMATIC_GENTLE_EASE = [0.19, 1, 0.22, 1] as [number, number, number, number];
@@ -84,7 +85,12 @@ export function ProjectModal({
   const [mounted, setMounted] = useState(false);
   const [isFlipped, setIsFlipped] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
-  const [activeSectionId, setActiveSectionId] = useState("sec-media");
+  const [isFullScreen, setIsFullScreen] = useState(false);
+  const [viewportSize, setViewportSize] = useState({
+    width: typeof window !== "undefined" ? window.innerWidth : 1200,
+    height: typeof window !== "undefined" ? window.innerHeight : 800,
+  });
+  const [activeSectionId, setActiveSectionId] = useState("sec-overview");
   const [hoveredSectionId, setHoveredSectionId] = useState<string | null>(null);
   const [hoveredAvatarIdx, setHoveredAvatarIdx] = useState<number | null>(null);
 
@@ -92,6 +98,29 @@ export function ProjectModal({
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const prefersReducedMotion = useReducedMotion();
+
+  useEffect(() => {
+    const handleResize = () => {
+      setViewportSize({
+        width: window.innerWidth,
+        height: window.innerHeight,
+      });
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  // Compute next other projects for "Also check out..." section
+  const otherProjects = React.useMemo(() => {
+    if (!projects || projects.length <= 1) return [];
+    const count = Math.min(2, projects.length - 1);
+    const result = [];
+    for (let i = 1; i <= count; i++) {
+      const idx = (currentIndex + i) % projects.length;
+      result.push({ project: projects[idx], index: idx });
+    }
+    return result;
+  }, [projects, currentIndex]);
 
   // Tinder Swipe Gesture Motion Values & Transforms
   const dragX = useMotionValue(0);
@@ -124,7 +153,7 @@ export function ProjectModal({
   const activeCard: ActiveProjectCardState | null = propActiveCard
     ? propActiveCard
     : fallbackProject
-    ? {
+      ? {
         project: fallbackProject,
         origin: {
           top: typeof window !== "undefined" ? (window.innerHeight - Math.min(window.innerHeight <= 640 ? window.innerHeight - 36 : window.innerHeight * 0.88, 680)) / 2 : 100,
@@ -139,7 +168,7 @@ export function ProjectModal({
           height: typeof window !== "undefined" ? Math.min(window.innerHeight <= 640 ? window.innerHeight - 36 : window.innerHeight * 0.88, 680) : 680,
         },
       }
-    : null;
+      : null;
 
   useEffect(() => {
     setMounted(true);
@@ -150,6 +179,7 @@ export function ProjectModal({
     if (!activeCard) {
       setIsFlipped(false);
       setIsClosing(false);
+      setIsFullScreen(false);
       return;
     }
 
@@ -191,7 +221,12 @@ export function ProjectModal({
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
         e.preventDefault();
-        handleClose();
+        if (isFullScreen) {
+          setIsFullScreen(false);
+          play("droplet", { volume: 0.35 });
+        } else {
+          handleClose();
+        }
         return;
       }
 
@@ -315,51 +350,51 @@ export function ProjectModal({
           initial={
             prefersReducedMotion
               ? {
-                  top: target.top,
-                  left: target.left,
-                  width: target.width,
-                  height: target.height,
-                  opacity: 0,
-                  scale: 0.96,
-                  position: "fixed",
-                }
+                top: target.top,
+                left: target.left,
+                width: target.width,
+                height: target.height,
+                opacity: 0,
+                scale: 0.96,
+                position: "fixed",
+              }
               : {
-                  top: origin.top,
-                  left: origin.left,
-                  width: origin.width,
-                  height: origin.height,
-                  opacity: 1,
-                  scale: 1,
-                  position: "fixed",
-                }
+                top: origin.top,
+                left: origin.left,
+                width: origin.width,
+                height: origin.height,
+                opacity: 1,
+                scale: 1,
+                position: "fixed",
+              }
           }
           animate={
             isClosing
               ? {
-                  top: target.top,
-                  left: target.left,
-                  width: target.width,
-                  height: target.height,
-                  opacity: 0,
-                  scale: 0.90,
-                  filter: "blur(8px)",
-                  position: "fixed",
-                }
+                top: isFullScreen ? 0 : target.top,
+                left: isFullScreen ? 0 : target.left,
+                width: isFullScreen ? viewportSize.width : target.width,
+                height: isFullScreen ? viewportSize.height : target.height,
+                opacity: 0,
+                scale: 0.90,
+                filter: "blur(8px)",
+                position: "fixed",
+              }
               : prefersReducedMotion
-              ? {
-                  top: target.top,
-                  left: target.left,
-                  width: target.width,
-                  height: target.height,
+                ? {
+                  top: isFullScreen ? 0 : target.top,
+                  left: isFullScreen ? 0 : target.left,
+                  width: isFullScreen ? viewportSize.width : target.width,
+                  height: isFullScreen ? viewportSize.height : target.height,
                   opacity: isFlipped ? 1 : 0,
                   scale: isFlipped ? 1 : 0.96,
                   position: "fixed",
                 }
-              : {
-                  top: isFlipped ? target.top : origin.top,
-                  left: isFlipped ? target.left : origin.left,
-                  width: isFlipped ? target.width : origin.width,
-                  height: isFlipped ? target.height : origin.height,
+                : {
+                  top: isFlipped ? (isFullScreen ? 0 : target.top) : origin.top,
+                  left: isFlipped ? (isFullScreen ? 0 : target.left) : origin.left,
+                  width: isFlipped ? (isFullScreen ? viewportSize.width : target.width) : origin.width,
+                  height: isFlipped ? (isFullScreen ? viewportSize.height : target.height) : origin.height,
                   opacity: 1,
                   scale: 1,
                   position: "fixed",
@@ -367,7 +402,7 @@ export function ProjectModal({
           }
           transition={isClosing ? closeTransition : openTransition}
           onAnimationComplete={handleAnimationComplete}
-          drag="x"
+          drag={isFullScreen ? false : "x"}
           dragDirectionLock
           dragConstraints={{ left: 0, right: 0 }}
           dragElastic={0.65}
@@ -403,10 +438,10 @@ export function ProjectModal({
               rotateY: prefersReducedMotion
                 ? 0
                 : isClosing
-                ? 0
-                : isFlipped
-                ? 180
-                : 0,
+                  ? 0
+                  : isFlipped
+                    ? 180
+                    : 0,
             }}
             transition={isClosing ? { duration: closeDuration * 1.05, ease: CINEMATIC_GENTLE_EASE } : openTransition}
             style={{
@@ -450,11 +485,11 @@ export function ProjectModal({
                 <motion.div
                   initial={{ opacity: 0, x: "-100%" }}
                   animate={{
-                    opacity: isFlipped ? [0, 0.45, 0] : 0,
-                    x: isFlipped ? ["-100%", "200%"] : "-100%",
+                    opacity: isFlipped ? 0 : [0, 0.45, 0],
+                    x: isFlipped ? "-100%" : ["-100%", "200%"],
                   }}
-                  transition={{ duration: openDuration * 0.9, ease: CINEMATIC_GENTLE_EASE }}
-                  className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent pointer-events-none z-30"
+                  transition={{ duration: openDuration * 0.75, ease: CINEMATIC_GENTLE_EASE }}
+                  className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent pointer-events-none z-30 rounded-[28px]"
                 />
               )}
             </motion.div>
@@ -476,10 +511,14 @@ export function ProjectModal({
                 transform: prefersReducedMotion ? "none" : "rotateY(180deg)",
                 pointerEvents: isFlipped ? "auto" : "none",
               }}
-              className={`absolute inset-0 w-full h-full rounded-[22px] sm:rounded-[28px] p-[1.5px] bg-gradient-to-br ${gradientPreset} shadow-[0_25px_60px_rgba(0,0,0,0.25)] flex flex-col overflow-hidden select-text`}
+              className={`absolute inset-0 w-full h-full p-[1.5px] bg-gradient-to-br ${gradientPreset} shadow-[0_25px_60px_rgba(0,0,0,0.25)] flex flex-col overflow-hidden select-text transition-[border-radius] duration-500 ease-out ${isFullScreen ? "rounded-none" : "rounded-[22px] sm:rounded-[28px]"
+                }`}
             >
               {/* Inner Modal Content Container */}
-              <div className="relative flex flex-col size-full overflow-hidden rounded-[20.5px] sm:rounded-[26.5px] bg-[#fbfaf5] text-zinc-800 text-left">
+              <div
+                className={`relative flex flex-col size-full overflow-hidden bg-[#fbfaf5] text-zinc-800 text-left transition-[border-radius] duration-500 ease-out ${isFullScreen ? "rounded-none" : "rounded-[20.5px] sm:rounded-[26.5px]"
+                  }`}
+              >
                 {/* Mobile Drag Pill Handle */}
                 <div className="sm:hidden pt-2.5 pb-0 flex justify-center items-center w-full shrink-0 bg-[#fbfaf5]">
                   <div className="w-9 h-1 rounded-full bg-zinc-300" />
@@ -487,13 +526,34 @@ export function ProjectModal({
 
                 {/* Modal Top Header */}
                 <div className="flex items-center justify-between px-4 sm:px-6 pt-2.5 sm:pt-5 pb-3 sm:pb-4 border-b border-black/5 shrink-0 bg-[#fbfaf5] z-20">
-                  <div className="flex items-center gap-2 min-w-0">
+                  <div className="flex items-center gap-1.5 sm:gap-2.5 min-w-0">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (isFullScreen) {
+                          setIsFullScreen(false);
+                          play("droplet", { volume: 0.35 });
+                        } else {
+                          handleClose();
+                        }
+                      }}
+                      data-cuelume-hover="tick"
+                      className="pressable text-zinc-500 hover:text-zinc-900 font-display text-lg sm:text-2xl font-normal transition-colors cursor-pointer shrink-0"
+                      title={isFullScreen ? "Restore from full screen" : "Back to Work"}
+                      aria-label="Back to Work"
+                    >
+                      Work
+                    </button>
+
+                    <ChevronRight className="size-4 sm:size-4.5 text-zinc-400 shrink-0 stroke-[2]" aria-hidden="true" />
+
                     <h3
                       id="modal-project-title"
-                      className="font-display text-lg sm:text-2xl font-semibold text-zinc-900 tracking-tight truncate max-w-[130px] sm:max-w-none"
+                      className="font-display text-lg sm:text-2xl font-semibold text-zinc-800 tracking-tight truncate max-w-[140px] sm:max-w-none"
                     >
                       {project.title}
                     </h3>
+
                     <span className="px-2 py-0.5 text-[10px] sm:text-xs font-mono font-medium tracking-wide uppercase bg-zinc-200/70 text-zinc-700 rounded-full shrink-0">
                       {project.year || "2025"}
                     </span>
@@ -568,11 +628,10 @@ export function ProjectModal({
                                   title={`${title} [${idx + 1}]`}
                                   aria-label={`Switch to ${title}`}
                                   aria-current={isActive ? "true" : undefined}
-                                  className={`relative size-5 sm:size-[26px] rounded-full overflow-hidden border-[1.5px] border-white bg-zinc-100 transition-all duration-200 ease-out cursor-pointer ${
-                                    isActive
-                                      ? "grayscale-0 opacity-100 ring-1 ring-black/10 scale-105 z-20 shadow-sm"
-                                      : "grayscale opacity-45 hover:grayscale-0 hover:opacity-100 hover:scale-115 hover:z-30"
-                                  } focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-black/10`}
+                                  className={`relative size-5 sm:size-[26px] rounded-full overflow-hidden border-[1.5px] border-white bg-zinc-100 transition-all duration-200 ease-out cursor-pointer ${isActive
+                                    ? "grayscale-0 opacity-100 ring-1 ring-black/10 scale-105 z-20 shadow-sm"
+                                    : "grayscale opacity-45 hover:grayscale-0 hover:opacity-100 hover:scale-115 hover:z-30"
+                                    } focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-black/10`}
                                 >
                                   {p.image ? (
                                     <Image
@@ -584,9 +643,8 @@ export function ProjectModal({
                                     />
                                   ) : (
                                     <div
-                                      className={`size-full bg-gradient-to-br ${
-                                        p.gradient || "from-zinc-300 to-zinc-400"
-                                      } flex items-center justify-center font-mono text-[9px] font-bold text-zinc-700`}
+                                      className={`size-full bg-gradient-to-br ${p.gradient || "from-zinc-300 to-zinc-400"
+                                        } flex items-center justify-center font-mono text-[9px] font-bold text-zinc-700`}
                                     >
                                       {title.charAt(0)}
                                     </div>
@@ -599,70 +657,85 @@ export function ProjectModal({
                       </nav>
                     )}
 
-                    <button
-                      ref={closeButtonRef}
-                      onClick={handleClose}
-                      data-cuelume-hover="tick"
-                      data-cuelume-press
-                      className="pressable p-1.5 sm:p-2 text-zinc-500 hover:text-zinc-900 rounded-full hover:bg-black/5 active:scale-[0.96] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-400 cursor-pointer"
-                      aria-label="Close modal [Esc]"
-                      title="Close [Esc]"
-                    >
-                      <X className="size-5" />
-                    </button>
+                    {!isFullScreen && (
+                      <button
+                        ref={closeButtonRef}
+                        onClick={() => {
+                          play("bloom", { volume: 0.45 });
+                          setIsFullScreen(true);
+                        }}
+                        data-cuelume-hover="tick"
+                        className="pressable p-1.5 sm:p-2 text-zinc-500 hover:text-zinc-900 rounded-full hover:bg-black/5 active:scale-[0.96] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-400 cursor-pointer"
+                        aria-label="Expand to full screen"
+                        title="Expand to full screen"
+                      >
+                        <Maximize2 className="size-5 transition-transform duration-200" />
+                      </button>
+                    )}
                   </div>
                 </div>
 
                 {/* Main Body Grid Layout: Left Vertical Navigation Minimap & Right Scroll Content */}
                 <div className="flex flex-1 overflow-hidden">
                   {/* Left Side Vertical Navigation Minimap Sidebar (Desktop) */}
-                  <aside className="hidden md:flex flex-col w-[210px] shrink-0 border-r border-black/5 p-6 justify-between bg-black/[0.015]">
-                    <div className="space-y-4">
-                      <p className="text-[11px] font-mono uppercase tracking-wider text-zinc-400 font-semibold">
-                        Navigation
-                      </p>
+                  <aside className="hidden md:flex flex-col w-[215px] shrink-0 border-r border-black/5 p-6 md:p-7 justify-between bg-black/[0.012]">
+                    <div>
+                      {/* Back button */}
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (isFullScreen) {
+                            setIsFullScreen(false);
+                            play("droplet", { volume: 0.35 });
+                          } else {
+                            handleClose();
+                          }
+                        }}
+                        data-cuelume-hover="tick"
+                        className="pressable group inline-flex items-center gap-1.5 text-xs font-mono font-medium tracking-wider text-zinc-500 hover:text-zinc-900 uppercase transition-colors cursor-pointer select-none mb-7"
+                        title={isFullScreen ? "Restore from full screen" : "Close modal"}
+                        aria-label="Back"
+                      >
+                        <ArrowLeft className="size-3.5 transition-transform duration-150 group-hover:-translate-x-0.5" />
+                        <span>BACK</span>
+                      </button>
 
-                      {/* Vertical Line Marker Navigation List */}
-                      <nav className="flex flex-col gap-1.5" aria-label="Modal section minimap navigation">
-                        {SECTIONS.map((sec) => {
-                          const isActive = activeSectionId === sec.id;
-                          const isHovered = hoveredSectionId === sec.id;
+                      {/* Clean Typography Section List with Progressive Stack Spacing */}
+                      <nav className="flex flex-col select-none py-1" aria-label="Case study section navigation">
+                        {SECTIONS.map((sec, idx) => {
+                          const activeIdx = SECTIONS.findIndex((s) => s.id === activeSectionId);
+                          const isActive = activeIdx === idx;
+                          const isPassed = idx < activeIdx;
 
                           return (
-                            <button
+                            <motion.div
                               key={sec.id}
-                              onClick={() => scrollToSection(sec.id)}
-                              onMouseEnter={() => setHoveredSectionId(sec.id)}
-                              onMouseLeave={() => setHoveredSectionId(null)}
-                              className="group flex items-center gap-3 py-1 cursor-pointer text-left focus:outline-none"
+                              layout
+                              transition={{ type: "spring", stiffness: 480, damping: 36 }}
+                              style={{
+                                marginBottom: isActive ? 18 : isPassed ? 5 : 9,
+                                marginTop: isActive && idx > 0 ? 14 : 0,
+                              }}
                             >
-                              {/* Line Marker with spring expansion */}
-                              <div className="relative flex items-center h-4 w-12 shrink-0">
-                                <motion.div
-                                  style={{ transformOrigin: "left center" }}
-                                  animate={{
-                                    scaleX: isActive ? 1 : isHovered ? 0.64 : 0.32,
-                                    backgroundColor: isActive ? "#18181b" : isHovered ? "#52525b" : "#d4d4d8",
-                                    opacity: isActive ? 1 : isHovered ? 0.85 : 0.6,
-                                  }}
-                                  transition={{ type: "spring", stiffness: 360, damping: 26 }}
-                                  className="w-11 h-[2px] rounded-full"
-                                />
-                              </div>
-
-                              {/* Section Label */}
-                              <motion.span
-                                animate={{
-                                  x: isActive ? 3 : isHovered ? 2 : 0,
-                                  color: isActive ? "#18181b" : isHovered ? "#3f3f46" : "#a1a1aa",
-                                  fontWeight: isActive ? 600 : 400,
-                                }}
-                                transition={{ duration: 0.15 }}
-                                className="text-xs font-mono tracking-tight whitespace-nowrap"
+                              <button
+                                type="button"
+                                onClick={() => scrollToSection(sec.id)}
+                                data-cuelume-hover="tick"
+                                className={`group flex items-center justify-between w-full text-left transition-colors duration-200 cursor-pointer select-none ${isActive
+                                  ? "text-zinc-950 font-semibold text-[15px]"
+                                  : isPassed
+                                    ? "text-zinc-400 text-[13px] font-normal hover:text-zinc-700"
+                                    : "text-zinc-400 text-[14px] font-normal hover:text-zinc-700"
+                                  }`}
                               >
-                                {sec.label}
-                              </motion.span>
-                            </button>
+                                <span>{sec.label}</span>
+                                {isPassed && (
+                                  <span className="text-[10px] font-mono text-zinc-300 group-hover:text-zinc-500">
+                                    ✓
+                                  </span>
+                                )}
+                              </button>
+                            </motion.div>
                           );
                         })}
                       </nav>
@@ -674,9 +747,9 @@ export function ProjectModal({
                         href={project.href}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1.5 text-xs font-sans font-medium text-blue-600 hover:text-blue-700 transition-colors pt-4 border-t border-black/5"
+                        className="inline-flex items-center gap-1.5 text-xs font-sans font-medium text-zinc-600 hover:text-zinc-900 transition-colors pt-4 border-t border-black/5"
                       >
-                        <span>Visit Site</span>
+                        <span>Visit Live Site</span>
                         <ExternalLink className="size-3" />
                       </a>
                     )}
@@ -798,31 +871,119 @@ export function ProjectModal({
                             "Implemented custom Framer Motion spring physics, OKLCH color token palettes, and subpixel optic typography scaling. Micro-interactions were tuned for zero latency and natural interruptibility."}
                         </p>
                       </div>
+
+                      <div id="sec-reflection" className="space-y-2 sm:space-y-2.5 scroll-mt-6">
+                        <h4 className="text-sm sm:text-base font-semibold text-zinc-900 font-display">
+                          04. Reflection & Impact
+                        </h4>
+                        <p className="text-xs sm:text-base leading-relaxed text-zinc-600 text-pretty">
+                          {project.impact ||
+                            "The project validated that combining tactile digital surfaces with responsive motion physics creates a memorable, physical connection with users."}
+                        </p>
+                      </div>
                     </div>
 
-                    {/* Modal Footer Bar */}
-                    <div className="flex items-center justify-between gap-3 pt-4 sm:pt-6 border-t border-black/5">
-                      {project.href && project.href !== "#" ? (
-                        <a
-                          href={project.href}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="pressable inline-flex items-center gap-1.5 sm:gap-2 px-4 sm:px-5 py-2 sm:py-2.5 rounded-full bg-zinc-900 text-white font-sans text-xs sm:text-sm font-medium hover:bg-zinc-800 shadow-sm transition-all"
-                        >
-                          <span>Visit Live Site</span>
-                          <ExternalLink className="size-3.5 sm:size-4" />
-                        </a>
-                      ) : (
-                        <div />
-                      )}
+                    {/* View Next Section ("Also check out...") */}
+                    {otherProjects.length > 0 && (
+                      <div className="pt-8 sm:pt-12 pb-4 border-t border-black/5 space-y-5 sm:space-y-6">
+                        <p className="text-zinc-500 font-sans text-sm sm:text-base font-normal tracking-tight italic">
+                          psst... here's more cool stuff...
+                        </p>
 
-                      <button
-                        onClick={handleClose}
-                        className="pressable px-4 sm:px-5 py-2 sm:py-2.5 rounded-full border border-zinc-300 text-zinc-800 font-sans text-xs sm:text-sm font-medium hover:bg-black/5 transition-colors cursor-pointer"
-                      >
-                        Close
-                      </button>
-                    </div>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 sm:gap-6">
+                          {otherProjects.map(({ project: nextP, index: nextIdx }) => {
+                            if (!nextP) return null;
+                            return (
+                              <button
+                                key={nextP._id || nextP.id || nextIdx}
+                                type="button"
+                                onClick={() => {
+                                  play("page", { volume: 0.35 });
+                                  onSelectProject?.(nextIdx);
+                                  scrollContainerRef.current?.scrollTo({ top: 0, behavior: "smooth" });
+                                }}
+                                data-cuelume-hover="ready"
+                                className="group pressable relative flex flex-col gap-2.5 items-start w-full cursor-pointer text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-400 rounded-[24px] transition-opacity duration-200 ease-out"
+                              >
+                                {/* Aspect Ratio Media Container with Home Card Hover Scale & Physics */}
+                                <div
+                                  className="content-stretch flex flex-col items-start justify-end overflow-hidden relative rounded-[20px] sm:rounded-[24px] shrink-0 w-full transition-transform duration-200 [@media(hover:hover)]:group-hover:scale-[0.99] active:scale-[0.96] motion-reduce:transition-none motion-reduce:transform-none"
+                                  style={{ transitionTimingFunction: "cubic-bezier(0.23, 1, 0.32, 1)" }}
+                                >
+                                  <div className="aspect-[16/10] relative isolate rounded-[20px] sm:rounded-[24px] shrink-0 w-full overflow-hidden bg-[#e4e4e7]">
+                                    {/* Fallback gradient */}
+                                    <div
+                                      className={`absolute inset-0 bg-gradient-to-br ${nextP.gradient || "from-zinc-200 to-zinc-300"
+                                        } transition-opacity duration-200 ease-out`}
+                                    />
+
+                                    {nextP.image && (
+                                      <Image
+                                        src={nextP.image}
+                                        alt={nextP.title}
+                                        fill
+                                        sizes="(max-width: 640px) 100vw, 360px"
+                                        className="absolute max-w-none object-cover size-full rounded-[20px] sm:rounded-[24px] transition-transform duration-200 [@media(hover:hover)]:group-hover:scale-[1.02] motion-reduce:transition-none motion-reduce:transform-none pointer-events-none z-10"
+                                        style={{ transitionTimingFunction: "cubic-bezier(0.23, 1, 0.32, 1)" }}
+                                      />
+                                    )}
+
+                                    {/* Inner border stroke overlay */}
+                                    <div
+                                      aria-hidden="true"
+                                      className="absolute border border-black/10 inset-0 pointer-events-none rounded-[20px] sm:rounded-[24px] z-20"
+                                    />
+                                  </div>
+                                </div>
+
+                                {/* Title & Year with Hover Colors */}
+                                <div className="flex items-baseline gap-1.5 px-1">
+                                  <span className="font-sans font-medium text-[#18181b] text-sm sm:text-base [@media(hover:hover)]:group-hover:text-black transition-colors duration-200">
+                                    {nextP.title}
+                                  </span>
+                                  <span className="text-[#a1a1aa] text-xs sm:text-sm font-sans font-normal [@media(hover:hover)]:group-hover:text-zinc-600 transition-colors duration-200">
+                                    • {nextP.year || "2025"}
+                                  </span>
+                                </div>
+
+                                {/* Description with Hover Slide & Contrast Shift */}
+                                {nextP.description && (
+                                  <div className="px-1 -mt-1">
+                                    <p className="font-sans text-xs sm:text-sm text-zinc-500 font-medium [@media(hover:hover)]:group-hover:text-black line-clamp-2 leading-relaxed text-pretty transition-colors duration-200">
+                                      <span
+                                        className="inline-block transition-transform duration-200 motion-reduce:transform-none [@media(hover:hover)]:group-hover:translate-x-0.5"
+                                        style={{ transitionTimingFunction: "cubic-bezier(0.23, 1, 0.32, 1)" }}
+                                      >
+                                        {nextP.description}
+                                      </span>
+                                    </p>
+                                  </div>
+                                )}
+                              </button>
+                            );
+                          })}
+                        </div>
+
+                        {/* Centered View All Projects Pill Button */}
+                        <div className="flex justify-center pt-3 pb-2">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              if (isFullScreen) {
+                                setIsFullScreen(false);
+                                play("droplet", { volume: 0.35 });
+                              } else {
+                                handleClose();
+                              }
+                            }}
+                            data-cuelume-hover="tick"
+                            className="pressable inline-flex items-center justify-center px-6 py-2 rounded-full border border-black/10 text-zinc-700 hover:text-zinc-950 hover:bg-black/5 hover:border-black/20 text-xs sm:text-sm font-sans font-medium transition-all shadow-2xs active:scale-[0.98] cursor-pointer"
+                          >
+                            View all projects
+                          </button>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
@@ -836,7 +997,8 @@ export function ProjectModal({
                     x: isFlipped ? ["-100%", "200%"] : "-100%",
                   }}
                   transition={{ duration: openDuration * 0.85, delay: openDuration * 0.25, ease: CINEMATIC_GENTLE_EASE }}
-                  className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent pointer-events-none z-40 rounded-[28px]"
+                  className={`absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent pointer-events-none z-40 transition-[border-radius] duration-500 ${isFullScreen ? "rounded-none" : "rounded-[28px]"
+                    }`}
                 />
               )}
             </motion.div>

@@ -81,7 +81,7 @@ export function Header() {
         </div>
 
         {/* Center: Navigation Bar (Bottom-centered floating dock on mobile, absolutely centered in header on desktop) */}
-        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 mb-[env(safe-area-inset-bottom,0px)] md:static md:bottom-auto md:left-auto md:translate-x-0 md:absolute md:left-1/2 md:-translate-x-1/2 flex items-center justify-center pointer-events-auto z-50">
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 mb-[env(safe-area-inset-bottom,0px)] md:absolute md:top-1/2 md:bottom-auto md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2 flex items-center justify-center pointer-events-auto z-50">
           <div className="rounded-full border border-zinc-300/70 bg-[#fbfaf5]/90 backdrop-blur-md p-1 shadow-[0_8px_30px_rgba(0,0,0,0.12),0_2px_8px_rgba(0,0,0,0.04)] md:shadow-[0_4px_20px_rgba(0,0,0,0.06)]">
             <NavigationTabs />
           </div>
