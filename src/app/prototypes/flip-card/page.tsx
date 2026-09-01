@@ -221,10 +221,10 @@ const WorkPageCard = React.forwardRef<
           prefersReducedMotion
             ? {}
             : {
-                rotateX: rotateXSpring,
-                rotateY: rotateYSpring,
-                transformStyle: "preserve-3d",
-              }
+              rotateX: rotateXSpring,
+              rotateY: rotateYSpring,
+              transformStyle: "preserve-3d",
+            }
         }
         className="content-stretch flex flex-col items-start justify-end overflow-hidden relative rounded-[26px] shrink-0 w-full transition-transform duration-200 [@media(hover:hover)]:group-hover:scale-[0.99] active:scale-[0.96]"
       >
@@ -425,38 +425,38 @@ function DynamicModalMorphOverlay({
           initial={
             prefersReducedMotion
               ? {
-                  top: target.top,
-                  left: target.left,
-                  width: target.width,
-                  height: target.height,
-                  opacity: 0,
-                  scale: 0.96,
-                  position: "fixed",
-                }
+                top: target.top,
+                left: target.left,
+                width: target.width,
+                height: target.height,
+                opacity: 0,
+                scale: 0.96,
+                position: "fixed",
+              }
               : {
-                  top: origin.top,
-                  left: origin.left,
-                  width: origin.width,
-                  height: origin.height,
-                  opacity: 1,
-                  scale: 1,
-                  position: "fixed",
-                }
+                top: origin.top,
+                left: origin.left,
+                width: origin.width,
+                height: origin.height,
+                opacity: 1,
+                scale: 1,
+                position: "fixed",
+              }
           }
           animate={
             isClosing
               ? {
-                  top: target.top,
-                  left: target.left,
-                  width: target.width,
-                  height: target.height,
-                  opacity: 0,
-                  scale: 0.90,
-                  filter: "blur(8px)",
-                  position: "fixed",
-                }
+                top: target.top,
+                left: target.left,
+                width: target.width,
+                height: target.height,
+                opacity: 0,
+                scale: 0.90,
+                filter: "blur(8px)",
+                position: "fixed",
+              }
               : prefersReducedMotion
-              ? {
+                ? {
                   top: target.top,
                   left: target.left,
                   width: target.width,
@@ -465,7 +465,7 @@ function DynamicModalMorphOverlay({
                   scale: isFlipped ? 1 : 0.96,
                   position: "fixed",
                 }
-              : {
+                : {
                   top: isFlipped ? target.top : origin.top,
                   left: isFlipped ? target.left : origin.left,
                   width: isFlipped ? target.width : origin.width,
@@ -486,8 +486,8 @@ function DynamicModalMorphOverlay({
               isClosing
                 ? initialRotation
                 : isFlipped
-                ? targetRotation
-                : initialRotation
+                  ? targetRotation
+                  : initialRotation
             }
             transition={isClosing ? { duration: closeDuration * 1.05, ease: CINEMATIC_GENTLE_EASE } : openTransition}
             style={{
@@ -1225,7 +1225,8 @@ export default function FlipCardPrototypePage() {
   return (
     <div className="min-h-screen bg-[#fbfaf5] text-zinc-800 font-sans flex flex-col justify-between selection:bg-[#c8d5bb] selection:text-zinc-900 dot-grid pb-24">
       {/* Embedded Picker Styles per PICKER.md spec verbatim */}
-      <style dangerouslySetInnerHTML={{ __html: `
+      <style dangerouslySetInnerHTML={{
+        __html: `
         .proto-picker {
           position: fixed;
           bottom: 24px;
@@ -1351,11 +1352,10 @@ export default function FlipCardPrototypePage() {
                   key={preset.label}
                   type="button"
                   onClick={() => setSpeedIndex(idx)}
-                  className={`px-2.5 py-1 rounded-full text-xs font-mono transition-all cursor-pointer ${
-                    isSelected
+                  className={`px-2.5 py-1 rounded-full text-xs font-mono transition-all cursor-pointer ${isSelected
                       ? "bg-zinc-900 text-white font-semibold shadow-sm"
                       : "bg-black/[0.04] text-zinc-600 hover:bg-black/[0.08]"
-                  }`}
+                    }`}
                 >
                   {preset.label}
                 </button>

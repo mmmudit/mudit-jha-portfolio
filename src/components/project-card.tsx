@@ -189,18 +189,15 @@ export const ProjectCard = React.forwardRef<HTMLDivElement, ProjectCardProps>(fu
                   className="inline-flex items-center ms-1.5 font-medium text-blue-500 dark:text-blue-400 [@media(hover:hover)]:group-hover:text-blue-600 dark:[@media(hover:hover)]:group-hover:text-blue-300 opacity-0 -translate-x-2 [@media(hover:hover)]:group-hover:opacity-100 [@media(hover:hover)]:group-hover:translate-x-0 transition-[opacity,transform,color] duration-200 motion-reduce:transition-none motion-reduce:transform-none pointer-events-none"
                   style={{ transitionTimingFunction: "cubic-bezier(0.23, 1, 0.32, 1)" }}
                 >
-                  <span className="me-1 font-normal opacity-60">•</span>
-                  <span>{actionText}</span>
                   <svg
-                    className="w-3.5 h-3.5 ms-1 transition-transform duration-200 motion-reduce:transform-none [@media(hover:hover)]:group-hover:translate-x-0.5"
-                    fill="none"
+                    className="w-3.5 h-3.5 transition-transform duration-200 motion-reduce:transform-none [@media(hover:hover)]:group-hover:rotate-12 mr-1 shrink-0"
                     viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    strokeWidth="2"
+                    fill="currentColor"
                     style={{ transitionTimingFunction: "cubic-bezier(0.23, 1, 0.32, 1)" }}
                   >
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                    <path d="M12 2L14.8 9.2L22 12L14.8 14.8L12 22L9.2 14.8L2 12L9.2 9.2L12 2Z" />
                   </svg>
+                  <span>{actionText}</span>
                 </span>
               )}
             </p>
@@ -225,7 +222,14 @@ export const ProjectCard = React.forwardRef<HTMLDivElement, ProjectCardProps>(fu
               {description}
               {actionText && (
                 <span className="inline-flex items-center ms-1.5 font-medium text-blue-500 dark:text-blue-400">
-                  • {actionText}
+                  <svg
+                    className="w-3.5 h-3.5 mr-1 shrink-0 inline-block"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                  >
+                    <path d="M12 2L14.8 9.2L22 12L14.8 14.8L12 22L9.2 14.8L2 12L9.2 9.2L12 2Z" />
+                  </svg>
+                  <span>{actionText}</span>
                 </span>
               )}
             </p>

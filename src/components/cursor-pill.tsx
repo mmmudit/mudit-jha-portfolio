@@ -251,9 +251,13 @@ export const CursorPill = forwardRef<CursorPillHandle>(function CursorPill(
       activeRef.current = true;
       anchorRef.current = anchor;
       boundsDirtyRef.current = false;
+      labelRef.current.textContent = label;
       pillRef.current.dataset.visible = "false";
       pillRef.current.dataset.entering = "true";
-      labelRef.current.textContent = label;
+
+      // Force reflow so initial collapsed state is registered
+      void pillRef.current.offsetWidth;
+
       pillSizeRef.current = {
         width: pillRef.current.offsetWidth,
         height: pillRef.current.offsetHeight,
@@ -266,8 +270,12 @@ export const CursorPill = forwardRef<CursorPillHandle>(function CursorPill(
       currentRef.current = { ...target };
       writePosition(target);
       setPressed(false);
-      pillRef.current.dataset.entering = "false";
-      pillRef.current.dataset.visible = "true";
+
+      requestAnimationFrame(() => {
+        if (!pillRef.current || !activeRef.current) return;
+        pillRef.current.dataset.entering = "false";
+        pillRef.current.dataset.visible = "true";
+      });
     },
     [calculateTarget, cancelFollow, hide, setPressed, writePosition],
   );
@@ -357,7 +365,19 @@ export const CursorPill = forwardRef<CursorPillHandle>(function CursorPill(
         data-entering="false"
         data-pressed="false"
       >
-        <span ref={labelRef} />
+        <span ref={labelRef} className={styles.label} />
+        <svg
+          className={styles.icon}
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          aria-hidden="true"
+        >
+          <line x1="7" y1="17" x2="17" y2="7" />
+          <polyline points="7 7 17 7 17 17" />
+        </svg>
       </div>
     </div>,
     portalTarget,
