@@ -140,6 +140,12 @@ export const project = defineType({
       description: "e.g. 'Try It Out!', 'Case Study'",
     }),
     defineField({
+      name: "cursorLabel",
+      type: "string",
+      title: "Cursor Hover Label",
+      description: "Optional fine-pointer hover label, e.g. 'View case study'",
+    }),
+    defineField({
       name: "order",
       type: "number",
       title: "Display Order",

@@ -3,6 +3,7 @@
 import React, { useState, useRef } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { ProjectCard } from "./project-card";
+import { CursorPill, type CursorPillHandle } from "./cursor-pill";
 import { ProjectModal, type ProjectData, type ActiveProjectCardState } from "./project-modal";
 import { play } from "@/lib/sound";
 
@@ -10,15 +11,44 @@ export type ProjectGridProps = {
   projects: ProjectData[];
 };
 
+const PROJECT_CURSOR_LABELS: Record<string, string> = {
+  clarity: "View case study",
+  zeno: "Open concept",
+  codequest: "Explore project",
+  uilibrary: "Play with components",
+  umend: "View hackathon",
+};
+
+function normalizeProjectKey(value: string | number | undefined) {
+  return String(value ?? "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]/g, "");
+}
+
+function getProjectCursorLabel(project: ProjectData) {
+  const customLabel = project.cursorLabel?.trim();
+  if (customLabel) return customLabel;
+
+  const projectKeys = [project.slug, project.id, project.title].map(normalizeProjectKey);
+  const requestedLabel = projectKeys
+    .map((key) => PROJECT_CURSOR_LABELS[key])
+    .find(Boolean);
+
+  return requestedLabel || project.actionText?.trim() || "View project";
+}
+
 export function ProjectGrid({ projects }: ProjectGridProps) {
   const [activeCard, setActiveCard] = useState<ActiveProjectCardState | null>(null);
   const [currentIdx, setCurrentIdx] = useState<number | null>(null);
   const [hoveredId, setHoveredId] = useState<string | number | null>(null);
   const cardRefs = useRef<Record<string, HTMLDivElement | null>>({});
+  const cursorPillRef = useRef<CursorPillHandle | null>(null);
   const reduce = useReducedMotion();
 
   const openProjectAtIndex = (index: number) => {
     if (!projects || projects.length === 0) return;
+    cursorPillRef.current?.hide();
+
     const boundedIdx = (index + projects.length) % projects.length;
     const project = projects[boundedIdx];
     const id = project._id || project.id || boundedIdx;
@@ -161,8 +191,37 @@ export function ProjectGrid({ projects }: ProjectGridProps) {
                 gradient={project.gradient}
                 href={project.href}
                 actionText={project.actionText}
+                cursorLabel={getProjectCursorLabel(project)}
                 priority={index < 2}
                 isDimmed={isDimmed}
+                onPointerEnter={(event, cursorLabel) => {
+                  if (!cursorLabel) return;
+                  cursorPillRef.current?.show({
+                    anchor: event.currentTarget,
+                    label: cursorLabel,
+                    clientX: event.clientX,
+                    clientY: event.clientY,
+                    pointerType: event.pointerType,
+                  });
+                }}
+                onPointerMove={(event) => {
+                  cursorPillRef.current?.move({
+                    clientX: event.clientX,
+                    clientY: event.clientY,
+                  });
+                }}
+                onPointerLeave={() => cursorPillRef.current?.hide()}
+                onPointerDown={(event) => {
+                  if (event.pointerType === "mouse" && event.button === 0) {
+                    cursorPillRef.current?.press();
+                  }
+                }}
+                onPointerUp={(event) => {
+                  if (event.pointerType === "mouse" && event.button === 0) {
+                    cursorPillRef.current?.release();
+                  }
+                }}
+                onPointerCancel={() => cursorPillRef.current?.hide()}
                 onMouseEnter={() => {
                   if (hoveredId !== id) {
                     play("ready", { volume: 0.35 });
@@ -183,6 +242,8 @@ export function ProjectGrid({ projects }: ProjectGridProps) {
           );
         })}
       </section>
+
+      <CursorPill ref={cursorPillRef} />
 
       {/* 3D Slow & Savory Weighted Horizon Morph Overlay */}
       <ProjectModal

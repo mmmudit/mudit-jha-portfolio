@@ -43,6 +43,7 @@ export const PROJECTS_QUERY = `*[_type == "project"] | order(order asc, _created
   gradient,
   href,
   actionText,
+  cursorLabel,
   order,
   caseStudy[]{
     _type,
@@ -121,6 +122,7 @@ export const PROJECT_BY_SLUG_QUERY = `*[_type == "project" && (slug.current == $
   gradient,
   href,
   actionText,
+  cursorLabel,
   order,
   caseStudy[]{
     _type,

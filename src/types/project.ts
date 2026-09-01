@@ -168,6 +168,7 @@ export interface Project {
   gradient?: string;
   href?: string;
   actionText?: string;
+  cursorLabel?: string;
   order?: number;
   overview?: string;
   challenge?: string;

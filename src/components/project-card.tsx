@@ -11,6 +11,7 @@ export type ProjectCardProps = {
   image?: string;
   href?: string;
   actionText?: string;
+  cursorLabel?: string;
   actionHref?: string;
   gradient?: string;
   animationDelay?: number;
@@ -22,6 +23,15 @@ export type ProjectCardProps = {
   onMouseLeave?: () => void;
   onFocus?: () => void;
   onBlur?: () => void;
+  onPointerEnter?: (
+    event: React.PointerEvent<HTMLAnchorElement>,
+    cursorLabel?: string
+  ) => void;
+  onPointerMove?: React.PointerEventHandler<HTMLAnchorElement>;
+  onPointerLeave?: React.PointerEventHandler<HTMLAnchorElement>;
+  onPointerDown?: React.PointerEventHandler<HTMLAnchorElement>;
+  onPointerUp?: React.PointerEventHandler<HTMLAnchorElement>;
+  onPointerCancel?: React.PointerEventHandler<HTMLAnchorElement>;
 };
 
 export const ProjectCard = React.forwardRef<HTMLDivElement, ProjectCardProps>(function ProjectCard({
@@ -32,6 +42,7 @@ export const ProjectCard = React.forwardRef<HTMLDivElement, ProjectCardProps>(fu
   image,
   href = "#",
   actionText,
+  cursorLabel,
   gradient = "from-zinc-200 to-zinc-300",
   animationDelay = 0,
   priority = false,
@@ -42,6 +53,12 @@ export const ProjectCard = React.forwardRef<HTMLDivElement, ProjectCardProps>(fu
   onMouseLeave,
   onFocus,
   onBlur,
+  onPointerEnter,
+  onPointerMove,
+  onPointerLeave,
+  onPointerDown,
+  onPointerUp,
+  onPointerCancel,
 }: ProjectCardProps, ref) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const [imageLoaded, setImageLoaded] = useState(false);
@@ -97,6 +114,12 @@ export const ProjectCard = React.forwardRef<HTMLDivElement, ProjectCardProps>(fu
           onMouseLeave={onMouseLeave}
           onFocus={onFocus}
           onBlur={onBlur}
+          onPointerEnter={(event) => onPointerEnter?.(event, cursorLabel)}
+          onPointerMove={onPointerMove}
+          onPointerLeave={onPointerLeave}
+          onPointerDown={onPointerDown}
+          onPointerUp={onPointerUp}
+          onPointerCancel={onPointerCancel}
           className={`project-card pressable group relative flex flex-col gap-3 items-start w-full cursor-pointer text-left focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-black/10 dark:focus-visible:ring-white/10 focus-visible:ring-offset-1 rounded-[28px] transition-opacity duration-200 ease-out ${isDimmed ? "opacity-40" : "opacity-100"
             }`}
         >

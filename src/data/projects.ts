@@ -15,6 +15,7 @@ export const CLARITY_PROJECT: Project = {
   description: "Digital wellbeing concept exploring real-time physical interventions and tactile friction to interrupt passive scrolling.",
   gradient: "from-emerald-100/80 via-teal-100/80 to-stone-200/80",
   actionText: "Case Study",
+  cursorLabel: "View case study",
   order: 1,
   heroMedia: {
     mediaType: "image",
