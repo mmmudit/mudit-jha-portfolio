@@ -91,7 +91,7 @@ export const ProjectCard = React.forwardRef<HTMLDivElement, ProjectCardProps>(fu
         className="w-full transform-gpu will-change-transform"
       >
         <Link
-          href={href}
+          href={href || "#"}
           onClick={handleClick}
           onMouseEnter={onMouseEnter}
           onMouseLeave={onMouseLeave}

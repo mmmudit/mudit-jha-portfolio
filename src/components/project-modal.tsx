@@ -14,26 +14,10 @@ import {
 import { Maximize2, Minimize2, ExternalLink, ChevronLeft, ChevronRight, ArrowLeft } from "lucide-react";
 import { play } from "@/lib/sound";
 import { ProjectCard } from "./project-card";
+import { CaseStudyRenderer } from "./case-study/CaseStudyRenderer";
+import type { Project } from "@/types/project";
 
-export type ProjectData = {
-  _id?: string;
-  id?: string | number;
-  title: string;
-  slug?: string;
-  year?: string;
-  description: string;
-  image?: string;
-  gradient?: string;
-  href?: string;
-  actionText?: string;
-  role?: string;
-  timeline?: string;
-  category?: string;
-  overview?: string;
-  challenge?: string;
-  solution?: string;
-  impact?: string;
-};
+export type ProjectData = Project;
 
 export interface CardRect {
   top: number;
@@ -60,7 +44,7 @@ export type ProjectModalProps = {
   totalCount?: number;
 };
 
-const SECTIONS = [
+const DEFAULT_SECTIONS = [
   { id: "sec-overview", label: "Overview" },
   { id: "sec-details", label: "Details" },
   { id: "sec-vision", label: "Vision" },
@@ -272,12 +256,34 @@ export function ProjectModal({
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [activeCard, handleClose, onNext, onPrev]);
 
+  const activeSections = React.useMemo(() => {
+    const currentProject = activeCard?.project;
+    if (currentProject?.caseStudy && currentProject.caseStudy.length > 0) {
+      const items: { id: string; label: string }[] = [];
+      for (const block of currentProject.caseStudy) {
+        const eyebrow = "eyebrow" in block ? block.eyebrow : undefined;
+        const heading = "heading" in block ? block.heading : undefined;
+        const blockId = block.id;
+        if (blockId && (eyebrow || heading)) {
+          let label = eyebrow || heading || "";
+          label = label.replace(/^\d+\s*[—–-]\s*/, "");
+          if (label.length > 20) {
+            label = label.slice(0, 20) + "...";
+          }
+          items.push({ id: blockId, label });
+        }
+      }
+      if (items.length > 0) return items;
+    }
+    return DEFAULT_SECTIONS;
+  }, [activeCard?.project]);
+
   // Track active section on scroll inside modal
   const handleScroll = () => {
     if (!scrollContainerRef.current) return;
     const containerTop = scrollContainerRef.current.getBoundingClientRect().top;
 
-    for (const sec of SECTIONS) {
+    for (const sec of activeSections) {
       const el = document.getElementById(sec.id);
       if (el) {
         const rect = el.getBoundingClientRect();
@@ -527,36 +533,63 @@ export function ProjectModal({
                 {/* Modal Top Header */}
                 <div className="flex items-center justify-between px-4 sm:px-6 pt-2.5 sm:pt-5 pb-3 sm:pb-4 border-b border-black/5 shrink-0 bg-[#fbfaf5] z-20">
                   <div className="flex items-center gap-1.5 sm:gap-2.5 min-w-0">
-                    <button
-                      type="button"
-                      onClick={() => {
-                        if (isFullScreen) {
-                          setIsFullScreen(false);
-                          play("droplet", { volume: 0.35 });
-                        } else {
-                          handleClose();
-                        }
+                    <AnimatePresence initial={false}>
+                      {isFullScreen && (
+                        <motion.div
+                          key="fullscreen-breadcrumb"
+                          initial={prefersReducedMotion ? { opacity: 0 } : { opacity: 0, x: -8, width: 0 }}
+                          animate={prefersReducedMotion ? { opacity: 1 } : { opacity: 1, x: 0, width: "auto" }}
+                          exit={prefersReducedMotion ? { opacity: 0 } : { opacity: 0, x: -6, width: 0 }}
+                          transition={{
+                            duration: 0.32,
+                            delay: prefersReducedMotion ? 0 : 0.58,
+                            ease: [0.23, 1, 0.32, 1],
+                          }}
+                          className="flex items-center gap-1.5 sm:gap-2.5 shrink-0 overflow-hidden"
+                        >
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setIsFullScreen(false);
+                              play("droplet", { volume: 0.35 });
+                            }}
+                            data-cuelume-hover="tick"
+                            className="pressable text-zinc-500 hover:text-zinc-900 font-display text-lg sm:text-2xl font-normal transition-colors cursor-pointer shrink-0"
+                            title="Restore from full screen"
+                            aria-label="Back to Work"
+                          >
+                            Work
+                          </button>
+
+                          <ChevronRight className="size-4 sm:size-4.5 text-zinc-400 shrink-0 stroke-[2]" aria-hidden="true" />
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+
+                    <motion.h3
+                      layout="position"
+                      transition={{
+                        duration: 0.32,
+                        delay: prefersReducedMotion ? 0 : isFullScreen ? 0.58 : 0,
+                        ease: [0.23, 1, 0.32, 1],
                       }}
-                      data-cuelume-hover="tick"
-                      className="pressable text-zinc-500 hover:text-zinc-900 font-display text-lg sm:text-2xl font-normal transition-colors cursor-pointer shrink-0"
-                      title={isFullScreen ? "Restore from full screen" : "Back to Work"}
-                      aria-label="Back to Work"
-                    >
-                      Work
-                    </button>
-
-                    <ChevronRight className="size-4 sm:size-4.5 text-zinc-400 shrink-0 stroke-[2]" aria-hidden="true" />
-
-                    <h3
                       id="modal-project-title"
                       className="font-display text-lg sm:text-2xl font-semibold text-zinc-800 tracking-tight truncate max-w-[140px] sm:max-w-none"
                     >
                       {project.title}
-                    </h3>
+                    </motion.h3>
 
-                    <span className="px-2 py-0.5 text-[10px] sm:text-xs font-mono font-medium tracking-wide uppercase bg-zinc-200/70 text-zinc-700 rounded-full shrink-0">
+                    <motion.span
+                      layout="position"
+                      transition={{
+                        duration: 0.32,
+                        delay: prefersReducedMotion ? 0 : isFullScreen ? 0.58 : 0,
+                        ease: [0.23, 1, 0.32, 1],
+                      }}
+                      className="px-2 py-0.5 text-[10px] sm:text-xs font-mono font-medium tracking-wide uppercase bg-zinc-200/70 text-zinc-700 rounded-full shrink-0"
+                    >
                       {project.year || "2025"}
-                    </span>
+                    </motion.span>
                   </div>
 
                   <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
@@ -680,30 +713,28 @@ export function ProjectModal({
                   {/* Left Side Vertical Navigation Minimap Sidebar (Desktop) */}
                   <aside className="hidden md:flex flex-col w-[215px] shrink-0 border-r border-black/5 p-6 md:p-7 justify-between bg-black/[0.012]">
                     <div>
-                      {/* Back button */}
-                      <button
-                        type="button"
-                        onClick={() => {
-                          if (isFullScreen) {
+                      {/* Back button (Only visible in full-screen expanded mode) */}
+                      {isFullScreen && (
+                        <button
+                          type="button"
+                          onClick={() => {
                             setIsFullScreen(false);
                             play("droplet", { volume: 0.35 });
-                          } else {
-                            handleClose();
-                          }
-                        }}
-                        data-cuelume-hover="tick"
-                        className="pressable group inline-flex items-center gap-1.5 text-xs font-mono font-medium tracking-wider text-zinc-500 hover:text-zinc-900 uppercase transition-colors cursor-pointer select-none mb-7"
-                        title={isFullScreen ? "Restore from full screen" : "Close modal"}
-                        aria-label="Back"
-                      >
-                        <ArrowLeft className="size-3.5 transition-transform duration-150 group-hover:-translate-x-0.5" />
-                        <span>BACK</span>
-                      </button>
+                          }}
+                          data-cuelume-hover="tick"
+                          className="pressable group inline-flex items-center gap-1.5 text-xs font-mono font-medium tracking-wider text-zinc-500 hover:text-zinc-900 uppercase transition-colors cursor-pointer select-none mb-7"
+                          title="Restore from full screen"
+                          aria-label="Back"
+                        >
+                          <ArrowLeft className="size-3.5 transition-transform duration-150 group-hover:-translate-x-0.5" />
+                          <span>BACK</span>
+                        </button>
+                      )}
 
                       {/* Clean Typography Section List with Progressive Stack Spacing */}
                       <nav className="flex flex-col select-none py-1" aria-label="Case study section navigation">
-                        {SECTIONS.map((sec, idx) => {
-                          const activeIdx = SECTIONS.findIndex((s) => s.id === activeSectionId);
+                        {activeSections.map((sec, idx) => {
+                          const activeIdx = activeSections.findIndex((s) => s.id === activeSectionId);
                           const isActive = activeIdx === idx;
                           const isPassed = idx < activeIdx;
 
@@ -761,127 +792,8 @@ export function ProjectModal({
                     onScroll={handleScroll}
                     className="flex-1 p-4 sm:p-6 md:p-8 overflow-y-auto space-y-6 sm:space-y-8 scroll-smooth overscroll-contain touch-auto"
                   >
-                    {/* Section 0: Media Preview */}
-                    <div
-                      id="sec-media"
-                      className="relative aspect-[16/9] w-full rounded-[16px] sm:rounded-[22px] overflow-hidden bg-zinc-100 border border-black/5 shadow-sm scroll-mt-6"
-                    >
-                      {project.image ? (
-                        <Image
-                          src={project.image}
-                          alt={project.title}
-                          fill
-                          className="object-cover size-full"
-                          sizes="(max-width: 768px) 100vw, 760px"
-                        />
-                      ) : (
-                        <div className={`size-full bg-gradient-to-br ${gradientPreset}`} />
-                      )}
-                    </div>
-
-                    {/* Section 1: Tagline / Subtitle */}
-                    <div id="sec-overview" className="scroll-mt-6">
-                      <p className="font-display text-base sm:text-xl font-medium leading-snug sm:leading-relaxed text-zinc-800 text-pretty">
-                        {project.description}
-                      </p>
-                    </div>
-
-                    {/* Section 2: Metadata Grid */}
-                    <div
-                      id="sec-details"
-                      className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6 pt-4 sm:pt-6 border-t border-black/5 scroll-mt-6"
-                    >
-                      <div>
-                        <p className="text-[11px] sm:text-xs font-sans font-semibold uppercase tracking-wider text-zinc-400 mb-0.5 sm:mb-1">
-                          Role
-                        </p>
-                        <p className="text-xs sm:text-sm font-sans font-medium text-zinc-800">
-                          {project.role || "Design Engineer"}
-                        </p>
-                      </div>
-
-                      <div>
-                        <p className="text-[11px] sm:text-xs font-sans font-semibold uppercase tracking-wider text-zinc-400 mb-0.5 sm:mb-1">
-                          Timeline
-                        </p>
-                        <p className="text-xs sm:text-sm font-sans font-medium text-zinc-800">
-                          {project.timeline || project.year || "2025"}
-                        </p>
-                      </div>
-
-                      <div>
-                        <p className="text-[11px] sm:text-xs font-sans font-semibold uppercase tracking-wider text-zinc-400 mb-0.5 sm:mb-1">
-                          Category
-                        </p>
-                        <p className="text-xs sm:text-sm font-sans font-medium text-zinc-800">
-                          {project.category || "Interface & System"}
-                        </p>
-                      </div>
-
-                      <div>
-                        <p className="text-[11px] sm:text-xs font-sans font-semibold uppercase tracking-wider text-zinc-400 mb-0.5 sm:mb-1">
-                          Live Link
-                        </p>
-                        {project.href && project.href !== "#" ? (
-                          <a
-                            href={project.href}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="inline-flex items-center gap-1 text-xs sm:text-sm font-sans font-medium text-blue-600 hover:text-blue-700 transition-colors"
-                          >
-                            <span>Visit Site</span>
-                            <ExternalLink className="size-3 sm:size-3.5" />
-                          </a>
-                        ) : (
-                          <span className="text-xs sm:text-sm font-sans text-zinc-400 select-none">
-                            Prototype
-                          </span>
-                        )}
-                      </div>
-                    </div>
-
-                    {/* Full Case Study Narrative Sections */}
-                    <div className="space-y-6 sm:space-y-8 pt-4 font-sans border-t border-black/5">
-                      <div id="sec-vision" className="space-y-2 sm:space-y-2.5 scroll-mt-6">
-                        <h4 className="text-sm sm:text-base font-semibold text-zinc-900 font-display">
-                          01. Overview & Vision
-                        </h4>
-                        <p className="text-xs sm:text-base leading-relaxed text-zinc-600 text-pretty">
-                          {project.overview ||
-                            `${project.title} was built to explore tactile digital surfaces and fluid spatial physics. By combining physical material feedback with modern web animation standards, it turns routine interactions into memorable moments of delight.`}
-                        </p>
-                      </div>
-
-                      <div id="sec-challenge" className="space-y-2 sm:space-y-2.5 scroll-mt-6">
-                        <h4 className="text-sm sm:text-base font-semibold text-zinc-900 font-display">
-                          02. The Design Challenge
-                        </h4>
-                        <p className="text-xs sm:text-base leading-relaxed text-zinc-600 text-pretty">
-                          {project.challenge ||
-                            "Traditional web interfaces often suffer from rigid layout transitions and generic hover states. The challenge was creating a responsive design system that feels physical, alive, and effortless across both desktop pointer devices and mobile touch viewports."}
-                        </p>
-                      </div>
-
-                      <div id="sec-execution" className="space-y-2 sm:space-y-2.5 scroll-mt-6">
-                        <h4 className="text-sm sm:text-base font-semibold text-zinc-900 font-display">
-                          03. Craft & Execution
-                        </h4>
-                        <p className="text-xs sm:text-base leading-relaxed text-zinc-600 text-pretty">
-                          {project.solution ||
-                            "Implemented custom Framer Motion spring physics, OKLCH color token palettes, and subpixel optic typography scaling. Micro-interactions were tuned for zero latency and natural interruptibility."}
-                        </p>
-                      </div>
-
-                      <div id="sec-reflection" className="space-y-2 sm:space-y-2.5 scroll-mt-6">
-                        <h4 className="text-sm sm:text-base font-semibold text-zinc-900 font-display">
-                          04. Reflection & Impact
-                        </h4>
-                        <p className="text-xs sm:text-base leading-relaxed text-zinc-600 text-pretty">
-                          {project.impact ||
-                            "The project validated that combining tactile digital surfaces with responsive motion physics creates a memorable, physical connection with users."}
-                        </p>
-                      </div>
-                    </div>
+                    {/* Render Dynamic Structured Case Study Content */}
+                    <CaseStudyRenderer project={project} />
 
                     {/* View Next Section ("Also check out...") */}
                     {otherProjects.length > 0 && (
@@ -968,14 +880,7 @@ export function ProjectModal({
                         <div className="flex justify-center pt-3 pb-2">
                           <button
                             type="button"
-                            onClick={() => {
-                              if (isFullScreen) {
-                                setIsFullScreen(false);
-                                play("droplet", { volume: 0.35 });
-                              } else {
-                                handleClose();
-                              }
-                            }}
+                            onClick={handleClose}
                             data-cuelume-hover="tick"
                             className="pressable inline-flex items-center justify-center px-6 py-2 rounded-full border border-black/10 text-zinc-700 hover:text-zinc-950 hover:bg-black/5 hover:border-black/20 text-xs sm:text-sm font-sans font-medium transition-all shadow-2xs active:scale-[0.98] cursor-pointer"
                           >

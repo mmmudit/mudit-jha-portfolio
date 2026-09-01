@@ -21,24 +21,156 @@ export const PROJECTS_QUERY = `*[_type == "project"] | order(order asc, _created
   _id,
   title,
   "slug": slug.current,
+  tagline,
   year,
   description,
-  "image": image.asset->url,
+  projectType,
+  event,
+  role,
+  team,
+  skills,
+  "image": coalesce(image.asset->url, cardThumbnail.asset->url),
+  "cardThumbnail": cardThumbnail.asset->url,
+  "cardDemo": cardDemo.asset->url,
+  heroMedia {
+    mediaType,
+    "image": image.asset->url,
+    video,
+    alt,
+    caption,
+    placeholderTitle
+  },
   gradient,
   href,
-  actionText
+  actionText,
+  order,
+  caseStudy[]{
+    _type,
+    _key,
+    eyebrow,
+    heading,
+    body,
+    subheading,
+    largeQuestion,
+    mediaType,
+    size,
+    alt,
+    caption,
+    placeholderTitle,
+    beforeLabel,
+    afterLabel,
+    "image": image.asset->url,
+    "video": video,
+    "beforeMedia": beforeMedia.asset->url,
+    "afterMedia": afterMedia.asset->url,
+    annotation {
+      text,
+      type,
+      position
+    },
+    features[]{
+      _key,
+      number,
+      title,
+      body,
+      mediaType,
+      caption,
+      placeholderTitle,
+      "image": image.asset->url,
+      "video": video
+    },
+    subsections[]{
+      _key,
+      title,
+      body,
+      placeholderTitle,
+      "media": media.asset->url
+    },
+    items[]{
+      _key,
+      number,
+      heading,
+      body
+    }
+  }
 }`;
 
 export const PROJECT_BY_SLUG_QUERY = `*[_type == "project" && (slug.current == $slug || _id == $slug)][0]{
   _id,
   title,
   "slug": slug.current,
+  tagline,
   year,
   description,
-  "image": image.asset->url,
+  projectType,
+  event,
+  role,
+  team,
+  skills,
+  "image": coalesce(image.asset->url, cardThumbnail.asset->url),
+  "cardThumbnail": cardThumbnail.asset->url,
+  "cardDemo": cardDemo.asset->url,
+  heroMedia {
+    mediaType,
+    "image": image.asset->url,
+    video,
+    alt,
+    caption,
+    placeholderTitle
+  },
   gradient,
   href,
-  actionText
+  actionText,
+  order,
+  caseStudy[]{
+    _type,
+    _key,
+    eyebrow,
+    heading,
+    body,
+    subheading,
+    largeQuestion,
+    mediaType,
+    size,
+    alt,
+    caption,
+    placeholderTitle,
+    beforeLabel,
+    afterLabel,
+    "image": image.asset->url,
+    "video": video,
+    "beforeMedia": beforeMedia.asset->url,
+    "afterMedia": afterMedia.asset->url,
+    annotation {
+      text,
+      type,
+      position
+    },
+    features[]{
+      _key,
+      number,
+      title,
+      body,
+      mediaType,
+      caption,
+      placeholderTitle,
+      "image": image.asset->url,
+      "video": video
+    },
+    subsections[]{
+      _key,
+      title,
+      body,
+      placeholderTitle,
+      "media": media.asset->url
+    },
+    items[]{
+      _key,
+      number,
+      heading,
+      body
+    }
+  }
 }`;
 
 export const BOOKS_QUERY = `*[_type == "book"] | order(order asc, _createdAt desc){
