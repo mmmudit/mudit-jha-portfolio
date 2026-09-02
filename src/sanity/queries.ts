@@ -61,6 +61,13 @@ export const PROJECTS_QUERY = `*[_type == "project"] | order(order asc, _created
   actionText,
   cursorLabel,
   order,
+  snapshot {
+    role,
+    team,
+    challenge,
+    concept
+  },
+  introParagraphs,
   metadata[]{
     _key,
     label,
@@ -75,12 +82,28 @@ export const PROJECTS_QUERY = `*[_type == "project"] | order(order asc, _created
   caseStudy[]{
     _type,
     _key,
+    id,
     eyebrow,
     heading,
     title,
     body,
     subheading,
     largeQuestion,
+    context,
+    decision,
+    why,
+    tradeoff,
+    pipeline,
+    conclusion,
+    decisionPoints[]{
+      title,
+      body
+    },
+    cards[]{
+      _key,
+      title,
+      body
+    },
     mediaType,
     figmaUrl,
     aspectRatio,
@@ -171,6 +194,13 @@ export const PROJECT_BY_SLUG_QUERY = `*[_type == "project" && (slug.current == $
   actionText,
   cursorLabel,
   order,
+  snapshot {
+    role,
+    team,
+    challenge,
+    concept
+  },
+  introParagraphs,
   metadata[]{
     _key,
     label,
@@ -185,12 +215,28 @@ export const PROJECT_BY_SLUG_QUERY = `*[_type == "project" && (slug.current == $
   caseStudy[]{
     _type,
     _key,
+    id,
     eyebrow,
     heading,
     title,
     body,
     subheading,
     largeQuestion,
+    context,
+    decision,
+    why,
+    tradeoff,
+    pipeline,
+    conclusion,
+    decisionPoints[]{
+      title,
+      body
+    },
+    cards[]{
+      _key,
+      title,
+      body
+    },
     mediaType,
     figmaUrl,
     aspectRatio,
