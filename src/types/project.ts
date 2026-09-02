@@ -146,6 +146,18 @@ export interface ProjectHeroMedia {
   placeholderTitle?: string;
 }
 
+export interface MuxVideoAsset {
+  playbackId?: string;
+  assetId?: string;
+  filename?: string;
+  thumbTime?: number;
+  status?: string;
+  data?: {
+    aspect_ratio?: string;
+    duration?: number;
+  };
+}
+
 export interface Project {
   _id?: string;
   id?: string | number;
@@ -164,6 +176,9 @@ export interface Project {
   image?: string;
   cardThumbnail?: string;
   cardDemo?: string;
+  muxVideo?: MuxVideoAsset;
+  muxPlaybackId?: string;
+  muxThumbTime?: number;
   heroMedia?: ProjectHeroMedia;
   gradient?: string;
   href?: string;

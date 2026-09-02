@@ -64,7 +64,7 @@ export const project = defineType({
     defineField({
       name: "image",
       type: "image",
-      title: "Project Card Thumbnail",
+      title: "Project Card Thumbnail (Fallback / Override)",
       options: { hotspot: true },
       fields: [
         defineField({
@@ -73,6 +73,12 @@ export const project = defineType({
           title: "Alternative Text",
         }),
       ],
+    }),
+    defineField({
+      name: "muxVideo",
+      type: "mux.video",
+      title: "Mux Video Preview (Hover & Dynamic Thumbnail)",
+      description: "Upload a video directly to Mux. Used for auto-generated high-res static thumbnails and smooth hover video previews.",
     }),
     defineField({
       name: "heroMedia",

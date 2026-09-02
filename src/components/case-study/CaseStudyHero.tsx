@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import Image from "next/image";
+import { useReducedMotion } from "framer-motion";
 import { Project } from "@/types/project";
 import { CaseStudyMetadata } from "./CaseStudyMetadata";
 
@@ -12,6 +13,7 @@ interface CaseStudyHeroProps {
 
 export function CaseStudyHero({ project, className = "" }: CaseStudyHeroProps) {
   const [imageLoaded, setImageLoaded] = useState(false);
+  const prefersReducedMotion = useReducedMotion();
   const heroMedia = project.heroMedia;
   const hasHeroMedia = Boolean(heroMedia?.image || heroMedia?.video || project.image);
   const heroImage = heroMedia?.image || project.image;
@@ -53,7 +55,7 @@ export function CaseStudyHero({ project, className = "" }: CaseStudyHeroProps) {
           heroVideo ? (
             <video
               src={heroVideo}
-              autoPlay
+              autoPlay={!prefersReducedMotion}
               muted
               playsInline
               loop
@@ -68,7 +70,7 @@ export function CaseStudyHero({ project, className = "" }: CaseStudyHeroProps) {
               priority
               sizes="(max-width: 768px) 100vw, 960px"
               onLoad={() => setImageLoaded(true)}
-              className={`object-cover transition-opacity duration-300 ${imageLoaded ? "opacity-100" : "opacity-0"}`}
+              className={`object-cover transition-all duration-300 ease-out ${imageLoaded ? "opacity-100 blur-0 scale-100" : "opacity-0 blur-[4px] scale-[1.01]"}`}
             />
           ) : null
         ) : (

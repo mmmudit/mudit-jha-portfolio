@@ -188,6 +188,8 @@ export function ProjectGrid({ projects }: ProjectGridProps) {
                 year={project.year}
                 description={project.description}
                 image={project.image}
+                muxPlaybackId={project.muxPlaybackId || project.muxVideo?.playbackId}
+                muxThumbTime={project.muxThumbTime ?? project.muxVideo?.thumbTime}
                 gradient={project.gradient}
                 href={project.href}
                 actionText={project.actionText}

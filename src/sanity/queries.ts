@@ -32,6 +32,19 @@ export const PROJECTS_QUERY = `*[_type == "project"] | order(order asc, _created
   "image": coalesce(image.asset->url, cardThumbnail.asset->url),
   "cardThumbnail": cardThumbnail.asset->url,
   "cardDemo": cardDemo.asset->url,
+  "muxVideo": muxVideo.asset->{
+    playbackId,
+    assetId,
+    filename,
+    thumbTime,
+    status,
+    data {
+      aspect_ratio,
+      duration
+    }
+  },
+  "muxPlaybackId": coalesce(muxVideo.asset->playbackId, video.asset->playbackId),
+  "muxThumbTime": coalesce(muxVideo.asset->thumbTime, video.asset->thumbTime),
   heroMedia {
     mediaType,
     "image": image.asset->url,
@@ -111,6 +124,19 @@ export const PROJECT_BY_SLUG_QUERY = `*[_type == "project" && (slug.current == $
   "image": coalesce(image.asset->url, cardThumbnail.asset->url),
   "cardThumbnail": cardThumbnail.asset->url,
   "cardDemo": cardDemo.asset->url,
+  "muxVideo": muxVideo.asset->{
+    playbackId,
+    assetId,
+    filename,
+    thumbTime,
+    status,
+    data {
+      aspect_ratio,
+      duration
+    }
+  },
+  "muxPlaybackId": coalesce(muxVideo.asset->playbackId, video.asset->playbackId),
+  "muxThumbTime": coalesce(muxVideo.asset->thumbTime, video.asset->thumbTime),
   heroMedia {
     mediaType,
     "image": image.asset->url,

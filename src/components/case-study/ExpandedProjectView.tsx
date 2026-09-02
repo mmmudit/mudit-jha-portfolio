@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { ChevronRight, ArrowLeft, ExternalLink } from "lucide-react";
 import { play } from "@/lib/sound";
 import { Project } from "@/types/project";
@@ -31,6 +31,7 @@ export function ExpandedProjectView({
   currentIndex,
 }: ExpandedProjectViewProps) {
   const router = useRouter();
+  const prefersReducedMotion = useReducedMotion();
   const [activeSectionId, setActiveSectionId] = useState("sec-overview");
   const [hoveredAvatarIdx, setHoveredAvatarIdx] = useState<number | null>(null);
 
@@ -58,7 +59,7 @@ export function ExpandedProjectView({
           let label = eyebrow || heading || "";
           label = label.replace(/^\d+\s*[—–-]\s*/, "");
           if (label.length > 20) {
-            label = label.slice(0, 20) + "...";
+            label = label.slice(0, 20) + "…";
           }
           items.push({ id: blockId, label });
         }
@@ -281,8 +282,12 @@ export function ExpandedProjectView({
                 return (
                   <motion.div
                     key={sec.id}
-                    layout
-                    transition={{ type: "spring", stiffness: 480, damping: 36 }}
+                    layout={!prefersReducedMotion}
+                    transition={
+                      prefersReducedMotion
+                        ? { duration: 0 }
+                        : { type: "spring", stiffness: 480, damping: 36 }
+                    }
                     style={{
                       marginBottom: isActive ? 18 : isPassed ? 6 : 10,
                       marginTop: isActive && idx > 0 ? 14 : 0,
@@ -292,6 +297,7 @@ export function ExpandedProjectView({
                       type="button"
                       onClick={() => scrollToSection(sec.id)}
                       data-cuelume-hover="tick"
+                      aria-current={isActive ? "true" : undefined}
                       className={`group flex items-center justify-between w-full text-left transition-colors duration-200 cursor-pointer select-none ${
                         isActive
                           ? "text-zinc-950 font-semibold text-[15px]"
@@ -300,7 +306,16 @@ export function ExpandedProjectView({
                             : "text-zinc-400 text-[14px] font-normal hover:text-zinc-700"
                       }`}
                     >
-                      <span>{sec.label}</span>
+                      <span className="flex items-center gap-2">
+                        {isActive && (
+                          <motion.span
+                            layoutId={prefersReducedMotion ? undefined : "active-section-dot"}
+                            className="size-1.5 rounded-full bg-zinc-900 shrink-0"
+                            transition={{ type: "spring", stiffness: 450, damping: 32 }}
+                          />
+                        )}
+                        <span>{sec.label}</span>
+                      </span>
                       {isPassed && (
                         <span className="text-[10px] font-mono text-zinc-300 group-hover:text-zinc-500">
                           ✓

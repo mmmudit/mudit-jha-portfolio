@@ -49,7 +49,7 @@ export function MediaBlock({ block, className = "" }: MediaBlockProps) {
                 fill
                 sizes="(max-width: 768px) 100vw, 960px"
                 onLoad={() => setImageLoaded(true)}
-                className={`object-cover transition-opacity duration-300 ${imageLoaded ? "opacity-100" : "opacity-0"}`}
+                className={`object-cover transition-all duration-300 ease-out ${imageLoaded ? "opacity-100 blur-0 scale-100" : "opacity-0 blur-[4px] scale-[1.01]"}`}
               />
             </div>
           ) : null

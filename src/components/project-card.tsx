@@ -1,7 +1,7 @@
 import React, { useRef, useState } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { motion, useScroll, useTransform, useReducedMotion } from "framer-motion";
+import { MuxHoverVideo } from "./mux-hover-video";
 
 export type ProjectCardProps = {
   title: string;
@@ -9,6 +9,8 @@ export type ProjectCardProps = {
   year?: string;
   description: string;
   image?: string;
+  muxPlaybackId?: string;
+  muxThumbTime?: number;
   href?: string;
   actionText?: string;
   cursorLabel?: string;
@@ -40,6 +42,8 @@ export const ProjectCard = React.forwardRef<HTMLDivElement, ProjectCardProps>(fu
   year = "2025",
   description,
   image,
+  muxPlaybackId,
+  muxThumbTime = 0,
   href = "#",
   actionText,
   cursorLabel,
@@ -61,7 +65,7 @@ export const ProjectCard = React.forwardRef<HTMLDivElement, ProjectCardProps>(fu
   onPointerCancel,
 }: ProjectCardProps, ref) {
   const containerRef = useRef<HTMLDivElement | null>(null);
-  const [imageLoaded, setImageLoaded] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
   const reduce = useReducedMotion();
 
   const isOdd = index % 2 !== 0;
@@ -83,6 +87,26 @@ export const ProjectCard = React.forwardRef<HTMLDivElement, ProjectCardProps>(fu
       e.preventDefault();
       onClick(e);
     }
+  };
+
+  const handleMouseEnter = () => {
+    setIsHovered(true);
+    onMouseEnter?.();
+  };
+
+  const handleMouseLeave = () => {
+    setIsHovered(false);
+    onMouseLeave?.();
+  };
+
+  const handleFocus = () => {
+    setIsHovered(true);
+    onFocus?.();
+  };
+
+  const handleBlur = () => {
+    setIsHovered(false);
+    onBlur?.();
   };
 
   return (
@@ -109,11 +133,12 @@ export const ProjectCard = React.forwardRef<HTMLDivElement, ProjectCardProps>(fu
       >
         <Link
           href={href || "#"}
+          aria-label={`${title} (${year}) — ${description}${actionText ? `. ${actionText}` : ""}`}
           onClick={handleClick}
-          onMouseEnter={onMouseEnter}
-          onMouseLeave={onMouseLeave}
-          onFocus={onFocus}
-          onBlur={onBlur}
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
+          onFocus={handleFocus}
+          onBlur={handleBlur}
           onPointerEnter={(event) => onPointerEnter?.(event, cursorLabel)}
           onPointerMove={onPointerMove}
           onPointerLeave={onPointerLeave}
@@ -129,24 +154,16 @@ export const ProjectCard = React.forwardRef<HTMLDivElement, ProjectCardProps>(fu
             style={{ transitionTimingFunction: "cubic-bezier(0.23, 1, 0.32, 1)" }}
           >
             <div className="aspect-[678/367.625] relative isolate rounded-[26px] shrink-0 w-full overflow-hidden bg-[#e4e4e7]">
-              {/* Fallback gradient / shimmer */}
-              <div
-                className={`absolute inset-0 bg-gradient-to-br ${gradient} ${imageLoaded ? "opacity-0" : "opacity-100"
-                  } transition-opacity duration-200 ease-out`}
+              {/* Dynamic Mux Hover Video & Static Thumbnail Crossfade */}
+              <MuxHoverVideo
+                playbackId={muxPlaybackId}
+                thumbTime={muxThumbTime}
+                posterImage={image}
+                alt={title}
+                isHovered={isHovered}
+                priority={priority}
+                gradient={gradient}
               />
-
-              {image && (
-                <Image
-                  src={image}
-                  alt={title}
-                  fill
-                  priority={priority}
-                  sizes="(max-width: 768px) 100vw, 50vw"
-                  onLoad={() => setImageLoaded(true)}
-                  className="absolute max-w-none object-cover size-full rounded-[26px] transition-transform duration-200 [@media(hover:hover)]:group-hover:scale-[1.02] motion-reduce:transition-none motion-reduce:transform-none pointer-events-none z-10"
-                  style={{ transitionTimingFunction: "cubic-bezier(0.23, 1, 0.32, 1)" }}
-                />
-              )}
             </div>
 
             {/* Inner border stroke overlay */}
