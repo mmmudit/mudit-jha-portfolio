@@ -1,5 +1,8 @@
+"use client";
+
 import React from "react";
 import Image from "next/image";
+import { motion, useReducedMotion } from "framer-motion";
 import { DecisionBlockItem } from "@/types/project";
 
 interface DecisionBlockProps {
@@ -8,6 +11,7 @@ interface DecisionBlockProps {
 }
 
 export function DecisionBlock({ block, className = "" }: DecisionBlockProps) {
+  const prefersReducedMotion = useReducedMotion();
   const paragraphs = Array.isArray(block.body)
     ? block.body
     : block.body

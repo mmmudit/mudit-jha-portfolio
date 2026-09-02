@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import Image from "next/image";
-import { useReducedMotion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import { Project } from "@/types/project";
 import { CaseStudyMetadata } from "./CaseStudyMetadata";
 

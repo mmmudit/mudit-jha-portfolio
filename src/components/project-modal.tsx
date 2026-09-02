@@ -385,9 +385,22 @@ export function ProjectModal({
   const { project, origin, target } = activeCard;
   const gradientPreset = project.gradient || "from-zinc-200 to-zinc-300";
 
-  // Slow & Savory Weighted Horizon Timings
-  const openDuration = 0.88;
-  const closeDuration = 0.92;
+  // Dynamic responsive target recalibrated on viewport resize with expansive reading dimensions
+  const dynamicTarget = {
+    top: Math.max(12, (viewportSize.height - Math.min(viewportSize.height <= 640 ? viewportSize.height - 24 : viewportSize.height * 0.92, 900)) / 2),
+    left: Math.max(10, (viewportSize.width - Math.min(viewportSize.width <= 640 ? viewportSize.width - 20 : viewportSize.width <= 1024 ? viewportSize.width * 0.94 : Math.min(1240, viewportSize.width * 0.92))) / 2),
+    width: Math.min(viewportSize.width <= 640 ? viewportSize.width - 20 : viewportSize.width <= 1024 ? viewportSize.width * 0.94 : Math.min(1240, viewportSize.width * 0.92)),
+    height: Math.min(viewportSize.height <= 640 ? viewportSize.height - 24 : viewportSize.height * 0.92, 900),
+  };
+
+  const currentTarget = isFullScreen
+    ? { top: 0, left: 0, width: viewportSize.width, height: viewportSize.height }
+    : (isFlipped ? dynamicTarget : target);
+
+  // Transitions-Polish: Asymmetric Horizon Flip Timings
+  // Open is an invitation (580ms weighted entrance); close gets out of the way (320ms crisp dismissal)
+  const openDuration = 0.58;
+  const closeDuration = 0.32;
 
   const openTransition = {
     duration: openDuration,
@@ -399,6 +412,26 @@ export function ProjectModal({
     ease: CINEMATIC_GENTLE_EASE,
   };
 
+  const springResizeTransition = {
+    type: "spring" as const,
+    stiffness: 380,
+    damping: 32,
+    mass: 0.8,
+  };
+
+  const modalAnimationTransition = isClosing
+    ? closeTransition
+    : isFlipped
+      ? {
+          top: springResizeTransition,
+          left: springResizeTransition,
+          width: springResizeTransition,
+          height: springResizeTransition,
+          opacity: { duration: 0.25, ease: CINEMATIC_GENTLE_EASE },
+          default: openTransition,
+        }
+      : openTransition;
+
   return createPortal(
     <div
       className="fixed inset-0 z-[99999] pointer-events-auto select-none touch-none overscroll-contain"
@@ -408,13 +441,13 @@ export function ProjectModal({
         }
       }}
     >
-      {/* Backdrop Dimmer */}
+      {/* Backdrop Dimmer (Subtly lowers background opacity, 0 blur filters) */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: isClosing ? 0 : 1 }}
-        transition={isClosing ? closeTransition : { duration: openDuration * 0.7, ease: CINEMATIC_GENTLE_EASE }}
+        transition={isClosing ? { duration: 0.22, ease: CINEMATIC_GENTLE_EASE } : { duration: openDuration * 0.7, ease: CINEMATIC_GENTLE_EASE }}
         onClick={handleClose}
-        className="fixed inset-0 bg-black/45 backdrop-blur-[3px] cursor-pointer"
+        className="fixed inset-0 bg-black/15 cursor-pointer"
         aria-hidden="true"
       />
 
@@ -431,10 +464,10 @@ export function ProjectModal({
           initial={
             prefersReducedMotion
               ? {
-                top: target.top,
-                left: target.left,
-                width: target.width,
-                height: target.height,
+                top: currentTarget.top,
+                left: currentTarget.left,
+                width: currentTarget.width,
+                height: currentTarget.height,
                 opacity: 0,
                 scale: 0.96,
                 position: "fixed",
@@ -452,36 +485,35 @@ export function ProjectModal({
           animate={
             isClosing
               ? {
-                top: isFullScreen ? 0 : target.top,
-                left: isFullScreen ? 0 : target.left,
-                width: isFullScreen ? viewportSize.width : target.width,
-                height: isFullScreen ? viewportSize.height : target.height,
+                top: currentTarget.top,
+                left: currentTarget.left,
+                width: currentTarget.width,
+                height: currentTarget.height,
                 opacity: 0,
                 scale: 0.90,
-                filter: "blur(8px)",
                 position: "fixed",
               }
               : prefersReducedMotion
                 ? {
-                  top: isFullScreen ? 0 : target.top,
-                  left: isFullScreen ? 0 : target.left,
-                  width: isFullScreen ? viewportSize.width : target.width,
-                  height: isFullScreen ? viewportSize.height : target.height,
+                  top: currentTarget.top,
+                  left: currentTarget.left,
+                  width: currentTarget.width,
+                  height: currentTarget.height,
                   opacity: isFlipped ? 1 : 0,
                   scale: isFlipped ? 1 : 0.96,
                   position: "fixed",
                 }
                 : {
-                  top: isFlipped ? (isFullScreen ? 0 : target.top) : origin.top,
-                  left: isFlipped ? (isFullScreen ? 0 : target.left) : origin.left,
-                  width: isFlipped ? (isFullScreen ? viewportSize.width : target.width) : origin.width,
-                  height: isFlipped ? (isFullScreen ? viewportSize.height : target.height) : origin.height,
+                  top: isFlipped ? currentTarget.top : origin.top,
+                  left: isFlipped ? currentTarget.left : origin.left,
+                  width: isFlipped ? currentTarget.width : origin.width,
+                  height: isFlipped ? currentTarget.height : origin.height,
                   opacity: 1,
                   scale: 1,
                   position: "fixed",
                 }
           }
-          transition={isClosing ? closeTransition : openTransition}
+          transition={modalAnimationTransition}
           onAnimationComplete={handleAnimationComplete}
           drag={isFullScreen ? false : "x"}
           dragDirectionLock
@@ -498,7 +530,7 @@ export function ProjectModal({
           {/* Left / Prev Swipe Floating Indicator (Tinder Style) */}
           <motion.div
             style={{ opacity: prevIndicatorOpacity }}
-            className="absolute -left-3 top-1/2 -translate-y-1/2 z-50 pointer-events-none px-3 py-1.5 rounded-full bg-zinc-950/90 backdrop-blur-md text-white font-mono text-xs font-semibold shadow-2xl flex items-center gap-1.5 border border-white/20 select-none"
+            className="absolute -left-3 top-1/2 -translate-y-1/2 z-50 pointer-events-none px-3 py-1.5 rounded-full bg-zinc-950/95 text-white font-mono text-xs font-semibold shadow-2xl flex items-center gap-1.5 border border-white/20 select-none"
           >
             <ChevronLeft className="size-4 text-emerald-400" />
             <span>Prev</span>
@@ -507,7 +539,7 @@ export function ProjectModal({
           {/* Right / Next Swipe Floating Indicator (Tinder Style) */}
           <motion.div
             style={{ opacity: nextIndicatorOpacity }}
-            className="absolute -right-3 top-1/2 -translate-y-1/2 z-50 pointer-events-none px-3 py-1.5 rounded-full bg-zinc-950/90 backdrop-blur-md text-white font-mono text-xs font-semibold shadow-2xl flex items-center gap-1.5 border border-white/20 select-none"
+            className="absolute -right-3 top-1/2 -translate-y-1/2 z-50 pointer-events-none px-3 py-1.5 rounded-full bg-zinc-950/95 text-white font-mono text-xs font-semibold shadow-2xl flex items-center gap-1.5 border border-white/20 select-none"
           >
             <span>Next</span>
             <ChevronRight className="size-4 text-emerald-400" />
@@ -531,12 +563,11 @@ export function ProjectModal({
             }}
             className="w-full h-full relative"
           >
-            {/* FRONT FACE (Motion Blur during flight, exact ProjectCard design) */}
+            {/* FRONT FACE (exact ProjectCard design, 0 blur) */}
             <motion.div
-              initial={{ opacity: 1, filter: "blur(0px)" }}
+              initial={{ opacity: 1 }}
               animate={{
                 opacity: isFlipped ? 0 : 1,
-                filter: isFlipped ? "blur(4px)" : "blur(0px)",
               }}
               transition={{
                 duration: prefersReducedMotion ? 0.2 : openDuration * 0.38,
@@ -578,28 +609,19 @@ export function ProjectModal({
             </motion.div>
 
             {/* BACK FACE (100% Crisp Canonical Case Study Modal) */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{
-                opacity: isFlipped ? 1 : 0,
-              }}
-              transition={{
-                duration: prefersReducedMotion ? 0.2 : openDuration * 0.45,
-                delay: prefersReducedMotion ? 0 : isFlipped ? openDuration * 0.22 : 0,
-                ease: CINEMATIC_GENTLE_EASE,
-              }}
+            <div
               style={{
                 backfaceVisibility: "hidden",
                 WebkitBackfaceVisibility: "hidden",
                 transform: prefersReducedMotion ? "none" : "rotateY(180deg)",
                 pointerEvents: isFlipped ? "auto" : "none",
               }}
-              className={`absolute inset-0 w-full h-full p-[1.5px] bg-gradient-to-br ${gradientPreset} shadow-[0_25px_60px_rgba(0,0,0,0.25)] flex flex-col overflow-hidden select-text transition-[border-radius] duration-500 ease-out ${isFullScreen ? "rounded-none" : "rounded-[22px] sm:rounded-[28px]"
+              className={`absolute inset-0 w-full h-full flex flex-col overflow-hidden select-text transition-[border-radius] duration-500 ease-out ${isFullScreen ? "rounded-none" : "rounded-[22px] sm:rounded-[28px]"
                 }`}
             >
               {/* Inner Modal Content Container */}
               <div
-                className={`relative flex flex-col size-full overflow-hidden bg-[#fbfaf5] text-zinc-800 text-left transition-[border-radius] duration-500 ease-out ${isFullScreen ? "rounded-none" : "rounded-[20.5px] sm:rounded-[26.5px]"
+                className={`relative flex flex-col size-full overflow-hidden bg-[#fbfaf5] text-zinc-800 text-left transition-[border-radius] duration-500 ease-out ${isFullScreen ? "rounded-none" : "rounded-[22px] sm:rounded-[28px]"
                   }`}
               >
                 {/* Mobile Drag Pill Handle */}
@@ -608,7 +630,7 @@ export function ProjectModal({
                 </div>
 
                 {/* Modal Top Header */}
-                <div className="relative flex items-center justify-between px-4 sm:px-6 pt-2.5 sm:pt-5 pb-3 sm:pb-4 border-b border-black/5 shrink-0 bg-[#fbfaf5] z-20">
+                <div className="relative flex items-center justify-between px-4 sm:px-6 pt-2.5 sm:pt-5 pb-3 sm:pb-4 shrink-0 bg-[#fbfaf5] z-20">
                   <div className="flex items-center gap-1.5 sm:gap-2.5 min-w-0 overflow-hidden">
                     <AnimatePresence initial={false}>
                       {isFullScreen && (
@@ -650,17 +672,17 @@ export function ProjectModal({
                         initial={
                           prefersReducedMotion
                             ? { opacity: 0 }
-                            : { opacity: 0, x: -28, filter: "blur(4px)" }
+                            : { opacity: 0, x: -20 }
                         }
                         animate={
                           prefersReducedMotion
                             ? { opacity: 1 }
-                            : { opacity: 1, x: 0, filter: "blur(0px)" }
+                            : { opacity: 1, x: 0 }
                         }
                         exit={
                           prefersReducedMotion
                             ? { opacity: 0 }
-                            : { opacity: 0, x: 22, filter: "blur(4px)" }
+                            : { opacity: 0, x: 16 }
                         }
                         transition={{
                           duration: 0.28,
@@ -686,7 +708,7 @@ export function ProjectModal({
                     {/* Caleb Wu Style Project Avatar Stack Navigation Pill */}
                     {projects && projects.length > 1 && (
                       <nav
-                        className="group/pill flex items-center gap-1 sm:gap-2.5 px-2 sm:px-3 py-1 sm:py-1.5 rounded-full bg-white/90 border border-black/10 shadow-[0_2px_12px_rgba(0,0,0,0.06)] backdrop-blur-md transition-all duration-200 select-none"
+                        className="group/pill flex items-center gap-1 sm:gap-2.5 px-2 sm:px-3 py-1 sm:py-1.5 rounded-full bg-white border border-black/10 shadow-[0_2px_12px_rgba(0,0,0,0.06)] transition-all duration-200 select-none"
                         aria-label="Project switcher"
                       >
                         {/* Status Count e.g. "1 of 6" (hidden on small mobile to fit) */}
@@ -707,10 +729,10 @@ export function ProjectModal({
                                 <AnimatePresence>
                                   {isHovered && (
                                     <motion.div
-                                      initial={{ opacity: 0, y: -4, scale: 0.96 }}
+                                      initial={{ opacity: 0, y: -4, scale: 0.98 }}
                                       animate={{ opacity: 1, y: 0, scale: 1 }}
-                                      exit={{ opacity: 0, y: -2, scale: 0.96 }}
-                                      transition={{ duration: 0.16, ease: [0.22, 1, 0.36, 1] }}
+                                      exit={{ opacity: 0, y: -2, scale: 0.98, transition: { duration: 0.12, ease: [0.22, 1, 0.36, 1] } }}
+                                      transition={{ duration: 0.15, delay: 0.08, ease: [0.22, 1, 0.36, 1] }}
                                       className="absolute top-full mt-3 z-50 pointer-events-none"
                                     >
                                       <div className="relative inline-flex items-center gap-2 px-3 py-1.5 rounded-full border-[1.5px] border-zinc-950 bg-[#fffdfa] shadow-[3px_3px_0px_#18181b] whitespace-nowrap will-change-transform select-none">
@@ -752,10 +774,10 @@ export function ProjectModal({
                                   title={`${title} [${idx + 1}]`}
                                   aria-label={`Switch to ${title}`}
                                   aria-current={isActive ? "true" : undefined}
-                                  className={`relative size-5 sm:size-[26px] rounded-full overflow-hidden border-[1.5px] border-white bg-zinc-100 transition-all duration-200 ease-out cursor-pointer ${isActive
-                                    ? "grayscale-0 opacity-100 ring-1 ring-black/10 scale-105 z-20 shadow-sm"
-                                    : "grayscale opacity-45 hover:grayscale-0 hover:opacity-100 hover:scale-115 hover:z-30"
-                                    } focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-black/10`}
+                                  className={`relative size-5 sm:size-[26px] rounded-full overflow-hidden border-[1.5px] transition-all duration-200 ease-out cursor-pointer ${isActive
+                                    ? "grayscale-0 opacity-100 border-[#c8d5bb] ring-2 ring-[#c8d5bb] scale-105 z-20 shadow-xs bg-white"
+                                    : "grayscale opacity-45 border-white bg-zinc-100 hover:grayscale-0 hover:opacity-100 hover:scale-115 hover:z-30"
+                                    } focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#c8d5bb]`}
                                 >
                                   {projectIcon ? (
                                     <Image
@@ -817,7 +839,7 @@ export function ProjectModal({
                 {/* Main Body Grid Layout: Left Vertical Navigation Minimap & Right Scroll Content */}
                 <div className="flex flex-1 overflow-hidden">
                   {/* Left Side Vertical Navigation Minimap Sidebar (Desktop) */}
-                  <aside className="hidden md:flex flex-col w-[215px] shrink-0 border-r border-black/5 p-4 sm:p-5 justify-between bg-black/[0.012] overflow-y-auto max-h-full">
+                  <aside className="hidden md:flex flex-col w-[215px] shrink-0 p-4 sm:p-6 justify-between overflow-y-auto max-h-full">
                     <div className="space-y-4">
                       {/* Back button (Only visible in full-screen expanded mode) */}
                       {isFullScreen && (
@@ -839,7 +861,7 @@ export function ProjectModal({
 
                       {/* Optical Lens Precision Motion Timeline */}
                       <nav
-                        className="relative flex flex-col gap-1.5 select-none py-1 pl-1"
+                        className="relative flex flex-col gap-2.5 sm:gap-3 select-none py-1"
                         aria-label="Case study section navigation"
                         onMouseLeave={() => setTimelineHoveredIdx(null)}
                       >
@@ -853,9 +875,8 @@ export function ProjectModal({
 
                           // Optical Gaussian lens formula
                           const lensScale = Math.max(0, 1 - distance * 0.28);
-                          const tickWidth = 4 + lensScale * 14;
-                          const fontSize = 12.5 + lensScale * 1.5;
-                          const opacity = isActive ? 1 : 0.35 + lensScale * 0.55;
+                          const fontSize = 11.5 + lensScale * 1.5;
+                          const opacity = isActive ? 1 : 0.45 + lensScale * 0.45;
 
                           return (
                             <button
@@ -864,41 +885,36 @@ export function ProjectModal({
                               onMouseEnter={() => setTimelineHoveredIdx(idx)}
                               onClick={() => scrollToSection(sec.id)}
                               data-cuelume-hover="tick"
-                              className="group flex items-center justify-between w-full text-left py-1 cursor-pointer select-none focus-visible:outline-none"
+                              className="group relative flex items-center w-full text-left py-1 cursor-pointer select-none focus-visible:outline-none"
                             >
-                              <div className="flex items-center gap-2.5 min-w-0">
-                                {/* Fisheye Magnified Tick */}
-                                <div className="w-5 flex items-center justify-start shrink-0">
+                              <div className="flex items-center gap-2 min-w-0">
+                                {/* Willow Green Square Chip Marker (■) */}
+                                <div className="w-2.5 flex items-center justify-center shrink-0">
                                   <motion.div
                                     initial={false}
                                     animate={{
-                                      width: tickWidth,
-                                      backgroundColor: isActive
-                                        ? "#37522d"
-                                        : isHovered
-                                          ? "#18181b"
-                                          : isPassed
-                                            ? "#71717a"
-                                            : "#d4d4d8",
+                                      scale: isActive ? 1 : isHovered ? 0.7 : 0,
+                                      opacity: isActive ? 1 : isHovered ? 0.6 : 0,
+                                      backgroundColor: isActive ? "#c8d5bb" : "#dce5d2",
                                     }}
                                     transition={{ type: "spring", stiffness: 480, damping: 32 }}
-                                    className="h-[2px] rounded-full"
+                                    className="size-2 rounded-[1.5px] border border-[#aebd9d]/50 shadow-2xs"
                                   />
                                 </div>
 
-                                {/* Optical Scale Typography */}
+                                {/* Optical Scale Typography (Uppercase with wide tracking) */}
                                 <motion.span
                                   animate={{
                                     fontSize: `${fontSize}px`,
                                     opacity: opacity,
-                                    x: isActive ? 2 : 0,
-                                    fontWeight: isActive ? 600 : 400,
+                                    x: isActive ? 1 : 0,
+                                    fontWeight: isActive ? 600 : 450,
                                   }}
                                   transition={{ type: "spring", stiffness: 450, damping: 30 }}
-                                  className={`truncate transition-colors duration-150 ${
+                                  className={`font-sans uppercase tracking-[0.08em] truncate transition-colors duration-150 ${
                                     isActive
-                                      ? "text-zinc-950 font-semibold"
-                                      : "text-zinc-700 group-hover:text-zinc-950"
+                                      ? "text-[#7a926d] font-semibold"
+                                      : "text-[#7f7f80] group-hover:text-zinc-800"
                                   }`}
                                 >
                                   {sec.label}
@@ -916,7 +932,7 @@ export function ProjectModal({
                         href={project.href}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1.5 text-xs font-sans font-medium text-zinc-600 hover:text-zinc-900 transition-colors pt-4 border-t border-black/5"
+                        className="inline-flex items-center gap-1.5 text-xs font-sans font-medium text-zinc-600 hover:text-zinc-900 transition-colors pt-4"
                       >
                         <span>Visit Live Site</span>
                         <ExternalLink className="size-3" />
@@ -928,14 +944,14 @@ export function ProjectModal({
                   <div
                     ref={scrollContainerRef}
                     onScroll={handleScroll}
-                    className="flex-1 p-4 sm:p-6 md:p-8 overflow-y-auto space-y-6 sm:space-y-8 scroll-smooth overscroll-contain touch-auto"
+                    className="flex-1 p-4 sm:p-7 md:p-10 lg:p-12 overflow-y-auto space-y-6 sm:space-y-8 scroll-smooth overscroll-contain touch-auto"
                   >
                     {/* Render Dynamic Structured Case Study Content */}
                     <CaseStudyRenderer project={project} />
 
                     {/* View Next Section ("Also check out...") */}
                     {otherProjects.length > 0 && (
-                      <div className="pt-8 sm:pt-12 pb-4 border-t border-black/5 space-y-5 sm:space-y-6">
+                      <div className="pt-8 sm:pt-12 pb-4 space-y-5 sm:space-y-6">
                         <p className="text-zinc-500 font-sans text-sm sm:text-base font-normal tracking-tight italic">
                           psst... here's more cool stuff...
                         </p>
@@ -1044,7 +1060,7 @@ export function ProjectModal({
                     }`}
                 />
               )}
-            </motion.div>
+            </div>
           </motion.div>
         </motion.div>
       </div>

@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import Image from "next/image";
-import { useReducedMotion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import { MediaBlockItem } from "@/types/project";
 import { HanddrawnAnnotation } from "./HanddrawnAnnotation";
 
@@ -47,7 +47,10 @@ export function MediaBlock({ block, className = "" }: MediaBlockProps) {
   const isBorderless = Boolean(block.borderless || block.removeBorder);
 
   return (
-    <figure id={block.id || block._key} className={`my-8 sm:my-12 scroll-mt-10 ${sizeClasses} ${className}`}>
+    <figure
+      id={block.id || block._key}
+      className={`my-8 sm:my-12 scroll-mt-10 ${sizeClasses} ${className}`}
+    >
       <div
         className={`relative isolate overflow-hidden ${
           isBorderless

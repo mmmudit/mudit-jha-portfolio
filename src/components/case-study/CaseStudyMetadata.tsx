@@ -19,20 +19,23 @@ export function CaseStudyMetadata({
   role = "Product Designer",
   event,
   projectType,
-  team = [],
-  skills = [],
+  team,
+  skills,
   year,
   href,
   className = "",
 }: CaseStudyMetadataProps) {
+  const safeTeam = Array.isArray(team) ? team : [];
+  const safeSkills = Array.isArray(skills) ? skills : [];
+
   // If custom metadata array is provided, use it directly (flexible 1-6 columns, default 4-grid)
   // Otherwise, construct standard 4-column metadata structure
-  const fields: ProjectMetadataItem[] = metadata && metadata.length > 0
+  const fields: ProjectMetadataItem[] = Array.isArray(metadata) && metadata.length > 0
     ? metadata
     : [
         {
           label: "ROLE",
-          value: role,
+          value: role || "Product Designer",
         },
         {
           label: "EVENT",
@@ -41,11 +44,11 @@ export function CaseStudyMetadata({
         },
         {
           label: "TEAM",
-          value: team.length > 0 ? team : "Solo",
+          value: safeTeam.length > 0 ? safeTeam : "Solo",
         },
         {
           label: "SKILLS",
-          value: skills.length > 0 ? skills : "Product Design",
+          value: safeSkills.length > 0 ? safeSkills : "Product Design",
         },
       ];
 

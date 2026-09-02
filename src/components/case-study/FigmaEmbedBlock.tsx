@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { motion, useReducedMotion } from "framer-motion";
 import { ArrowUpRight, Maximize2, ExternalLink } from "lucide-react";
 import { FigmaEmbedBlockItem } from "@/types/project";
 
@@ -12,6 +13,7 @@ interface FigmaEmbedBlockProps {
 export function FigmaEmbedBlock({ block, className = "" }: FigmaEmbedBlockProps) {
   const [isLoaded, setIsLoaded] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
+  const prefersReducedMotion = useReducedMotion();
 
   // Normalize Figma URL to safe embed URL
   const getEmbedUrl = (rawUrl?: string): string => {

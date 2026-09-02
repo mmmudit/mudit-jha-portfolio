@@ -198,7 +198,7 @@ export function ExpandedProjectView({
   return (
     <div className="w-full text-zinc-800">
       {/* Full-bleed Top Navigation Header */}
-      <header className="relative flex items-center justify-between py-4 pb-8 border-b border-black/5 shrink-0 z-20">
+      <header className="relative flex items-center justify-between py-4 pb-8 shrink-0 z-20">
         <div className="flex items-center gap-2 sm:gap-3 min-w-0">
           <Link
             href="/"
@@ -224,7 +224,7 @@ export function ExpandedProjectView({
         {/* Avatar Stack Switcher Pill */}
         {projects && projects.length > 1 && (
           <nav
-            className="group/pill flex items-center gap-1 sm:gap-2.5 px-2 sm:px-3 py-1 sm:py-1.5 rounded-full bg-white/90 border border-black/10 shadow-[0_2px_12px_rgba(0,0,0,0.06)] backdrop-blur-md transition-all duration-200 select-none"
+            className="group/pill flex items-center gap-1 sm:gap-2.5 px-2 sm:px-3 py-1 sm:py-1.5 rounded-full bg-white border border-black/10 shadow-[0_2px_12px_rgba(0,0,0,0.06)] transition-all duration-200 select-none"
             aria-label="Project switcher"
           >
             <span className="hidden sm:inline text-[12px] sm:text-[13px] font-sans font-normal text-zinc-500 tracking-tight whitespace-nowrap pl-0.5">
@@ -244,10 +244,10 @@ export function ExpandedProjectView({
                     <AnimatePresence>
                       {isHovered && (
                         <motion.div
-                          initial={{ opacity: 0, y: -4, scale: 0.96 }}
+                          initial={{ opacity: 0, y: -4, scale: 0.98 }}
                           animate={{ opacity: 1, y: 0, scale: 1 }}
-                          exit={{ opacity: 0, y: -2, scale: 0.96 }}
-                          transition={{ duration: 0.16, ease: [0.22, 1, 0.36, 1] }}
+                          exit={{ opacity: 0, y: -2, scale: 0.98, transition: { duration: 0.12, ease: [0.22, 1, 0.36, 1] } }}
+                          transition={{ duration: 0.15, delay: 0.08, ease: [0.22, 1, 0.36, 1] }}
                           className="absolute top-full mt-3 z-50 pointer-events-none"
                         >
                           <div className="relative inline-flex items-center gap-2 px-3 py-1.5 rounded-full border-[1.5px] border-zinc-950 bg-[#fffdfa] shadow-[3px_3px_0px_#18181b] whitespace-nowrap select-none">
@@ -282,11 +282,11 @@ export function ExpandedProjectView({
                       title={`${title} [${idx + 1}]`}
                       aria-label={`Switch to ${title}`}
                       aria-current={isActive ? "true" : undefined}
-                      className={`relative size-5 sm:size-[26px] rounded-full overflow-hidden border-[1.5px] border-white bg-zinc-100 transition-all duration-200 ease-out cursor-pointer ${
+                      className={`relative size-5 sm:size-[26px] rounded-full overflow-hidden border-[1.5px] transition-all duration-200 ease-out cursor-pointer ${
                         isActive
-                          ? "grayscale-0 opacity-100 ring-1 ring-black/10 scale-105 z-20 shadow-sm"
-                          : "grayscale opacity-45 hover:grayscale-0 hover:opacity-100 hover:scale-115 hover:z-30"
-                      } focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-black/10`}
+                          ? "grayscale-0 opacity-100 border-[#c8d5bb] ring-2 ring-[#c8d5bb] scale-105 z-20 shadow-xs bg-white"
+                          : "grayscale opacity-45 border-white bg-zinc-100 hover:grayscale-0 hover:opacity-100 hover:scale-115 hover:z-30"
+                      } focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#c8d5bb]`}
                     >
                       {projectIcon ? (
                         <Image
@@ -332,7 +332,7 @@ export function ExpandedProjectView({
       {/* Main Grid: Left Sticky Timeline Minimap & Right Case Study Content */}
       <div className="flex flex-col md:flex-row gap-8 lg:gap-12 pt-8 pb-16">
         {/* Left Side Sticky Timeline Sidebar */}
-        <aside className="hidden md:flex flex-col w-[200px] lg:w-[220px] shrink-0 sticky top-24 self-start justify-between py-2 pr-4 border-r border-black/5 min-h-[calc(100vh-140px)]">
+        <aside className="hidden md:flex flex-col w-[200px] lg:w-[220px] shrink-0 sticky top-24 self-start justify-between py-2 pr-4 min-h-[calc(100vh-140px)]">
           <div>
             {/* Back button */}
             <Link
@@ -348,7 +348,7 @@ export function ExpandedProjectView({
 
             {/* Optical Lens Precision Motion Timeline */}
             <nav
-              className="relative flex flex-col gap-1.5 select-none py-1 pl-1"
+              className="relative flex flex-col gap-2.5 sm:gap-3 select-none py-1"
               aria-label="Case study timeline navigation"
               onMouseLeave={() => setTimelineHoveredIdx(null)}
             >
@@ -362,9 +362,8 @@ export function ExpandedProjectView({
 
                 // Optical Gaussian lens formula
                 const lensScale = Math.max(0, 1 - distance * 0.28);
-                const tickWidth = 4 + lensScale * 14;
-                const fontSize = 12.5 + lensScale * 1.5;
-                const opacity = isActive ? 1 : 0.35 + lensScale * 0.55;
+                const fontSize = 11.5 + lensScale * 1.5;
+                const opacity = isActive ? 1 : 0.45 + lensScale * 0.45;
 
                 return (
                   <button
@@ -373,41 +372,36 @@ export function ExpandedProjectView({
                     onMouseEnter={() => setTimelineHoveredIdx(idx)}
                     onClick={() => scrollToSection(sec.id)}
                     data-cuelume-hover="tick"
-                    className="group flex items-center justify-between w-full text-left py-1 cursor-pointer select-none focus-visible:outline-none"
+                    className="group relative flex items-center w-full text-left py-1 cursor-pointer select-none focus-visible:outline-none"
                   >
-                    <div className="flex items-center gap-2.5 min-w-0">
-                      {/* Fisheye Magnified Tick */}
-                      <div className="w-5 flex items-center justify-start shrink-0">
+                    <div className="flex items-center gap-2 min-w-0">
+                      {/* Willow Green Square Chip Marker (■) */}
+                      <div className="w-2.5 flex items-center justify-center shrink-0">
                         <motion.div
                           initial={false}
                           animate={{
-                            width: tickWidth,
-                            backgroundColor: isActive
-                              ? "#37522d"
-                              : isHovered
-                                ? "#18181b"
-                                : isPassed
-                                  ? "#71717a"
-                                  : "#d4d4d8",
+                            scale: isActive ? 1 : isHovered ? 0.7 : 0,
+                            opacity: isActive ? 1 : isHovered ? 0.6 : 0,
+                            backgroundColor: isActive ? "#c8d5bb" : "#dce5d2",
                           }}
                           transition={{ type: "spring", stiffness: 480, damping: 32 }}
-                          className="h-[2px] rounded-full"
+                          className="size-2 rounded-[1.5px] border border-[#aebd9d]/50 shadow-2xs"
                         />
                       </div>
 
-                      {/* Optical Scale Typography */}
+                      {/* Optical Scale Typography (Uppercase with wide tracking) */}
                       <motion.span
                         animate={{
                           fontSize: `${fontSize}px`,
                           opacity: opacity,
-                          x: isActive ? 2 : 0,
-                          fontWeight: isActive ? 600 : 400,
+                          x: isActive ? 1 : 0,
+                          fontWeight: isActive ? 600 : 450,
                         }}
                         transition={{ type: "spring", stiffness: 450, damping: 30 }}
-                        className={`truncate transition-colors duration-150 ${
+                        className={`font-sans uppercase tracking-[0.08em] truncate transition-colors duration-150 ${
                           isActive
-                            ? "text-zinc-950 font-semibold"
-                            : "text-zinc-700 group-hover:text-zinc-950"
+                            ? "text-[#7a926d] font-semibold"
+                            : "text-[#7f7f80] group-hover:text-zinc-800"
                         }`}
                       >
                         {sec.label}
@@ -425,7 +419,7 @@ export function ExpandedProjectView({
               href={project.href}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 text-xs font-sans font-medium text-zinc-600 hover:text-zinc-900 transition-colors pt-4 border-t border-black/5"
+              className="inline-flex items-center gap-1.5 text-xs font-sans font-medium text-zinc-600 hover:text-zinc-900 transition-colors pt-4"
             >
               <span>Visit Live Site</span>
               <ExternalLink className="size-3" />

@@ -57,13 +57,13 @@ export function ProjectGrid({ projects }: ProjectGridProps) {
 
     const el = cardRefs.current[projectKey];
     const targetW = typeof window !== "undefined"
-      ? Math.min(940, window.innerWidth <= 640 ? window.innerWidth - 24 : window.innerWidth * 0.92)
-      : 940;
+      ? Math.min(1240, window.innerWidth <= 640 ? window.innerWidth - 20 : window.innerWidth <= 1024 ? window.innerWidth * 0.94 : Math.min(1240, window.innerWidth * 0.92))
+      : 1240;
     const targetH = typeof window !== "undefined"
-      ? Math.min(window.innerHeight <= 640 ? window.innerHeight - 36 : window.innerHeight * 0.88, 680)
-      : 680;
-    const targetTop = (window.innerHeight - targetH) / 2;
-    const targetLeft = (window.innerWidth - targetW) / 2;
+      ? Math.min(window.innerHeight <= 640 ? window.innerHeight - 24 : window.innerHeight * 0.92, 900)
+      : 900;
+    const targetTop = typeof window !== "undefined" ? Math.max(12, (window.innerHeight - targetH) / 2) : 50;
+    const targetLeft = typeof window !== "undefined" ? Math.max(10, (window.innerWidth - targetW) / 2) : 50;
 
     const target = {
       top: targetTop,
