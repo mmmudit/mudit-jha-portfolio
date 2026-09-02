@@ -5,6 +5,22 @@ import { ArrowLeft, ArrowUpRight, Sparkles, Layers, Folder, Maximize2 } from "lu
 
 const PROTOTYPES = [
   {
+    title: "Interactive Motion Timeline Lab",
+    slug: "timeline",
+    description: "3 distinct motion & interaction paradigms for case study navigation: Liquid Rail, Tactile Dial, and Floating Capsule with live scroll tracking.",
+    badge: "NEW",
+    icon: Sparkles,
+    href: "/prototypes/timeline",
+  },
+  {
+    title: "Intro Text Motion & Animation Lab",
+    slug: "text-animations",
+    description: "6 high-craft motion alternatives for the homepage hero: Glyph Decrypt Scramble, Word Blur Stagger, 3D Slot Cylinder, Magnetic Hover Wave, and Specular Beam.",
+    badge: "NEW",
+    icon: Sparkles,
+    href: "/prototypes/text-animations",
+  },
+  {
     title: "About Page Section Header Colors",
     slug: "about-headers",
     description: "Live color palette and contrast exploration for About page section headers and Typewriter scripts.",

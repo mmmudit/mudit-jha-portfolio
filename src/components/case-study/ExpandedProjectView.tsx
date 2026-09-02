@@ -33,6 +33,7 @@ export function ExpandedProjectView({
   const router = useRouter();
   const prefersReducedMotion = useReducedMotion();
   const [activeSectionId, setActiveSectionId] = useState("sec-overview");
+  const [timelineHoveredIdx, setTimelineHoveredIdx] = useState<number | null>(null);
   const [hoveredAvatarIdx, setHoveredAvatarIdx] = useState<number | null>(null);
 
   // Compute other projects for "Also check out..." section
@@ -47,21 +48,44 @@ export function ExpandedProjectView({
     return result;
   }, [projects, currentIndex]);
 
+  const formatSectionLabel = (str: string) => {
+    let clean = str.replace(/^\d+\s*[—–-]\s*/, "").trim();
+    if (/making the invisible visible/i.test(clean)) return "Visualizing State";
+    if (/designing beyond the app/i.test(clean)) return "Beyond The App";
+    if (/the problem/i.test(clean)) return "The Problem";
+    if (/the idea/i.test(clean)) return "The Idea";
+    if (/core experience/i.test(clean)) return "Core Experience";
+    if (/final experience/i.test(clean)) return "Final Experience";
+
+    if (clean.length > 20) {
+      clean = clean.slice(0, 20) + "...";
+    }
+    if (clean === clean.toUpperCase()) {
+      clean = clean
+        .toLowerCase()
+        .split(" ")
+        .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+        .join(" ");
+    }
+    return clean;
+  };
+
   // Derive dynamic navigation sections from case study blocks
   const activeSections = React.useMemo(() => {
     if (project.caseStudy && project.caseStudy.length > 0) {
       const items: { id: string; label: string }[] = [];
-      for (const block of project.caseStudy) {
+      for (let idx = 0; idx < project.caseStudy.length; idx++) {
+        const block = project.caseStudy[idx];
         const eyebrow = "eyebrow" in block ? block.eyebrow : undefined;
         const heading = "heading" in block ? block.heading : undefined;
-        const blockId = block.id;
+        const blockId = block.id || block._key;
+
         if (blockId && (eyebrow || heading)) {
-          let label = eyebrow || heading || "";
-          label = label.replace(/^\d+\s*[—–-]\s*/, "");
-          if (label.length > 20) {
-            label = label.slice(0, 20) + "…";
+          const rawLabel = eyebrow || heading || "";
+          const label = formatSectionLabel(rawLabel);
+          if (!items.some((i) => i.id === blockId)) {
+            items.push({ id: blockId, label });
           }
-          items.push({ id: blockId, label });
         }
       }
       if (items.length > 0) return items;
@@ -72,16 +96,34 @@ export function ExpandedProjectView({
   // Track active section on window scroll
   useEffect(() => {
     const handleScroll = () => {
+      if (activeSections.length === 0) return;
+
+      // 1. Top of page
+      if (window.scrollY < 140) {
+        setActiveSectionId(activeSections[0].id);
+        return;
+      }
+
+      // 2. Bottom of page
+      const isAtBottom = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 60;
+      if (isAtBottom) {
+        setActiveSectionId(activeSections[activeSections.length - 1].id);
+        return;
+      }
+
+      // 3. Middle sections
+      const scrollThreshold = Math.min(220, window.innerHeight * 0.35);
+      let currentActive = activeSections[0].id;
       for (const sec of activeSections) {
         const el = document.getElementById(sec.id);
         if (el) {
           const rect = el.getBoundingClientRect();
-          if (rect.top <= 200 && rect.bottom >= 100) {
-            setActiveSectionId(sec.id);
-            break;
+          if (rect.top <= scrollThreshold) {
+            currentActive = sec.id;
           }
         }
       }
+      setActiveSectionId(currentActive);
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
@@ -89,11 +131,18 @@ export function ExpandedProjectView({
   }, [activeSections]);
 
   const scrollToSection = (id: string) => {
+    if (id === activeSections[0]?.id || id === "sec-hero") {
+      play("page", { volume: 0.35 });
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      setActiveSectionId(activeSections[0]?.id || id);
+      return;
+    }
+
     const el = document.getElementById(id);
     if (el) {
       play("page", { volume: 0.35 });
-      const topOffset = el.getBoundingClientRect().top + window.scrollY - 100;
-      window.scrollTo({ top: topOffset, behavior: "smooth" });
+      const topOffset = el.getBoundingClientRect().top + window.scrollY - 80;
+      window.scrollTo({ top: Math.max(0, topOffset), behavior: "smooth" });
       setActiveSectionId(id);
     }
   };
@@ -272,57 +321,80 @@ export function ExpandedProjectView({
               <span>BACK</span>
             </Link>
 
-            {/* Typography Section List */}
-            <nav className="flex flex-col select-none py-1" aria-label="Case study timeline navigation">
+            {/* Optical Lens Precision Motion Timeline */}
+            <nav
+              className="relative flex flex-col gap-1.5 select-none py-1 pl-1"
+              aria-label="Case study timeline navigation"
+              onMouseLeave={() => setTimelineHoveredIdx(null)}
+            >
               {activeSections.map((sec, idx) => {
                 const activeIdx = activeSections.findIndex((s) => s.id === activeSectionId);
                 const isActive = activeIdx === idx;
                 const isPassed = idx < activeIdx;
+                const isHovered = timelineHoveredIdx === idx;
+                const focusIndex = timelineHoveredIdx !== null ? timelineHoveredIdx : Math.max(0, activeIdx);
+                const distance = Math.abs(idx - focusIndex);
+
+                // Optical Gaussian lens formula
+                const lensScale = Math.max(0, 1 - distance * 0.28);
+                const tickWidth = 4 + lensScale * 14;
+                const fontSize = 12.5 + lensScale * 1.5;
+                const opacity = isActive ? 1 : 0.35 + lensScale * 0.55;
 
                 return (
-                  <motion.div
+                  <button
                     key={sec.id}
-                    layout={!prefersReducedMotion}
-                    transition={
-                      prefersReducedMotion
-                        ? { duration: 0 }
-                        : { type: "spring", stiffness: 480, damping: 36 }
-                    }
-                    style={{
-                      marginBottom: isActive ? 18 : isPassed ? 6 : 10,
-                      marginTop: isActive && idx > 0 ? 14 : 0,
-                    }}
+                    type="button"
+                    onMouseEnter={() => setTimelineHoveredIdx(idx)}
+                    onClick={() => scrollToSection(sec.id)}
+                    data-cuelume-hover="tick"
+                    className="group flex items-center justify-between w-full text-left py-1 cursor-pointer select-none focus-visible:outline-none"
                   >
-                    <button
-                      type="button"
-                      onClick={() => scrollToSection(sec.id)}
-                      data-cuelume-hover="tick"
-                      aria-current={isActive ? "true" : undefined}
-                      className={`group flex items-center justify-between w-full text-left transition-colors duration-200 cursor-pointer select-none ${
-                        isActive
-                          ? "text-zinc-950 font-semibold text-[15px]"
-                          : isPassed
-                            ? "text-zinc-400 text-[13px] font-normal hover:text-zinc-700"
-                            : "text-zinc-400 text-[14px] font-normal hover:text-zinc-700"
-                      }`}
-                    >
-                      <span className="flex items-center gap-2">
-                        {isActive && (
-                          <motion.span
-                            layoutId={prefersReducedMotion ? undefined : "active-section-dot"}
-                            className="size-1.5 rounded-full bg-zinc-900 shrink-0"
-                            transition={{ type: "spring", stiffness: 450, damping: 32 }}
-                          />
-                        )}
-                        <span>{sec.label}</span>
+                    <div className="flex items-center gap-2.5 min-w-0">
+                      {/* Fisheye Magnified Tick */}
+                      <div className="w-5 flex items-center justify-start shrink-0">
+                        <motion.div
+                          initial={false}
+                          animate={{
+                            width: tickWidth,
+                            backgroundColor: isActive
+                              ? "#37522d"
+                              : isHovered
+                                ? "#18181b"
+                                : isPassed
+                                  ? "#71717a"
+                                  : "#d4d4d8",
+                          }}
+                          transition={{ type: "spring", stiffness: 480, damping: 32 }}
+                          className="h-[2px] rounded-full"
+                        />
+                      </div>
+
+                      {/* Optical Scale Typography */}
+                      <motion.span
+                        animate={{
+                          fontSize: `${fontSize}px`,
+                          opacity: opacity,
+                          x: isActive ? 2 : 0,
+                          fontWeight: isActive ? 600 : 400,
+                        }}
+                        transition={{ type: "spring", stiffness: 450, damping: 30 }}
+                        className={`truncate transition-colors duration-150 ${
+                          isActive
+                            ? "text-zinc-950 font-semibold"
+                            : "text-zinc-700 group-hover:text-zinc-950"
+                        }`}
+                      >
+                        {sec.label}
+                      </motion.span>
+                    </div>
+
+                    {isPassed && (
+                      <span className="text-[10px] font-mono text-[#37522d] font-medium shrink-0 ml-1 opacity-85">
+                        ✓
                       </span>
-                      {isPassed && (
-                        <span className="text-[10px] font-mono text-zinc-300 group-hover:text-zinc-500">
-                          ✓
-                        </span>
-                      )}
-                    </button>
-                  </motion.div>
+                    )}
+                  </button>
                 );
               })}
             </nav>
@@ -384,7 +456,7 @@ export function ExpandedProjectView({
                               alt={nextP.title}
                               fill
                               sizes="(max-width: 640px) 100vw, 360px"
-                              className="absolute max-w-none object-cover size-full rounded-[20px] sm:rounded-[24px] transition-transform duration-200 [@media(hover:hover)]:group-hover:scale-[1.02] motion-reduce:transition-none motion-reduce:transform-none pointer-events-none z-10"
+                              className="absolute max-w-none object-contain size-full rounded-[20px] sm:rounded-[24px] transition-transform duration-200 [@media(hover:hover)]:group-hover:scale-[1.02] motion-reduce:transition-none motion-reduce:transform-none pointer-events-none z-10"
                               style={{ transitionTimingFunction: "cubic-bezier(0.23, 1, 0.32, 1)" }}
                             />
                           )}

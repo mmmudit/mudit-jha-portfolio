@@ -107,71 +107,85 @@ export function MuxHoverVideo({
     }
   }, [canPlayVideo]);
 
+  const isRevealed = imageLoaded || isVideoReady;
+
   return (
-    <div className={`relative isolate size-full overflow-hidden ${className}`}>
-      {/* Background Fallback Gradient / Shimmer */}
+    <div
+      className={`t-skel ${isRevealed ? "is-revealed" : ""} relative isolate size-full overflow-hidden rounded-[26px] ${className}`}
+      data-state={isRevealed ? "revealed" : "loading"}
+    >
+      {/* 14-skeleton-reveal: Pulsing Shimmer Placeholder Layer */}
       <div
-        className={`absolute inset-0 bg-gradient-to-br ${gradient} ${
-          imageLoaded ? "opacity-0" : "opacity-100"
-        } transition-opacity duration-200 ease-out`}
-      />
+        className={`t-skel-skeleton ${isRevealed ? "" : "is-pulsing"} absolute inset-0 size-full overflow-hidden rounded-[26px] bg-[#f2f1ea]`}
+      >
+        {/* Continuous Dynamic Light-Mode Shimmer Sweep */}
+        <div className="t-skeleton absolute inset-0 size-full rounded-[26px] pointer-events-none" />
+      </div>
 
-      {/* Static Poster Thumbnail (Mux generated or uploaded asset) */}
-      {displayImage && (
-        <Image
-          src={displayImage}
-          alt={alt}
-          fill
-          priority={priority}
-          sizes="(max-width: 768px) 100vw, 50vw"
-          onLoad={() => setImageLoaded(true)}
-          className={`absolute max-w-none object-cover size-full rounded-[26px] transition-all duration-300 ease-out pointer-events-none z-10 ${
-            imageLoaded ? "opacity-100 blur-0 scale-100" : "opacity-0 blur-[4px] scale-[1.01]"
-          } [@media(hover:hover)]:group-hover:scale-[1.02] motion-reduce:transition-none motion-reduce:transform-none`}
-          style={{ transitionTimingFunction: "cubic-bezier(0.23, 1, 0.32, 1)" }}
+      {/* 14-skeleton-reveal: Loaded Media Content Layer (Smooth cross-fade + de-blur) */}
+      <div className="t-skel-content absolute inset-0 size-full overflow-hidden rounded-[26px]">
+        {/* Background Fallback Gradient */}
+        <div
+          className={`absolute inset-0 bg-gradient-to-br ${gradient} ${
+            imageLoaded ? "opacity-0" : "opacity-100"
+          } transition-opacity duration-300 ease-out`}
         />
-      )}
 
-      {/* Autoplaying Mux Video Stream with Smooth Fade-in on load */}
-      {canPlayVideo && playbackId && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{
-            opacity: isVideoReady && hasStartedPlaying ? 1 : 0,
-          }}
-          transition={{
-            duration: 0.35,
-            ease: [0.22, 1, 0.36, 1],
-          }}
-          className="absolute inset-0 size-full z-20 pointer-events-none overflow-hidden rounded-[26px]"
-        >
-          <video
-            ref={videoRef}
-            autoPlay
-            muted
-            loop
-            playsInline
-            preload="auto"
-            crossOrigin="anonymous"
-            onCanPlay={() => {
-              setIsVideoReady(true);
-            }}
-            onPlaying={() => {
-              setIsVideoReady(true);
-              setHasStartedPlaying(true);
-            }}
-            className="size-full object-cover rounded-[26px] transition-transform duration-200 [@media(hover:hover)]:group-hover:scale-[1.02] motion-reduce:transition-none motion-reduce:transform-none"
+        {/* Static Poster Thumbnail (Mux generated or uploaded asset) */}
+        {displayImage && (
+          <Image
+            src={displayImage}
+            alt={alt}
+            fill
+            priority={priority}
+            sizes="(max-width: 768px) 100vw, 50vw"
+            onLoad={() => setImageLoaded(true)}
+            className={`absolute max-w-none object-cover size-full rounded-[26px] transition-transform duration-300 ease-out pointer-events-none z-10 [@media(hover:hover)]:group-hover:scale-[1.02] motion-reduce:transition-none motion-reduce:transform-none`}
             style={{ transitionTimingFunction: "cubic-bezier(0.23, 1, 0.32, 1)" }}
-            aria-label={`${alt} video preview`}
+          />
+        )}
+
+        {/* Autoplaying Mux Video Stream with Smooth Fade-in on load */}
+        {canPlayVideo && playbackId && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{
+              opacity: isVideoReady && hasStartedPlaying ? 1 : 0,
+            }}
+            transition={{
+              duration: 0.35,
+              ease: [0.22, 1, 0.36, 1],
+            }}
+            className="absolute inset-0 size-full z-20 pointer-events-none overflow-hidden rounded-[26px]"
           >
-            {/* Native HLS stream */}
-            <source src={`https://stream.mux.com/${playbackId}.m3u8`} type="application/x-mpegURL" />
-            {/* Progressive MP4 high-res fallback */}
-            <source src={`https://stream.mux.com/${playbackId}/high.mp4`} type="video/mp4" />
-            <source src={`https://stream.mux.com/${playbackId}/medium.mp4`} type="video/mp4" />
-          </video>
-        </motion.div>
-      )}
+            <video
+              ref={videoRef}
+              autoPlay
+              muted
+              loop
+              playsInline
+              preload="auto"
+              crossOrigin="anonymous"
+              onCanPlay={() => {
+                setIsVideoReady(true);
+              }}
+              onPlaying={() => {
+                setIsVideoReady(true);
+                setHasStartedPlaying(true);
+              }}
+              className="size-full object-cover rounded-[26px] transition-transform duration-200 [@media(hover:hover)]:group-hover:scale-[1.02] motion-reduce:transition-none motion-reduce:transform-none"
+              style={{ transitionTimingFunction: "cubic-bezier(0.23, 1, 0.32, 1)" }}
+              aria-label={`${alt} video preview`}
+            >
+              {/* Native HLS stream */}
+              <source src={`https://stream.mux.com/${playbackId}.m3u8`} type="application/x-mpegURL" />
+              {/* Progressive MP4 high-res fallback */}
+              <source src={`https://stream.mux.com/${playbackId}/high.mp4`} type="video/mp4" />
+              <source src={`https://stream.mux.com/${playbackId}/medium.mp4`} type="video/mp4" />
+            </video>
+          </motion.div>
+        )}
+      </div>
     </div>
   );
 }

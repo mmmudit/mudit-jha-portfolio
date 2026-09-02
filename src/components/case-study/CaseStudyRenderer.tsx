@@ -57,7 +57,7 @@ export function CaseStudyRenderer({ project, className = "" }: CaseStudyRenderer
         /* Fallback Narrative for Legacy / Minimal Projects */
         <div className="space-y-10 font-sans border-t border-black/5 pt-6">
           {project.overview && (
-            <div className="space-y-2.5">
+            <div id="sec-overview" className="space-y-2.5 scroll-mt-8">
               <p className="font-mono text-xs font-semibold tracking-wider text-[#47585c] uppercase">
                 OVERVIEW
               </p>
@@ -71,7 +71,7 @@ export function CaseStudyRenderer({ project, className = "" }: CaseStudyRenderer
           )}
 
           {project.challenge && (
-            <div className="space-y-2.5">
+            <div id="sec-challenge" className="space-y-2.5 scroll-mt-8">
               <p className="font-mono text-xs font-semibold tracking-wider text-[#47585c] uppercase">
                 01 — THE PROBLEM
               </p>
@@ -85,7 +85,7 @@ export function CaseStudyRenderer({ project, className = "" }: CaseStudyRenderer
           )}
 
           {project.solution && (
-            <div className="space-y-2.5">
+            <div id="sec-execution" className="space-y-2.5 scroll-mt-8">
               <p className="font-mono text-xs font-semibold tracking-wider text-[#47585c] uppercase">
                 02 — THE SOLUTION
               </p>
@@ -99,7 +99,7 @@ export function CaseStudyRenderer({ project, className = "" }: CaseStudyRenderer
           )}
 
           {project.impact && (
-            <div className="space-y-2.5">
+            <div id="sec-reflection" className="space-y-2.5 scroll-mt-8">
               <p className="font-mono text-xs font-semibold tracking-wider text-[#47585c] uppercase">
                 03 — REFLECTION
               </p>

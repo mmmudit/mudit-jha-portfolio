@@ -16,7 +16,7 @@ export function ComparisonBlock({ block, className = "" }: ComparisonBlockProps)
 
   return (
     <section
-      id={block.id}
+      id={block.id || block._key}
       className={`space-y-6 sm:space-y-8 scroll-mt-10 ${className}`}
     >
       {/* Eyebrow */}
@@ -51,7 +51,7 @@ export function ComparisonBlock({ block, className = "" }: ComparisonBlockProps)
           </span>
           <div className="relative aspect-[4/3] w-full rounded-[18px] overflow-hidden bg-[#f5f4ee] border border-black/5 flex items-center justify-center p-4 text-center dot-grid">
             {block.beforeMedia ? (
-              <Image src={block.beforeMedia} alt="Before" fill className="object-cover" />
+              <Image src={block.beforeMedia} alt="Before" fill className="object-contain" />
             ) : (
               <p className="font-mono text-xs font-semibold text-zinc-600 uppercase px-3 py-1.5 rounded bg-white/80 border border-dashed border-zinc-300">
                 [ BEFORE STATE ]
@@ -67,7 +67,7 @@ export function ComparisonBlock({ block, className = "" }: ComparisonBlockProps)
           </span>
           <div className="relative aspect-[4/3] w-full rounded-[18px] overflow-hidden bg-[#f5f4ee] border border-black/5 flex items-center justify-center p-4 text-center dot-grid">
             {block.afterMedia ? (
-              <Image src={block.afterMedia} alt="After" fill className="object-cover" />
+              <Image src={block.afterMedia} alt="After" fill className="object-contain" />
             ) : (
               <p className="font-mono text-xs font-semibold text-zinc-600 uppercase px-3 py-1.5 rounded bg-white/80 border border-dashed border-zinc-300">
                 [ AFTER STATE ]

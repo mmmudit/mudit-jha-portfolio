@@ -16,7 +16,7 @@ export function DecisionBlock({ block, className = "" }: DecisionBlockProps) {
 
   return (
     <section
-      id={block.id}
+      id={block.id || block._key}
       className={`space-y-6 sm:space-y-8 scroll-mt-10 ${className}`}
     >
       {/* Eyebrow */}

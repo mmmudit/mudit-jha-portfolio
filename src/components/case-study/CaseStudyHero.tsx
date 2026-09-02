@@ -23,7 +23,7 @@ export function CaseStudyHero({ project, className = "" }: CaseStudyHeroProps) {
   const projectIdentifier = project.title.toUpperCase();
 
   return (
-    <header className={`space-y-6 sm:space-y-8 pt-2 sm:pt-4 ${className}`}>
+    <header id="sec-hero" className={`space-y-6 sm:space-y-8 pt-2 sm:pt-4 scroll-mt-6 ${className}`}>
       {/* Project Identifier + Year */}
       <div className="flex items-center gap-2.5">
         <span className="font-mono text-xs sm:text-[13px] font-semibold tracking-wider text-[#47585c] uppercase">
@@ -59,7 +59,7 @@ export function CaseStudyHero({ project, className = "" }: CaseStudyHeroProps) {
               muted
               playsInline
               loop
-              className="size-full object-cover rounded-[20px] sm:rounded-[26px]"
+              className="size-full object-contain rounded-[20px] sm:rounded-[26px]"
               aria-label={heroMedia?.alt || `${project.title} Hero Demo`}
             />
           ) : heroImage ? (
@@ -70,7 +70,7 @@ export function CaseStudyHero({ project, className = "" }: CaseStudyHeroProps) {
               priority
               sizes="(max-width: 768px) 100vw, 960px"
               onLoad={() => setImageLoaded(true)}
-              className={`object-cover transition-all duration-300 ease-out ${imageLoaded ? "opacity-100 blur-0 scale-100" : "opacity-0 blur-[4px] scale-[1.01]"}`}
+              className={`object-contain transition-all duration-300 ease-out ${imageLoaded ? "opacity-100 blur-0 scale-100" : "opacity-0 blur-[4px] scale-[1.01]"}`}
             />
           ) : null
         ) : (

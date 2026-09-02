@@ -278,10 +278,59 @@ export const DEFAULT_PROJECTS: Project[] = [
     caseStudy: [
       {
         _type: "textSection",
+        _key: "sec-overview",
+        id: "sec-overview",
         eyebrow: "OVERVIEW",
-        heading: "Exploring spatial depth and physical responsiveness",
+        heading: "Exploring spatial depth, fluid materials, and physical responsiveness.",
         body: [
-          "Designing fluid spatial interactions that respond seamlessly to eye tracking and subtle hand gestures.",
+          "Designing spatial computing experiences requires fundamentally rethinking how human intent translates into digital actions without physical contact surfaces.",
+          "We explored gesture-driven spatial ergonomics, dynamic translucency shaders, and eye-tracking target affinity models that feel effortlessly natural.",
+        ],
+      },
+      {
+        _type: "textSection",
+        _key: "sec-vision",
+        id: "sec-vision",
+        eyebrow: "01 — SPATIAL DYNAMICS",
+        heading: "Eye-tracking targeting paired with micro-pinch actuation.",
+        body: [
+          "In 2D interfaces, cursor hover provides continuous spatial feedback. In spatial computing, gaze direction acts as the preliminary selection vector while subtle hand gestures confirm intent.",
+          "We designed high-frequency visual feedback rings that expand with optical gaze settling, avoiding visual noise while maintaining clear confirmation confidence.",
+        ],
+      },
+      {
+        _type: "textSection",
+        _key: "sec-craft",
+        id: "sec-craft",
+        eyebrow: "02 — CRAFT & SYSTEM",
+        heading: "Adaptive glass materials that dynamically absorb environmental light.",
+        body: [
+          "Spatial windows cannot exist in isolated dark or light mode palettes; they exist inside real living rooms, sunlit studios, and dim train cabins.",
+          "We implemented real-time specular highlights and depth-based refraction shaders in Metal and SwiftUI to create materials that blend harmoniously with any room.",
+        ],
+      },
+      {
+        _type: "reflectionBlock",
+        _key: "sec-reflection",
+        id: "sec-reflection",
+        eyebrow: "REFLECTION",
+        heading: "Key takeaways on spatial interface design",
+        body: [
+          "Designing for spatial computing taught me that the best interactions are often the most restrained.",
+        ],
+        items: [
+          {
+            _key: "ref-apple-01",
+            number: "Takeaway 01",
+            heading: "Ergonomics dictate interaction limits",
+            body: "Interactions that require prolonged arm lifting cause rapid muscular fatigue. Micro-gestures resting on the lap must always take priority over direct mid-air reach.",
+          },
+          {
+            _key: "ref-apple-02",
+            number: "Takeaway 02",
+            heading: "Depth should guide hierarchy, not ornament",
+            body: "Z-axis layering must directly communicate semantic importance, preventing users from becoming visually overwhelmed in 3D space.",
+          },
         ],
       },
     ],
@@ -303,6 +352,59 @@ export const DEFAULT_PROJECTS: Project[] = [
     gradient: "from-sky-100/80 via-blue-100/80 to-indigo-100/80",
     href: "https://roblox.com",
     order: 3,
+    caseStudy: [
+      {
+        _type: "textSection",
+        _key: "sec-overview",
+        id: "sec-overview",
+        eyebrow: "OVERVIEW",
+        heading: "Connecting millions of players through expressive, seamless in-game communication.",
+        body: [
+          "With over 70 million daily active creators and players worldwide, social interaction in Roblox spans across phone, tablet, console, and VR devices.",
+          "Our mission was to streamline real-time party voice channels, contextual emotes, and friend matchmaking into an intuitive, non-intrusive game HUD.",
+        ],
+      },
+      {
+        _type: "textSection",
+        _key: "sec-challenge",
+        id: "sec-challenge",
+        eyebrow: "01 — THE CHALLENGE",
+        heading: "Screen real estate is scarce during fast-paced 3D multiplayer action.",
+        body: [
+          "Players cannot afford to stop moving or looking around to navigate dense chat menus or voice settings while in a competitive match.",
+          "We needed a radial, gesture-accessible interaction pattern that could be activated and dismissed within 200 milliseconds on touchscreens and gamepads alike.",
+        ],
+      },
+      {
+        _type: "textSection",
+        _key: "sec-solution",
+        id: "sec-solution",
+        eyebrow: "02 — THE SOLUTION",
+        heading: "Spatial audio proximity rings and flick-based quick communication.",
+        body: [
+          "We engineered an ambient HUD widget that visualizes party member proximity and voice volume levels through subtle organic sound ripples on the peripheral edge of the viewport.",
+          "Players can swipe outward to trigger contextual voice reactions without ever obscuring the core game viewport.",
+        ],
+      },
+      {
+        _type: "reflectionBlock",
+        _key: "sec-reflection",
+        id: "sec-reflection",
+        eyebrow: "REFLECTION",
+        heading: "Designing for massive cross-platform scale",
+        body: [
+          "Building communication primitives for global players required strict performance budgeting and multi-modal input testing.",
+        ],
+        items: [
+          {
+            _key: "ref-roblox-01",
+            number: "Insight 01",
+            heading: "Latency sensitivity in social gestures",
+            body: "Social reactions must render instantly across networked clients to feel authentic and synchronized with live gameplay.",
+          },
+        ],
+      },
+    ],
   },
   {
     _id: "project-polaroid-studio",
@@ -322,6 +424,58 @@ export const DEFAULT_PROJECTS: Project[] = [
     gradient: "from-amber-100/80 via-orange-100/80 to-yellow-100/80",
     href: "#",
     order: 4,
+    caseStudy: [
+      {
+        _type: "textSection",
+        _key: "sec-overview",
+        id: "sec-overview",
+        eyebrow: "OVERVIEW",
+        heading: "Bringing the physical magic and tactile chemistry of analog instant film to the browser.",
+        body: [
+          "Digital photography gives us infinite, clinical perfection. Polaroid Studio explores the nostalgia and emotional weight of analog film through real-time WebGL post-processing shaders.",
+          "Users can capture photos, watch chemical dye diffusion develop live across 90 seconds, and collect photos in tactile 3D albums.",
+        ],
+      },
+      {
+        _type: "textSection",
+        _key: "sec-shaders",
+        id: "sec-shaders",
+        eyebrow: "01 — SHADER ARCHITECTURE",
+        heading: "Simulating grain, halation, and chemical dye diffusion in GLSL.",
+        body: [
+          "Rather than applying simple CSS color filters, we developed custom fragment shaders that model authentic light scatter across photographic silver halide crystals.",
+          "High-exposure highlights bleed with characteristic warm halation, while dye layers develop non-linearly over time based on simulated ambient temperature.",
+        ],
+      },
+      {
+        _type: "textSection",
+        _key: "sec-tactile",
+        id: "sec-tactile",
+        eyebrow: "02 — TACTILE PHYSICS",
+        heading: "3D draggable photo cards with realistic momentum and cardboard texture.",
+        body: [
+          "Using React Three Fiber and Rapier physics, developed photos eject with mechanical sound synthesis and can be shaken, dragged, stacked, and pinned onto an interactive corkboard.",
+        ],
+      },
+      {
+        _type: "reflectionBlock",
+        _key: "sec-reflection",
+        id: "sec-reflection",
+        eyebrow: "REFLECTION",
+        heading: "Lessons from tactile software design",
+        body: [
+          "Combining GPU shaders with web physics demonstrated how digital artifacts can evoke genuine nostalgia when crafted with physical fidelity.",
+        ],
+        items: [
+          {
+            _key: "ref-polaroid-01",
+            number: "Reflection 01",
+            heading: "Deliberate delay as a feature",
+            body: "In an era of instantaneous results, forcing users to wait 60 seconds to watch their photo develop created anticipation, appreciation, and emotional attachment.",
+          },
+        ],
+      },
+    ],
   },
   {
     _id: "project-screentime-receipt",
@@ -341,6 +495,48 @@ export const DEFAULT_PROJECTS: Project[] = [
     gradient: "from-stone-200/80 via-zinc-200/80 to-neutral-300/80",
     href: "#",
     order: 5,
+    caseStudy: [
+      {
+        _type: "textSection",
+        _key: "sec-overview",
+        id: "sec-overview",
+        eyebrow: "OVERVIEW",
+        heading: "Transforming abstract screen-time metrics into tangible financial receipts of human attention.",
+        body: [
+          "Screen-time dashboards often feel sterile and easily dismissed. Screentime Receipt translates hours spent on algorithms into a printed grocery receipt, itemizing apps as 'purchased goods' and attention as 'currency spent'.",
+          "Generated receipts feature authentic 1-bit thermal printer dithering, jagged paper tears, and barcode timestamps.",
+        ],
+      },
+      {
+        _type: "textSection",
+        _key: "sec-canvas",
+        id: "sec-canvas",
+        eyebrow: "01 — GENERATIVE CANVAS",
+        heading: "High-DPI Canvas rendering with Floyd-Steinberg dithering algorithms.",
+        body: [
+          "To replicate the authentic grain of 203 DPI receipt printers, we implemented Floyd-Steinberg error diffusion in pure TypeScript directly onto an HTML5 Canvas.",
+          "Users can customize itemized tax rates ('Brain Rot Tax: 14.5%') and download high-res vector receipts ready for sharing.",
+        ],
+      },
+      {
+        _type: "reflectionBlock",
+        _key: "sec-reflection",
+        id: "sec-reflection",
+        eyebrow: "REFLECTION",
+        heading: "The power of physical metaphors in data literacy",
+        body: [
+          "Translating abstract data into universally understood physical artifacts dramatically alters human perception and emotional resonance.",
+        ],
+        items: [
+          {
+            _key: "ref-receipt-01",
+            number: "Insight 01",
+            heading: "Metaphors provoke reflection",
+            body: "Framing attention as a non-refundable financial transaction made people immediately reassess how they spend their unstructured moments.",
+          },
+        ],
+      },
+    ],
   },
   {
     _id: "project-film-diary",
@@ -360,6 +556,46 @@ export const DEFAULT_PROJECTS: Project[] = [
     gradient: "from-emerald-100/80 via-teal-100/80 to-cyan-100/80",
     href: "#",
     order: 6,
+    caseStudy: [
+      {
+        _type: "textSection",
+        _key: "sec-overview",
+        id: "sec-overview",
+        eyebrow: "OVERVIEW",
+        heading: "A dedicated catalog for cinephiles, directors, and colorists to dissect film compositions.",
+        body: [
+          "Film Diary allows filmmakers to upload cinematic stills, automatically extract dominant OKLCH color palettes, and catalog lighting ratios, lenses, and aspect ratios.",
+        ],
+      },
+      {
+        _type: "textSection",
+        _key: "sec-color",
+        id: "sec-color",
+        eyebrow: "01 — COLOR SCIENCE",
+        heading: "Perceptually uniform color clustering with K-Means in OKLCH color space.",
+        body: [
+          "Standard RGB clustering frequently misrepresents perceived color harmony. We implemented K-Means clustering in OKLCH space, preserving chroma relationships and luminance steps true to human vision.",
+        ],
+      },
+      {
+        _type: "reflectionBlock",
+        _key: "sec-reflection",
+        id: "sec-reflection",
+        eyebrow: "REFLECTION",
+        heading: "Building specialized creative workflows",
+        body: [
+          "Designing tools for domain experts requires deep respect for craft nuances like 2.39:1 anamorphic framing and film stock color science.",
+        ],
+        items: [
+          {
+            _key: "ref-film-01",
+            number: "Takeaway 01",
+            heading: "Color precision matters",
+            body: "Integrating modern CSS Color Level 4 tokens ensured that extracted swatches look vibrant on Display P3 screens without clipping.",
+          },
+        ],
+      },
+    ],
   },
   {
     _id: "project-canvas-os",
@@ -379,5 +615,45 @@ export const DEFAULT_PROJECTS: Project[] = [
     gradient: "from-violet-100/80 via-purple-100/80 to-fuchsia-100/80",
     href: "#",
     order: 7,
+    caseStudy: [
+      {
+        _type: "textSection",
+        _key: "sec-overview",
+        id: "sec-overview",
+        eyebrow: "OVERVIEW",
+        heading: "Rethinking the operating system desktop as an infinite, physics-enabled thinking canvas.",
+        body: [
+          "Traditional desktop window managers force thoughts into rigid overlapping rectangles. Canvas OS treats windows as spatial cards with mass, friction, and magnetic grouping.",
+        ],
+      },
+      {
+        _type: "textSection",
+        _key: "sec-physics",
+        id: "sec-physics",
+        eyebrow: "01 — PHYSICS ENGINE",
+        heading: "Spring physics with gesture velocity inheritance and inertia.",
+        body: [
+          "Every window card reacts to cursor flick velocity and bounces off boundary margins with spring kinematics (`stiffness: 400, damping: 28`), making window organization feel tactile and alive.",
+        ],
+      },
+      {
+        _type: "reflectionBlock",
+        _key: "sec-reflection",
+        id: "sec-reflection",
+        eyebrow: "REFLECTION",
+        heading: "The future of spatial desktop environments",
+        body: [
+          "Physical affordances turn window management from a chore into a delightful, expressive cognitive playground.",
+        ],
+        items: [
+          {
+            _key: "ref-canvas-01",
+            number: "Insight 01",
+            heading: "Spatial memory is powerful",
+            body: "Users remember where they flung an idea in 2D space far better than digging through nested folder hierarchies.",
+          },
+        ],
+      },
+    ],
   },
 ];

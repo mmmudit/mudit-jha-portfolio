@@ -76,6 +76,7 @@ export function ProjectModal({
   });
   const [activeSectionId, setActiveSectionId] = useState("sec-overview");
   const [hoveredSectionId, setHoveredSectionId] = useState<string | null>(null);
+  const [timelineHoveredIdx, setTimelineHoveredIdx] = useState<number | null>(null);
   const [hoveredAvatarIdx, setHoveredAvatarIdx] = useState<number | null>(null);
 
   const modalRef = useRef<HTMLDivElement>(null);
@@ -186,6 +187,15 @@ export function ProjectModal({
     };
   }, [activeCard]);
 
+  // Clean scroll position & section reset when switching projects
+  const activeProjectId = activeCard?.project?._id || activeCard?.project?.id || activeCard?.project?.slug || activeCard?.project?.title;
+  useEffect(() => {
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.scrollTop = 0;
+    }
+    setActiveSectionId("sec-overview");
+  }, [activeProjectId]);
+
   const handleClose = useCallback(() => {
     if (isClosing) return;
     setIsClosing(true);
@@ -256,21 +266,44 @@ export function ProjectModal({
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [activeCard, handleClose, onNext, onPrev]);
 
+  const formatSectionLabel = (str: string) => {
+    let clean = str.replace(/^\d+\s*[—–-]\s*/, "").trim();
+    if (/making the invisible visible/i.test(clean)) return "Visualizing State";
+    if (/designing beyond the app/i.test(clean)) return "Beyond The App";
+    if (/the problem/i.test(clean)) return "The Problem";
+    if (/the idea/i.test(clean)) return "The Idea";
+    if (/core experience/i.test(clean)) return "Core Experience";
+    if (/final experience/i.test(clean)) return "Final Experience";
+
+    if (clean.length > 20) {
+      clean = clean.slice(0, 20) + "...";
+    }
+    if (clean === clean.toUpperCase()) {
+      clean = clean
+        .toLowerCase()
+        .split(" ")
+        .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+        .join(" ");
+    }
+    return clean;
+  };
+
   const activeSections = React.useMemo(() => {
     const currentProject = activeCard?.project;
     if (currentProject?.caseStudy && currentProject.caseStudy.length > 0) {
       const items: { id: string; label: string }[] = [];
-      for (const block of currentProject.caseStudy) {
+      for (let idx = 0; idx < currentProject.caseStudy.length; idx++) {
+        const block = currentProject.caseStudy[idx];
         const eyebrow = "eyebrow" in block ? block.eyebrow : undefined;
         const heading = "heading" in block ? block.heading : undefined;
-        const blockId = block.id;
+        const blockId = block.id || block._key;
+
         if (blockId && (eyebrow || heading)) {
-          let label = eyebrow || heading || "";
-          label = label.replace(/^\d+\s*[—–-]\s*/, "");
-          if (label.length > 20) {
-            label = label.slice(0, 20) + "...";
+          const rawLabel = eyebrow || heading || "";
+          const label = formatSectionLabel(rawLabel);
+          if (!items.some((i) => i.id === blockId)) {
+            items.push({ id: blockId, label });
           }
-          items.push({ id: blockId, label });
         }
       }
       if (items.length > 0) return items;
@@ -278,29 +311,61 @@ export function ProjectModal({
     return DEFAULT_SECTIONS;
   }, [activeCard?.project]);
 
-  // Track active section on scroll inside modal
+  // Accurate, synced active section detection during container scrolling
   const handleScroll = () => {
-    if (!scrollContainerRef.current) return;
-    const containerTop = scrollContainerRef.current.getBoundingClientRect().top;
+    const container = scrollContainerRef.current;
+    if (!container || activeSections.length === 0) return;
 
+    // 1. If at or near top of modal, activate the first section
+    if (container.scrollTop < 120) {
+      setActiveSectionId(activeSections[0].id);
+      return;
+    }
+
+    // 2. If at bottom of modal, activate the last section
+    const isAtBottom = container.scrollHeight - container.scrollTop <= container.clientHeight + 60;
+    if (isAtBottom) {
+      setActiveSectionId(activeSections[activeSections.length - 1].id);
+      return;
+    }
+
+    // 3. Check section positions relative to upper portion of modal
+    const containerRect = container.getBoundingClientRect();
+    const threshold = Math.min(180, containerRect.height * 0.32);
+
+    let currentActive = activeSections[0].id;
     for (const sec of activeSections) {
       const el = document.getElementById(sec.id);
       if (el) {
-        const rect = el.getBoundingClientRect();
-        const relativeTop = rect.top - containerTop;
-        if (relativeTop <= 120 && relativeTop + rect.height > 20) {
-          setActiveSectionId(sec.id);
-          break;
+        const elRect = el.getBoundingClientRect();
+        const relativeTop = elRect.top - containerRect.top;
+        if (relativeTop <= threshold) {
+          currentActive = sec.id;
         }
       }
     }
+    setActiveSectionId(currentActive);
   };
 
   const scrollToSection = (id: string) => {
-    const el = document.getElementById(id);
-    if (el && scrollContainerRef.current) {
+    const container = scrollContainerRef.current;
+    if (!container) return;
+
+    // If clicking first section or Overview, scroll directly to the top to see the hero & intro
+    if (id === activeSections[0]?.id || id === "sec-hero") {
       play("page", { volume: 0.35 });
-      el.scrollIntoView({ behavior: "smooth", block: "start" });
+      container.scrollTo({ top: 0, behavior: "smooth" });
+      setActiveSectionId(activeSections[0]?.id || id);
+      return;
+    }
+
+    const el = document.getElementById(id);
+    if (el) {
+      play("page", { volume: 0.35 });
+      const containerRect = container.getBoundingClientRect();
+      const elRect = el.getBoundingClientRect();
+      const targetScrollTop = container.scrollTop + (elRect.top - containerRect.top) - 20;
+      container.scrollTo({ top: Math.max(0, targetScrollTop), behavior: "smooth" });
       setActiveSectionId(id);
     }
   };
@@ -534,7 +599,7 @@ export function ProjectModal({
 
                 {/* Modal Top Header */}
                 <div className="flex items-center justify-between px-4 sm:px-6 pt-2.5 sm:pt-5 pb-3 sm:pb-4 border-b border-black/5 shrink-0 bg-[#fbfaf5] z-20">
-                  <div className="flex items-center gap-1.5 sm:gap-2.5 min-w-0">
+                  <div className="flex items-center gap-1.5 sm:gap-2.5 min-w-0 overflow-hidden">
                     <AnimatePresence initial={false}>
                       {isFullScreen && (
                         <motion.div
@@ -568,30 +633,43 @@ export function ProjectModal({
                       )}
                     </AnimatePresence>
 
-                    <motion.h3
-                      layout="position"
-                      transition={{
-                        duration: 0.32,
-                        delay: prefersReducedMotion ? 0 : isFullScreen ? 0.58 : 0,
-                        ease: [0.23, 1, 0.32, 1],
-                      }}
-                      id="modal-project-title"
-                      className="font-display text-lg sm:text-2xl font-semibold text-zinc-800 tracking-tight truncate max-w-[140px] sm:max-w-none"
-                    >
-                      {project.title}
-                    </motion.h3>
+                    {/* Smooth directional slide from left on project flip with zero awkward readjustment */}
+                    <AnimatePresence mode="popLayout" initial={false}>
+                      <motion.div
+                        key={project._id || project.slug || project.id || project.title}
+                        initial={
+                          prefersReducedMotion
+                            ? { opacity: 0 }
+                            : { opacity: 0, x: -28, filter: "blur(4px)" }
+                        }
+                        animate={
+                          prefersReducedMotion
+                            ? { opacity: 1 }
+                            : { opacity: 1, x: 0, filter: "blur(0px)" }
+                        }
+                        exit={
+                          prefersReducedMotion
+                            ? { opacity: 0 }
+                            : { opacity: 0, x: 22, filter: "blur(4px)" }
+                        }
+                        transition={{
+                          duration: 0.28,
+                          ease: [0.22, 1, 0.36, 1],
+                        }}
+                        className="flex items-center gap-2 min-w-0"
+                      >
+                        <h3
+                          id="modal-project-title"
+                          className="font-display text-lg sm:text-2xl font-semibold text-zinc-800 tracking-tight truncate max-w-[140px] sm:max-w-none"
+                        >
+                          {project.title}
+                        </h3>
 
-                    <motion.span
-                      layout="position"
-                      transition={{
-                        duration: 0.32,
-                        delay: prefersReducedMotion ? 0 : isFullScreen ? 0.58 : 0,
-                        ease: [0.23, 1, 0.32, 1],
-                      }}
-                      className="px-2 py-0.5 text-[10px] sm:text-xs font-mono font-medium tracking-wide uppercase bg-zinc-200/70 text-zinc-700 rounded-full shrink-0"
-                    >
-                      {project.year || "2025"}
-                    </motion.span>
+                        <span className="px-2 py-0.5 text-[10px] sm:text-xs font-mono font-medium tracking-wide uppercase bg-zinc-200/70 text-zinc-700 rounded-full shrink-0">
+                          {project.year || "2025"}
+                        </span>
+                      </motion.div>
+                    </AnimatePresence>
                   </div>
 
                   <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
@@ -713,8 +791,8 @@ export function ProjectModal({
                 {/* Main Body Grid Layout: Left Vertical Navigation Minimap & Right Scroll Content */}
                 <div className="flex flex-1 overflow-hidden">
                   {/* Left Side Vertical Navigation Minimap Sidebar (Desktop) */}
-                  <aside className="hidden md:flex flex-col w-[215px] shrink-0 border-r border-black/5 p-6 md:p-7 justify-between bg-black/[0.012]">
-                    <div>
+                  <aside className="hidden md:flex flex-col w-[215px] shrink-0 border-r border-black/5 p-4 sm:p-5 justify-between bg-black/[0.012] overflow-y-auto max-h-full">
+                    <div className="space-y-4">
                       {/* Back button (Only visible in full-screen expanded mode) */}
                       {isFullScreen && (
                         <button
@@ -724,7 +802,7 @@ export function ProjectModal({
                             play("droplet", { volume: 0.35 });
                           }}
                           data-cuelume-hover="tick"
-                          className="pressable group inline-flex items-center gap-1.5 text-xs font-mono font-medium tracking-wider text-zinc-500 hover:text-zinc-900 uppercase transition-colors cursor-pointer select-none mb-7"
+                          className="pressable group inline-flex items-center gap-1.5 text-xs font-mono font-medium tracking-wider text-zinc-500 hover:text-zinc-900 uppercase transition-colors cursor-pointer select-none mb-3"
                           title="Restore from full screen"
                           aria-label="Back"
                         >
@@ -733,42 +811,80 @@ export function ProjectModal({
                         </button>
                       )}
 
-                      {/* Clean Typography Section List with Progressive Stack Spacing */}
-                      <nav className="flex flex-col select-none py-1" aria-label="Case study section navigation">
+                      {/* Optical Lens Precision Motion Timeline */}
+                      <nav
+                        className="relative flex flex-col gap-1.5 select-none py-1 pl-1"
+                        aria-label="Case study section navigation"
+                        onMouseLeave={() => setTimelineHoveredIdx(null)}
+                      >
                         {activeSections.map((sec, idx) => {
                           const activeIdx = activeSections.findIndex((s) => s.id === activeSectionId);
                           const isActive = activeIdx === idx;
                           const isPassed = idx < activeIdx;
+                          const isHovered = timelineHoveredIdx === idx;
+                          const focusIndex = timelineHoveredIdx !== null ? timelineHoveredIdx : Math.max(0, activeIdx);
+                          const distance = Math.abs(idx - focusIndex);
+
+                          // Optical Gaussian lens formula
+                          const lensScale = Math.max(0, 1 - distance * 0.28);
+                          const tickWidth = 4 + lensScale * 14;
+                          const fontSize = 12.5 + lensScale * 1.5;
+                          const opacity = isActive ? 1 : 0.35 + lensScale * 0.55;
 
                           return (
-                            <motion.div
+                            <button
                               key={sec.id}
-                              layout
-                              transition={{ type: "spring", stiffness: 480, damping: 36 }}
-                              style={{
-                                marginBottom: isActive ? 18 : isPassed ? 5 : 9,
-                                marginTop: isActive && idx > 0 ? 14 : 0,
-                              }}
+                              type="button"
+                              onMouseEnter={() => setTimelineHoveredIdx(idx)}
+                              onClick={() => scrollToSection(sec.id)}
+                              data-cuelume-hover="tick"
+                              className="group flex items-center justify-between w-full text-left py-1 cursor-pointer select-none focus-visible:outline-none"
                             >
-                              <button
-                                type="button"
-                                onClick={() => scrollToSection(sec.id)}
-                                data-cuelume-hover="tick"
-                                className={`group flex items-center justify-between w-full text-left transition-colors duration-200 cursor-pointer select-none ${isActive
-                                  ? "text-zinc-950 font-semibold text-[15px]"
-                                  : isPassed
-                                    ? "text-zinc-400 text-[13px] font-normal hover:text-zinc-700"
-                                    : "text-zinc-400 text-[14px] font-normal hover:text-zinc-700"
+                              <div className="flex items-center gap-2.5 min-w-0">
+                                {/* Fisheye Magnified Tick */}
+                                <div className="w-5 flex items-center justify-start shrink-0">
+                                  <motion.div
+                                    initial={false}
+                                    animate={{
+                                      width: tickWidth,
+                                      backgroundColor: isActive
+                                        ? "#37522d"
+                                        : isHovered
+                                          ? "#18181b"
+                                          : isPassed
+                                            ? "#71717a"
+                                            : "#d4d4d8",
+                                    }}
+                                    transition={{ type: "spring", stiffness: 480, damping: 32 }}
+                                    className="h-[2px] rounded-full"
+                                  />
+                                </div>
+
+                                {/* Optical Scale Typography */}
+                                <motion.span
+                                  animate={{
+                                    fontSize: `${fontSize}px`,
+                                    opacity: opacity,
+                                    x: isActive ? 2 : 0,
+                                    fontWeight: isActive ? 600 : 400,
+                                  }}
+                                  transition={{ type: "spring", stiffness: 450, damping: 30 }}
+                                  className={`truncate transition-colors duration-150 ${
+                                    isActive
+                                      ? "text-zinc-950 font-semibold"
+                                      : "text-zinc-700 group-hover:text-zinc-950"
                                   }`}
-                              >
-                                <span>{sec.label}</span>
-                                {isPassed && (
-                                  <span className="text-[10px] font-mono text-zinc-300 group-hover:text-zinc-500">
-                                    ✓
-                                  </span>
-                                )}
-                              </button>
-                            </motion.div>
+                                >
+                                  {sec.label}
+                                </motion.span>
+                              </div>
+
+                              {isPassed && (
+                                <span className="text-[10px] font-mono text-[#37522d] font-medium shrink-0 ml-1 opacity-85">
+                                  ✓
+                                </span>
+                              )}
+                            </button>
                           );
                         })}
                       </nav>
@@ -837,7 +953,7 @@ export function ProjectModal({
                                         alt={nextP.title}
                                         fill
                                         sizes="(max-width: 640px) 100vw, 360px"
-                                        className="absolute max-w-none object-cover size-full rounded-[20px] sm:rounded-[24px] transition-transform duration-200 [@media(hover:hover)]:group-hover:scale-[1.02] motion-reduce:transition-none motion-reduce:transform-none pointer-events-none z-10"
+                                        className="absolute max-w-none object-contain size-full rounded-[20px] sm:rounded-[24px] transition-transform duration-200 [@media(hover:hover)]:group-hover:scale-[1.02] motion-reduce:transition-none motion-reduce:transform-none pointer-events-none z-10"
                                         style={{ transitionTimingFunction: "cubic-bezier(0.23, 1, 0.32, 1)" }}
                                       />
                                     )}

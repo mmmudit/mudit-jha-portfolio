@@ -153,7 +153,7 @@ export const ProjectCard = React.forwardRef<HTMLDivElement, ProjectCardProps>(fu
             className="content-stretch flex flex-col items-start justify-end overflow-hidden relative rounded-[26px] shrink-0 w-full transition-transform duration-200 [@media(hover:hover)]:group-hover:scale-[0.99] active:scale-[0.96] motion-reduce:transition-none motion-reduce:transform-none"
             style={{ transitionTimingFunction: "cubic-bezier(0.23, 1, 0.32, 1)" }}
           >
-            <div className="aspect-[678/367.625] relative isolate rounded-[26px] shrink-0 w-full overflow-hidden bg-[#e4e4e7]">
+            <div className="aspect-[16/9] relative isolate rounded-[26px] shrink-0 w-full overflow-hidden bg-[#f4f3ed]">
               {/* Dynamic Mux Hover Video & Static Thumbnail Crossfade */}
               <MuxHoverVideo
                 playbackId={muxPlaybackId}
@@ -174,15 +174,19 @@ export const ProjectCard = React.forwardRef<HTMLDivElement, ProjectCardProps>(fu
 
             {/* Floating pill badge on bottom left of image (Desktop) */}
             <div className="absolute bottom-0 left-0 p-3 hidden md:block z-30 pointer-events-none">
-              <div className="bg-white/90 dark:bg-zinc-900/90 backdrop-blur-sm border border-[#f4f4f5] dark:border-zinc-800 border-solid flex items-center justify-center px-3.5 pt-[5px] pb-[4.8px] rounded-full shadow-[0_2px_8px_rgba(0,0,0,0.04)] [@media(hover:hover)]:group-hover:shadow-[0_4px_14px_rgba(0,0,0,0.08)] [@media(hover:hover)]:group-hover:bg-white dark:[@media(hover:hover)]:group-hover:bg-zinc-900 transition-[background-color,border-color,box-shadow] duration-200 ease-out">
-                <p className={`font-sans font-medium tracking-[0.005em] leading-snug text-base transition-colors duration-200 ease-out ${isDimmed
+              <div className="relative overflow-hidden flex items-center justify-center px-3.5 pt-[5px] pb-[4.8px] rounded-full backdrop-blur-md backdrop-saturate-200 bg-white/70 dark:bg-zinc-900/70 border border-white/50 dark:border-white/15 shadow-[0_2px_10px_rgba(0,0,0,0.05),inset_0_1px_1px_rgba(255,255,255,0.75)] [@media(hover:hover)]:group-hover:shadow-[0_4px_16px_rgba(0,0,0,0.08)] [@media(hover:hover)]:group-hover:bg-white/85 dark:[@media(hover:hover)]:group-hover:bg-zinc-900/85 transition-all duration-200 ease-out">
+                {/* Reactive Blend-Mode Light Bleed Layers */}
+                <div aria-hidden="true" className="absolute inset-0 bg-white/30 dark:bg-white/5 mix-blend-overlay pointer-events-none rounded-full" />
+                <div aria-hidden="true" className="absolute inset-0 bg-white/20 dark:bg-transparent mix-blend-plus-lighter pointer-events-none rounded-full" />
+
+                <p className={`relative z-10 font-sans font-medium tracking-[0.005em] leading-snug text-base transition-colors duration-200 ease-out ${isDimmed
                   ? "text-zinc-400 dark:text-zinc-500"
                   : "text-[#18181b] dark:text-zinc-100 [@media(hover:hover)]:group-hover:text-black dark:[@media(hover:hover)]:group-hover:text-white"
                   }`}>
                   <span>{title}</span>
                   <span className={`font-normal transition-colors duration-200 ease-out ${isDimmed
                     ? "text-zinc-300 dark:text-zinc-600"
-                    : "text-[#a1a1aa] dark:text-zinc-400 [@media(hover:hover)]:group-hover:text-zinc-600 dark:[@media(hover:hover)]:group-hover:text-zinc-300"
+                    : "text-[#71717a] dark:text-zinc-400 [@media(hover:hover)]:group-hover:text-zinc-700 dark:[@media(hover:hover)]:group-hover:text-zinc-300"
                     }`}> • {year}</span>
                 </p>
               </div>

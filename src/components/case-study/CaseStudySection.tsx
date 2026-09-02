@@ -15,7 +15,7 @@ export function CaseStudySection({ block, className = "" }: CaseStudySectionProp
 
   return (
     <section
-      id={block.id}
+      id={block.id || block._key}
       className={`space-y-4 sm:space-y-5 scroll-mt-10 ${className}`}
     >
       {/* Eyebrow */}
