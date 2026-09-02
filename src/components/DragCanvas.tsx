@@ -338,7 +338,7 @@ export function DragCanvas({
     return () => window.removeEventListener("resize", updateConstraints);
   }, [canvasWidth, canvasHeight, initialCenter, panX, panY]);
 
-  // Track window-level mousemove for ambient parallax across entire viewport
+  // Keep the ambient layer dormant on touch/coarse pointers and write directly to MotionValues.
   useEffect(() => {
     if (reduce) {
       mouseNormX.set(0);
@@ -348,7 +348,11 @@ export function DragCanvas({
       return;
     }
 
-    const handleMouseMove = (e: MouseEvent) => {
+    const pointerQuery = window.matchMedia("(hover: hover) and (pointer: fine)");
+    if (!pointerQuery.matches) return;
+
+    const handlePointerMove = (e: PointerEvent) => {
+      if (e.pointerType !== "mouse") return;
       // Zero out ambient parallax target values while actively dragging to prevent visual competition
       if (isDragging) {
         mouseNormX.set(0);
@@ -371,8 +375,8 @@ export function DragCanvas({
       bgNormY.set(normY * -24);
     };
 
-    window.addEventListener("mousemove", handleMouseMove, { passive: true });
-    return () => window.removeEventListener("mousemove", handleMouseMove);
+    window.addEventListener("pointermove", handlePointerMove, { passive: true });
+    return () => window.removeEventListener("pointermove", handlePointerMove);
   }, [isDragging, reduce, mouseNormX, mouseNormY, bgNormX, bgNormY]);
 
   // Support trackpad & mouse wheel panning
@@ -729,7 +733,7 @@ function CanvasImageCard({
               playsInline
               preload="metadata"
               onCanPlay={() => setMediaLoaded(true)}
-              className={`size-full object-cover pointer-events-none select-none transition-all duration-500 ease-out group-hover:scale-105 ${mediaLoaded ? "opacity-100" : "opacity-0"
+              className={`size-full object-cover pointer-events-none select-none transition-[opacity,transform] duration-500 ease-out [@media(hover:hover)]:group-hover:scale-105 ${mediaLoaded ? "opacity-100" : "opacity-0"
                 }`}
             />
           ) : item.imageSrc ? (
@@ -740,7 +744,7 @@ function CanvasImageCard({
               sizes="(max-width: 768px) 300px, 460px"
               draggable={false}
               onLoad={() => setMediaLoaded(true)}
-              className={`object-cover size-full pointer-events-none select-none transition-all duration-500 ease-out group-hover:scale-105 ${mediaLoaded ? "opacity-100" : "opacity-0"
+              className={`object-cover size-full pointer-events-none select-none transition-[opacity,transform] duration-500 ease-out [@media(hover:hover)]:group-hover:scale-105 ${mediaLoaded ? "opacity-100" : "opacity-0"
                 }`}
             />
           ) : null}
@@ -764,7 +768,7 @@ function CanvasImageCard({
 
           {/* Frosted Caption Overlay — Fades in on Hover */}
           <div
-            className={`absolute inset-x-0 bottom-0 z-20 pointer-events-none p-3.5 pt-8 bg-gradient-to-t from-black/80 via-black/40 to-transparent transition-all duration-200 ease-out ${isHovered ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2"
+            className={`absolute inset-x-0 bottom-0 z-20 pointer-events-none p-3.5 pt-8 bg-gradient-to-t from-black/80 via-black/40 to-transparent transition-[opacity,transform] duration-200 ease-out ${isHovered ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2"
               }`}
           >
             <h3 className="font-display font-bold text-sm text-white tracking-tight leading-snug drop-shadow-xs flex items-center justify-between">

@@ -186,7 +186,7 @@ export function IntroLoader({ children }: IntroLoaderProps) {
             type="button"
             onClick={handleSkipButtonClick}
             aria-label="Skip Intro"
-            className={`fixed sm:bottom-8 sm:right-8 z-10 px-1 py-1 rounded-full text-xs font-mono tracking-wider uppercase transition-all duration-300 ${canSkip
+            className={`fixed sm:bottom-8 sm:right-8 z-10 px-1 py-1 rounded-full text-xs font-mono tracking-wider uppercase transition-[opacity,background-color] duration-300 ${canSkip
               ? "opacity-60 hover:opacity-100 cursor-pointer bg-white/10 hover:bg-white/20 text-black backdrop-blur-sm"
               : "opacity-0 pointer-events-none"
               }`}

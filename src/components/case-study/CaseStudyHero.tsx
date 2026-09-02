@@ -82,7 +82,7 @@ export function CaseStudyHero({ project, className = "" }: CaseStudyHeroProps) {
               priority
               sizes="(max-width: 768px) 100vw, 960px"
               onLoad={() => setImageLoaded(true)}
-              className={`object-contain transition-all duration-300 ease-out ${
+              className={`object-contain transition-[opacity,filter,transform] duration-300 ease-out ${
                 imageLoaded ? "opacity-100 blur-0 scale-100" : "opacity-0 blur-[4px] scale-[1.01]"
               }`}
             />

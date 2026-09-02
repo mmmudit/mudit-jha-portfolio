@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import Image from "next/image";
 import { motion } from "framer-motion";
@@ -26,8 +26,12 @@ export function PlayPageClient({
     };
     update();
     setViewMode(mql.matches ? "grid" : "canvas");
-    mql.addEventListener("change", update);
-    return () => mql.removeEventListener("change", update);
+    const handleChange = () => {
+      update();
+      if (mql.matches) setViewMode("grid");
+    };
+    mql.addEventListener("change", handleChange);
+    return () => mql.removeEventListener("change", handleChange);
   }, []);
 
   // Create dedicated portal container element on mount
@@ -80,7 +84,7 @@ export function PlayPageClient({
               }}
               data-cuelume-hover="tick"
               data-cuelume-press
-              className="pressable inline-flex items-center gap-2 px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-full border border-zinc-300/90 bg-[#fbfaf5]/90 backdrop-blur-md text-xs sm:text-[13px] font-mono font-medium text-zinc-800 shadow-[0_4px_20px_rgba(0,0,0,0.08)] active:scale-95 transition-all hover:bg-white hover:border-zinc-400 cursor-pointer"
+              className="pressable inline-flex items-center gap-2 px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-full border border-zinc-300/90 bg-[#fbfaf5]/90 backdrop-blur-md text-xs sm:text-[13px] font-mono font-medium text-zinc-800 shadow-[0_4px_20px_rgba(0,0,0,0.08)] active:scale-95 transition-[transform,background-color,border-color] hover:bg-white hover:border-zinc-400 cursor-pointer"
             >
               <span className="size-2 rounded-full bg-emerald-500 animate-pulse" />
               <span>Interactive Mode</span>
@@ -154,7 +158,7 @@ export function PlayPageClient({
               }}
               data-cuelume-hover="tick"
               data-cuelume-press
-              className="pressable mt-4 inline-flex items-center gap-2 px-4 py-2 rounded-full border border-zinc-300/90 bg-[#fbfaf5] text-[12px] sm:text-[13px] font-mono font-medium text-zinc-800 shadow-[0_2px_10px_rgba(0,0,0,0.04)] active:scale-95 transition-all hover:bg-white hover:border-zinc-400 cursor-pointer select-none"
+              className="pressable mt-4 inline-flex items-center gap-2 px-4 py-2 rounded-full border border-zinc-300/90 bg-[#fbfaf5] text-[12px] sm:text-[13px] font-mono font-medium text-zinc-800 shadow-[0_2px_10px_rgba(0,0,0,0.04)] active:scale-95 transition-[transform,background-color,border-color] hover:bg-white hover:border-zinc-400 cursor-pointer select-none"
               aria-label="Switch to interactive canvas mode"
             >
               <Sparkles className="size-3.5 text-amber-600 animate-pulse" />
@@ -190,6 +194,19 @@ function MobilePlayCard({
   onClick: () => void;
 }) {
   const [mediaLoaded, setMediaLoaded] = useState(false);
+  const cardRef = useRef<HTMLButtonElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const isVisible = useInViewport(cardRef);
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+    if (isVisible) {
+      void video.play().catch(() => {});
+    } else {
+      video.pause();
+    }
+  }, [isVisible]);
 
   if (item.type === "folder" || item.category === "folder") {
     return (
@@ -212,9 +229,10 @@ function MobilePlayCard({
 
   if (item.type === "note") {
     return (
-      <div
+      <button
+        type="button"
         onClick={onClick}
-        className="relative rounded-[22px] bg-gradient-to-br from-amber-100 to-yellow-100 p-5 border border-amber-200/80 shadow-[0_4px_16px_rgba(0,0,0,0.04)] active:scale-[0.98] transition-transform cursor-pointer"
+        className="relative w-full text-left rounded-[22px] bg-gradient-to-br from-amber-100 to-yellow-100 p-5 border border-amber-200/80 shadow-[0_4px_16px_rgba(0,0,0,0.04)] active:scale-[0.98] transition-transform cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-zinc-700"
       >
         <div className="flex items-center justify-between mb-2">
           <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-amber-900/70">
@@ -227,14 +245,16 @@ function MobilePlayCard({
         <p className="font-hand text-xl text-zinc-900 leading-relaxed">
           &ldquo;{item.caption || item.title}&rdquo;
         </p>
-      </div>
+      </button>
     );
   }
 
   return (
-    <div
+    <button
+      ref={cardRef}
+      type="button"
       onClick={onClick}
-      className="group relative flex flex-col rounded-[22px] border border-zinc-300/80 bg-[#fbfaf5] p-3 shadow-[0_4px_16px_rgba(0,0,0,0.04)] active:scale-[0.98] transition-transform cursor-pointer select-none"
+      className="group relative flex w-full flex-col rounded-[22px] border border-zinc-300/80 bg-[#fbfaf5] p-3 text-left shadow-[0_4px_16px_rgba(0,0,0,0.04)] active:scale-[0.98] transition-transform cursor-pointer select-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-zinc-700"
     >
       {/* Header Info */}
       <div className="flex items-center justify-between mb-2 px-1">
@@ -257,12 +277,12 @@ function MobilePlayCard({
       <div className="relative w-full aspect-[16/10] rounded-[16px] overflow-hidden bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 shadow-inner mb-2.5">
         {item.type === "video" || item.videoSrc ? (
           <video
+            ref={videoRef}
             src={item.videoSrc || "/intro.mp4"}
-            autoPlay
             loop
             muted
             playsInline
-            preload="metadata"
+            preload="none"
             onCanPlay={() => setMediaLoaded(true)}
             className={`size-full object-cover transition-opacity duration-300 ease-out ${
               mediaLoaded ? "opacity-100" : "opacity-0"
@@ -273,7 +293,7 @@ function MobilePlayCard({
             src={item.imageSrc}
             alt={item.title}
             fill
-            sizes="100vw"
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
             onLoad={() => setMediaLoaded(true)}
             className={`object-cover size-full transition-opacity duration-300 ease-out ${
               mediaLoaded ? "opacity-100" : "opacity-0"
@@ -306,6 +326,24 @@ function MobilePlayCard({
           <ArrowUpRight className="size-4" />
         </span>
       </div>
-    </div>
+    </button>
   );
+}
+
+function useInViewport(ref: React.RefObject<Element | null>) {
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    const element = ref.current;
+    if (!element) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => setIsVisible(entry.isIntersecting),
+      { rootMargin: "240px 0px" }
+    );
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, [ref]);
+
+  return isVisible;
 }

@@ -174,7 +174,7 @@ export const ProjectCard = React.forwardRef<HTMLDivElement, ProjectCardProps>(fu
 
             {/* Floating pill badge on bottom left of image (Desktop) */}
             <div className="absolute bottom-0 left-0 p-3 hidden md:block z-30 pointer-events-none">
-              <div className="relative overflow-hidden flex items-center justify-center px-3.5 pt-[5px] pb-[4.8px] rounded-full backdrop-blur-md backdrop-saturate-200 bg-white/70 dark:bg-zinc-900/70 border border-white/50 dark:border-white/15 shadow-[0_2px_10px_rgba(0,0,0,0.05),inset_0_1px_1px_rgba(255,255,255,0.75)] [@media(hover:hover)]:group-hover:shadow-[0_4px_16px_rgba(0,0,0,0.08)] [@media(hover:hover)]:group-hover:bg-white/85 dark:[@media(hover:hover)]:group-hover:bg-zinc-900/85 transition-all duration-200 ease-out">
+              <div className="relative overflow-hidden flex items-center justify-center px-3.5 pt-[5px] pb-[4.8px] rounded-full backdrop-blur-md backdrop-saturate-200 bg-white/70 dark:bg-zinc-900/70 border border-white/50 dark:border-white/15 shadow-[0_2px_10px_rgba(0,0,0,0.05),inset_0_1px_1px_rgba(255,255,255,0.75)] [@media(hover:hover)]:group-hover:shadow-[0_4px_16px_rgba(0,0,0,0.08)] [@media(hover:hover)]:group-hover:bg-white/85 dark:[@media(hover:hover)]:group-hover:bg-zinc-900/85 transition-[background-color,box-shadow] duration-200 ease-out">
                 {/* Reactive Blend-Mode Light Bleed Layers */}
                 <div aria-hidden="true" className="absolute inset-0 bg-white/30 dark:bg-white/5 mix-blend-overlay pointer-events-none rounded-full" />
                 <div aria-hidden="true" className="absolute inset-0 bg-white/20 dark:bg-transparent mix-blend-plus-lighter pointer-events-none rounded-full" />

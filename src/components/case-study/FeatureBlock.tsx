@@ -80,7 +80,7 @@ export function FeatureBlock({ block, className = "" }: FeatureBlockProps) {
                       fill
                       sizes="(max-width: 768px) 100vw, 860px"
                       onLoad={() => setImagesLoaded((prev) => ({ ...prev, [featKey]: true }))}
-                      className={`object-contain transition-all duration-300 ease-out ${
+                      className={`object-contain transition-[opacity,filter,transform] duration-300 ease-out ${
                         imagesLoaded[featKey] ? "opacity-100 blur-0 scale-100" : "opacity-0 blur-[4px] scale-[1.01]"
                       }`}
                     />

@@ -306,7 +306,7 @@ export function TactileFolderCard({
               </div>
 
               {/* Action Indicator Pill Icon */}
-              <div className="size-7 rounded-full bg-white dark:bg-zinc-800 border border-zinc-300/80 dark:border-zinc-700 flex items-center justify-center text-zinc-700 dark:text-zinc-200 group-hover:bg-[#c8d5bb] group-hover:border-zinc-400 group-hover:text-zinc-900 transition-all duration-200 shrink-0 shadow-xs">
+              <div className="size-7 rounded-full bg-white dark:bg-zinc-800 border border-zinc-300/80 dark:border-zinc-700 flex items-center justify-center text-zinc-700 dark:text-zinc-200 [@media(hover:hover)]:group-hover:bg-[#c8d5bb] [@media(hover:hover)]:group-hover:border-zinc-400 [@media(hover:hover)]:group-hover:text-zinc-900 transition-[background-color,border-color,color] duration-200 shrink-0 shadow-xs">
                 <ArrowUpRight className="size-3.5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
               </div>
             </div>

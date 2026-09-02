@@ -57,10 +57,6 @@ export default function RootLayout({
       suppressHydrationWarning
       className={`${geistSans.variable} ${geistMono.variable} ${figtree.variable} ${myFont.variable} h-full antialiased`}
     >
-      <head>
-        <link rel="preload" href="/intro.webm" as="video" type="video/webm" />
-        <link rel="preload" href="/intro.mp4" as="video" type="video/mp4" />
-      </head>
       <body className="min-h-full text-zinc-800 relative">
         <IntroLoader>
           <AboutEyeProvider>

@@ -83,17 +83,26 @@ export function ProjectModal({
   const modalRef = useRef<HTMLDivElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const resizeFrameRef = useRef<number | null>(null);
+  const scrollFrameRef = useRef<number | null>(null);
   const prefersReducedMotion = useReducedMotion();
 
   useEffect(() => {
     const handleResize = () => {
-      setViewportSize({
-        width: window.innerWidth,
-        height: window.innerHeight,
+      if (resizeFrameRef.current !== null) return;
+      resizeFrameRef.current = requestAnimationFrame(() => {
+        resizeFrameRef.current = null;
+        setViewportSize((current) => {
+          const next = { width: window.innerWidth, height: window.innerHeight };
+          return current.width === next.width && current.height === next.height ? current : next;
+        });
       });
     };
     window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+      if (resizeFrameRef.current !== null) cancelAnimationFrame(resizeFrameRef.current);
+    };
   }, []);
 
   // Compute next other projects for "Also check out..." section
@@ -111,7 +120,6 @@ export function ProjectModal({
   // Tinder Swipe Gesture Motion Values & Transforms
   const dragX = useMotionValue(0);
   const dragRotate = useTransform(dragX, [-260, 0, 260], [-8, 0, 8]);
-  const dragScale = useTransform(dragX, [-260, 0, 260], [0.98, 1, 0.98]);
   const nextIndicatorOpacity = useTransform(dragX, [-90, -30, 0], [1, 0.7, 0]);
   const prevIndicatorOpacity = useTransform(dragX, [0, 30, 90], [0, 0.7, 1]);
 
@@ -313,29 +321,32 @@ export function ProjectModal({
     return DEFAULT_SECTIONS;
   }, [activeCard?.project]);
 
-  // Accurate, synced active section detection during container scrolling
-  const handleScroll = () => {
+  // Keep scroll-driven UI in one frame and avoid a React update for unchanged values.
+  const updateScrollState = () => {
+    scrollFrameRef.current = null;
     const container = scrollContainerRef.current;
     if (!container || activeSections.length === 0) return;
 
     // 0. Compute precise scroll progress ratio (0 to 1) for the bottom card progress bar
     const maxScroll = container.scrollHeight - container.clientHeight;
     if (maxScroll > 0) {
-      setScrollProgress(Math.min(1, Math.max(0, container.scrollTop / maxScroll)));
+      const nextProgress = Math.min(1, Math.max(0, container.scrollTop / maxScroll));
+      setScrollProgress((current) => current === nextProgress ? current : nextProgress);
     } else {
-      setScrollProgress(0);
+      setScrollProgress((current) => current === 0 ? current : 0);
     }
 
     // 1. If at or near top of modal, activate the first section
     if (container.scrollTop < 120) {
-      setActiveSectionId(activeSections[0].id);
+      setActiveSectionId((current) => current === activeSections[0].id ? current : activeSections[0].id);
       return;
     }
 
     // 2. If at bottom of modal, activate the last section
     const isAtBottom = container.scrollHeight - container.scrollTop <= container.clientHeight + 60;
     if (isAtBottom) {
-      setActiveSectionId(activeSections[activeSections.length - 1].id);
+      const lastSection = activeSections[activeSections.length - 1].id;
+      setActiveSectionId((current) => current === lastSection ? current : lastSection);
       return;
     }
 
@@ -354,8 +365,18 @@ export function ProjectModal({
         }
       }
     }
-    setActiveSectionId(currentActive);
+    setActiveSectionId((current) => current === currentActive ? current : currentActive);
   };
+
+  const handleScroll = () => {
+    if (scrollFrameRef.current === null) {
+      scrollFrameRef.current = requestAnimationFrame(updateScrollState);
+    }
+  };
+
+  useEffect(() => () => {
+    if (scrollFrameRef.current !== null) cancelAnimationFrame(scrollFrameRef.current);
+  }, []);
 
   const scrollToSection = (id: string) => {
     const container = scrollContainerRef.current;
@@ -434,7 +455,7 @@ export function ProjectModal({
 
   return createPortal(
     <div
-      className="fixed inset-0 z-[99999] pointer-events-auto select-none touch-none overscroll-contain"
+      className="fixed inset-0 z-[99999] pointer-events-auto select-none overscroll-contain"
       onWheel={(e) => {
         if (e.target === e.currentTarget) {
           e.preventDefault();
@@ -523,7 +544,6 @@ export function ProjectModal({
           style={{
             x: dragX,
             rotate: dragRotate,
-            scale: dragScale,
           }}
           className="pointer-events-auto relative will-change-transform"
         >
@@ -708,7 +728,7 @@ export function ProjectModal({
                     {/* Caleb Wu Style Project Avatar Stack Navigation Pill */}
                     {projects && projects.length > 1 && (
                       <nav
-                        className="group/pill flex items-center gap-1 sm:gap-2.5 px-2 sm:px-3 py-1 sm:py-1.5 rounded-full bg-white border border-black/10 shadow-[0_2px_12px_rgba(0,0,0,0.06)] transition-all duration-200 select-none"
+                        className="group/pill flex items-center gap-1 sm:gap-2.5 px-2 sm:px-3 py-1 sm:py-1.5 rounded-full bg-white border border-black/10 shadow-[0_2px_12px_rgba(0,0,0,0.06)] transition-[background-color,border-color,box-shadow] duration-200 select-none"
                         aria-label="Project switcher"
                       >
                         {/* Status Count e.g. "1 of 6" (hidden on small mobile to fit) */}
@@ -774,7 +794,7 @@ export function ProjectModal({
                                   title={`${title} [${idx + 1}]`}
                                   aria-label={`Switch to ${title}`}
                                   aria-current={isActive ? "true" : undefined}
-                                  className={`relative size-5 sm:size-[26px] rounded-full overflow-hidden border-[1.5px] transition-all duration-200 ease-out cursor-pointer ${isActive
+                                  className={`relative size-5 sm:size-[26px] rounded-full overflow-hidden border-[1.5px] transition-[filter,opacity,border-color,box-shadow,transform] duration-200 ease-out cursor-pointer ${isActive
                                     ? "grayscale-0 opacity-100 border-[#c8d5bb] ring-2 ring-[#c8d5bb] scale-105 z-20 shadow-xs bg-white"
                                     : "grayscale opacity-45 border-white bg-zinc-100 hover:grayscale-0 hover:opacity-100 hover:scale-115 hover:z-30"
                                     } focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#c8d5bb]`}
@@ -811,7 +831,7 @@ export function ProjectModal({
                           setIsFullScreen(true);
                         }}
                         data-cuelume-hover="tick"
-                        className="pressable p-1.5 sm:p-2 text-zinc-500 hover:text-zinc-900 rounded-full hover:bg-black/5 active:scale-[0.96] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-400 cursor-pointer"
+                        className="pressable p-1.5 sm:p-2 text-zinc-500 hover:text-zinc-900 rounded-full hover:bg-black/5 active:scale-[0.97] transition-[transform,color,background-color] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-400 cursor-pointer"
                         aria-label="Expand to full screen"
                         title="Expand to full screen"
                       >
@@ -1036,7 +1056,7 @@ export function ProjectModal({
                             type="button"
                             onClick={handleClose}
                             data-cuelume-hover="tick"
-                            className="pressable inline-flex items-center justify-center px-6 py-2 rounded-full border border-black/10 text-zinc-700 hover:text-zinc-950 hover:bg-black/5 hover:border-black/20 text-xs sm:text-sm font-sans font-medium transition-all shadow-2xs active:scale-[0.98] cursor-pointer"
+                            className="pressable inline-flex items-center justify-center px-6 py-2 rounded-full border border-black/10 text-zinc-700 hover:text-zinc-950 hover:bg-black/5 hover:border-black/20 text-xs sm:text-sm font-sans font-medium transition-[transform,color,background-color,border-color] shadow-2xs active:scale-[0.98] cursor-pointer"
                           >
                             View all projects
                           </button>

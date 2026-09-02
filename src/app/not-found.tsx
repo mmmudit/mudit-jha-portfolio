@@ -33,7 +33,7 @@ export default function NotFound() {
           data-cuelume-hover="tick"
           data-cuelume-press
           data-cuelume-release
-          className="pressable inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-zinc-900 text-white font-sans text-sm font-medium hover:bg-zinc-800 shadow-sm transition-all"
+          className="pressable inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-zinc-900 text-white font-sans text-sm font-medium hover:bg-zinc-800 shadow-sm transition-[transform,background-color]"
         >
           Return Home
         </Link>

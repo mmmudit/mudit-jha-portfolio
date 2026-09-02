@@ -42,7 +42,7 @@ export function ComparisonBlock({ block, className = "" }: ComparisonBlockProps)
             <button
               type="button"
               onClick={() => setMode("sideBySide")}
-              className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-mono font-medium transition-all ${
+              className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-mono font-medium transition-[background-color,color,box-shadow] ${
                 mode === "sideBySide"
                   ? "bg-white text-zinc-900 shadow-xs"
                   : "text-zinc-600 hover:text-zinc-900"
@@ -54,7 +54,7 @@ export function ComparisonBlock({ block, className = "" }: ComparisonBlockProps)
             <button
               type="button"
               onClick={() => setMode("slider")}
-              className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-mono font-medium transition-all ${
+              className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-mono font-medium transition-[background-color,color,box-shadow] ${
                 mode === "slider"
                   ? "bg-white text-zinc-900 shadow-xs"
                   : "text-zinc-600 hover:text-zinc-900"

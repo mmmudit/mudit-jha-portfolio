@@ -253,7 +253,7 @@ body {
 }
 
 .project-card:active {
-  transform: scale(0.96);
+  transform: scale(0.97);
   transition: transform var(--duration-quick) var(--ease-smooth-out);
 }
 
@@ -286,7 +286,7 @@ body {
 }
 
 .pressable:active {
-  transform: scale(0.96);
+  transform: scale(0.97);
   transition: transform var(--duration-quick) var(--ease-smooth-out);
 }
 
