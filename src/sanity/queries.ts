@@ -58,6 +58,17 @@ export const PROJECTS_QUERY = `*[_type == "project"] | order(order asc, _created
   actionText,
   cursorLabel,
   order,
+  metadata[]{
+    _key,
+    label,
+    value,
+    href,
+    items[]{
+      _key,
+      text,
+      href
+    }
+  },
   caseStudy[]{
     _type,
     _key,
@@ -150,6 +161,17 @@ export const PROJECT_BY_SLUG_QUERY = `*[_type == "project" && (slug.current == $
   actionText,
   cursorLabel,
   order,
+  metadata[]{
+    _key,
+    label,
+    value,
+    href,
+    items[]{
+      _key,
+      text,
+      href
+    }
+  },
   caseStudy[]{
     _type,
     _key,

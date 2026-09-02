@@ -12,6 +12,19 @@ export const CLARITY_PROJECT: Project = {
   role: "Product Designer",
   team: ["Kyairra Arwani", "Lindsey Oh", "Sophia Chen"],
   skills: ["Product Design", "Interaction Design", "Prototyping"],
+  metadata: [
+    { label: "ROLE", value: "Product Designer" },
+    { label: "EVENT", value: "FigBuild 2026", href: "https://figbuild.com" },
+    {
+      label: "TEAM",
+      value: [
+        { text: "Kyairra Arwani", href: "https://linkedin.com" },
+        { text: "Lindsey Oh", href: "https://linkedin.com" },
+        { text: "Sophia Chen", href: "https://linkedin.com" },
+      ],
+    },
+    { label: "STACK", value: ["Figma", "SwiftUI", "Protopie"] },
+  ],
   description: "Digital wellbeing concept exploring real-time physical interventions and tactile friction to interrupt passive scrolling.",
   gradient: "from-emerald-100/80 via-teal-100/80 to-stone-200/80",
   actionText: "Case Study",

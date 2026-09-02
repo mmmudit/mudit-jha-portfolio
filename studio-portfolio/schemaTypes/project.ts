@@ -55,6 +55,97 @@ export const project = defineType({
       of: [{ type: "string" }],
     }),
     defineField({
+      name: "metadata",
+      type: "array",
+      title: "Case Study Metadata (4 Subheadings & Linked Fields)",
+      description: "Custom metadata fields displayed before the hero image (e.g. ROLE, TEAM, EVENT, STACK, CLIENT).",
+      of: [
+        {
+          type: "object",
+          name: "metadataItem",
+          title: "Metadata Field",
+          fields: [
+            defineField({
+              name: "label",
+              type: "string",
+              title: "Field Label (Subheading)",
+              description: "e.g. 'ROLE', 'TEAM', 'EVENT', 'STACK', 'CLIENT', 'LIVE SITE'",
+              validation: (Rule) => Rule.required(),
+            }),
+            defineField({
+              name: "value",
+              type: "string",
+              title: "Single Value (Use if this field has 1 item)",
+              description: "e.g. 'Product Designer' or 'FigBuild 2026'",
+            }),
+            defineField({
+              name: "href",
+              type: "url",
+              title: "Link URL for Single Value (Optional)",
+              description: "e.g. 'https://figbuild.com'",
+            }),
+            defineField({
+              name: "items",
+              type: "array",
+              title: "Multiple Items (Use for lists like Team Members or Stacks)",
+              description: "Add multiple items under this label, each with its own text and optional link.",
+              of: [
+                {
+                  type: "object",
+                  name: "subItem",
+                  title: "Item",
+                  fields: [
+                    defineField({
+                      name: "text",
+                      type: "string",
+                      title: "Text",
+                      description: "e.g. 'Kyairra Arwani' or 'Figma'",
+                      validation: (Rule) => Rule.required(),
+                    }),
+                    defineField({
+                      name: "href",
+                      type: "url",
+                      title: "Link URL (Optional)",
+                      description: "e.g. 'https://linkedin.com/in/...' or 'https://twitter.com/...' ",
+                    }),
+                  ],
+                  preview: {
+                    select: {
+                      title: "text",
+                      subtitle: "href",
+                    },
+                    prepare({ title, subtitle }) {
+                      return {
+                        title: title || "Item",
+                        subtitle: subtitle ? `↗ ${subtitle}` : undefined,
+                      };
+                    },
+                  },
+                },
+              ],
+            }),
+          ],
+          preview: {
+            select: {
+              title: "label",
+              value: "value",
+              items: "items",
+            },
+            prepare({ title, value, items }) {
+              const count = Array.isArray(items) ? items.length : 0;
+              const subtitle = count > 0 
+                ? `${count} item${count > 1 ? "s" : ""}` 
+                : (value || "No value");
+              return {
+                title: title ? title.toUpperCase() : "METADATA FIELD",
+                subtitle,
+              };
+            },
+          },
+        },
+      ],
+    }),
+    defineField({
       name: "description",
       type: "text",
       title: "Short Description (Card & Overview)",

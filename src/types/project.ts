@@ -158,6 +158,18 @@ export interface MuxVideoAsset {
   };
 }
 
+export interface MetadataValueItem {
+  text: string;
+  href?: string;
+}
+
+export interface ProjectMetadataItem {
+  _key?: string;
+  label: string;
+  value?: string | string[] | MetadataValueItem[];
+  href?: string;
+}
+
 export interface Project {
   _id?: string;
   id?: string | number;
@@ -169,8 +181,9 @@ export interface Project {
   projectType?: string;
   event?: string;
   role?: string;
-  team?: string[];
-  skills?: string[];
+  team?: string[] | MetadataValueItem[];
+  skills?: string[] | MetadataValueItem[];
+  metadata?: ProjectMetadataItem[];
   timeline?: string;
   category?: string;
   image?: string;

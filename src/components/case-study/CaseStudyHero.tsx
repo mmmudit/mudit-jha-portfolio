@@ -40,13 +40,15 @@ export function CaseStudyHero({ project, className = "" }: CaseStudyHeroProps) {
         {displayTitle}
       </h1>
 
-      {/* Restrained Metadata Grid */}
+      {/* Customizable 4-Field / Dynamic Metadata Grid */}
       <CaseStudyMetadata
+        metadata={project.metadata}
         role={project.role}
         event={project.event || project.projectType}
         team={project.team}
         skills={project.skills}
         year={project.year}
+        href={project.href}
       />
 
       {/* Large Hero Demo Container */}
