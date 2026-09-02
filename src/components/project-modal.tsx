@@ -75,6 +75,7 @@ export function ProjectModal({
     height: typeof window !== "undefined" ? window.innerHeight : 800,
   });
   const [activeSectionId, setActiveSectionId] = useState("sec-overview");
+  const [scrollProgress, setScrollProgress] = useState(0);
   const [hoveredSectionId, setHoveredSectionId] = useState<string | null>(null);
   const [timelineHoveredIdx, setTimelineHoveredIdx] = useState<number | null>(null);
   const [hoveredAvatarIdx, setHoveredAvatarIdx] = useState<number | null>(null);
@@ -194,6 +195,7 @@ export function ProjectModal({
       scrollContainerRef.current.scrollTop = 0;
     }
     setActiveSectionId("sec-overview");
+    setScrollProgress(0);
   }, [activeProjectId]);
 
   const handleClose = useCallback(() => {
@@ -315,6 +317,14 @@ export function ProjectModal({
   const handleScroll = () => {
     const container = scrollContainerRef.current;
     if (!container || activeSections.length === 0) return;
+
+    // 0. Compute precise scroll progress ratio (0 to 1) for the bottom card progress bar
+    const maxScroll = container.scrollHeight - container.clientHeight;
+    if (maxScroll > 0) {
+      setScrollProgress(Math.min(1, Math.max(0, container.scrollTop / maxScroll)));
+    } else {
+      setScrollProgress(0);
+    }
 
     // 1. If at or near top of modal, activate the first section
     if (container.scrollTop < 120) {
@@ -598,7 +608,7 @@ export function ProjectModal({
                 </div>
 
                 {/* Modal Top Header */}
-                <div className="flex items-center justify-between px-4 sm:px-6 pt-2.5 sm:pt-5 pb-3 sm:pb-4 border-b border-black/5 shrink-0 bg-[#fbfaf5] z-20">
+                <div className="relative flex items-center justify-between px-4 sm:px-6 pt-2.5 sm:pt-5 pb-3 sm:pb-4 border-b border-black/5 shrink-0 bg-[#fbfaf5] z-20">
                   <div className="flex items-center gap-1.5 sm:gap-2.5 min-w-0 overflow-hidden">
                     <AnimatePresence initial={false}>
                       {isFullScreen && (
@@ -786,6 +796,21 @@ export function ProjectModal({
                       </button>
                     )}
                   </div>
+
+                  {/* Willow Scroll Progress Bar (Directly Under Header, Mobile & Desktop) */}
+                  <div
+                    aria-hidden="true"
+                    className="absolute bottom-0 left-0 right-0 h-[2px] sm:h-[2.5px] bg-black/[0.04] overflow-hidden pointer-events-none"
+                  >
+                    <div
+                      className="h-full bg-[#c8d5bb] shadow-[0_0_8px_rgba(200,213,187,0.8)]"
+                      style={{
+                        transform: `scaleX(${scrollProgress})`,
+                        transformOrigin: "left",
+                        transition: "transform 100ms ease-out",
+                      }}
+                    />
+                  </div>
                 </div>
 
                 {/* Main Body Grid Layout: Left Vertical Navigation Minimap & Right Scroll Content */}
@@ -878,12 +903,6 @@ export function ProjectModal({
                                   {sec.label}
                                 </motion.span>
                               </div>
-
-                              {isPassed && (
-                                <span className="text-[10px] font-mono text-[#37522d] font-medium shrink-0 ml-1 opacity-85">
-                                  ✓
-                                </span>
-                              )}
                             </button>
                           );
                         })}

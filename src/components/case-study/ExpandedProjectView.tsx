@@ -33,6 +33,7 @@ export function ExpandedProjectView({
   const router = useRouter();
   const prefersReducedMotion = useReducedMotion();
   const [activeSectionId, setActiveSectionId] = useState("sec-overview");
+  const [scrollProgress, setScrollProgress] = useState(0);
   const [timelineHoveredIdx, setTimelineHoveredIdx] = useState<number | null>(null);
   const [hoveredAvatarIdx, setHoveredAvatarIdx] = useState<number | null>(null);
 
@@ -96,6 +97,14 @@ export function ExpandedProjectView({
   // Track active section on window scroll
   useEffect(() => {
     const handleScroll = () => {
+      // 0. Compute scroll progress (0 to 1) for the bottom screen progress bar
+      const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+      if (maxScroll > 0) {
+        setScrollProgress(Math.min(1, Math.max(0, window.scrollY / maxScroll)));
+      } else {
+        setScrollProgress(0);
+      }
+
       if (activeSections.length === 0) return;
 
       // 1. Top of page
@@ -189,7 +198,7 @@ export function ExpandedProjectView({
   return (
     <div className="w-full text-zinc-800">
       {/* Full-bleed Top Navigation Header */}
-      <header className="flex items-center justify-between py-4 pb-8 border-b border-black/5 shrink-0 z-20">
+      <header className="relative flex items-center justify-between py-4 pb-8 border-b border-black/5 shrink-0 z-20">
         <div className="flex items-center gap-2 sm:gap-3 min-w-0">
           <Link
             href="/"
@@ -302,6 +311,21 @@ export function ExpandedProjectView({
             </div>
           </nav>
         )}
+
+        {/* Willow Scroll Progress Bar (Directly Under Header, Mobile & Desktop) */}
+        <div
+          aria-hidden="true"
+          className="absolute bottom-0 left-0 right-0 h-[2px] sm:h-[2.5px] bg-black/[0.04] overflow-hidden pointer-events-none"
+        >
+          <div
+            className="h-full bg-[#c8d5bb] shadow-[0_0_8px_rgba(200,213,187,0.8)]"
+            style={{
+              transform: `scaleX(${scrollProgress})`,
+              transformOrigin: "left",
+              transition: "transform 100ms ease-out",
+            }}
+          />
+        </div>
       </header>
 
       {/* Main Grid: Left Sticky Timeline Minimap & Right Case Study Content */}
@@ -388,12 +412,6 @@ export function ExpandedProjectView({
                         {sec.label}
                       </motion.span>
                     </div>
-
-                    {isPassed && (
-                      <span className="text-[10px] font-mono text-[#37522d] font-medium shrink-0 ml-1 opacity-85">
-                        ✓
-                      </span>
-                    )}
                   </button>
                 );
               })}
