@@ -25,6 +25,18 @@ export interface FigmaEmbedBlockItem {
   aspectRatio?: "16/9" | "16/10" | "4/3" | "1/1";
 }
 
+export interface DecisionPoint {
+  title: string;
+  body: string;
+}
+
+export interface DecisionCard {
+  _key?: string;
+  title: string;
+  body: string;
+  icon?: string;
+}
+
 export interface TextSectionBlock {
   _type: "textSection";
   _key?: string;
@@ -34,6 +46,9 @@ export interface TextSectionBlock {
   body?: string | string[];
   subheading?: string;
   largeQuestion?: string;
+  pipeline?: string[];
+  conclusion?: string;
+  cards?: DecisionCard[];
   media?: {
     image?: string;
     alt?: string;
@@ -104,7 +119,14 @@ export interface DecisionBlockItem {
   eyebrow?: string;
   number?: string;
   heading?: string;
+  subheading?: string;
   body?: string | string[];
+  context?: string | string[];
+  decision?: string | string[];
+  decisionPoints?: DecisionPoint[];
+  why?: string | string[];
+  tradeoff?: string | string[];
+  cards?: DecisionCard[];
   subsections?: DecisionSubsection[];
   media?: string;
   mediaType?: "image" | "video";
@@ -190,6 +212,13 @@ export interface ProjectMetadataItem {
   items?: MetadataValueItem[];
 }
 
+export interface ProjectSnapshot {
+  role?: string;
+  team?: string | string[] | MetadataValueItem[];
+  challenge?: string;
+  concept?: string;
+}
+
 export interface Project {
   _id?: string;
   id?: string | number;
@@ -204,6 +233,9 @@ export interface Project {
   team?: string[] | MetadataValueItem[];
   skills?: string[] | MetadataValueItem[];
   metadata?: ProjectMetadataItem[];
+  snapshot?: ProjectSnapshot;
+  introQuestion?: string;
+  introParagraphs?: string[];
   timeline?: string;
   category?: string;
   image?: string;
@@ -217,8 +249,10 @@ export interface Project {
   heroMedia?: ProjectHeroMedia;
   gradient?: string;
   href?: string;
+  externalLinkLabel?: string;
   actionText?: string;
   cursorLabel?: string;
+  timelineItems?: { id: string; label: string }[];
   order?: number;
   overview?: string;
   challenge?: string;

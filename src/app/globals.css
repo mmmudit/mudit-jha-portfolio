@@ -35,6 +35,16 @@ html {
   scrollbar-gutter: stable;
 }
 
+::selection {
+  background-color: #e5ecd9;
+  color: #659752;
+}
+
+::-moz-selection {
+  background-color: #e5ecd9;
+  color: #659752;
+}
+
 html,
 body {
   overflow-x: clip;
@@ -115,12 +125,10 @@ body {
 }
 
 .t-skeleton {
-  background: linear-gradient(
-    90deg,
-    rgba(255, 255, 255, 0) 0%,
-    rgba(255, 255, 255, 0.65) 50%,
-    rgba(255, 255, 255, 0) 100%
-  );
+  background: linear-gradient(90deg,
+      rgba(255, 255, 255, 0) 0%,
+      rgba(255, 255, 255, 0.65) 50%,
+      rgba(255, 255, 255, 0) 100%);
   background-size: 200% 100%;
   animation: skeletonShimmer var(--skel-dur) var(--ease-linear) infinite;
   will-change: background-position;

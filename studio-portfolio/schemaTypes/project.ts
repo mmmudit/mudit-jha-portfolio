@@ -245,6 +245,12 @@ export const project = defineType({
       initialValue: "#",
     }),
     defineField({
+      name: "externalLinkLabel",
+      type: "string",
+      title: "External Link Label",
+      description: "Custom label for modal/sidebar external link, e.g. 'Visit Live Site', 'View Prototype', 'Open Figma File'",
+    }),
+    defineField({
       name: "actionText",
       type: "string",
       title: "Action Badge Text",

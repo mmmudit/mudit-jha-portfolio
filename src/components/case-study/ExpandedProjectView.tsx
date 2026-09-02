@@ -51,12 +51,17 @@ export function ExpandedProjectView({
 
   const formatSectionLabel = (str: string) => {
     let clean = str.replace(/^\d+\s*[—–-]\s*/, "").trim();
+    if (/the problem/i.test(clean)) return "The Problem";
+    if (/the idea|core idea/i.test(clean)) return "The Core Idea";
+    if (/decision 01|friction/i.test(clean)) return "Physical Friction";
+    if (/decision 02|invisible feeling|visual language/i.test(clean)) return "Visual Language";
+    if (/decision 03|intervening before|surfaces/i.test(clean)) return "Ambient Surfaces";
+    if (/giving users control|user control|privacy/i.test(clean)) return "User Control";
     if (/making the invisible visible/i.test(clean)) return "Visualizing State";
     if (/designing beyond the app/i.test(clean)) return "Beyond The App";
-    if (/the problem/i.test(clean)) return "The Problem";
-    if (/the idea/i.test(clean)) return "The Idea";
     if (/core experience/i.test(clean)) return "Core Experience";
     if (/final experience/i.test(clean)) return "Final Experience";
+    if (/retrospective|reflection/i.test(clean)) return "Retrospective";
 
     if (clean.length > 20) {
       clean = clean.slice(0, 20) + "...";
@@ -73,6 +78,9 @@ export function ExpandedProjectView({
 
   // Derive dynamic navigation sections from case study blocks
   const activeSections = React.useMemo(() => {
+    if (project.timelineItems && project.timelineItems.length > 0) {
+      return project.timelineItems;
+    }
     if (project.caseStudy && project.caseStudy.length > 0) {
       const items: { id: string; label: string }[] = [];
       for (let idx = 0; idx < project.caseStudy.length; idx++) {
@@ -92,7 +100,7 @@ export function ExpandedProjectView({
       if (items.length > 0) return items;
     }
     return DEFAULT_SECTIONS;
-  }, [project.caseStudy]);
+  }, [project.timelineItems, project.caseStudy]);
 
   // Track active section on window scroll
   useEffect(() => {
@@ -421,7 +429,12 @@ export function ExpandedProjectView({
               rel="noopener noreferrer"
               className="inline-flex items-center gap-1.5 text-xs font-sans font-medium text-zinc-600 hover:text-zinc-900 transition-colors pt-4"
             >
-              <span>Visit Live Site</span>
+              <span>
+                {project.externalLinkLabel ||
+                  (project.actionText && project.actionText !== "Case Study"
+                    ? project.actionText
+                    : "Visit Live Site")}
+              </span>
               <ExternalLink className="size-3" />
             </a>
           )}

@@ -190,8 +190,8 @@ export function AboutHeroSection() {
     >
       <div
         className={`w-full ${reduce
-            ? ""
-            : "sticky top-20 sm:top-24 md:top-28 pt-16 sm:pt-20 pb-8"
+          ? ""
+          : "sticky top-20 sm:top-24 md:top-28 pt-16 sm:pt-20 pb-8"
           }`}
       >
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">

@@ -16,15 +16,14 @@ interface TimelineSection {
 }
 
 const SECTIONS: TimelineSection[] = [
-  { id: "sec-overview", label: "Overview", number: "01", code: "OVR" },
-  { id: "sec-problem", label: "The Problem", number: "02", code: "PRB" },
-  { id: "sec-idea", label: "The Idea", number: "03", code: "IDA" },
-  { id: "sec-core-experience", label: "Core Experience", number: "04", code: "EXP" },
-  { id: "sec-making-invisible-visible", label: "Visualizing State", number: "05", code: "VIS" },
-  { id: "sec-beyond-app", label: "Beyond The App", number: "06", code: "APP" },
-  { id: "sec-privacy", label: "Privacy", number: "07", code: "PRV" },
-  { id: "sec-final-experience", label: "Final Experience", number: "08", code: "FIN" },
-  { id: "sec-reflection", label: "Reflection", number: "09", code: "REF" },
+  { id: "sec-problem", label: "The Problem", number: "01", code: "PRB" },
+  { id: "sec-core-idea", label: "The Core Idea", number: "02", code: "IDA" },
+  { id: "sec-decision-01", label: "Physical Friction", number: "03", code: "FRC" },
+  { id: "sec-decision-02", label: "Visual Language", number: "04", code: "VIS" },
+  { id: "sec-decision-03", label: "Ambient Surfaces", number: "05", code: "AMB" },
+  { id: "sec-control", label: "User Control", number: "06", code: "CTR" },
+  { id: "sec-final-experience", label: "Final Experience", number: "07", code: "FIN" },
+  { id: "sec-retrospective", label: "Retrospective", number: "08", code: "RET" },
 ];
 
 /* =========================================================================

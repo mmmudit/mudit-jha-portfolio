@@ -27,14 +27,14 @@ export function FeatureBlock({ block, className = "" }: FeatureBlockProps) {
     >
       {/* Eyebrow */}
       {block.eyebrow && (
-        <p className="font-mono text-xs font-semibold tracking-wider text-[#47585c] uppercase">
+        <p className="font-mono text-xs font-semibold tracking-wider text-[#47585c] uppercase tabular-nums">
           {block.eyebrow}
         </p>
       )}
 
       {/* Heading */}
       {block.heading && (
-        <h2 className="font-display text-xl sm:text-2xl md:text-[28px] font-semibold text-zinc-900 tracking-[-0.02em] leading-[1.2] text-pretty">
+        <h2 className="font-display text-xl sm:text-2xl md:text-[28px] font-semibold text-zinc-900 tracking-[-0.02em] leading-[1.2] text-balance">
           {block.heading}
         </h2>
       )}
@@ -59,10 +59,10 @@ export function FeatureBlock({ block, className = "" }: FeatureBlockProps) {
                 className="p-5 sm:p-7 rounded-[20px] sm:rounded-[24px] bg-[#f5f4ee]/70 border border-black/6 shadow-[0_1px_2px_rgba(0,0,0,0.02),0_2px_8px_rgba(0,0,0,0.02)] space-y-4"
               >
                 <div className="flex items-center gap-2">
-                  <span className="px-2.5 py-0.5 rounded-full bg-[#c8d5bb]/35 text-[#47585c] font-mono text-[11px] font-semibold uppercase tracking-wider">
+                  <span className="px-2.5 py-0.5 rounded-full bg-[#c8d5bb]/35 text-[#47585c] font-mono text-[11px] font-semibold uppercase tracking-wider tabular-nums">
                     {feat.number || `FEATURE 0${idx + 1}`}
                   </span>
-                  <h3 className="font-display text-lg sm:text-xl font-semibold text-zinc-900 tracking-tight">
+                  <h3 className="font-display text-lg sm:text-xl font-semibold text-zinc-900 tracking-tight text-balance">
                     {feat.title}
                   </h3>
                 </div>

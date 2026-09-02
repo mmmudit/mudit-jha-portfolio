@@ -33,24 +33,24 @@ export function CaseStudyMetadata({
   const fields: ProjectMetadataItem[] = Array.isArray(metadata) && metadata.length > 0
     ? metadata
     : [
-        {
-          label: "ROLE",
-          value: role || "Product Designer",
-        },
-        {
-          label: "EVENT",
-          value: event || projectType || (year ? `Year ${year}` : "Project"),
-          href: href && href !== "#" ? href : undefined,
-        },
-        {
-          label: "TEAM",
-          value: safeTeam.length > 0 ? safeTeam : "Solo",
-        },
-        {
-          label: "SKILLS",
-          value: safeSkills.length > 0 ? safeSkills : "Product Design",
-        },
-      ];
+      {
+        label: "ROLE",
+        value: role || "Product Designer",
+      },
+      {
+        label: "EVENT",
+        value: event || projectType || (year ? `Year ${year}` : "Project"),
+        href: href && href !== "#" ? href : undefined,
+      },
+      {
+        label: "TEAM",
+        value: safeTeam.length > 0 ? safeTeam : "Solo",
+      },
+      {
+        label: "SKILLS",
+        value: safeSkills.length > 0 ? safeSkills : "Product Design",
+      },
+    ];
 
   const renderValueItem = (item: string | MetadataValueItem, index: number) => {
     const text = typeof item === "string" ? item : item.text;
@@ -65,16 +65,16 @@ export function CaseStudyMetadata({
           target={isExternal ? "_blank" : undefined}
           rel={isExternal ? "noopener noreferrer" : undefined}
           data-cuelume-hover="tick"
-          className="group/link inline-flex items-center gap-1 text-zinc-800 hover:text-zinc-950 font-medium underline underline-offset-4 decoration-zinc-300 hover:decoration-zinc-950 transition-colors leading-snug cursor-pointer"
+          className="group/link inline-flex items-center gap-1 text-[#707f8c] hover:text-zinc-950 font-normal underline underline-offset-4 decoration-zinc-300 hover:decoration-zinc-950 transition-colors leading-relaxed cursor-pointer"
         >
           <span>{text}</span>
-          <ArrowUpRight className="size-3 text-zinc-400 group-hover/link:text-zinc-900 transition-transform duration-150 group-hover/link:translate-x-0.5 group-hover/link:-translate-y-0.5" />
+          <ArrowUpRight className="size-3 text-[#8a99a8] group-hover/link:text-zinc-900 transition-transform duration-150 group-hover/link:translate-x-0.5 group-hover/link:-translate-y-0.5" />
         </a>
       );
     }
 
     return (
-      <p key={index} className="leading-snug text-zinc-800 font-medium">
+      <p key={index} className="leading-relaxed text-[#707f8c] font-normal text-xs sm:text-sm">
         {text}
       </p>
     );
@@ -84,7 +84,7 @@ export function CaseStudyMetadata({
     // 1. If field has an explicit items list from Sanity (e.g. list of team members with individual links)
     if (field.items && field.items.length > 0) {
       return (
-        <div className="font-sans text-xs sm:text-sm space-y-0.5">
+        <div className="font-mono text-xs sm:text-sm space-y-0.5">
           {field.items.map((item, i) => renderValueItem(item, i))}
         </div>
       );
@@ -110,7 +110,7 @@ export function CaseStudyMetadata({
     }
 
     return (
-      <p className="font-sans text-xs sm:text-sm text-zinc-400 font-normal">
+      <p className="font-sans text-xs sm:text-sm text-[#8a99a8] font-normal">
         —
       </p>
     );
@@ -128,8 +128,8 @@ export function CaseStudyMetadata({
       className={`grid ${gridColsClass} gap-4 sm:gap-6 py-6 sm:py-8 border-y border-black/5 ${className}`}
     >
       {fields.map((field, idx) => (
-        <div key={field._key || field.label || idx} className="space-y-1 min-w-0">
-          <p className="font-mono text-[11px] uppercase tracking-wider text-zinc-400 font-medium truncate">
+        <div key={field._key || field.label || idx} className="space-y-1.5 min-w-0">
+          <p className="font-mono text-xs uppercase tracking-wider text-[#8a99a8] font-normal truncate">
             {field.label}
           </p>
           <div className="font-sans text-xs sm:text-sm">

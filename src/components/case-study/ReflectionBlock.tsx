@@ -24,14 +24,14 @@ export function ReflectionBlock({ block, className = "" }: ReflectionBlockProps)
     >
       {/* Eyebrow */}
       {block.eyebrow && (
-        <p className="font-mono text-xs font-semibold tracking-wider text-[#47585c] uppercase">
+        <p className="font-mono text-xs font-semibold tracking-wider text-[#47585c] uppercase tabular-nums">
           {block.eyebrow}
         </p>
       )}
 
       {/* Heading */}
       {block.heading && (
-        <h2 className="font-display text-xl sm:text-2xl md:text-[28px] font-semibold text-zinc-900 tracking-[-0.02em] leading-[1.2] text-pretty">
+        <h2 className="font-display text-xl sm:text-2xl md:text-[28px] font-semibold text-zinc-900 tracking-[-0.02em] leading-[1.2] text-balance">
           {block.heading}
         </h2>
       )}
@@ -54,16 +54,16 @@ export function ReflectionBlock({ block, className = "" }: ReflectionBlockProps)
               className="p-5 sm:p-6 rounded-[18px] sm:rounded-[22px] bg-[#f5f4ee]/70 border border-black/5 space-y-2.5 shadow-2xs"
             >
               <div className="flex items-center gap-2">
-                <span className="font-mono text-xs font-semibold uppercase tracking-wider text-[#47585c]">
+                <span className="font-mono text-xs font-semibold uppercase tracking-wider text-[#47585c] tabular-nums">
                   {item.number || `0${idx + 1}`}
                 </span>
                 <span className="text-zinc-300 font-mono">•</span>
-                <h3 className="font-display text-base sm:text-lg font-semibold text-zinc-900 tracking-tight">
+                <h3 className="font-display text-base sm:text-lg font-semibold text-zinc-900 tracking-tight text-balance">
                   {item.heading}
                 </h3>
               </div>
 
-              <p className="font-sans text-xs sm:text-sm sm:leading-relaxed text-zinc-700 max-w-2xl text-pretty">
+              <p className="font-sans text-xs sm:text-sm leading-relaxed text-zinc-700 max-w-2xl text-pretty">
                 {item.body}
               </p>
             </div>

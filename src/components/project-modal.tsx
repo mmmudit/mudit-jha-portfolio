@@ -11,7 +11,7 @@ import {
   useTransform,
   type PanInfo,
 } from "framer-motion";
-import { Maximize2, Minimize2, ExternalLink, ChevronLeft, ChevronRight, ArrowLeft } from "lucide-react";
+import { Maximize2, Minimize2, ExternalLink, ChevronLeft, ChevronRight, ArrowLeft, X } from "lucide-react";
 import { play } from "@/lib/sound";
 import { ProjectCard } from "./project-card";
 import { CaseStudyRenderer } from "./case-study/CaseStudyRenderer";
@@ -278,12 +278,17 @@ export function ProjectModal({
 
   const formatSectionLabel = (str: string) => {
     let clean = str.replace(/^\d+\s*[—–-]\s*/, "").trim();
+    if (/the problem/i.test(clean)) return "The Problem";
+    if (/the idea|core idea/i.test(clean)) return "The Core Idea";
+    if (/decision 01|friction/i.test(clean)) return "Physical Friction";
+    if (/decision 02|invisible feeling|visual language/i.test(clean)) return "Visual Language";
+    if (/decision 03|intervening before|surfaces/i.test(clean)) return "Ambient Surfaces";
+    if (/giving users control|user control|privacy/i.test(clean)) return "User Control";
     if (/making the invisible visible/i.test(clean)) return "Visualizing State";
     if (/designing beyond the app/i.test(clean)) return "Beyond The App";
-    if (/the problem/i.test(clean)) return "The Problem";
-    if (/the idea/i.test(clean)) return "The Idea";
     if (/core experience/i.test(clean)) return "Core Experience";
     if (/final experience/i.test(clean)) return "Final Experience";
+    if (/retrospective|reflection/i.test(clean)) return "Retrospective";
 
     if (clean.length > 20) {
       clean = clean.slice(0, 20) + "...";
@@ -300,6 +305,9 @@ export function ProjectModal({
 
   const activeSections = React.useMemo(() => {
     const currentProject = activeCard?.project;
+    if (currentProject?.timelineItems && currentProject.timelineItems.length > 0) {
+      return currentProject.timelineItems;
+    }
     if (currentProject?.caseStudy && currentProject.caseStudy.length > 0) {
       const items: { id: string; label: string }[] = [];
       for (let idx = 0; idx < currentProject.caseStudy.length; idx++) {
@@ -725,105 +733,7 @@ export function ProjectModal({
                   </div>
 
                   <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
-                    {/* Caleb Wu Style Project Avatar Stack Navigation Pill */}
-                    {projects && projects.length > 1 && (
-                      <nav
-                        className="group/pill flex items-center gap-1 sm:gap-2.5 px-2 sm:px-3 py-1 sm:py-1.5 rounded-full bg-white border border-black/10 shadow-[0_2px_12px_rgba(0,0,0,0.06)] transition-[background-color,border-color,box-shadow] duration-200 select-none"
-                        aria-label="Project switcher"
-                      >
-                        {/* Status Count e.g. "1 of 6" (hidden on small mobile to fit) */}
-                        <span className="hidden sm:inline text-[12px] sm:text-[13px] font-sans font-normal text-zinc-500 tracking-tight whitespace-nowrap pl-0.5">
-                          {(currentIndex ?? 0) + 1} of {projects.length}
-                        </span>
-
-                        {/* Interactive Overlapping Avatar Icons */}
-                        <div className="flex items-center -space-x-2 group-hover/pill:-space-x-0.5 transition-[margin,gap] duration-200 ease-out pl-0.5">
-                          {projects.map((p, idx) => {
-                            const isActive = (currentIndex ?? 0) === idx;
-                            const isHovered = hoveredAvatarIdx === idx;
-                            const title = p.title || `Project ${idx + 1}`;
-                            const projectIcon = p.navIcon || p.icon || p.image;
-                            return (
-                              <div key={p._id || p.id || p.slug || idx} className="relative flex items-center justify-center">
-                                {/* Hover Preview Tooltip Pill in SmartLinkPreview Paper Style */}
-                                <AnimatePresence>
-                                  {isHovered && (
-                                    <motion.div
-                                      initial={{ opacity: 0, y: -4, scale: 0.98 }}
-                                      animate={{ opacity: 1, y: 0, scale: 1 }}
-                                      exit={{ opacity: 0, y: -2, scale: 0.98, transition: { duration: 0.12, ease: [0.22, 1, 0.36, 1] } }}
-                                      transition={{ duration: 0.15, delay: 0.08, ease: [0.22, 1, 0.36, 1] }}
-                                      className="absolute top-full mt-3 z-50 pointer-events-none"
-                                    >
-                                      <div className="relative inline-flex items-center gap-2 px-3 py-1.5 rounded-full border-[1.5px] border-zinc-950 bg-[#fffdfa] shadow-[3px_3px_0px_#18181b] whitespace-nowrap will-change-transform select-none">
-                                        {/* Top Pointer Tail */}
-                                        <div className="absolute -top-[5px] left-1/2 -translate-x-1/2 w-0 h-0 border-l-[5px] border-l-transparent border-r-[5px] border-r-transparent border-b-[5px] border-b-zinc-950 drop-shadow-[0_-1px_0_#18181b]" />
-                                        <div className="absolute -top-[4px] left-1/2 -translate-x-1/2 w-0 h-0 border-l-[4px] border-l-transparent border-r-[4px] border-r-transparent border-b-[4px] border-b-[#fffdfa]" />
-
-                                        {/* Icon Thumbnail */}
-                                        {projectIcon && (
-                                          <div className="relative size-3.5 rounded-full overflow-hidden border border-zinc-950/20 shrink-0">
-                                            <Image src={projectIcon} alt="" fill sizes="16px" className="object-cover" />
-                                          </div>
-                                        )}
-
-                                        {/* Project Title */}
-                                        <span className="font-mono text-[12px] font-bold text-zinc-950 tracking-tight">
-                                          {title}
-                                        </span>
-
-                                        {/* Keyboard Shortcut Indicator */}
-                                        <span className="font-mono text-[10px] text-zinc-400 font-medium tracking-tight">
-                                          [{idx + 1}]
-                                        </span>
-                                      </div>
-                                    </motion.div>
-                                  )}
-                                </AnimatePresence>
-
-                                <button
-                                  type="button"
-                                  onClick={() => {
-                                    play("page", { volume: 0.35 });
-                                    onSelectProject?.(idx);
-                                  }}
-                                  onMouseEnter={() => setHoveredAvatarIdx(idx)}
-                                  onMouseLeave={() => setHoveredAvatarIdx(null)}
-                                  onFocus={() => setHoveredAvatarIdx(idx)}
-                                  onBlur={() => setHoveredAvatarIdx(null)}
-                                  title={`${title} [${idx + 1}]`}
-                                  aria-label={`Switch to ${title}`}
-                                  aria-current={isActive ? "true" : undefined}
-                                  className={`relative size-5 sm:size-[26px] rounded-full overflow-hidden border-[1.5px] transition-[filter,opacity,border-color,box-shadow,transform] duration-200 ease-out cursor-pointer ${isActive
-                                    ? "grayscale-0 opacity-100 border-[#c8d5bb] ring-2 ring-[#c8d5bb] scale-105 z-20 shadow-xs bg-white"
-                                    : "grayscale opacity-45 border-white bg-zinc-100 hover:grayscale-0 hover:opacity-100 hover:scale-115 hover:z-30"
-                                    } focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#c8d5bb]`}
-                                >
-                                  {projectIcon ? (
-                                    <Image
-                                      src={projectIcon}
-                                      alt={title}
-                                      fill
-                                      sizes="32px"
-                                      className="size-full object-cover pointer-events-none"
-                                    />
-                                  ) : (
-                                    <div
-                                      className={`size-full bg-gradient-to-br ${p.gradient || "from-zinc-300 to-zinc-400"
-                                        } flex items-center justify-center font-mono text-[9px] font-bold text-zinc-700`}
-                                    >
-                                      {title.charAt(0)}
-                                    </div>
-                                  )}
-                                </button>
-                              </div>
-                            );
-                          })}
-                        </div>
-                      </nav>
-                    )}
-
-                    {!isFullScreen && (
+                    {!isFullScreen ? (
                       <button
                         ref={closeButtonRef}
                         onClick={() => {
@@ -837,7 +747,31 @@ export function ProjectModal({
                       >
                         <Maximize2 className="size-5 transition-transform duration-200" />
                       </button>
+                    ) : (
+                      <button
+                        onClick={() => {
+                          setIsFullScreen(false);
+                          play("droplet", { volume: 0.35 });
+                        }}
+                        data-cuelume-hover="tick"
+                        className="pressable p-1.5 sm:p-2 text-zinc-500 hover:text-zinc-900 rounded-full hover:bg-black/5 active:scale-[0.97] transition-[transform,color,background-color] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-400 cursor-pointer"
+                        aria-label="Exit full screen"
+                        title="Exit full screen"
+                      >
+                        <Minimize2 className="size-5 transition-transform duration-200" />
+                      </button>
                     )}
+
+                    <button
+                      type="button"
+                      onClick={handleClose}
+                      data-cuelume-hover="tick"
+                      className="pressable p-1.5 sm:p-2 text-zinc-500 hover:text-zinc-900 rounded-full hover:bg-black/5 active:scale-[0.97] transition-[transform,color,background-color] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-400 cursor-pointer"
+                      aria-label="Close modal"
+                      title="Close (Esc)"
+                    >
+                      <X className="size-5" />
+                    </button>
                   </div>
 
                   {/* Willow Scroll Progress Bar (Directly Under Header, Mobile & Desktop) */}
@@ -954,7 +888,12 @@ export function ProjectModal({
                         rel="noopener noreferrer"
                         className="inline-flex items-center gap-1.5 text-xs font-sans font-medium text-zinc-600 hover:text-zinc-900 transition-colors pt-4"
                       >
-                        <span>Visit Live Site</span>
+                        <span>
+                          {project.externalLinkLabel ||
+                            (project.actionText && project.actionText !== "Case Study"
+                              ? project.actionText
+                              : "Visit Live Site")}
+                        </span>
                         <ExternalLink className="size-3" />
                       </a>
                     )}
@@ -1084,7 +1023,115 @@ export function ProjectModal({
           </motion.div>
         </motion.div>
       </div>
-    </div>,
-    document.body
-  );
+
+      {/* Centered Project Navigation Pill Below & Outside Modal */}
+        {isFlipped && !isClosing && projects && projects.length > 1 && (
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 12 }}
+            transition={{ duration: 0.28, delay: 0.12, ease: [0.22, 1, 0.36, 1] }}
+            className="fixed bottom-4 sm:bottom-6 left-1/2 -translate-x-1/2 z-50 pointer-events-auto select-none"
+          >
+            <nav
+              className="group/pill flex items-center gap-2 sm:gap-3 px-3.5 sm:px-4 py-1.5 sm:py-2 rounded-full border border-zinc-300/70 bg-[#fbfaf5]/90 backdrop-blur-md shadow-[0_8px_30px_rgba(0,0,0,0.12),0_2px_8px_rgba(0,0,0,0.04)] sm:shadow-[0_4px_20px_rgba(0,0,0,0.06)] transition-[background-color,border-color,box-shadow,transform] duration-200"
+              aria-label="Project switcher"
+            >
+              {/* Status Count e.g. "1 of 6" */}
+              <span className="text-xs sm:text-[13px] font-sans font-medium text-zinc-600 tracking-tight whitespace-nowrap pl-0.5">
+                {(currentIndex ?? 0) + 1} of {projects.length}
+              </span>
+
+              {/* Interactive Overlapping Avatar Icons */}
+              <div className="flex items-center -space-x-2 group-hover/pill:-space-x-0.5 transition-[margin,gap] duration-200 ease-out pl-0.5">
+                {projects.map((p, idx) => {
+                  const isActive = (currentIndex ?? 0) === idx;
+                  const isHovered = hoveredAvatarIdx === idx;
+                  const title = p.title || `Project ${idx + 1}`;
+                  const projectIcon = p.navIcon || p.icon || p.image;
+                  return (
+                    <div key={p._id || p.id || p.slug || idx} className="relative flex items-center justify-center">
+                      {/* Hover Preview Tooltip Pill in SmartLinkPreview Paper Style */}
+                      <AnimatePresence>
+                        {isHovered && (
+                          <motion.div
+                            initial={{ opacity: 0, y: 4, scale: 0.98 }}
+                            animate={{ opacity: 1, y: 0, scale: 1 }}
+                            exit={{ opacity: 0, y: 2, scale: 0.98, transition: { duration: 0.12, ease: [0.22, 1, 0.36, 1] } }}
+                            transition={{ duration: 0.15, delay: 0.08, ease: [0.22, 1, 0.36, 1] }}
+                            className="absolute bottom-full mb-3 z-50 pointer-events-none"
+                          >
+                            <div className="relative inline-flex items-center gap-2 px-3 py-1.5 rounded-full border-[1.5px] border-zinc-950 bg-[#fffdfa] shadow-[3px_3px_0px_#18181b] whitespace-nowrap will-change-transform select-none">
+                              {/* Bottom Pointer Tail */}
+                              <div className="absolute -bottom-[5px] left-1/2 -translate-x-1/2 w-0 h-0 border-l-[5px] border-l-transparent border-r-[5px] border-r-transparent border-t-[5px] border-t-zinc-950 drop-shadow-[0_1px_0_#18181b]" />
+                              <div className="absolute -bottom-[4px] left-1/2 -translate-x-1/2 w-0 h-0 border-l-[4px] border-l-transparent border-r-[4px] border-r-transparent border-t-[4px] border-t-[#fffdfa]" />
+
+                              {/* Icon Thumbnail */}
+                              {projectIcon && (
+                                <div className="relative size-3.5 rounded-full overflow-hidden border border-zinc-950/20 shrink-0">
+                                  <Image src={projectIcon} alt="" fill sizes="16px" className="object-cover" />
+                                </div>
+                              )}
+
+                              {/* Project Title */}
+                              <span className="font-mono text-[12px] font-bold text-zinc-950 tracking-tight">
+                                {title}
+                              </span>
+
+                              {/* Keyboard Shortcut Indicator */}
+                              <span className="font-mono text-[10px] text-zinc-400 font-medium tracking-tight">
+                                [{idx + 1}]
+                              </span>
+                            </div>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+
+                      <button
+                        type="button"
+                        onClick={() => {
+                          play("page", { volume: 0.35 });
+                          onSelectProject?.(idx);
+                        }}
+                        onMouseEnter={() => setHoveredAvatarIdx(idx)}
+                        onMouseLeave={() => setHoveredAvatarIdx(null)}
+                        onFocus={() => setHoveredAvatarIdx(idx)}
+                        onBlur={() => setHoveredAvatarIdx(null)}
+                        title={`${title} [${idx + 1}]`}
+                        aria-label={`Switch to ${title}`}
+                        aria-current={isActive ? "true" : undefined}
+                        className={`relative size-5.5 sm:size-[28px] rounded-full overflow-hidden border-[1.5px] transition-[filter,opacity,border-color,box-shadow,transform] duration-200 ease-out cursor-pointer ${
+                          isActive
+                            ? "grayscale-0 opacity-100 border-[#c8d5bb] ring-2 ring-[#c8d5bb]/60 scale-105 z-20 shadow-xs bg-white"
+                            : "grayscale opacity-60 border-zinc-300/80 bg-[#fbfaf5] hover:grayscale-0 hover:opacity-100 hover:scale-110 hover:z-30 hover:border-zinc-500"
+                        } focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#c8d5bb]`}
+                      >
+                        {projectIcon ? (
+                          <Image
+                            src={projectIcon}
+                            alt={title}
+                            fill
+                            sizes="32px"
+                            className="size-full object-cover pointer-events-none"
+                          />
+                        ) : (
+                          <div
+                            className={`size-full bg-gradient-to-br ${
+                              p.gradient || "from-zinc-300 to-zinc-400"
+                            } flex items-center justify-center font-mono text-[9px] font-bold text-zinc-700`}
+                          >
+                            {title.charAt(0)}
+                          </div>
+                        )}
+                      </button>
+                    </div>
+                  );
+                })}
+              </div>
+            </nav>
+          </motion.div>
+        )}
+      </div>,
+      document.body
+    );
 }

@@ -75,18 +75,17 @@ export function MediaBlock({ block, className = "" }: MediaBlockProps) {
               aria-label={block.alt || placeholderLabel}
             />
           ) : block.image ? (
-            <div className="relative aspect-[16/10] sm:aspect-[16/9] w-full">
-              <Image
-                src={block.image}
-                alt={block.alt || "Case study visual evidence"}
-                fill
-                sizes="(max-width: 768px) 100vw, 960px"
-                onLoad={() => setImageLoaded(true)}
-                className={`object-contain transition-[opacity,filter,transform] duration-300 ease-out ${
-                  imageLoaded ? "opacity-100 blur-0 scale-100" : "opacity-0 blur-[4px] scale-[1.01]"
-                }`}
-              />
-            </div>
+            <Image
+              src={block.image}
+              alt={block.alt || "Case study visual evidence"}
+              width={1920}
+              height={1080}
+              sizes="(max-width: 768px) 100vw, 960px"
+              onLoad={() => setImageLoaded(true)}
+              className={`w-full h-auto block transition-[opacity,filter,transform] duration-300 ease-out ${
+                imageLoaded ? "opacity-100 blur-0 scale-100" : "opacity-0 blur-[4px] scale-[1.01]"
+              }`}
+            />
           ) : null
         ) : (
           /* Tasteful Tactile Paper Development Placeholder */

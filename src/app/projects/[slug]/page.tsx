@@ -7,6 +7,8 @@ import { Divider } from "@/components/divider";
 import { Footer } from "@/components/footer";
 import { Project } from "@/types/project";
 
+import { DEFAULT_PROJECTS, getMergedProjects } from "@/data/projects";
+
 export const revalidate = 0;
 
 interface ProjectPageProps {
@@ -15,13 +17,16 @@ interface ProjectPageProps {
 
 export async function generateMetadata({ params }: ProjectPageProps) {
   const { slug } = await params;
-  let project: Project | null = null;
+  let allProjects: Project[] = [];
 
   try {
-    project = await client.fetch<Project | null>(PROJECT_BY_SLUG_QUERY, { slug });
+    const fetchedAll = await client.fetch<Project[]>(PROJECTS_QUERY).catch(() => []);
+    allProjects = getMergedProjects(fetchedAll || []);
   } catch {
-    project = null;
+    allProjects = DEFAULT_PROJECTS;
   }
+
+  const project = allProjects.find((p) => p.slug === slug || p.id === slug || p._id === slug) || null;
 
   if (!project) {
     return {
@@ -42,14 +47,17 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
 
   try {
     const [fetchedProject, fetchedAll] = await Promise.all([
-      client.fetch<Project | null>(PROJECT_BY_SLUG_QUERY, { slug }),
-      client.fetch<Project[]>(PROJECTS_QUERY),
+      client.fetch<Project | null>(PROJECT_BY_SLUG_QUERY, { slug }).catch(() => null),
+      client.fetch<Project[]>(PROJECTS_QUERY).catch(() => []),
     ]);
-    project = fetchedProject;
-    allProjects = fetchedAll || [];
+    allProjects = getMergedProjects(fetchedAll || []);
+    project =
+      allProjects.find((p) => p.slug === slug || p.id === slug || p._id === slug) ||
+      fetchedProject ||
+      null;
   } catch {
-    project = null;
-    allProjects = [];
+    allProjects = DEFAULT_PROJECTS;
+    project = allProjects.find((p) => p.slug === slug || p.id === slug || p._id === slug) || null;
   }
 
   if (!project) {
