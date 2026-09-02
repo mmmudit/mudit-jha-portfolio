@@ -168,6 +168,7 @@ export interface ProjectMetadataItem {
   label: string;
   value?: string | string[] | MetadataValueItem[];
   href?: string;
+  items?: MetadataValueItem[];
 }
 
 export interface Project {

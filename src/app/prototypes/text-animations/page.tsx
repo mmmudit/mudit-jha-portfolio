@@ -95,7 +95,7 @@ export default function TextAnimationsPrototypePage() {
     PROTOTYPE_OPTIONS.find((opt) => opt.id === selectedVariant) || PROTOTYPE_OPTIONS[0];
 
   const handleReplay = () => {
-    play("click");
+    play("tick");
     setReplayKey((k) => k + 1);
   };
 
