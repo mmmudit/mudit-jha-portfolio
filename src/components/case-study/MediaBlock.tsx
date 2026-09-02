@@ -6,6 +6,8 @@ import { useReducedMotion } from "framer-motion";
 import { MediaBlockItem } from "@/types/project";
 import { HanddrawnAnnotation } from "./HanddrawnAnnotation";
 
+import { FigmaEmbedBlock } from "./FigmaEmbedBlock";
+
 interface MediaBlockProps {
   block: MediaBlockItem;
   className?: string;
@@ -14,6 +16,24 @@ interface MediaBlockProps {
 export function MediaBlock({ block, className = "" }: MediaBlockProps) {
   const [imageLoaded, setImageLoaded] = useState(false);
   const prefersReducedMotion = useReducedMotion();
+
+  // If mediaType is figma or figmaUrl is provided, render the interactive Figma embed frame
+  if (block.mediaType === "figma" || block.figmaUrl) {
+    return (
+      <FigmaEmbedBlock
+        block={{
+          _type: "figmaEmbed",
+          _key: block._key,
+          id: block.id,
+          figmaUrl: block.figmaUrl || block.video || "",
+          caption: block.caption,
+          size: block.size,
+          title: block.alt || block.placeholderTitle,
+        }}
+        className={className}
+      />
+    );
+  }
 
   const sizeClasses = {
     normal: "max-w-2xl mx-auto",
@@ -24,9 +44,17 @@ export function MediaBlock({ block, className = "" }: MediaBlockProps) {
   const hasRealMedia = Boolean(block.image || block.video);
   const placeholderLabel = block.placeholderTitle || (block.mediaType === "video" ? "VIDEO DEMO" : "IMAGE ASSET");
 
+  const isBorderless = Boolean(block.borderless || block.removeBorder);
+
   return (
     <figure id={block.id || block._key} className={`my-8 sm:my-12 scroll-mt-10 ${sizeClasses} ${className}`}>
-      <div className="relative isolate rounded-[20px] sm:rounded-[26px] overflow-hidden bg-[#e8ebe4]/50 border border-black/8 shadow-[0_1px_2px_rgba(0,0,0,0.03),0_4px_16px_rgba(0,0,0,0.04),inset_0_1px_0_rgba(255,255,255,0.8)]">
+      <div
+        className={`relative isolate overflow-hidden ${
+          isBorderless
+            ? "rounded-[14px] sm:rounded-[20px] bg-transparent"
+            : "rounded-[20px] sm:rounded-[26px] bg-[#e8ebe4]/50 border border-black/8 shadow-[0_1px_2px_rgba(0,0,0,0.03),0_4px_16px_rgba(0,0,0,0.04),inset_0_1px_0_rgba(255,255,255,0.8)]"
+        }`}
+      >
         {block.annotation && <HanddrawnAnnotation annotation={block.annotation} />}
 
         {hasRealMedia ? (
@@ -38,7 +66,9 @@ export function MediaBlock({ block, className = "" }: MediaBlockProps) {
               playsInline
               loop
               controls={false}
-              className="w-full h-auto object-contain max-h-[560px] rounded-[20px] sm:rounded-[26px]"
+              className={`w-full h-auto object-contain max-h-[560px] ${
+                isBorderless ? "rounded-[14px] sm:rounded-[20px]" : "rounded-[20px] sm:rounded-[26px]"
+              }`}
               aria-label={block.alt || placeholderLabel}
             />
           ) : block.image ? (
@@ -49,7 +79,9 @@ export function MediaBlock({ block, className = "" }: MediaBlockProps) {
                 fill
                 sizes="(max-width: 768px) 100vw, 960px"
                 onLoad={() => setImageLoaded(true)}
-                className={`object-contain transition-all duration-300 ease-out ${imageLoaded ? "opacity-100 blur-0 scale-100" : "opacity-0 blur-[4px] scale-[1.01]"}`}
+                className={`object-contain transition-all duration-300 ease-out ${
+                  imageLoaded ? "opacity-100 blur-0 scale-100" : "opacity-0 blur-[4px] scale-[1.01]"
+                }`}
               />
             </div>
           ) : null
@@ -73,11 +105,13 @@ export function MediaBlock({ block, className = "" }: MediaBlockProps) {
           </div>
         )}
 
-        {/* Soft edge inner ring */}
-        <div
-          aria-hidden="true"
-          className="absolute inset-0 pointer-events-none rounded-[20px] sm:rounded-[26px] border border-black/5"
-        />
+        {/* Soft edge inner ring (only if tactile border is enabled) */}
+        {!isBorderless && (
+          <div
+            aria-hidden="true"
+            className="absolute inset-0 pointer-events-none rounded-[20px] sm:rounded-[26px] border border-black/5"
+          />
+        )}
       </div>
 
       {block.caption && (

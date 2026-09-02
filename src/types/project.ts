@@ -1,6 +1,7 @@
 export type CaseStudyBlockType =
   | "textSection"
   | "mediaBlock"
+  | "figmaEmbed"
   | "decisionBlock"
   | "featureBlock"
   | "comparisonBlock"
@@ -10,6 +11,18 @@ export interface AnnotationItem {
   text: string;
   type?: "arrow" | "circle" | "underline" | "label";
   position?: "top-left" | "top-right" | "bottom-left" | "bottom-right" | "center";
+}
+
+export interface FigmaEmbedBlockItem {
+  _type: "figmaEmbed";
+  _key?: string;
+  id?: string;
+  eyebrow?: string;
+  title?: string;
+  figmaUrl: string;
+  caption?: string;
+  size?: "normal" | "wide" | "full";
+  aspectRatio?: "16/9" | "16/10" | "4/3" | "1/1";
 }
 
 export interface TextSectionBlock {
@@ -33,13 +46,16 @@ export interface MediaBlockItem {
   _type: "mediaBlock";
   _key?: string;
   id?: string;
-  mediaType?: "image" | "video";
+  mediaType?: "image" | "video" | "figma";
   image?: string;
   video?: string;
+  figmaUrl?: string;
   alt?: string;
   caption?: string;
   placeholderTitle?: string;
   size?: "normal" | "wide" | "full";
+  borderless?: boolean;
+  removeBorder?: boolean;
   annotation?: AnnotationItem;
 }
 
@@ -54,6 +70,7 @@ export interface FeatureSubItem {
   video?: string;
   placeholderTitle?: string;
   caption?: string;
+  borderless?: boolean;
 }
 
 export interface FeatureBlockItem {
@@ -132,6 +149,7 @@ export interface ReflectionBlockItem {
 export type CaseStudyBlock =
   | TextSectionBlock
   | MediaBlockItem
+  | FigmaEmbedBlockItem
   | FeatureBlockItem
   | DecisionBlockItem
   | ComparisonBlockItem
@@ -144,6 +162,7 @@ export interface ProjectHeroMedia {
   alt?: string;
   caption?: string;
   placeholderTitle?: string;
+  borderless?: boolean;
 }
 
 export interface MuxVideoAsset {
@@ -188,6 +207,8 @@ export interface Project {
   timeline?: string;
   category?: string;
   image?: string;
+  navIcon?: string;
+  icon?: string;
   cardThumbnail?: string;
   cardDemo?: string;
   muxVideo?: MuxVideoAsset;

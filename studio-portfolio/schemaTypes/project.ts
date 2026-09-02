@@ -166,6 +166,13 @@ export const project = defineType({
       ],
     }),
     defineField({
+      name: "navIcon",
+      type: "image",
+      title: "Project Switcher Nav Icon / Logo (Top Avatar Stack)",
+      description: "Square app icon, glyph, or logo displayed in the top switcher pill in modals and case studies. If left empty, it defaults to the project card thumbnail.",
+      options: { hotspot: true },
+    }),
+    defineField({
       name: "muxVideo",
       type: "mux.video",
       title: "Mux Video Preview (Hover & Dynamic Thumbnail)",
@@ -214,6 +221,13 @@ export const project = defineType({
           name: "placeholderTitle",
           type: "string",
           title: "Placeholder Title (if media is missing)",
+        }),
+        defineField({
+          name: "borderless",
+          type: "boolean",
+          title: "Remove Tactile Border / Frame",
+          description: "Enable to display clean edge-to-edge media without the container background or border strokes.",
+          initialValue: false,
         }),
       ],
     }),
@@ -298,6 +312,7 @@ export const project = defineType({
                 list: [
                   { title: "Image", value: "image" },
                   { title: "Video", value: "video" },
+                  { title: "Figma Embed", value: "figma" },
                 ],
                 layout: "radio",
               },
@@ -305,6 +320,7 @@ export const project = defineType({
             }),
             defineField({ name: "image", type: "image", title: "Image", options: { hotspot: true } }),
             defineField({ name: "video", type: "url", title: "Video URL" }),
+            defineField({ name: "figmaUrl", type: "url", title: "Figma File / Prototype URL" }),
             defineField({ name: "placeholderTitle", type: "string", title: "Placeholder Label (if media not ready)" }),
             defineField({ name: "alt", type: "string", title: "Alt Text" }),
             defineField({ name: "caption", type: "string", title: "Caption" }),
@@ -321,6 +337,13 @@ export const project = defineType({
                 layout: "radio",
               },
               initialValue: "wide",
+            }),
+            defineField({
+              name: "borderless",
+              type: "boolean",
+              title: "Remove Tactile Border / Frame",
+              description: "Enable to display clean edge-to-edge media without the container background or border strokes.",
+              initialValue: false,
             }),
             defineField({
               name: "annotation",
@@ -365,7 +388,67 @@ export const project = defineType({
             },
           },
         },
-        // 3. Feature Block
+        // 3. Figma Live Embed Block
+        {
+          name: "figmaEmbed",
+          type: "object",
+          title: "Figma Live Embed",
+          fields: [
+            defineField({ name: "eyebrow", type: "string", title: "Eyebrow (e.g. FIGMA INTERACTIVE FILE)" }),
+            defineField({ name: "title", type: "string", title: "Section Heading (Optional)" }),
+            defineField({
+              name: "figmaUrl",
+              type: "url",
+              title: "Figma File or Prototype URL",
+              description: "Paste any Figma design file or prototype sharing link (e.g. https://www.figma.com/design/... or https://www.figma.com/proto/...)",
+              validation: (Rule) => Rule.required(),
+            }),
+            defineField({ name: "caption", type: "string", title: "Caption / Design Notes" }),
+            defineField({
+              name: "size",
+              type: "string",
+              title: "Display Width",
+              options: {
+                list: [
+                  { title: "Normal (Reading column)", value: "normal" },
+                  { title: "Wide (Breaks past copy)", value: "wide" },
+                  { title: "Full (Full container width)", value: "full" },
+                ],
+                layout: "radio",
+              },
+              initialValue: "wide",
+            }),
+            defineField({
+              name: "aspectRatio",
+              type: "string",
+              title: "Aspect Ratio",
+              options: {
+                list: [
+                  { title: "16:10 (Default)", value: "16/10" },
+                  { title: "16:9 (Widescreen)", value: "16/9" },
+                  { title: "4:3 (Standard)", value: "4/3" },
+                  { title: "Square (1:1)", value: "1/1" },
+                ],
+                layout: "radio",
+              },
+              initialValue: "16/10",
+            }),
+          ],
+          preview: {
+            select: {
+              title: "title",
+              subtitle: "figmaUrl",
+              eyebrow: "eyebrow",
+            },
+            prepare({ title, subtitle, eyebrow }) {
+              return {
+                title: title || eyebrow || "Figma Live Embed",
+                subtitle: subtitle || "Figma canvas",
+              };
+            },
+          },
+        },
+        // 4. Feature Block
         {
           name: "featureBlock",
           type: "object",

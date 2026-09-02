@@ -5,6 +5,7 @@ import { Project, CaseStudyBlock } from "@/types/project";
 import { CaseStudyHero } from "./CaseStudyHero";
 import { CaseStudySection } from "./CaseStudySection";
 import { MediaBlock } from "./MediaBlock";
+import { FigmaEmbedBlock } from "./FigmaEmbedBlock";
 import { FeatureBlock } from "./FeatureBlock";
 import { DecisionBlock } from "./DecisionBlock";
 import { ComparisonBlock } from "./ComparisonBlock";
@@ -35,6 +36,9 @@ export function CaseStudyRenderer({ project, className = "" }: CaseStudyRenderer
 
               case "mediaBlock":
                 return <MediaBlock key={key} block={block} />;
+
+              case "figmaEmbed":
+                return <FigmaEmbedBlock key={key} block={block} />;
 
               case "featureBlock":
                 return <FeatureBlock key={key} block={block} />;

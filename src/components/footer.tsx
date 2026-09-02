@@ -17,9 +17,27 @@ const socialLinks = [
   { label: "Email", href: "mailto:hello@muditjha.me" },
 ] as const;
 
+function getLatestDeploymentDate(): string {
+  const rawDate =
+    process.env.NEXT_PUBLIC_BUILD_DATE ||
+    process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_DATE ||
+    new Date().toISOString();
+
+  try {
+    const d = new Date(rawDate);
+    const mm = String(d.getMonth() + 1).padStart(2, "0");
+    const dd = String(d.getDate()).padStart(2, "0");
+    const yyyy = d.getFullYear();
+    return `${mm}-${dd}-${yyyy}`;
+  } catch {
+    return "09-02-2026";
+  }
+}
+
 export function Footer() {
   const [copied, setCopied] = useState(false);
   const reduce = useReducedMotion();
+  const deploymentDate = getLatestDeploymentDate();
 
   const handleEmailClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     if (href.startsWith("mailto:")) {
@@ -180,7 +198,7 @@ export function Footer() {
 
           {/* Right: Changelog */}
           <div className="flex items-center justify-center sm:justify-end uppercase font-sans font-light tracking-[-0.5px]">
-            <span>Changelog: 09-03-2026</span>
+            <span>Changelog: {deploymentDate}</span>
           </div>
         </div>
 

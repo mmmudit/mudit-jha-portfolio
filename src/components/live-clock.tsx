@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { Sun, Moon } from "lucide-react";
 import { play } from "@/lib/sound";
 
 import { PulsingGlobe } from "./pulsing-globe";
@@ -30,13 +31,51 @@ function TickingCharacter({ char, index }: { char: string; index: number }) {
   );
 }
 
+function DayNightIcon({ isDay, size = 13 }: { isDay: boolean; size?: number }) {
+  return (
+    <span
+      className="relative inline-flex items-center justify-center shrink-0 select-none"
+      style={{ width: size, height: size }}
+      aria-hidden="true"
+    >
+      <AnimatePresence mode="wait" initial={false}>
+        {isDay ? (
+          <motion.span
+            key="sun"
+            initial={{ scale: 0.6, rotate: -60, opacity: 0 }}
+            animate={{ scale: 1, rotate: 0, opacity: 1 }}
+            exit={{ scale: 0.6, rotate: 60, opacity: 0 }}
+            transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+            className="flex items-center justify-center text-[#7a926d]"
+            title="Daytime (Minneapolis)"
+          >
+            <Sun size={size} fill="currentColor" className="fill-[#7a926d] text-[#7a926d] stroke-[1.8]" />
+          </motion.span>
+        ) : (
+          <motion.span
+            key="moon"
+            initial={{ scale: 0.6, rotate: 60, opacity: 0 }}
+            animate={{ scale: 1, rotate: 0, opacity: 1 }}
+            exit={{ scale: 0.6, rotate: -60, opacity: 0 }}
+            transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+            className="flex items-center justify-center text-[#7a926d]"
+            title="Nighttime (Minneapolis)"
+          >
+            <Moon size={size} fill="currentColor" className="fill-[#7a926d] text-[#7a926d] stroke-[1.5]" />
+          </motion.span>
+        )}
+      </AnimatePresence>
+    </span>
+  );
+}
+
 interface LiveClockProps {
   variant?: "header" | "footer";
 }
 
 export function LiveClock({ variant = "footer" }: LiveClockProps) {
   const [time, setTime] = useState<string>("");
-  const [hovered, setHovered] = useState(false);
+  const [isDay, setIsDay] = useState<boolean>(true);
 
   useEffect(() => {
     const formatter = new Intl.DateTimeFormat("en-US", {
@@ -47,7 +86,18 @@ export function LiveClock({ variant = "footer" }: LiveClockProps) {
       timeZone: "America/Chicago",
     });
 
-    const update = () => setTime(formatter.format(new Date()));
+    const hourFormatter = new Intl.DateTimeFormat("en-US", {
+      hour: "numeric",
+      hourCycle: "h23",
+      timeZone: "America/Chicago",
+    });
+
+    const update = () => {
+      const now = new Date();
+      setTime(formatter.format(now));
+      const hour = parseInt(hourFormatter.format(now), 10);
+      setIsDay(hour >= 6 && hour < 18);
+    };
     update();
 
     const interval = window.setInterval(update, 1000);
@@ -81,7 +131,8 @@ export function LiveClock({ variant = "footer" }: LiveClockProps) {
 
         {/* Telemetry Stack (No pills, no borders) */}
         <div className="flex flex-col items-start md:items-center gap-0.5 pt-0.5 md:pt-1 text-left md:text-center">
-          <div className="flex items-center gap-2 font-mono text-[13px] font-medium text-zinc-800 tracking-tight tabular-nums">
+          <div className="flex items-center gap-1.5 font-mono text-[13px] font-medium text-zinc-800 tracking-tight tabular-nums">
+            <DayNightIcon isDay={isDay} size={13} />
             <span aria-hidden="true" className="inline-flex items-center">
               {timeChars.length > 0 ? (
                 timeChars.map((char, i) => (
@@ -95,7 +146,7 @@ export function LiveClock({ variant = "footer" }: LiveClockProps) {
             <span className="font-sans font-normal text-[#7f7f80] text-[12px] uppercase">GMT −05:00</span>
           </div>
           <span className="font-sans text-[11px] uppercase tracking-widest text-[#7f7f80]/80">
-            Minneapolis, MN
+            Minneapolis, MN, USA
           </span>
         </div>
       </time>
@@ -109,14 +160,17 @@ export function LiveClock({ variant = "footer" }: LiveClockProps) {
       className="font-sans font-light text-[13px] sm:text-[15px] md:text-[16px] uppercase tracking-[-0.5px] leading-none text-[#7f7f80] inline-flex items-center gap-2 select-none"
     >
       <span aria-hidden="true" className="text-[#7f7f80] font-sans">Mudit Standard Time:</span>
-      <span aria-hidden="true" className="inline-flex items-center tabular-nums">
-        {timeChars.length > 0 ? (
-          timeChars.map((char, i) => (
-            <TickingCharacter key={i} char={char} index={i} />
-          ))
-        ) : (
-          <span>--:--:-- --</span>
-        )}
+      <span className="inline-flex items-center gap-1.5 tabular-nums">
+        <DayNightIcon isDay={isDay} size={13} />
+        <span aria-hidden="true" className="inline-flex items-center">
+          {timeChars.length > 0 ? (
+            timeChars.map((char, i) => (
+              <TickingCharacter key={i} char={char} index={i} />
+            ))
+          ) : (
+            <span>--:--:-- --</span>
+          )}
+        </span>
       </span>
     </time>
   );

@@ -22,6 +22,8 @@ export function CaseStudyHero({ project, className = "" }: CaseStudyHeroProps) {
   const displayTitle = project.tagline || project.title;
   const projectIdentifier = project.title.toUpperCase();
 
+  const isBorderless = Boolean(heroMedia?.borderless);
+
   return (
     <header id="sec-hero" className={`space-y-6 sm:space-y-8 pt-2 sm:pt-4 scroll-mt-6 ${className}`}>
       {/* Project Identifier + Year */}
@@ -52,7 +54,13 @@ export function CaseStudyHero({ project, className = "" }: CaseStudyHeroProps) {
       />
 
       {/* Large Hero Demo Container */}
-      <div className="relative aspect-[16/10] sm:aspect-[16/9] w-full rounded-[20px] sm:rounded-[26px] overflow-hidden bg-[#e8ebe4]/60 border border-black/8 shadow-[0_1px_2px_rgba(0,0,0,0.03),0_4px_16px_rgba(0,0,0,0.04),inset_0_1px_0_rgba(255,255,255,0.8)]">
+      <div
+        className={`relative aspect-[16/10] sm:aspect-[16/9] w-full overflow-hidden ${
+          isBorderless
+            ? "rounded-[16px] sm:rounded-[22px] bg-transparent"
+            : "rounded-[20px] sm:rounded-[26px] bg-[#e8ebe4]/60 border border-black/8 shadow-[0_1px_2px_rgba(0,0,0,0.03),0_4px_16px_rgba(0,0,0,0.04),inset_0_1px_0_rgba(255,255,255,0.8)]"
+        }`}
+      >
         {hasHeroMedia ? (
           heroVideo ? (
             <video
@@ -61,7 +69,9 @@ export function CaseStudyHero({ project, className = "" }: CaseStudyHeroProps) {
               muted
               playsInline
               loop
-              className="size-full object-contain rounded-[20px] sm:rounded-[26px]"
+              className={`size-full object-contain ${
+                isBorderless ? "rounded-[16px] sm:rounded-[22px]" : "rounded-[20px] sm:rounded-[26px]"
+              }`}
               aria-label={heroMedia?.alt || `${project.title} Hero Demo`}
             />
           ) : heroImage ? (
@@ -72,7 +82,9 @@ export function CaseStudyHero({ project, className = "" }: CaseStudyHeroProps) {
               priority
               sizes="(max-width: 768px) 100vw, 960px"
               onLoad={() => setImageLoaded(true)}
-              className={`object-contain transition-all duration-300 ease-out ${imageLoaded ? "opacity-100 blur-0 scale-100" : "opacity-0 blur-[4px] scale-[1.01]"}`}
+              className={`object-contain transition-all duration-300 ease-out ${
+                imageLoaded ? "opacity-100 blur-0 scale-100" : "opacity-0 blur-[4px] scale-[1.01]"
+              }`}
             />
           ) : null
         ) : (
@@ -94,11 +106,13 @@ export function CaseStudyHero({ project, className = "" }: CaseStudyHeroProps) {
           </div>
         )}
 
-        {/* Soft edge inner ring */}
-        <div
-          aria-hidden="true"
-          className="absolute inset-0 pointer-events-none rounded-[20px] sm:rounded-[26px] border border-black/5"
-        />
+        {/* Soft edge inner ring (only if tactile border enabled) */}
+        {!isBorderless && (
+          <div
+            aria-hidden="true"
+            className="absolute inset-0 pointer-events-none rounded-[20px] sm:rounded-[26px] border border-black/5"
+          />
+        )}
       </div>
 
       {heroMedia?.caption && (

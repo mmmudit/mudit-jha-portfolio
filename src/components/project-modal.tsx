@@ -700,6 +700,7 @@ export function ProjectModal({
                             const isActive = (currentIndex ?? 0) === idx;
                             const isHovered = hoveredAvatarIdx === idx;
                             const title = p.title || `Project ${idx + 1}`;
+                            const projectIcon = p.navIcon || p.icon || p.image;
                             return (
                               <div key={p._id || p.id || p.slug || idx} className="relative flex items-center justify-center">
                                 {/* Hover Preview Tooltip Pill in SmartLinkPreview Paper Style */}
@@ -718,9 +719,9 @@ export function ProjectModal({
                                         <div className="absolute -top-[4px] left-1/2 -translate-x-1/2 w-0 h-0 border-l-[4px] border-l-transparent border-r-[4px] border-r-transparent border-b-[4px] border-b-[#fffdfa]" />
 
                                         {/* Icon Thumbnail */}
-                                        {p.image && (
+                                        {projectIcon && (
                                           <div className="relative size-3.5 rounded-full overflow-hidden border border-zinc-950/20 shrink-0">
-                                            <Image src={p.image} alt="" fill sizes="16px" className="object-cover" />
+                                            <Image src={projectIcon} alt="" fill sizes="16px" className="object-cover" />
                                           </div>
                                         )}
 
@@ -756,9 +757,9 @@ export function ProjectModal({
                                     : "grayscale opacity-45 hover:grayscale-0 hover:opacity-100 hover:scale-115 hover:z-30"
                                     } focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-black/10`}
                                 >
-                                  {p.image ? (
+                                  {projectIcon ? (
                                     <Image
-                                      src={p.image}
+                                      src={projectIcon}
                                       alt={title}
                                       fill
                                       sizes="32px"
