@@ -13,6 +13,20 @@ interface MediaBlockProps {
   className?: string;
 }
 
+function getMuxPlaybackId(val?: string): string | undefined {
+  if (!val || typeof val !== "string") return undefined;
+  const trimmed = val.trim();
+  if (!trimmed) return undefined;
+  const urlMatch = trimmed.match(/(?:stream|image)\.mux\.com\/([a-zA-Z0-9_-]+)/);
+  if (urlMatch && urlMatch[1]) {
+    return urlMatch[1].replace(/\.(m3u8|mp4|webp|png|jpg)$/i, "");
+  }
+  if (/^[a-zA-Z0-9_-]{10,}$/.test(trimmed) && !trimmed.startsWith("http")) {
+    return trimmed;
+  }
+  return undefined;
+}
+
 export function MediaBlock({ block, className = "" }: MediaBlockProps) {
   const [imageLoaded, setImageLoaded] = useState(false);
   const prefersReducedMotion = useReducedMotion();
@@ -41,8 +55,22 @@ export function MediaBlock({ block, className = "" }: MediaBlockProps) {
     full: "w-full",
   }[block.size || "wide"];
 
-  const hasRealMedia = Boolean(block.image || block.video);
-  const placeholderLabel = block.placeholderTitle || (block.mediaType === "video" ? "VIDEO DEMO" : "IMAGE ASSET");
+  const muxPlaybackId =
+    block.muxPlaybackId ||
+    block.muxVideo?.playbackId ||
+    getMuxPlaybackId(block.video) ||
+    getMuxPlaybackId(block.image);
+  const muxThumbTime = block.muxThumbTime ?? block.muxVideo?.thumbTime ?? 0;
+  const muxPosterUrl = muxPlaybackId
+    ? `https://image.mux.com/${muxPlaybackId}/thumbnail.webp?time=${muxThumbTime}&width=1920&fit_mode=smartcrop`
+    : undefined;
+
+  const hasRealMedia = Boolean(block.image || block.video || muxPlaybackId);
+  const placeholderLabel =
+    block.placeholderTitle ||
+    (block.mediaType === "video" || block.mediaType === "mux" || muxPlaybackId ? "VIDEO DEMO" : "IMAGE ASSET");
+
+  const posterImage = block.image || muxPosterUrl;
 
   const isBorderless = Boolean(block.borderless || block.removeBorder);
 
@@ -61,7 +89,24 @@ export function MediaBlock({ block, className = "" }: MediaBlockProps) {
         {block.annotation && <HanddrawnAnnotation annotation={block.annotation} />}
 
         {hasRealMedia ? (
-          block.mediaType === "video" && block.video ? (
+          muxPlaybackId ? (
+            <video
+              autoPlay={!prefersReducedMotion}
+              muted
+              playsInline
+              loop
+              controls={false}
+              poster={posterImage}
+              className={`w-full max-w-full h-auto max-h-[82vh] object-contain mx-auto block ${
+                isBorderless ? "rounded-[14px] sm:rounded-[20px]" : "rounded-[20px] sm:rounded-[26px]"
+              }`}
+              aria-label={block.alt || placeholderLabel}
+            >
+              <source src={`https://stream.mux.com/${muxPlaybackId}.m3u8`} type="application/x-mpegURL" />
+              <source src={`https://stream.mux.com/${muxPlaybackId}/high.mp4`} type="video/mp4" />
+              <source src={`https://stream.mux.com/${muxPlaybackId}/medium.mp4`} type="video/mp4" />
+            </video>
+          ) : block.mediaType === "video" && block.video ? (
             <video
               src={block.video}
               autoPlay={!prefersReducedMotion}

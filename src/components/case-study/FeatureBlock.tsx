@@ -84,6 +84,33 @@ export function FeatureBlock({ block, className = "" }: FeatureBlockProps) {
                         imagesLoaded[featKey] ? "opacity-100 blur-0 scale-100" : "opacity-0 blur-[4px] scale-[1.01]"
                       }`}
                     />
+                  ) : feat.muxPlaybackId || feat.muxVideo?.playbackId ? (
+                    <video
+                      autoPlay={!prefersReducedMotion}
+                      muted
+                      playsInline
+                      loop
+                      poster={
+                        feat.image ||
+                        `https://image.mux.com/${feat.muxPlaybackId || feat.muxVideo?.playbackId}/thumbnail.webp?time=${
+                          feat.muxThumbTime ?? feat.muxVideo?.thumbTime ?? 0
+                        }&width=1200&fit_mode=smartcrop`
+                      }
+                      className="size-full object-contain"
+                    >
+                      <source
+                        src={`https://stream.mux.com/${feat.muxPlaybackId || feat.muxVideo?.playbackId}.m3u8`}
+                        type="application/x-mpegURL"
+                      />
+                      <source
+                        src={`https://stream.mux.com/${feat.muxPlaybackId || feat.muxVideo?.playbackId}/high.mp4`}
+                        type="video/mp4"
+                      />
+                      <source
+                        src={`https://stream.mux.com/${feat.muxPlaybackId || feat.muxVideo?.playbackId}/medium.mp4`}
+                        type="video/mp4"
+                      />
+                    </video>
                   ) : feat.video ? (
                     <video
                       src={feat.video}

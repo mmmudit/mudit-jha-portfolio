@@ -241,7 +241,8 @@ export const project = defineType({
           options: {
             list: [
               { title: "Image", value: "image" },
-              { title: "Video", value: "video" },
+              { title: "Video URL", value: "video" },
+              { title: "Mux Video", value: "mux" },
             ],
             layout: "radio",
           },
@@ -257,6 +258,12 @@ export const project = defineType({
           name: "video",
           type: "url",
           title: "Hero Video URL",
+        }),
+        defineField({
+          name: "muxVideo",
+          type: "mux.video",
+          title: "Mux Video",
+          description: "Upload a video directly to Mux for fast streaming and crisp auto-thumbnails.",
         }),
         defineField({
           name: "alt",
@@ -380,6 +387,8 @@ export const project = defineType({
               title: "Inline Media (Optional)",
               fields: [
                 defineField({ name: "image", type: "image", title: "Image", options: { hotspot: true } }),
+                defineField({ name: "video", type: "url", title: "Video URL" }),
+                defineField({ name: "muxVideo", type: "mux.video", title: "Mux Video" }),
                 defineField({ name: "alt", type: "string", title: "Alt text" }),
                 defineField({ name: "caption", type: "string", title: "Caption" }),
                 defineField({ name: "placeholderTitle", type: "string", title: "Placeholder Title" }),
@@ -418,7 +427,8 @@ export const project = defineType({
               options: {
                 list: [
                   { title: "Image", value: "image" },
-                  { title: "Video", value: "video" },
+                  { title: "Video URL", value: "video" },
+                  { title: "Mux Video", value: "mux" },
                   { title: "Figma Embed", value: "figma" },
                 ],
                 layout: "radio",
@@ -427,6 +437,12 @@ export const project = defineType({
             }),
             defineField({ name: "image", type: "image", title: "Image", options: { hotspot: true } }),
             defineField({ name: "video", type: "url", title: "Video URL" }),
+            defineField({
+              name: "muxVideo",
+              type: "mux.video",
+              title: "Mux Video",
+              description: "Upload a video directly to Mux for fast streaming and auto-thumbnails.",
+            }),
             defineField({ name: "figmaUrl", type: "url", title: "Figma File / Prototype URL" }),
             defineField({ name: "placeholderTitle", type: "string", title: "Placeholder Label (if media not ready)" }),
             defineField({ name: "alt", type: "string", title: "Alt Text" }),
@@ -601,13 +617,15 @@ export const project = defineType({
                       options: {
                         list: [
                           { title: "Image", value: "image" },
-                          { title: "Video", value: "video" },
+                          { title: "Video URL", value: "video" },
+                          { title: "Mux Video", value: "mux" },
                         ],
                       },
                       initialValue: "image",
                     }),
                     defineField({ name: "image", type: "image", title: "Feature Media", options: { hotspot: true } }),
                     defineField({ name: "video", type: "url", title: "Feature Video URL" }),
+                    defineField({ name: "muxVideo", type: "mux.video", title: "Mux Video" }),
                     defineField({ name: "placeholderTitle", type: "string", title: "Media Placeholder Title" }),
                     defineField({ name: "caption", type: "string", title: "Caption" }),
                     defineField({ name: "borderless", type: "boolean", title: "Borderless Media", initialValue: false }),
@@ -707,7 +725,8 @@ export const project = defineType({
               options: {
                 list: [
                   { title: "Image", value: "image" },
-                  { title: "Video", value: "video" },
+                  { title: "Video URL", value: "video" },
+                  { title: "Mux Video", value: "mux" },
                 ],
                 layout: "radio",
               },
@@ -715,6 +734,7 @@ export const project = defineType({
             }),
             defineField({ name: "image", type: "image", title: "Product Evidence Image", options: { hotspot: true } }),
             defineField({ name: "video", type: "url", title: "Product Evidence Video URL" }),
+            defineField({ name: "muxVideo", type: "mux.video", title: "Mux Video" }),
             defineField({ name: "caption", type: "string", title: "Media Caption / Evidence Note" }),
             defineField({
               name: "cards",

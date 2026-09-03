@@ -51,6 +51,10 @@ export interface TextSectionBlock {
   cards?: DecisionCard[];
   media?: {
     image?: string;
+    video?: string;
+    muxVideo?: MuxVideoAsset;
+    muxPlaybackId?: string;
+    muxThumbTime?: number;
     alt?: string;
     caption?: string;
     placeholderTitle?: string;
@@ -61,9 +65,12 @@ export interface MediaBlockItem {
   _type: "mediaBlock";
   _key?: string;
   id?: string;
-  mediaType?: "image" | "video" | "figma";
+  mediaType?: "image" | "video" | "mux" | "figma";
   image?: string;
   video?: string;
+  muxVideo?: MuxVideoAsset;
+  muxPlaybackId?: string;
+  muxThumbTime?: number;
   figmaUrl?: string;
   alt?: string;
   caption?: string;
@@ -80,9 +87,12 @@ export interface FeatureSubItem {
   number?: string;
   title: string;
   body: string;
-  mediaType?: "image" | "video";
+  mediaType?: "image" | "video" | "mux";
   image?: string;
   video?: string;
+  muxVideo?: MuxVideoAsset;
+  muxPlaybackId?: string;
+  muxThumbTime?: number;
   placeholderTitle?: string;
   caption?: string;
   borderless?: boolean;
@@ -129,7 +139,12 @@ export interface DecisionBlockItem {
   cards?: DecisionCard[];
   subsections?: DecisionSubsection[];
   media?: string;
-  mediaType?: "image" | "video";
+  mediaType?: "image" | "video" | "mux";
+  image?: string;
+  video?: string;
+  muxVideo?: MuxVideoAsset;
+  muxPlaybackId?: string;
+  muxThumbTime?: number;
   placeholderTitle?: string;
   caption?: string;
   beforeMedia?: string;
@@ -178,9 +193,12 @@ export type CaseStudyBlock =
   | ReflectionBlockItem;
 
 export interface ProjectHeroMedia {
-  mediaType?: "image" | "video";
+  mediaType?: "image" | "video" | "mux";
   image?: string;
   video?: string;
+  muxVideo?: MuxVideoAsset;
+  muxPlaybackId?: string;
+  muxThumbTime?: number;
   alt?: string;
   caption?: string;
   placeholderTitle?: string;

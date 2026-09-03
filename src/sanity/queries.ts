@@ -50,6 +50,19 @@ export const PROJECTS_QUERY = `*[_type == "project"] | order(order asc, _created
     mediaType,
     "image": image.asset->url,
     video,
+    "muxVideo": muxVideo.asset->{
+      playbackId,
+      assetId,
+      filename,
+      thumbTime,
+      status,
+      data {
+        aspect_ratio,
+        duration
+      }
+    },
+    "muxPlaybackId": coalesce(muxVideo.asset->playbackId, video.asset->playbackId),
+    "muxThumbTime": coalesce(muxVideo.asset->thumbTime, video.asset->thumbTime),
     alt,
     caption,
     placeholderTitle,
@@ -116,6 +129,19 @@ export const PROJECTS_QUERY = `*[_type == "project"] | order(order asc, _created
     afterLabel,
     "image": image.asset->url,
     "video": video,
+    "muxVideo": muxVideo.asset->{
+      playbackId,
+      assetId,
+      filename,
+      thumbTime,
+      status,
+      data {
+        aspect_ratio,
+        duration
+      }
+    },
+    "muxPlaybackId": coalesce(muxVideo.asset->playbackId, video.asset->playbackId),
+    "muxThumbTime": coalesce(muxVideo.asset->thumbTime, video.asset->thumbTime),
     "beforeMedia": beforeMedia.asset->url,
     "afterMedia": afterMedia.asset->url,
     annotation {
@@ -132,7 +158,20 @@ export const PROJECTS_QUERY = `*[_type == "project"] | order(order asc, _created
       caption,
       placeholderTitle,
       "image": image.asset->url,
-      "video": video
+      "video": video,
+      "muxVideo": muxVideo.asset->{
+        playbackId,
+        assetId,
+        filename,
+        thumbTime,
+        status,
+        data {
+          aspect_ratio,
+          duration
+        }
+      },
+      "muxPlaybackId": coalesce(muxVideo.asset->playbackId, video.asset->playbackId),
+      "muxThumbTime": coalesce(muxVideo.asset->thumbTime, video.asset->thumbTime)
     },
     subsections[]{
       _key,
@@ -183,6 +222,19 @@ export const PROJECT_BY_SLUG_QUERY = `*[_type == "project" && (slug.current == $
     mediaType,
     "image": image.asset->url,
     video,
+    "muxVideo": muxVideo.asset->{
+      playbackId,
+      assetId,
+      filename,
+      thumbTime,
+      status,
+      data {
+        aspect_ratio,
+        duration
+      }
+    },
+    "muxPlaybackId": coalesce(muxVideo.asset->playbackId, video.asset->playbackId),
+    "muxThumbTime": coalesce(muxVideo.asset->thumbTime, video.asset->thumbTime),
     alt,
     caption,
     placeholderTitle,
@@ -249,6 +301,19 @@ export const PROJECT_BY_SLUG_QUERY = `*[_type == "project" && (slug.current == $
     afterLabel,
     "image": image.asset->url,
     "video": video,
+    "muxVideo": muxVideo.asset->{
+      playbackId,
+      assetId,
+      filename,
+      thumbTime,
+      status,
+      data {
+        aspect_ratio,
+        duration
+      }
+    },
+    "muxPlaybackId": coalesce(muxVideo.asset->playbackId, video.asset->playbackId),
+    "muxThumbTime": coalesce(muxVideo.asset->thumbTime, video.asset->thumbTime),
     "beforeMedia": beforeMedia.asset->url,
     "afterMedia": afterMedia.asset->url,
     annotation {
@@ -265,7 +330,20 @@ export const PROJECT_BY_SLUG_QUERY = `*[_type == "project" && (slug.current == $
       caption,
       placeholderTitle,
       "image": image.asset->url,
-      "video": video
+      "video": video,
+      "muxVideo": muxVideo.asset->{
+        playbackId,
+        assetId,
+        filename,
+        thumbTime,
+        status,
+        data {
+          aspect_ratio,
+          duration
+        }
+      },
+      "muxPlaybackId": coalesce(muxVideo.asset->playbackId, video.asset->playbackId),
+      "muxThumbTime": coalesce(muxVideo.asset->thumbTime, video.asset->thumbTime)
     },
     subsections[]{
       _key,

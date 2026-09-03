@@ -95,7 +95,7 @@ export function CaseStudySection({ block, className = "" }: CaseStudySectionProp
             </div>
           ))}
         </div>
-      )}
+      )}l
 
       {/* Concluding Thesis Statement */}
       {block.conclusion && (

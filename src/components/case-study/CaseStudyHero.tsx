@@ -11,12 +11,40 @@ interface CaseStudyHeroProps {
   className?: string;
 }
 
+function getMuxPlaybackId(val?: string): string | undefined {
+  if (!val || typeof val !== "string") return undefined;
+  const trimmed = val.trim();
+  if (!trimmed) return undefined;
+  const urlMatch = trimmed.match(/(?:stream|image)\.mux\.com\/([a-zA-Z0-9_-]+)/);
+  if (urlMatch && urlMatch[1]) {
+    return urlMatch[1].replace(/\.(m3u8|mp4|webp|png|jpg)$/i, "");
+  }
+  if (/^[a-zA-Z0-9_-]{10,}$/.test(trimmed) && !trimmed.startsWith("http")) {
+    return trimmed;
+  }
+  return undefined;
+}
+
 export function CaseStudyHero({ project, className = "" }: CaseStudyHeroProps) {
   const [imageLoaded, setImageLoaded] = useState(false);
   const prefersReducedMotion = useReducedMotion();
   const heroMedia = project.heroMedia;
-  const hasHeroMedia = Boolean(heroMedia?.image || heroMedia?.video || project.image);
-  const heroImage = heroMedia?.image || project.image;
+  const muxPlaybackId =
+    heroMedia?.muxPlaybackId ||
+    heroMedia?.muxVideo?.playbackId ||
+    getMuxPlaybackId(heroMedia?.video) ||
+    getMuxPlaybackId(heroMedia?.image) ||
+    project.muxPlaybackId ||
+    project.muxVideo?.playbackId ||
+    getMuxPlaybackId(project.image);
+
+  const muxThumbTime = heroMedia?.muxThumbTime ?? heroMedia?.muxVideo?.thumbTime ?? project.muxThumbTime ?? project.muxVideo?.thumbTime ?? 0;
+  const muxPosterUrl = muxPlaybackId
+    ? `https://image.mux.com/${muxPlaybackId}/thumbnail.webp?time=${muxThumbTime}&width=1920&fit_mode=smartcrop`
+    : undefined;
+
+  const hasHeroMedia = Boolean(heroMedia?.image || heroMedia?.video || muxPlaybackId || project.image);
+  const heroImage = heroMedia?.image || muxPosterUrl || project.image;
   const heroVideo = heroMedia?.video;
 
   const displayTitle = project.tagline || project.title;
@@ -60,7 +88,23 @@ export function CaseStudyHero({ project, className = "" }: CaseStudyHeroProps) {
         }`}
       >
         {hasHeroMedia ? (
-          heroVideo ? (
+          muxPlaybackId ? (
+            <video
+              autoPlay={!prefersReducedMotion}
+              muted
+              playsInline
+              loop
+              poster={heroImage}
+              className={`w-full max-w-full h-auto max-h-[82vh] object-contain mx-auto block ${
+                isBorderless ? "rounded-[16px] sm:rounded-[22px]" : "rounded-[20px] sm:rounded-[26px]"
+              }`}
+              aria-label={heroMedia?.alt || `${project.title} Hero Demo`}
+            >
+              <source src={`https://stream.mux.com/${muxPlaybackId}.m3u8`} type="application/x-mpegURL" />
+              <source src={`https://stream.mux.com/${muxPlaybackId}/high.mp4`} type="video/mp4" />
+              <source src={`https://stream.mux.com/${muxPlaybackId}/medium.mp4`} type="video/mp4" />
+            </video>
+          ) : heroVideo ? (
             <video
               src={heroVideo}
               autoPlay={!prefersReducedMotion}

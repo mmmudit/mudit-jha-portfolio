@@ -1111,7 +1111,12 @@ export function getMergedProjects(sanityProjects: any[] = []): Project[] {
       snapshot: fromSanity.snapshot || def.snapshot,
       introParagraphs: fromSanity.introParagraphs || def.introParagraphs,
       heroMedia:
-        fromSanity.heroMedia?.image || fromSanity.heroMedia?.video ? fromSanity.heroMedia : def.heroMedia,
+        fromSanity.heroMedia?.image ||
+        fromSanity.heroMedia?.video ||
+        fromSanity.heroMedia?.muxPlaybackId ||
+        fromSanity.heroMedia?.muxVideo
+          ? fromSanity.heroMedia
+          : def.heroMedia,
       caseStudy:
         fromSanity.caseStudy && fromSanity.caseStudy.length >= (def.caseStudy?.length || 1)
           ? fromSanity.caseStudy
