@@ -48,13 +48,13 @@ export function DecisionBlock({ block, className = "" }: DecisionBlockProps) {
       {/* Heading & Highlight Subtitle */}
       <div className="space-y-2">
         {block.heading && (
-          <h2 className="font-display text-xl sm:text-2xl md:text-[30px] font-semibold text-zinc-900 tracking-[-0.02em] leading-[1.2] text-balance">
+          <h2 className="font-display text-xl sm:text-2xl font-semibold text-zinc-900 tracking-tight leading-[1.25] text-balance">
             {block.heading}
           </h2>
         )}
 
         {block.subheading && (
-          <p className="font-sans text-base sm:text-lg text-zinc-600 font-medium text-pretty">
+          <p className="font-sans text-sm sm:text-base text-zinc-600 font-medium text-pretty">
             {block.subheading}
           </p>
         )}
@@ -62,7 +62,7 @@ export function DecisionBlock({ block, className = "" }: DecisionBlockProps) {
 
       {/* Standard Intro Body (Legacy or generic) */}
       {paragraphs.length > 0 && (
-        <div className="space-y-3 font-sans text-sm sm:text-base leading-[1.65] text-zinc-700 max-w-3xl text-pretty">
+        <div className="space-y-3 font-sans text-sm sm:text-[15px] leading-[1.65] text-zinc-700 max-w-2xl text-pretty">
           {paragraphs.map((p, i) => (
             <p key={i}>{p}</p>
           ))}

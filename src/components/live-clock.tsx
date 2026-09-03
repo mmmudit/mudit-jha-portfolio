@@ -131,7 +131,7 @@ export function LiveClock({ variant = "footer" }: LiveClockProps) {
 
         {/* Telemetry Stack (No pills, no borders) */}
         <div className="flex flex-col items-start md:items-center gap-0.5 pt-0.5 md:pt-1 text-left md:text-center">
-          <div className="flex items-center gap-1.5 font-mono text-[13px] font-medium text-zinc-800 tracking-tight tabular-nums">
+          <div className="flex items-center gap-1.5 font-mono text-[12px] sm:text-[13px] font-medium text-zinc-800 tracking-tight tabular-nums">
             <DayNightIcon isDay={isDay} size={13} />
             <span aria-hidden="true" className="inline-flex items-center">
               {timeChars.length > 0 ? (
@@ -143,9 +143,9 @@ export function LiveClock({ variant = "footer" }: LiveClockProps) {
               )}
             </span>
             <span className="text-zinc-300 font-sans mx-0.5">•</span>
-            <span className="font-sans font-normal text-[#7f7f80] text-[12px] uppercase">GMT −05:00</span>
+            <span className="font-mono text-[11px] uppercase tracking-wider text-[#7f7f80]">GMT −05:00</span>
           </div>
-          <span className="font-sans text-[11px] uppercase tracking-widest text-[#7f7f80]/80">
+          <span className="font-mono text-[10px] uppercase tracking-widest text-[#7f7f80]/80">
             Minneapolis, MN, USA
           </span>
         </div>
@@ -157,9 +157,9 @@ export function LiveClock({ variant = "footer" }: LiveClockProps) {
     <time
       dateTime={time}
       aria-label={`Mudit Standard Time: ${time || "Loading"}`}
-      className="font-sans font-light text-[13px] sm:text-[15px] md:text-[16px] uppercase tracking-[-0.5px] leading-none text-[#7f7f80] inline-flex items-center gap-2 select-none"
+      className="font-mono text-xs sm:text-[13px] uppercase tracking-wide leading-none text-[#7f7f80] inline-flex items-center gap-2 select-none"
     >
-      <span aria-hidden="true" className="text-[#7f7f80] font-sans">Mudit Standard Time:</span>
+      <span aria-hidden="true" className="text-[#7f7f80]">Mudit Standard Time:</span>
       <span className="inline-flex items-center gap-1.5 tabular-nums">
         <DayNightIcon isDay={isDay} size={13} />
         <span aria-hidden="true" className="inline-flex items-center">

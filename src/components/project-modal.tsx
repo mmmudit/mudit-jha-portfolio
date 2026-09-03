@@ -11,7 +11,7 @@ import {
   useTransform,
   type PanInfo,
 } from "framer-motion";
-import { Maximize2, Minimize2, ExternalLink, ChevronLeft, ChevronRight, ArrowLeft, X } from "lucide-react";
+import { ExternalLink, ChevronLeft, ChevronRight, X } from "lucide-react";
 import { play } from "@/lib/sound";
 import { ProjectCard } from "./project-card";
 import { CaseStudyRenderer } from "./case-study/CaseStudyRenderer";
@@ -745,7 +745,19 @@ export function ProjectModal({
                         aria-label="Expand to full screen"
                         title="Expand to full screen"
                       >
-                        <Maximize2 className="size-5 transition-transform duration-200" />
+                        <svg
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          className="size-5 transition-transform duration-200"
+                          aria-hidden="true"
+                        >
+                          <polyline points="15 3 21 3 21 9" />
+                          <polyline points="9 21 3 21 3 15" />
+                        </svg>
                       </button>
                     ) : (
                       <button
@@ -758,7 +770,19 @@ export function ProjectModal({
                         aria-label="Exit full screen"
                         title="Exit full screen"
                       >
-                        <Minimize2 className="size-5 transition-transform duration-200" />
+                        <svg
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          className="size-5 transition-transform duration-200"
+                          aria-hidden="true"
+                        >
+                          <polyline points="4 14 10 14 10 20" />
+                          <polyline points="20 10 14 10 14 4" />
+                        </svg>
                       </button>
                     )}
 
@@ -795,24 +819,6 @@ export function ProjectModal({
                   {/* Left Side Vertical Navigation Minimap Sidebar (Desktop) */}
                   <aside className="hidden md:flex flex-col w-[215px] shrink-0 p-4 sm:p-6 justify-between overflow-y-auto max-h-full">
                     <div className="space-y-4">
-                      {/* Back button (Only visible in full-screen expanded mode) */}
-                      {isFullScreen && (
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setIsFullScreen(false);
-                            play("droplet", { volume: 0.35 });
-                          }}
-                          data-cuelume-hover="tick"
-                          className="pressable group inline-flex items-center gap-1.5 text-xs font-mono font-medium tracking-wider text-zinc-500 hover:text-zinc-900 uppercase transition-colors cursor-pointer select-none mb-3"
-                          title="Restore from full screen"
-                          aria-label="Back"
-                        >
-                          <ArrowLeft className="size-3.5 transition-transform duration-150 group-hover:-translate-x-0.5" />
-                          <span>BACK</span>
-                        </button>
-                      )}
-
                       {/* Optical Lens Precision Motion Timeline */}
                       <nav
                         className="relative flex flex-col gap-2.5 sm:gap-3 select-none py-1"

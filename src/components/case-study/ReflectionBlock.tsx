@@ -31,14 +31,14 @@ export function ReflectionBlock({ block, className = "" }: ReflectionBlockProps)
 
       {/* Heading */}
       {block.heading && (
-        <h2 className="font-display text-xl sm:text-2xl md:text-[28px] font-semibold text-zinc-900 tracking-[-0.02em] leading-[1.2] text-balance">
+        <h2 className="font-display text-xl sm:text-2xl font-semibold text-zinc-900 tracking-tight leading-[1.25] text-balance">
           {block.heading}
         </h2>
       )}
 
       {/* Intro Body */}
       {paragraphs.length > 0 && (
-        <div className="space-y-3 font-sans text-sm sm:text-base leading-[1.65] text-zinc-700 max-w-3xl text-pretty">
+        <div className="space-y-3 font-sans text-sm sm:text-[15px] leading-[1.65] text-zinc-700 max-w-2xl text-pretty">
           {paragraphs.map((p, i) => (
             <p key={i}>{p}</p>
           ))}

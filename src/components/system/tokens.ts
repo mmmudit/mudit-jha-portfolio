@@ -341,8 +341,8 @@ export const TYPOGRAPHY_TOKENS: TypographyToken[] = [
   {
     id: "type-mono-clock-digits",
     name: "HUD Tabular Numbers (Live Clock)",
-    value: "Geist Mono • text-[13px] to 16px • tabular-nums",
-    fontFamily: "var(--font-geist-mono)",
+    value: "Geist Pixel Square • text-[13px] to 16px • tabular-nums",
+    fontFamily: "var(--font-geist-pixel-square)",
     fontSize: "15px",
     fontWeight: 300,
     letterSpacing: "-0.5px",

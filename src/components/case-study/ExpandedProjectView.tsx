@@ -235,7 +235,7 @@ export function ExpandedProjectView({
             className="group/pill flex items-center gap-1 sm:gap-2.5 px-2 sm:px-3 py-1 sm:py-1.5 rounded-full bg-white border border-black/10 shadow-[0_2px_12px_rgba(0,0,0,0.06)] transition-all duration-200 select-none"
             aria-label="Project switcher"
           >
-            <span className="hidden sm:inline text-[12px] sm:text-[13px] font-sans font-normal text-zinc-500 tracking-tight whitespace-nowrap pl-0.5">
+            <span className="hidden sm:inline text-xs font-mono font-medium text-zinc-500 tracking-wider uppercase tabular-nums whitespace-nowrap pl-0.5">
               {currentIndex + 1} of {projects.length}
             </span>
 

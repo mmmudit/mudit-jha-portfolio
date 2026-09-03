@@ -187,17 +187,17 @@ export function Footer() {
           </div>
 
           {/* Center: Copyright (Centered in middle grid track) */}
-          <div className="flex items-center justify-center lowercase font-sans font-light tracking-[-0.5px]">
+          <div className="flex items-center justify-center font-mono text-xs sm:text-[13px] tracking-wider text-[#7f7f80]">
             <a
               href="https://muditjha.me"
               className="pressable transition-opacity [@media(hover:hover)]:hover:opacity-70"
             >
-              © 2026 MuditJha
+              © 2026 MUDIT JHA
             </a>
           </div>
 
           {/* Right: Changelog */}
-          <div className="flex items-center justify-center sm:justify-end uppercase font-sans font-light tracking-[-0.5px]">
+          <div className="flex items-center justify-center sm:justify-end uppercase font-mono text-xs sm:text-[13px] tracking-wider text-[#7f7f80]">
             <span>Changelog: {deploymentDate}</span>
           </div>
         </div>

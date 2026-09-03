@@ -61,12 +61,12 @@ export function TypographySection({ filterTag }: { filterTag?: TokenTag | "all" 
 
         <div className="p-5 bg-white/60 rounded-2xl border border-zinc-200">
           <span className="text-xs font-mono uppercase text-zinc-400">Mono & HUD Face</span>
-          <h3 className="font-mono text-xl font-medium text-zinc-900 mt-1">Geist Mono</h3>
+          <h3 className="font-mono text-xl font-medium text-zinc-900 mt-1">Geist Pixel Square</h3>
           <p className="font-mono text-sm mt-2 text-zinc-700 tabular-nums">
             {sampleText} 12:45:00 PM • GMT -05:00
           </p>
           <div className="mt-3 text-xs font-mono text-zinc-400">
-            Variable: --font-geist-mono • High legibility tabular data
+            Variable: --font-geist-pixel-square • High legibility bitmap pixel typeface
           </div>
         </div>
 

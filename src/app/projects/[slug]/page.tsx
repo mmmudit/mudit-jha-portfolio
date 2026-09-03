@@ -7,8 +7,6 @@ import { Divider } from "@/components/divider";
 import { Footer } from "@/components/footer";
 import { Project } from "@/types/project";
 
-import { DEFAULT_PROJECTS, getMergedProjects } from "@/data/projects";
-
 export const revalidate = 0;
 
 interface ProjectPageProps {
@@ -17,16 +15,13 @@ interface ProjectPageProps {
 
 export async function generateMetadata({ params }: ProjectPageProps) {
   const { slug } = await params;
-  let allProjects: Project[] = [];
+  let project: Project | null = null;
 
   try {
-    const fetchedAll = await client.fetch<Project[]>(PROJECTS_QUERY).catch(() => []);
-    allProjects = getMergedProjects(fetchedAll || []);
+    project = await client.fetch<Project | null>(PROJECT_BY_SLUG_QUERY, { slug }).catch(() => null);
   } catch {
-    allProjects = DEFAULT_PROJECTS;
+    project = null;
   }
-
-  const project = allProjects.find((p) => p.slug === slug || p.id === slug || p._id === slug) || null;
 
   if (!project) {
     return {
@@ -50,14 +45,13 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
       client.fetch<Project | null>(PROJECT_BY_SLUG_QUERY, { slug }).catch(() => null),
       client.fetch<Project[]>(PROJECTS_QUERY).catch(() => []),
     ]);
-    allProjects = getMergedProjects(fetchedAll || []);
+    allProjects = fetchedAll || [];
     project =
-      allProjects.find((p) => p.slug === slug || p.id === slug || p._id === slug) ||
       fetchedProject ||
+      allProjects.find((p) => p.slug === slug || p.id === slug || p._id === slug) ||
       null;
-  } catch {
-    allProjects = DEFAULT_PROJECTS;
-    project = allProjects.find((p) => p.slug === slug || p.id === slug || p._id === slug) || null;
+  } catch (error) {
+    console.error("Error fetching project from Sanity:", error);
   }
 
   if (!project) {

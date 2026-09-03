@@ -95,7 +95,7 @@ export function AboutSectionHeader({
               play("toggle", { volume: 0.3 });
               setIsYearOpen(!isYearOpen);
             }}
-            className="pressable inline-flex items-center gap-2 rounded-full border border-[#d9d0bb] bg-[#fbfaf5]/60 px-3.5 py-1 text-sm sm:text-base font-medium text-[#8a7c64] hover:border-[#b8a786] hover:text-zinc-900 hover:bg-[#f3eedf]/50 active:scale-[0.96] transition-[transform,color,background-color,border-color] duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#d9d0bb]"
+            className="pressable inline-flex items-center gap-2 rounded-full border border-[#d9d0bb] bg-[#fbfaf5]/60 px-3 py-1 text-xs sm:text-[13px] font-mono font-medium tracking-wide uppercase text-[#8a7c64] hover:border-[#b8a786] hover:text-zinc-900 hover:bg-[#f3eedf]/50 active:scale-[0.96] transition-[transform,color,background-color,border-color] duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#d9d0bb]"
             aria-expanded={isYearOpen}
             aria-haspopup="listbox"
           >
@@ -133,7 +133,7 @@ export function AboutSectionHeader({
                       key={year}
                       type="button"
                       onClick={() => handleSelectYear(year)}
-                      className="flex w-full items-center justify-between rounded-lg px-3 py-1.5 text-xs sm:text-sm font-medium text-zinc-700 hover:bg-[#eae3d2]/60 hover:text-zinc-900 transition-colors"
+                      className="flex w-full items-center justify-between rounded-lg px-3 py-1.5 text-xs font-mono font-medium tracking-wide uppercase text-zinc-700 hover:bg-[#eae3d2]/60 hover:text-zinc-900 transition-colors"
                     >
                       <span className="tabular-nums">{year}</span>
                       {currentYear === year && (
@@ -163,7 +163,7 @@ export function AboutSectionHeader({
                 play("toggle", { volume: 0.3 });
                 setIsCategoryOpen(!isCategoryOpen);
               }}
-              className="pressable inline-flex items-center gap-2 rounded-full border border-[#d9d0bb] bg-[#fbfaf5]/60 px-3.5 py-1 text-sm sm:text-base font-medium text-[#8a7c64] hover:border-[#b8a786] hover:text-zinc-900 hover:bg-[#f3eedf]/50 active:scale-[0.96] transition-[transform,color,background-color,border-color] duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#d9d0bb]"
+              className="pressable inline-flex items-center gap-2 rounded-full border border-[#d9d0bb] bg-[#fbfaf5]/60 px-3 py-1 text-xs sm:text-[13px] font-mono font-medium tracking-wide uppercase text-[#8a7c64] hover:border-[#b8a786] hover:text-zinc-900 hover:bg-[#f3eedf]/50 active:scale-[0.96] transition-[transform,color,background-color,border-color] duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#d9d0bb]"
               aria-expanded={isCategoryOpen}
               aria-haspopup="listbox"
             >
@@ -200,7 +200,7 @@ export function AboutSectionHeader({
                         key={cat}
                         type="button"
                         onClick={() => handleSelectCategory(cat)}
-                        className="flex w-full items-center justify-between rounded-lg px-3 py-1.5 text-xs sm:text-sm font-medium text-zinc-700 hover:bg-[#eae3d2]/60 hover:text-zinc-900 transition-colors"
+                        className="flex w-full items-center justify-between rounded-lg px-3 py-1.5 text-xs font-mono font-medium tracking-wide uppercase text-zinc-700 hover:bg-[#eae3d2]/60 hover:text-zinc-900 transition-colors"
                       >
                         <span className="truncate">{cat}</span>
                         {currentCategory === cat && (

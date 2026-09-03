@@ -37,6 +37,12 @@ export const project = defineType({
       description: "e.g. 'FigBuild 2026' or 'Design System'",
     }),
     defineField({
+      name: "event",
+      type: "string",
+      title: "Event / Hackathon",
+      description: "e.g. 'FigBuild 2026'",
+    }),
+    defineField({
       name: "role",
       type: "string",
       title: "Role",
@@ -146,6 +152,25 @@ export const project = defineType({
       ],
     }),
     defineField({
+      name: "snapshot",
+      type: "object",
+      title: "Executive Snapshot (Top Brief)",
+      description: "High-level overview card for the project brief (role, team, challenge, concept)",
+      fields: [
+        defineField({ name: "role", type: "string", title: "Role" }),
+        defineField({ name: "team", type: "array", title: "Team", of: [{ type: "string" }] }),
+        defineField({ name: "challenge", type: "text", title: "Core Challenge Statement", rows: 2 }),
+        defineField({ name: "concept", type: "text", title: "Core Concept Statement", rows: 2 }),
+      ],
+    }),
+    defineField({
+      name: "introParagraphs",
+      type: "array",
+      title: "Introductory Paragraphs (Lead In)",
+      description: "Hook paragraphs before the main structured sections",
+      of: [{ type: "string" }],
+    }),
+    defineField({
       name: "description",
       type: "text",
       title: "Short Description (Card & Overview)",
@@ -156,6 +181,32 @@ export const project = defineType({
       name: "image",
       type: "image",
       title: "Project Card Thumbnail (Fallback / Override)",
+      options: { hotspot: true },
+      fields: [
+        defineField({
+          name: "alt",
+          type: "string",
+          title: "Alternative Text",
+        }),
+      ],
+    }),
+    defineField({
+      name: "cardThumbnail",
+      type: "image",
+      title: "Card Thumbnail Asset",
+      options: { hotspot: true },
+      fields: [
+        defineField({
+          name: "alt",
+          type: "string",
+          title: "Alternative Text",
+        }),
+      ],
+    }),
+    defineField({
+      name: "cardDemo",
+      type: "image",
+      title: "Card Demo Asset",
       options: { hotspot: true },
       fields: [
         defineField({
@@ -280,11 +331,49 @@ export const project = defineType({
           type: "object",
           title: "Text Section",
           fields: [
+            defineField({
+              name: "id",
+              type: "string",
+              title: "Section ID (for anchor linking / TOC)",
+              description: "e.g. 'sec-problem', 'sec-core-idea', 'sec-control'",
+            }),
             defineField({ name: "eyebrow", type: "string", title: "Eyebrow (e.g. 01 — THE PROBLEM)" }),
             defineField({ name: "heading", type: "string", title: "Heading Statement" }),
             defineField({ name: "body", type: "array", title: "Body Paragraphs", of: [{ type: "string" }] }),
             defineField({ name: "subheading", type: "string", title: "Subheading / Transition" }),
             defineField({ name: "largeQuestion", type: "text", title: "Large Question / Callout", rows: 2 }),
+            defineField({
+              name: "pipeline",
+              type: "array",
+              title: "Motion Pipeline / Sequence Flow Steps",
+              description: "Step-by-step sequence e.g. ['Normal scrolling', 'Brain Rot Level rises', ...]",
+              of: [{ type: "string" }],
+            }),
+            defineField({
+              name: "cards",
+              type: "array",
+              title: "Cards (Feature / Principle / Control Cards)",
+              description: "Cards for controls or features (e.g. 'Choose what's tracked', 'Delete your data')",
+              of: [
+                {
+                  type: "object",
+                  title: "Card",
+                  fields: [
+                    defineField({ name: "title", type: "string", title: "Card Title", validation: (r) => r.required() }),
+                    defineField({ name: "body", type: "text", title: "Card Description", rows: 2 }),
+                  ],
+                  preview: {
+                    select: { title: "title", subtitle: "body" },
+                  },
+                },
+              ],
+            }),
+            defineField({
+              name: "conclusion",
+              type: "text",
+              title: "Concluding Thesis Statement",
+              rows: 3,
+            }),
             defineField({
               name: "media",
               type: "object",
@@ -302,6 +391,12 @@ export const project = defineType({
               title: "heading",
               subtitle: "eyebrow",
             },
+            prepare({ title, subtitle }) {
+              return {
+                title: title || "Text Section",
+                subtitle: subtitle || "Section",
+              };
+            },
           },
         },
         // 2. Media Block
@@ -310,6 +405,12 @@ export const project = defineType({
           type: "object",
           title: "Media Block",
           fields: [
+            defineField({
+              name: "id",
+              type: "string",
+              title: "Block ID",
+              description: "e.g. 'media-problem-visual'",
+            }),
             defineField({
               name: "mediaType",
               type: "string",
@@ -390,7 +491,15 @@ export const project = defineType({
             select: {
               title: "placeholderTitle",
               subtitle: "caption",
+              alt: "alt",
               media: "image",
+            },
+            prepare({ title, subtitle, alt, media }) {
+              return {
+                title: title || alt || "Media Block",
+                subtitle: subtitle || "Image / Video",
+                media,
+              };
             },
           },
         },
@@ -400,6 +509,11 @@ export const project = defineType({
           type: "object",
           title: "Figma Live Embed",
           fields: [
+            defineField({
+              name: "id",
+              type: "string",
+              title: "Block ID",
+            }),
             defineField({ name: "eyebrow", type: "string", title: "Eyebrow (e.g. FIGMA INTERACTIVE FILE)" }),
             defineField({ name: "title", type: "string", title: "Section Heading (Optional)" }),
             defineField({
@@ -460,6 +574,11 @@ export const project = defineType({
           type: "object",
           title: "Feature / Interventions Block",
           fields: [
+            defineField({
+              name: "id",
+              type: "string",
+              title: "Block ID",
+            }),
             defineField({ name: "eyebrow", type: "string", title: "Eyebrow (e.g. CORE EXPERIENCE)" }),
             defineField({ name: "heading", type: "string", title: "Heading" }),
             defineField({ name: "body", type: "array", title: "Intro Paragraphs", of: [{ type: "string" }] }),
@@ -487,10 +606,19 @@ export const project = defineType({
                       },
                       initialValue: "image",
                     }),
-                    defineField({ name: "image", type: "image", title: "Feature Media" }),
+                    defineField({ name: "image", type: "image", title: "Feature Media", options: { hotspot: true } }),
+                    defineField({ name: "video", type: "url", title: "Feature Video URL" }),
                     defineField({ name: "placeholderTitle", type: "string", title: "Media Placeholder Title" }),
                     defineField({ name: "caption", type: "string", title: "Caption" }),
+                    defineField({ name: "borderless", type: "boolean", title: "Borderless Media", initialValue: false }),
                   ],
+                  preview: {
+                    select: {
+                      title: "title",
+                      subtitle: "number",
+                      media: "image",
+                    },
+                  },
                 },
               ],
             }),
@@ -500,22 +628,116 @@ export const project = defineType({
               title: "heading",
               subtitle: "eyebrow",
             },
+            prepare({ title, subtitle }) {
+              return {
+                title: title || "Feature Block",
+                subtitle: subtitle || "Features",
+              };
+            },
           },
         },
-        // 4. Decision Block
+        // 5. Decision Block
         {
           name: "decisionBlock",
           type: "object",
           title: "Design Decision / Deep Dive Block",
           fields: [
-            defineField({ name: "eyebrow", type: "string", title: "Eyebrow" }),
-            defineField({ name: "heading", type: "string", title: "Heading" }),
-            defineField({ name: "body", type: "array", title: "Body Paragraphs", of: [{ type: "string" }] }),
-            defineField({ name: "placeholderTitle", type: "string", title: "Main Media Placeholder Title" }),
+            defineField({
+              name: "id",
+              type: "string",
+              title: "Block ID",
+              description: "e.g. 'sec-decision-01'",
+            }),
+            defineField({ name: "eyebrow", type: "string", title: "Eyebrow (e.g. DESIGN DECISION 01)" }),
+            defineField({ name: "heading", type: "string", title: "Heading Statement" }),
+            defineField({ name: "subheading", type: "string", title: "Subheading / Strategic Contrast" }),
+            defineField({
+              name: "context",
+              type: "array",
+              title: "Context Paragraphs (Why this was a problem)",
+              of: [{ type: "string" }],
+            }),
+            defineField({
+              name: "decision",
+              type: "array",
+              title: "Decision Paragraphs (What we chose to do)",
+              of: [{ type: "string" }],
+            }),
+            defineField({
+              name: "decisionPoints",
+              type: "array",
+              title: "Decision Points (Key pillars)",
+              of: [
+                {
+                  type: "object",
+                  title: "Decision Point",
+                  fields: [
+                    defineField({ name: "title", type: "string", title: "Title", validation: (r) => r.required() }),
+                    defineField({ name: "body", type: "text", title: "Description", rows: 2 }),
+                  ],
+                  preview: {
+                    select: { title: "title", subtitle: "body" },
+                  },
+                },
+              ],
+            }),
+            defineField({
+              name: "why",
+              type: "array",
+              title: "Why Paragraphs (Rationale)",
+              of: [{ type: "string" }],
+            }),
+            defineField({
+              name: "tradeoff",
+              type: "array",
+              title: "Trade-off Paragraphs (Honest tensions / constraints)",
+              of: [{ type: "string" }],
+            }),
+            defineField({ name: "body", type: "array", title: "Body Paragraphs (General intro / legacy)", of: [{ type: "string" }] }),
+            defineField({
+              name: "placeholderTitle",
+              type: "string",
+              title: "Product Evidence Media Placeholder Title",
+              description: "e.g. 'CLARITY — PRODUCT EVIDENCE: HAPTIC → VISUAL → AUDIO'",
+            }),
+            defineField({
+              name: "mediaType",
+              type: "string",
+              title: "Media Type",
+              options: {
+                list: [
+                  { title: "Image", value: "image" },
+                  { title: "Video", value: "video" },
+                ],
+                layout: "radio",
+              },
+              initialValue: "image",
+            }),
+            defineField({ name: "image", type: "image", title: "Product Evidence Image", options: { hotspot: true } }),
+            defineField({ name: "video", type: "url", title: "Product Evidence Video URL" }),
+            defineField({ name: "caption", type: "string", title: "Media Caption / Evidence Note" }),
+            defineField({
+              name: "cards",
+              type: "array",
+              title: "Explanation Cards (Grid under visual)",
+              of: [
+                {
+                  type: "object",
+                  title: "Card",
+                  fields: [
+                    defineField({ name: "title", type: "string", title: "Title", validation: (r) => r.required() }),
+                    defineField({ name: "body", type: "text", title: "Description", rows: 2 }),
+                  ],
+                  preview: {
+                    select: { title: "title", subtitle: "body" },
+                  },
+                },
+              ],
+            }),
             defineField({
               name: "subsections",
               type: "array",
-              title: "Subsections / Deep Dives",
+              title: "Subsections / Deep Dives (Alternative layout)",
               of: [
                 {
                   type: "object",
@@ -535,14 +757,25 @@ export const project = defineType({
               title: "heading",
               subtitle: "eyebrow",
             },
+            prepare({ title, subtitle }) {
+              return {
+                title: title || "Decision Block",
+                subtitle: subtitle || "Design Decision",
+              };
+            },
           },
         },
-        // 5. Comparison Block
+        // 6. Comparison Block
         {
           name: "comparisonBlock",
           type: "object",
           title: "Comparison Block (Before / After)",
           fields: [
+            defineField({
+              name: "id",
+              type: "string",
+              title: "Block ID",
+            }),
             defineField({ name: "eyebrow", type: "string", title: "Eyebrow" }),
             defineField({ name: "heading", type: "string", title: "Heading" }),
             defineField({ name: "body", type: "array", title: "Body Paragraphs", of: [{ type: "string" }] }),
@@ -553,15 +786,32 @@ export const project = defineType({
             defineField({ name: "placeholderTitle", type: "string", title: "Placeholder Title" }),
             defineField({ name: "caption", type: "string", title: "Caption" }),
           ],
+          preview: {
+            select: {
+              title: "heading",
+              subtitle: "eyebrow",
+            },
+            prepare({ title, subtitle }) {
+              return {
+                title: title || "Comparison Block",
+                subtitle: subtitle || "Before / After",
+              };
+            },
+          },
         },
-        // 6. Reflection Block
+        // 7. Reflection Block
         {
           name: "reflectionBlock",
           type: "object",
           title: "Reflection Block",
           fields: [
-            defineField({ name: "eyebrow", type: "string", title: "Eyebrow", initialValue: "REFLECTION" }),
-            defineField({ name: "heading", type: "string", title: "Heading", initialValue: "What I'd explore next" }),
+            defineField({
+              name: "id",
+              type: "string",
+              title: "Block ID",
+            }),
+            defineField({ name: "eyebrow", type: "string", title: "Eyebrow", initialValue: "05 — RETROSPECTIVE" }),
+            defineField({ name: "heading", type: "string", title: "Heading", initialValue: "The concept raised harder questions than the prototype answered." }),
             defineField({ name: "body", type: "array", title: "Intro Paragraphs", of: [{ type: "string" }] }),
             defineField({
               name: "items",
@@ -572,10 +822,16 @@ export const project = defineType({
                   type: "object",
                   title: "Reflection Point",
                   fields: [
-                    defineField({ name: "number", type: "string", title: "Number (e.g. Reflection 01)" }),
+                    defineField({ name: "number", type: "string", title: "Number (e.g. 01)" }),
                     defineField({ name: "heading", type: "string", title: "Point Heading" }),
                     defineField({ name: "body", type: "text", title: "Point Body", rows: 3 }),
                   ],
+                  preview: {
+                    select: {
+                      title: "heading",
+                      subtitle: "number",
+                    },
+                  },
                 },
               ],
             }),
@@ -584,6 +840,12 @@ export const project = defineType({
             select: {
               title: "heading",
               subtitle: "eyebrow",
+            },
+            prepare({ title, subtitle }) {
+              return {
+                title: title || "Reflection Block",
+                subtitle: subtitle || "Reflection",
+              };
             },
           },
         },

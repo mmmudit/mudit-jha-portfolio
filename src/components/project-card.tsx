@@ -179,15 +179,15 @@ export const ProjectCard = React.forwardRef<HTMLDivElement, ProjectCardProps>(fu
                 <div aria-hidden="true" className="absolute inset-0 bg-white/30 dark:bg-white/5 mix-blend-overlay pointer-events-none rounded-full" />
                 <div aria-hidden="true" className="absolute inset-0 bg-white/20 dark:bg-transparent mix-blend-plus-lighter pointer-events-none rounded-full" />
 
-                <p className={`relative z-10 font-sans font-medium tracking-[0.005em] leading-snug text-base transition-colors duration-200 ease-out ${isDimmed
+                <p className={`relative z-10 font-sans font-medium tracking-[0.005em] leading-snug text-base transition-colors duration-200 ease-out flex items-baseline gap-1.5 ${isDimmed
                   ? "text-zinc-400 dark:text-zinc-500"
                   : "text-[#18181b] dark:text-zinc-100 [@media(hover:hover)]:group-hover:text-black dark:[@media(hover:hover)]:group-hover:text-white"
                   }`}>
                   <span>{title}</span>
-                  <span className={`font-normal transition-colors duration-200 ease-out ${isDimmed
+                  <span className={`font-mono text-xs tracking-wider tabular-nums transition-colors duration-200 ease-out ${isDimmed
                     ? "text-zinc-300 dark:text-zinc-600"
-                    : "text-[#71717a] dark:text-zinc-400 [@media(hover:hover)]:group-hover:text-zinc-700 dark:[@media(hover:hover)]:group-hover:text-zinc-300"
-                    }`}> • {year}</span>
+                    : "text-[#8a99a8] dark:text-zinc-500 [@media(hover:hover)]:group-hover:text-zinc-700 dark:[@media(hover:hover)]:group-hover:text-zinc-400"
+                    }`}>• {year}</span>
                 </p>
               </div>
             </div>
@@ -227,13 +227,13 @@ export const ProjectCard = React.forwardRef<HTMLDivElement, ProjectCardProps>(fu
           {/* Mobile Layout */}
           <div className="md:hidden content-stretch flex flex-col font-sans font-normal items-start leading-snug px-[13px] py-0 relative shrink-0 text-base tracking-[0.01em] gap-1 text-left w-full">
             <div className="flex items-center w-full">
-              <p className={`relative shrink-0 text-left font-medium transition-colors duration-200 ${isDimmed
+              <p className={`relative shrink-0 text-left font-medium transition-colors duration-200 flex items-baseline gap-1.5 ${isDimmed
                 ? "text-zinc-400 dark:text-zinc-500"
                 : "text-[#18181b] dark:text-zinc-500 [@media(hover:hover)]:group-hover:text-black dark:[@media(hover:hover)]:group-hover:text-zinc-600"
                 }`}>
                 <span>{title}</span>
-                <span className={`font-normal tabular-nums transition-colors duration-200 ${isDimmed ? "text-zinc-300 dark:text-zinc-600" : "text-zinc-500 dark:text-zinc-400"
-                  }`}> • {year}</span>
+                <span className={`font-mono text-xs tracking-wider tabular-nums transition-colors duration-200 ${isDimmed ? "text-zinc-300 dark:text-zinc-600" : "text-[#8a99a8] dark:text-zinc-500"
+                  }`}>• {year}</span>
               </p>
             </div>
             <p className={`relative shrink-0 w-full text-left font-normal leading-tight text-pretty transition-colors duration-200 ${isDimmed

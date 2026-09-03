@@ -193,7 +193,7 @@ export function AboutEssaysSection() {
 
                       {/* Badge if present */}
                       {item.badge && (
-                        <span className="inline-flex items-center px-1.5 py-0.5 rounded-[3px] bg-[rgba(254,48,1,0.08)] border border-[rgba(254,48,1,0.25)] text-[9px] font-display font-medium uppercase tracking-[0.5px] text-[rgba(254,48,1,0.85)]">
+                        <span className="inline-flex items-center px-1.5 py-0.5 rounded-[3px] bg-[rgba(254,48,1,0.08)] border border-[rgba(254,48,1,0.25)] text-[9px] font-mono font-medium uppercase tracking-wider text-[rgba(254,48,1,0.85)]">
                           {item.badge}
                         </span>
                       )}
@@ -207,7 +207,7 @@ export function AboutEssaysSection() {
 
                 {/* Right: Date */}
                 <div className="shrink-0 flex items-center gap-2 text-right">
-                  <span className="tabular-nums font-display text-[11px] sm:text-[12px] text-zinc-400 font-normal">
+                  <span className="tabular-nums font-mono text-[11px] sm:text-xs text-zinc-400 font-normal tracking-wide">
                     {item.date}
                   </span>
                   <ExternalLink className="size-3 text-zinc-400 opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-[transform,opacity] duration-200 ease-out hidden sm:block" />
@@ -256,7 +256,7 @@ export function AboutEssaysSection() {
                       </div>
                     </div>
                     <div className="shrink-0 flex items-center gap-2 text-right">
-                      <span className="tabular-nums font-display text-[11px] sm:text-[12px] text-zinc-400 font-normal">
+                      <span className="tabular-nums font-mono text-[11px] sm:text-xs text-zinc-400 font-normal tracking-wide">
                         {item.date}
                       </span>
                       <ExternalLink className="size-3 text-zinc-400 opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-[transform,opacity] duration-200 ease-out hidden sm:block" />
@@ -273,7 +273,7 @@ export function AboutEssaysSection() {
               type="button"
               data-cuelume-toggle
               onClick={() => setIsExpanded(!isExpanded)}
-              className="pressable inline-flex items-center gap-1.5 text-[12px] font-display font-normal text-zinc-400 hover:text-zinc-700 active:scale-[0.96] transition-[transform,color,background-color] duration-150 py-1 px-3 rounded-full hover:bg-[#eae3d2]/40"
+              className="pressable inline-flex items-center gap-1.5 text-xs font-mono font-normal tracking-wide uppercase text-zinc-400 hover:text-zinc-700 active:scale-[0.96] transition-[transform,color,background-color] duration-150 py-1 px-3 rounded-full hover:bg-[#eae3d2]/40"
             >
               <span>{isExpanded ? "Show fewer essays" : "View all essays"}</span>
               <ChevronDown

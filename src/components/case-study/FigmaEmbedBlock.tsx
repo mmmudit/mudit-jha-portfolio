@@ -1,8 +1,8 @@
 "use client";
 
 import React, { useState } from "react";
-import { motion, useReducedMotion } from "framer-motion";
-import { ArrowUpRight, Maximize2, ExternalLink } from "lucide-react";
+import { useReducedMotion } from "framer-motion";
+import { ArrowUpRight, ExternalLink } from "lucide-react";
 import { FigmaEmbedBlockItem } from "@/types/project";
 
 interface FigmaEmbedBlockProps {
@@ -117,7 +117,19 @@ export function FigmaEmbedBlock({ block, className = "" }: FigmaEmbedBlockProps)
               className="pressable hidden sm:inline-flex items-center gap-1 px-2.5 py-1 text-[11px] font-mono font-medium text-zinc-600 hover:text-zinc-950 bg-black/5 hover:bg-black/10 rounded-full transition-colors cursor-pointer"
               title={isExpanded ? "Collapse View" : "Expand Height"}
             >
-              <Maximize2 className="size-3" />
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="size-3"
+                aria-hidden="true"
+              >
+                <polyline points="15 3 21 3 21 9" />
+                <polyline points="9 21 3 21 3 15" />
+              </svg>
               <span>{isExpanded ? "Collapse" : "Expand"}</span>
             </button>
 

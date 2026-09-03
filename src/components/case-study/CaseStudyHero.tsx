@@ -48,26 +48,16 @@ export function CaseStudyHero({ project, className = "" }: CaseStudyHeroProps) {
         )}
       </div>
 
-      {/* Fallback 4-Field Metadata Grid (Only for legacy projects without snapshot) */}
-      {!project.snapshot && (
-        <CaseStudyMetadata
-          metadata={project.metadata}
-          role={project.role}
-          event={project.event || project.projectType}
-          team={project.team}
-          skills={project.skills}
-          year={project.year}
-          href={project.href}
-        />
-      )}
 
       {/* Large Hero Demo Container — Always Above Intro Narrative */}
       <div
-        className={`relative w-full overflow-hidden ${!hasHeroMedia ? "aspect-[16/10] sm:aspect-[16/9]" : ""
-          } ${isBorderless
+        className={`relative w-full overflow-hidden flex items-center justify-center ${
+          !hasHeroMedia ? "aspect-[16/10] sm:aspect-[16/9]" : ""
+        } ${
+          isBorderless
             ? "rounded-[16px] sm:rounded-[22px] bg-transparent"
             : "rounded-[20px] sm:rounded-[26px] bg-[#e8ebe4]/60 border border-black/8 shadow-[0_1px_2px_rgba(0,0,0,0.03),0_4px_16px_rgba(0,0,0,0.04),inset_0_1px_0_rgba(255,255,255,0.8)]"
-          }`}
+        }`}
       >
         {hasHeroMedia ? (
           heroVideo ? (
@@ -77,8 +67,9 @@ export function CaseStudyHero({ project, className = "" }: CaseStudyHeroProps) {
               muted
               playsInline
               loop
-              className={`w-full h-auto block ${isBorderless ? "rounded-[16px] sm:rounded-[22px]" : "rounded-[20px] sm:rounded-[26px]"
-                }`}
+              className={`w-full max-w-full h-auto max-h-[82vh] object-contain mx-auto block ${
+                isBorderless ? "rounded-[16px] sm:rounded-[22px]" : "rounded-[20px] sm:rounded-[26px]"
+              }`}
               aria-label={heroMedia?.alt || `${project.title} Hero Demo`}
             />
           ) : heroImage ? (
@@ -90,8 +81,9 @@ export function CaseStudyHero({ project, className = "" }: CaseStudyHeroProps) {
               priority
               sizes="(max-width: 768px) 100vw, 960px"
               onLoad={() => setImageLoaded(true)}
-              className={`w-full h-auto block transition-[opacity,filter,transform] duration-300 ease-out ${imageLoaded ? "opacity-100 blur-0 scale-100" : "opacity-0 blur-[4px] scale-[1.01]"
-                }`}
+              className={`w-full max-w-full h-auto max-h-[82vh] object-contain mx-auto block transition-[opacity,filter,transform] duration-300 ease-out ${
+                imageLoaded ? "opacity-100 blur-0 scale-100" : "opacity-0 blur-[4px] scale-[1.01]"
+              }`}
             />
           ) : null
         ) : (
@@ -128,57 +120,25 @@ export function CaseStudyHero({ project, className = "" }: CaseStudyHeroProps) {
         </p>
       )}
 
-      {/* Intro Narrative (Directly Below Hero Visual) */}
+      {/* Case Study Metadata Field (Immediately After Hero Image) */}
+      <div className="pt-2">
+        <CaseStudyMetadata
+          metadata={project.metadata}
+          role={project.role}
+          event={project.event || project.projectType}
+          team={project.team}
+          skills={project.skills}
+          year={project.year}
+          href={project.href}
+        />
+      </div>
+
+      {/* Intro Narrative (Directly Below Metadata) */}
       {project.introParagraphs && project.introParagraphs.length > 0 && (
         <div className="space-y-3.5 pt-2 font-sans text-sm sm:text-base leading-[1.7] text-zinc-700 max-w-3xl text-pretty">
           {project.introParagraphs.map((p, i) => (
             <p key={i}>{p}</p>
           ))}
-        </div>
-      )}
-
-      {/* Tiny Project Snapshot (Immediately Below Hero Visual & Intro Narrative) */}
-      {project.snapshot && (
-        <div className="pt-2">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 p-5 sm:p-6 rounded-[20px] sm:rounded-[24px] bg-[#f5f4ee]/80 border border-black/6 shadow-2xs">
-            <div className="space-y-1">
-              <p className="font-mono text-xs uppercase tracking-wider text-[#8a99a8] font-normal">
-                Role
-              </p>
-              <p className="font-sans text-xs sm:text-sm font-normal text-[#707f8c] leading-relaxed">
-                {project.snapshot.role}
-              </p>
-            </div>
-
-            <div className="space-y-1">
-              <p className="font-mono text-xs uppercase tracking-wider text-[#8a99a8] font-normal">
-                Team
-              </p>
-              <p className="font-sans text-xs sm:text-sm font-normal text-[#707f8c] leading-relaxed">
-                {Array.isArray(project.snapshot.team)
-                  ? project.snapshot.team.map((t) => (typeof t === "string" ? t : t.text)).join(", ")
-                  : project.snapshot.team}
-              </p>
-            </div>
-
-            <div className="space-y-1">
-              <p className="font-mono text-xs uppercase tracking-wider text-[#8a99a8] font-normal">
-                Challenge
-              </p>
-              <p className="font-sans text-xs sm:text-sm font-normal text-[#707f8c] leading-relaxed">
-                {project.snapshot.challenge}
-              </p>
-            </div>
-
-            <div className="space-y-1">
-              <p className="font-mono text-xs uppercase tracking-wider text-[#8a99a8] font-normal">
-                Concept
-              </p>
-              <p className="font-sans text-xs sm:text-sm font-normal text-[#707f8c] leading-relaxed">
-                {project.snapshot.concept}
-              </p>
-            </div>
-          </div>
         </div>
       )}
     </header>

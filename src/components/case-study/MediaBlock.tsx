@@ -52,7 +52,7 @@ export function MediaBlock({ block, className = "" }: MediaBlockProps) {
       className={`my-8 sm:my-12 scroll-mt-10 ${sizeClasses} ${className}`}
     >
       <div
-        className={`relative isolate overflow-hidden ${
+        className={`relative isolate overflow-hidden flex items-center justify-center ${
           isBorderless
             ? "rounded-[14px] sm:rounded-[20px] bg-transparent"
             : "rounded-[20px] sm:rounded-[26px] bg-[#e8ebe4]/50 border border-black/8 shadow-[0_1px_2px_rgba(0,0,0,0.03),0_4px_16px_rgba(0,0,0,0.04),inset_0_1px_0_rgba(255,255,255,0.8)]"
@@ -69,7 +69,7 @@ export function MediaBlock({ block, className = "" }: MediaBlockProps) {
               playsInline
               loop
               controls={false}
-              className={`w-full h-auto object-contain max-h-[560px] ${
+              className={`w-full max-w-full h-auto max-h-[82vh] object-contain mx-auto block ${
                 isBorderless ? "rounded-[14px] sm:rounded-[20px]" : "rounded-[20px] sm:rounded-[26px]"
               }`}
               aria-label={block.alt || placeholderLabel}
@@ -82,7 +82,7 @@ export function MediaBlock({ block, className = "" }: MediaBlockProps) {
               height={1080}
               sizes="(max-width: 768px) 100vw, 960px"
               onLoad={() => setImageLoaded(true)}
-              className={`w-full h-auto block transition-[opacity,filter,transform] duration-300 ease-out ${
+              className={`w-full max-w-full h-auto max-h-[82vh] object-contain mx-auto block transition-[opacity,filter,transform] duration-300 ease-out ${
                 imageLoaded ? "opacity-100 blur-0 scale-100" : "opacity-0 blur-[4px] scale-[1.01]"
               }`}
             />

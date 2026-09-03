@@ -2,6 +2,7 @@
 @import "shadcn/tailwind.css";
 
 :root {
+  --font-geist-mono: var(--font-geist-pixel-square);
   --dough: oklch(0.985 0.007 95.8);
   --willow-grey: oklch(0.852 0.035 127.5);
   --rust-grey: oklch(0.435 0.024 205.2);
@@ -26,7 +27,8 @@
   --color-zinc-300: var(--zinc-300);
   --color-status-green: var(--status-green);
   --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-mono: var(--font-geist-pixel-square), monospace;
+  --font-pixel: var(--font-geist-pixel-square);
   --font-display: var(--font-figtree);
   --font-hand: var(--font-myfont);
 }

@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
-import { Figtree, Geist, Geist_Mono } from "next/font/google";
+import { Figtree, Geist } from "next/font/google";
+import { GeistPixelSquare } from "geist/font/pixel";
 import "./globals.css";
 import AgentationClient from "../components/agentation-client";
 import PageTransition from "../components/PageTransition";
@@ -16,15 +17,11 @@ const geistSans = Geist({
   subsets: ["latin"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
-
 const figtree = Figtree({
   variable: "--font-figtree",
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700", "800", "900"],
+  weight: ["300", "400", "500", "600", "700", "800", "900"],
+  style: ["normal", "italic"],
 });
 
 const myFont = localFont({
@@ -55,7 +52,7 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={`${geistSans.variable} ${geistMono.variable} ${figtree.variable} ${myFont.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${GeistPixelSquare.variable} ${figtree.variable} ${myFont.variable} h-full antialiased`}
     >
       <body className="min-h-full text-zinc-800 relative">
         <IntroLoader>

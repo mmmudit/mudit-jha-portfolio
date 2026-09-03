@@ -387,10 +387,10 @@ export function AboutMusicSection() {
                 animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
                 exit={{ opacity: 0, y: -4, filter: "blur(2px)" }}
                 transition={{ duration: 0.15, ease: "easeInOut" }}
-                className="font-display font-normal text-[13px] sm:text-[14px] text-[#7f7f80] tracking-[0.08px]"
+                className="font-mono text-xs sm:text-[13px] text-[#7f7f80] tracking-wide"
               >
                 <span className="text-zinc-900 font-medium">{activeTrack.title}</span>
-                {activeTrack.artist && ` — ${activeTrack.artist}`}
+                {activeTrack.artist && <span className="text-zinc-500"> — {activeTrack.artist}</span>}
               </motion.p>
             )}
           </AnimatePresence>

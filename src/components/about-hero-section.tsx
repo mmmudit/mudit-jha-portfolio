@@ -224,7 +224,7 @@ export function AboutHeroSection() {
                     }
                 }
                 transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
-                className="font-sans text-[15px] sm:text-[16px] text-zinc-500 font-normal select-none pointer-events-none"
+                className="font-mono text-xs sm:text-[13px] text-zinc-400 font-normal uppercase tracking-wider select-none pointer-events-none"
                 aria-hidden="true"
               >
                 / MOO-dit JHAH /
@@ -239,13 +239,13 @@ export function AboutHeroSection() {
               <div className="font-display font-semibold text-zinc-800">
                 Design Engineer
               </div>
-              <div className="flex flex-wrap items-center gap-4 sm:gap-6">
-                <div className="flex items-center gap-1.5 font-display font-normal">
-                  <MapPin className="size-4 text-zinc-500 stroke-[1.75]" />
+              <div className="flex flex-wrap items-center gap-4 sm:gap-6 font-mono text-xs sm:text-[13px] tracking-wide text-zinc-500 font-normal">
+                <div className="flex items-center gap-1.5">
+                  <MapPin className="size-3.5 text-zinc-400 stroke-[1.75]" />
                   <span>Minneapolis, MN</span>
                 </div>
-                <div className="flex items-center gap-1.5 font-display font-normal">
-                  <GraduationCap className="size-4 text-zinc-500 stroke-[1.75]" />
+                <div className="flex items-center gap-1.5">
+                  <GraduationCap className="size-3.5 text-zinc-400 stroke-[1.75]" />
                   <span>B.S. CS + UX &amp; Psychology @ UMN</span>
                 </div>
               </div>
@@ -325,7 +325,7 @@ export function AboutHeroSection() {
                 </div>
 
                 {/* Right Quick Actions */}
-                <div className="flex items-center gap-1 sm:gap-2 text-[12px] font-sans">
+                <div className="flex items-center gap-1 sm:gap-2 text-[11px] sm:text-xs font-mono tracking-wider uppercase text-[#82745d]">
                   {/* Email button with copy state and rich preview */}
                   <EmailPreviewBadge>
                     <div className="relative inline-flex items-center">
