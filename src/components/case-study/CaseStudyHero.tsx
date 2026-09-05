@@ -2,7 +2,8 @@
 
 import React, { useState } from "react";
 import Image from "next/image";
-import { motion, useReducedMotion } from "framer-motion";
+import MuxPlayer from "@mux/mux-player-react";
+import { useReducedMotion } from "framer-motion";
 import { Project } from "@/types/project";
 import { CaseStudyMetadata } from "./CaseStudyMetadata";
 
@@ -48,8 +49,6 @@ export function CaseStudyHero({ project, className = "" }: CaseStudyHeroProps) {
   const heroVideo = heroMedia?.video;
 
   const displayTitle = project.tagline || project.title;
-  const projectIdentifier = project.title.toUpperCase();
-
   const isBorderless = Boolean(heroMedia?.borderless);
 
   return (
@@ -77,8 +76,8 @@ export function CaseStudyHero({ project, className = "" }: CaseStudyHeroProps) {
       </div>
 
 
-      {/* Large Hero Demo Container — Always Above Intro Narrative */}
-      <div
+      {/* Large Hero Demo Container — shown only when the author has supplied media */}
+      {hasHeroMedia && <div
         className={`relative w-full overflow-hidden flex items-center justify-center ${
           !hasHeroMedia ? "aspect-[16/10] sm:aspect-[16/9]" : ""
         } ${
@@ -89,21 +88,20 @@ export function CaseStudyHero({ project, className = "" }: CaseStudyHeroProps) {
       >
         {hasHeroMedia ? (
           muxPlaybackId ? (
-            <video
+            <MuxPlayer
+              playbackId={muxPlaybackId}
               autoPlay={!prefersReducedMotion}
               muted
               playsInline
               loop
-              poster={heroImage}
+              thumbnailTime={muxThumbTime}
+              metadataVideoTitle={project.title}
               className={`w-full max-w-full h-auto max-h-[82vh] object-contain mx-auto block ${
                 isBorderless ? "rounded-[16px] sm:rounded-[22px]" : "rounded-[20px] sm:rounded-[26px]"
               }`}
-              aria-label={heroMedia?.alt || `${project.title} Hero Demo`}
-            >
-              <source src={`https://stream.mux.com/${muxPlaybackId}.m3u8`} type="application/x-mpegURL" />
-              <source src={`https://stream.mux.com/${muxPlaybackId}/high.mp4`} type="video/mp4" />
-              <source src={`https://stream.mux.com/${muxPlaybackId}/medium.mp4`} type="video/mp4" />
-            </video>
+              title={heroMedia?.alt || `${project.title} Hero Demo`}
+              style={{ "--controls": "none" }}
+            />
           ) : heroVideo ? (
             <video
               src={heroVideo}
@@ -130,24 +128,7 @@ export function CaseStudyHero({ project, className = "" }: CaseStudyHeroProps) {
               }`}
             />
           ) : null
-        ) : (
-          <div className="size-full flex flex-col items-center justify-center p-6 sm:p-10 text-center bg-[#f5f4ee]/90 dot-grid">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/80 border border-black/5 shadow-xs mb-3">
-              <span className="size-2 rounded-full bg-[#c8d5bb]" />
-              <span className="font-mono text-[11px] uppercase tracking-wider text-[#47585c] font-medium">
-                Hero Product Demo
-              </span>
-            </div>
-
-            <p className="font-mono text-xs sm:text-sm font-semibold tracking-tight text-zinc-800 uppercase max-w-md px-4 py-2 rounded-xl bg-white/80 border border-dashed border-zinc-300 shadow-2xs">
-              [ {heroMedia?.placeholderTitle || `${projectIdentifier} — HERO PRODUCT DEMO`} ]
-            </p>
-
-            <p className="font-sans text-xs text-zinc-500 mt-2.5 max-w-sm">
-              8–12 sec polished product demo showcasing real-time interaction feedback
-            </p>
-          </div>
-        )}
+        ) : null}
 
         {/* Soft edge inner ring (only if tactile border enabled) */}
         {!isBorderless && (
@@ -156,7 +137,7 @@ export function CaseStudyHero({ project, className = "" }: CaseStudyHeroProps) {
             className="absolute inset-0 pointer-events-none rounded-[20px] sm:rounded-[26px] border border-black/5"
           />
         )}
-      </div>
+      </div>}
 
       {heroMedia?.caption && (
         <p className="text-center font-sans text-xs sm:text-[13px] text-[#47585c] max-w-xl mx-auto text-pretty">

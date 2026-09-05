@@ -1,4 +1,15 @@
 import type { NextConfig } from "next";
+import { execSync } from "child_process";
+
+function getDeploymentDate(): string {
+  try {
+    const gitDate = execSync("git log -1 --format=%aI", { encoding: "utf8" }).trim();
+    if (gitDate) return gitDate;
+  } catch {
+    // Fallback if git command is not available in environment
+  }
+  return new Date().toISOString();
+}
 
 const nextConfig: NextConfig = {
   images: {
@@ -96,7 +107,7 @@ const nextConfig: NextConfig = {
     ],
   },
   env: {
-    NEXT_PUBLIC_BUILD_DATE: new Date().toISOString(),
+    NEXT_PUBLIC_BUILD_DATE: getDeploymentDate(),
   },
 };
 

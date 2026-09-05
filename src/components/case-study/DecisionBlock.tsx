@@ -4,6 +4,7 @@ import React from "react";
 import Image from "next/image";
 import { motion, useReducedMotion } from "framer-motion";
 import { DecisionBlockItem } from "@/types/project";
+import { MediaBlock } from "./MediaBlock";
 
 interface DecisionBlockProps {
   block: DecisionBlockItem;
@@ -74,7 +75,7 @@ export function DecisionBlock({ block, className = "" }: DecisionBlockProps) {
         <div className="space-y-5 sm:space-y-6 pt-1 max-w-3xl">
           {/* Context */}
           {contextList.length > 0 && (
-            <div className="space-y-2 border-l-2 border-[#c8d5bb] pl-4 sm:pl-5">
+            <div className="space-y-2  border-l-2 border-[#c8d5bb] bg-[#c8d5bb]/12 px-4 py-3.5 sm:px-5 sm:py-4">
               <p className="font-mono text-[11px] uppercase tracking-wider text-[#47585c] font-semibold">
                 Context
               </p>
@@ -88,7 +89,7 @@ export function DecisionBlock({ block, className = "" }: DecisionBlockProps) {
 
           {/* Decision */}
           {(decisionList.length > 0 || (block.decisionPoints && block.decisionPoints.length > 0)) && (
-            <div className="space-y-2.5 border-l-2 border-zinc-900 pl-4 sm:pl-5">
+            <div className="space-y-2.5  border-l-2 border-zinc-900 bg-zinc-900/[0.035] px-4 py-3.5 sm:px-5 sm:py-4">
               <p className="font-mono text-[11px] uppercase tracking-wider text-zinc-900 font-semibold">
                 Decision
               </p>
@@ -121,7 +122,7 @@ export function DecisionBlock({ block, className = "" }: DecisionBlockProps) {
 
           {/* Why */}
           {whyList.length > 0 && (
-            <div className="space-y-2 border-l-2 border-[#aebd9d] pl-4 sm:pl-5">
+            <div className="space-y-2 border-l-2 border-[#aebd9d] bg-[#c8d5bb]/10 px-4 py-3.5 sm:px-5 sm:py-4">
               <p className="font-mono text-[11px] uppercase tracking-wider text-[#47585c] font-semibold">
                 Why
               </p>
@@ -135,7 +136,7 @@ export function DecisionBlock({ block, className = "" }: DecisionBlockProps) {
 
           {/* Trade-off */}
           {tradeoffList.length > 0 && (
-            <div className="space-y-2 border-l-2 border-amber-600/60 pl-4 sm:pl-5">
+            <div className="space-y-2 border-l-2 border-amber-600/60 bg-amber-50/70 px-4 py-3.5 sm:px-5 sm:py-4">
               <p className="font-mono text-[11px] uppercase tracking-wider text-amber-800 font-semibold">
                 Trade-off
               </p>
@@ -149,32 +150,9 @@ export function DecisionBlock({ block, className = "" }: DecisionBlockProps) {
         </div>
       )}
 
-      {/* Large Product Evidence Visual */}
-      {block.placeholderTitle && (
-        <div className="space-y-2.5 pt-2">
-          <div className="relative aspect-[16/9] w-full rounded-[20px] sm:rounded-[24px] overflow-hidden bg-[#f5f4ee]/80 border border-black/8 flex flex-col items-center justify-center p-6 text-center dot-grid shadow-xs">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/90 border border-black/5 shadow-xs mb-3">
-              <span className="size-2 rounded-full bg-[#c8d5bb]" />
-              <span className="font-mono text-[11px] uppercase tracking-wider text-[#47585c] font-semibold">
-                Product Evidence
-              </span>
-            </div>
-
-            <p className="font-mono text-xs sm:text-sm font-semibold tracking-tight text-zinc-800 uppercase max-w-lg px-4 py-2.5 rounded-xl bg-white/85 border border-dashed border-zinc-300 shadow-2xs">
-              [ {block.placeholderTitle} ]
-            </p>
-
-            <p className="font-sans text-xs text-zinc-500 mt-2.5 max-w-md">
-              High-fidelity prototype interaction demonstrating the design decision in action
-            </p>
-          </div>
-
-          {block.caption && (
-            <p className="text-center font-sans text-xs sm:text-[13px] text-[#47585c] max-w-xl mx-auto text-pretty">
-              {block.caption}
-            </p>
-          )}
-        </div>
+      {/* Product evidence only appears when a real asset exists. */}
+      {(block.image || block.video || block.muxPlaybackId || block.muxVideo?.playbackId) && (
+        <MediaBlock block={{ ...block, _type: "mediaBlock", size: "wide" }} />
       )}
 
       {/* Small Explanation Cards Underneath */}
@@ -211,13 +189,7 @@ export function DecisionBlock({ block, className = "" }: DecisionBlockProps) {
                 {sub.body}
               </p>
 
-              {sub.placeholderTitle && (
-                <div className="relative aspect-[16/10] w-full rounded-[14px] overflow-hidden bg-white/70 border border-black/5 flex items-center justify-center p-4 text-center dot-grid">
-                  <p className="font-mono text-[11px] sm:text-xs font-semibold tracking-tight text-zinc-700 uppercase px-2.5 py-1 rounded bg-white/90 border border-dashed border-zinc-300">
-                    [ {sub.placeholderTitle} ]
-                  </p>
-                </div>
-              )}
+              {sub.media && <div className="relative aspect-[16/10] w-full rounded-[14px] overflow-hidden bg-white/70 border border-black/5"><Image src={sub.media} alt={sub.title} fill className="object-contain" /></div>}
             </div>
           ))}
         </div>
@@ -225,4 +197,3 @@ export function DecisionBlock({ block, className = "" }: DecisionBlockProps) {
     </section>
   );
 }
-

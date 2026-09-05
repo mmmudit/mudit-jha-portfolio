@@ -50,7 +50,7 @@ export function CaseStudySection({ block, className = "" }: CaseStudySectionProp
 
       {/* Callout Question */}
       {block.largeQuestion && (
-        <div className="my-3.5 sm:my-4 p-4 sm:p-5 rounded-[16px] bg-[#c8d5bb]/15 border border-[#c8d5bb]/40 max-w-2xl">
+        <div className="my-3.5 sm:my-4 border-l-[3px] border-[#c8d5bb]/60 bg-[#c8d5bb]/20 px-4 py-4 sm:px-5 sm:py-5 rounded-r-[16px] max-w-2xl">
           <p className="font-display font-[300] italic text-base sm:text-lg md:text-[19px] text-zinc-800 leading-relaxed tracking-normal text-balance">
             “{block.largeQuestion.replace(/^["“]|["”]$/g, "")}”
           </p>

@@ -81,10 +81,11 @@ export function ExpandedProjectView({
     if (project.timelineItems && project.timelineItems.length > 0) {
       return project.timelineItems;
     }
-    if (project.caseStudy && project.caseStudy.length > 0) {
+    const projectBlocks = project.content?.length ? project.content : project.caseStudy;
+    if (projectBlocks && projectBlocks.length > 0) {
       const items: { id: string; label: string }[] = [];
-      for (let idx = 0; idx < project.caseStudy.length; idx++) {
-        const block = project.caseStudy[idx];
+      for (let idx = 0; idx < projectBlocks.length; idx++) {
+        const block = projectBlocks[idx];
         const eyebrow = "eyebrow" in block ? block.eyebrow : undefined;
         const heading = "heading" in block ? block.heading : undefined;
         const blockId = block.id || block._key;
@@ -100,7 +101,7 @@ export function ExpandedProjectView({
       if (items.length > 0) return items;
     }
     return DEFAULT_SECTIONS;
-  }, [project.timelineItems, project.caseStudy]);
+  }, [project.timelineItems, project.caseStudy, project.content]);
 
   // Track active section on window scroll
   useEffect(() => {

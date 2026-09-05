@@ -1,4 +1,4 @@
-import { defineField, defineType } from "sanity";
+import { defineArrayMember, defineField, defineType } from "sanity";
 
 export const project = defineType({
   name: "project",
@@ -327,9 +327,30 @@ export const project = defineType({
       initialValue: 1,
     }),
     defineField({
+      name: "content",
+      title: "Case study content",
+      description: "Add, reorder, and remove narrative blocks. Layout choices are intentionally limited to each block’s supported variants.",
+      type: "array",
+      of: [
+        defineArrayMember({ type: "narrative" }),
+        defineArrayMember({ type: "statement" }),
+        defineArrayMember({ type: "designDecision" }),
+        defineArrayMember({ type: "media" }),
+        defineArrayMember({ type: "feature" }),
+        defineArrayMember({ type: "highlightFeature" }),
+        defineArrayMember({ type: "gallery" }),
+        defineArrayMember({ type: "process" }),
+        defineArrayMember({ type: "comparison" }),
+        defineArrayMember({ type: "results" }),
+        defineArrayMember({ type: "reflection" }),
+      ],
+    }),
+    defineField({
       name: "caseStudy",
       type: "array",
       title: "Case Study Structured Sections",
+      hidden: true,
+      readOnly: true,
       description: "Modular content blocks for the editorial tactile case study",
       of: [
         // 1. Text Section

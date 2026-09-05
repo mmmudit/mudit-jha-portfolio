@@ -20,17 +20,19 @@ const socialLinks = [
 function getLatestDeploymentDate(): string {
   const rawDate =
     process.env.NEXT_PUBLIC_BUILD_DATE ||
-    process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_DATE ||
-    new Date().toISOString();
+    process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_DATE;
 
   try {
-    const d = new Date(rawDate);
+    const d = rawDate ? new Date(rawDate) : new Date();
+    if (isNaN(d.getTime())) {
+      return "09-03-2026";
+    }
     const mm = String(d.getMonth() + 1).padStart(2, "0");
     const dd = String(d.getDate()).padStart(2, "0");
     const yyyy = d.getFullYear();
     return `${mm}-${dd}-${yyyy}`;
   } catch {
-    return "09-02-2026";
+    return "09-03-2026";
   }
 }
 

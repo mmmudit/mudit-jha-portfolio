@@ -53,6 +53,7 @@ export function FeatureBlock({ block, className = "" }: FeatureBlockProps) {
         <div className="space-y-6 sm:space-y-8 pt-2">
           {block.features.map((feat, idx) => {
             const featKey = feat._key || `feat-${idx}`;
+            const hasMedia = Boolean(feat.image || feat.video || feat.muxPlaybackId || feat.muxVideo?.playbackId);
             return (
               <div
                 key={featKey}
@@ -71,8 +72,8 @@ export function FeatureBlock({ block, className = "" }: FeatureBlockProps) {
                   {feat.body}
                 </p>
 
-                {/* Feature Media / Placeholder */}
-                <div className="relative aspect-[16/9] w-full rounded-[16px] sm:rounded-[20px] overflow-hidden bg-white/70 border border-black/5 flex flex-col items-center justify-center p-6 text-center dot-grid">
+                {/* Feature Media */}
+                {hasMedia && <div className="relative aspect-[16/9] w-full rounded-[16px] sm:rounded-[20px] overflow-hidden bg-white/70 border border-black/5 flex flex-col items-center justify-center p-6 text-center dot-grid">
                   {feat.image ? (
                     <Image
                       src={feat.image}
@@ -120,19 +121,9 @@ export function FeatureBlock({ block, className = "" }: FeatureBlockProps) {
                       loop
                       className="size-full object-contain"
                     />
-                  ) : (
-                    <div className="space-y-2">
-                      <p className="font-mono text-xs sm:text-sm font-semibold tracking-tight text-zinc-800 uppercase px-3.5 py-1.5 rounded-lg bg-white/80 border border-dashed border-zinc-300">
-                        [ {feat.placeholderTitle || `${feat.title.toUpperCase()} DEMO`} ]
-                      </p>
-                      {feat.caption && (
-                        <p className="font-sans text-xs text-zinc-500 max-w-md">
-                          {feat.caption}
-                        </p>
-                      )}
-                    </div>
-                  )}
-                </div>
+                  ) : null}
+                </div>}
+                {hasMedia && feat.caption && <p className="font-sans text-xs text-zinc-500 max-w-md">{feat.caption}</p>}
               </div>
             );
           })}

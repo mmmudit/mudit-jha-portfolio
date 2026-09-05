@@ -37,6 +37,11 @@ function getProjectCursorLabel(project: ProjectData) {
   return requestedLabel || project.actionText?.trim() || "View project";
 }
 
+function projectPath(project: ProjectData) {
+  const slug = project.slug || project.title.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+  return `/projects/${encodeURIComponent(String(slug))}`;
+}
+
 export function ProjectGrid({ projects }: ProjectGridProps) {
   const [activeCard, setActiveCard] = useState<ActiveProjectCardState | null>(null);
   const [currentIdx, setCurrentIdx] = useState<number | null>(null);
@@ -54,6 +59,12 @@ export function ProjectGrid({ projects }: ProjectGridProps) {
     const id = project._id || project.id || boundedIdx;
     const projectKey = String(id);
     setCurrentIdx(boundedIdx);
+
+    if (typeof window !== "undefined") {
+      const path = projectPath(project);
+      const method = activeCard ? "replaceState" : "pushState";
+      window.history[method]({ projectModal: true }, "", path);
+    }
 
     const el = cardRefs.current[projectKey];
     const targetW = typeof window !== "undefined"
@@ -267,6 +278,7 @@ export function ProjectGrid({ projects }: ProjectGridProps) {
           }
         }}
         onClose={() => {
+          if (typeof window !== "undefined") window.history.pushState({}, "", "/");
           setActiveCard(null);
         }}
       />

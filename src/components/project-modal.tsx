@@ -308,10 +308,11 @@ export function ProjectModal({
     if (currentProject?.timelineItems && currentProject.timelineItems.length > 0) {
       return currentProject.timelineItems;
     }
-    if (currentProject?.caseStudy && currentProject.caseStudy.length > 0) {
+    const projectBlocks = currentProject?.content?.length ? currentProject.content : currentProject?.caseStudy;
+    if (projectBlocks && projectBlocks.length > 0) {
       const items: { id: string; label: string }[] = [];
-      for (let idx = 0; idx < currentProject.caseStudy.length; idx++) {
-        const block = currentProject.caseStudy[idx];
+      for (let idx = 0; idx < projectBlocks.length; idx++) {
+        const block = projectBlocks[idx];
         const eyebrow = "eyebrow" in block ? block.eyebrow : undefined;
         const heading = "heading" in block ? block.heading : undefined;
         const blockId = block.id || block._key;

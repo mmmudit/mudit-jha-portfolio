@@ -74,6 +74,10 @@ export function MediaBlock({ block, className = "" }: MediaBlockProps) {
 
   const isBorderless = Boolean(block.borderless || block.removeBorder);
 
+  // Draft media stays out of the public case study. The surrounding narrative
+  // remains intact and the block becomes visible as soon as an asset is added.
+  if (!hasRealMedia) return null;
+
   return (
     <figure
       id={block.id || block._key}
@@ -132,25 +136,7 @@ export function MediaBlock({ block, className = "" }: MediaBlockProps) {
               }`}
             />
           ) : null
-        ) : (
-          /* Tasteful Tactile Paper Development Placeholder */
-          <div className="relative aspect-[16/10] sm:aspect-[16/9] w-full flex flex-col items-center justify-center p-6 sm:p-10 text-center bg-[#f5f4ee]/80 dot-grid">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/80 border border-black/5 shadow-xs mb-3">
-              <span className="size-2 rounded-full bg-[#c8d5bb]" />
-              <span className="font-mono text-[11px] uppercase tracking-wider text-[#47585c] font-medium">
-                {block.mediaType === "video" ? "UI Demonstration" : "Visual Evidence"}
-              </span>
-            </div>
-
-            <p className="font-mono text-xs sm:text-sm font-semibold tracking-tight text-zinc-800 uppercase max-w-md px-4 py-2 rounded-xl bg-white/70 border border-dashed border-zinc-300 shadow-2xs">
-              [ {placeholderLabel} ]
-            </p>
-
-            <p className="font-sans text-xs text-zinc-500 mt-2.5 max-w-sm">
-              Replace via Sanity CMS or asset upload
-            </p>
-          </div>
-        )}
+        ) : null}
 
         {/* Soft edge inner ring (only if tactile border is enabled) */}
         {!isBorderless && (

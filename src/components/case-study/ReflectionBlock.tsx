@@ -51,7 +51,7 @@ export function ReflectionBlock({ block, className = "" }: ReflectionBlockProps)
           {block.items.map((item, idx) => (
             <div
               key={item._key || idx}
-              className="p-5 sm:p-6 rounded-[18px] sm:rounded-[22px] bg-[#f5f4ee]/70 border border-black/5 space-y-2.5 shadow-2xs"
+              className="p-5 sm:p-6 rounded-[18px] sm:rounded-[22px] bg-[#f5f4ee]/70  space-y-2.5 shadow-2xs"
             >
               <div className="flex items-center gap-2">
                 <span className="font-mono text-xs font-semibold uppercase tracking-wider text-[#47585c] tabular-nums">

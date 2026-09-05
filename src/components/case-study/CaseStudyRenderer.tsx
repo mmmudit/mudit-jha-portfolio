@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Project, CaseStudyBlock } from "@/types/project";
+import { Project, CaseStudyBlock, ProjectContentBlock } from "@/types/project";
 import { CaseStudyHero } from "./CaseStudyHero";
 import { CaseStudySection } from "./CaseStudySection";
 import { MediaBlock } from "./MediaBlock";
@@ -10,6 +10,7 @@ import { FeatureBlock } from "./FeatureBlock";
 import { DecisionBlock } from "./DecisionBlock";
 import { ComparisonBlock } from "./ComparisonBlock";
 import { ReflectionBlock } from "./ReflectionBlock";
+import { FeatureContentBlock, GalleryBlock, HighlightFeatureBlock, ProcessBlock, ResultsBlock, StatementBlock } from "./ContentBlocks";
 
 interface CaseStudyRendererProps {
   project: Project;
@@ -17,6 +18,7 @@ interface CaseStudyRendererProps {
 }
 
 export function CaseStudyRenderer({ project, className = "" }: CaseStudyRendererProps) {
+  const contentBlocks: ProjectContentBlock[] = project.content || [];
   const caseStudyBlocks: CaseStudyBlock[] = project.caseStudy || [];
 
   return (
@@ -25,7 +27,25 @@ export function CaseStudyRenderer({ project, className = "" }: CaseStudyRenderer
       <CaseStudyHero project={project} />
 
       {/* Structured Content Blocks */}
-      {caseStudyBlocks.length > 0 ? (
+      {contentBlocks.length > 0 ? (
+        <div className="space-y-12 sm:space-y-16">
+          {contentBlocks.map((block) => {
+            switch (block._type) {
+              case "narrative": return <CaseStudySection key={block._key} block={{ ...block, _type: "textSection" }} />;
+              case "statement": return <StatementBlock key={block._key} block={block} />;
+              case "designDecision": return <DecisionBlock key={block._key} block={{ ...block, _type: "decisionBlock" }} />;
+              case "media": return <MediaBlock key={block._key} block={{ ...block, _type: "mediaBlock", size: block.variant === "contained" ? "normal" : block.variant === "fullBleed" ? "full" : "wide" }} />;
+              case "feature": return <FeatureContentBlock key={block._key} block={block} />;
+              case "highlightFeature": return <HighlightFeatureBlock key={block._key} block={block} />;
+              case "gallery": return <GalleryBlock key={block._key} block={block} />;
+              case "process": return <ProcessBlock key={block._key} block={block} />;
+              case "comparison": return <ComparisonBlock key={block._key} block={{ ...block, _type: "comparisonBlock", beforeMedia: block.beforeImage, afterMedia: block.afterImage }} />;
+              case "results": return <ResultsBlock key={block._key} block={block} />;
+              case "reflection": return <ReflectionBlock key={block._key} block={{ ...block, _type: "reflectionBlock" }} />;
+            }
+          })}
+        </div>
+      ) : caseStudyBlocks.length > 0 ? (
         <div className="space-y-12 sm:space-y-16">
           {caseStudyBlocks.map((block, idx) => {
             const key = block._key || `block-${idx}`;

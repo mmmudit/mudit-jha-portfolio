@@ -192,6 +192,99 @@ export type CaseStudyBlock =
   | ComparisonBlockItem
   | ReflectionBlockItem;
 
+export interface ContentBlockBase {
+  _key: string;
+  id?: string;
+  eyebrow?: string;
+  heading?: string;
+  body?: string | string[];
+}
+
+export interface NarrativeBlock extends ContentBlockBase {
+  _type: "narrative";
+  subheading?: string;
+  largeQuestion?: string;
+}
+
+export interface StatementBlock extends ContentBlockBase {
+  _type: "statement";
+}
+
+export interface DesignDecisionContentBlock extends Omit<DecisionBlockItem, "_type"> {
+  _type: "designDecision";
+  number?: string;
+  variant?: "default";
+}
+
+export interface MediaContentBlock extends Omit<MediaBlockItem, "_type" | "size"> {
+  _type: "media";
+  variant?: "contained" | "wide" | "fullBleed";
+}
+
+export interface FeatureContentBlock extends Omit<FeatureBlockItem, "_type" | "features"> {
+  _type: "feature";
+  variant?: "mediaLeft" | "mediaRight" | "mediaTop" | "fullWidth" | "sticky";
+  image?: string;
+  video?: string;
+  muxVideo?: MuxVideoAsset;
+  muxPlaybackId?: string;
+  muxThumbTime?: number;
+  alt?: string;
+  caption?: string;
+}
+
+export interface HighlightFeatureBlock extends ContentBlockBase {
+  _type: "highlightFeature";
+  number?: string;
+  image?: string;
+  video?: string;
+  muxVideo?: MuxVideoAsset;
+  muxPlaybackId?: string;
+  muxThumbTime?: number;
+  alt?: string;
+  caption?: string;
+}
+
+export interface GalleryBlock extends ContentBlockBase {
+  _type: "gallery";
+  variant?: "grid" | "wide";
+  images: Array<{ _key: string; image?: string; alt?: string; caption?: string }>;
+}
+
+export interface ProcessBlock extends ContentBlockBase {
+  _type: "process";
+  steps?: Array<{ _key: string; title: string; body?: string; image?: string; alt?: string }>;
+}
+
+export interface ComparisonContentBlock extends Omit<ComparisonBlockItem, "_type" | "beforeMedia" | "afterMedia"> {
+  _type: "comparison";
+  beforeImage?: string;
+  afterImage?: string;
+  variant?: "sideBySide" | "slider";
+}
+
+export interface ResultsBlock extends ContentBlockBase {
+  _type: "results";
+  items?: Array<{ _key: string; value: string; label: string; detail?: string }>;
+}
+
+export interface ReflectionContentBlock extends Omit<ReflectionBlockItem, "_type"> {
+  _type: "reflection";
+}
+
+export type ProjectContentBlock =
+  | NarrativeBlock
+  | StatementBlock
+  | DesignDecisionContentBlock
+  | MediaContentBlock
+  | FeatureContentBlock
+  | HighlightFeatureBlock
+  | GalleryBlock
+  | ProcessBlock
+  | ComparisonContentBlock
+  | ResultsBlock
+  | ReflectionContentBlock;
+
 export interface ProjectHeroMedia {
   mediaType?: "image" | "video" | "mux";
   image?: string;
@@ -277,4 +370,5 @@ export interface Project {
   solution?: string;
   impact?: string;
   caseStudy?: CaseStudyBlock[];
+  content?: ProjectContentBlock[];
 }
