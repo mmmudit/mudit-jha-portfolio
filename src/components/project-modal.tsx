@@ -246,6 +246,16 @@ export function ProjectModal({
           onPrev?.();
           return;
         }
+        // Direct jump via number keys [1] - [9] matching the tooltip hints
+        if (projects && projects.length > 0) {
+          const num = parseInt(e.key, 10);
+          if (!isNaN(num) && num >= 1 && num <= projects.length) {
+            e.preventDefault();
+            play("page", { volume: 0.35 });
+            onSelectProject?.(num - 1);
+            return;
+          }
+        }
       }
 
       // Trap Tab focus inside modal dialog
@@ -274,7 +284,7 @@ export function ProjectModal({
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [activeCard, handleClose, onNext, onPrev]);
+  }, [activeCard, handleClose, isFullScreen, onNext, onPrev, onSelectProject, projects]);
 
   const formatSectionLabel = (str: string) => {
     let clean = str.replace(/^\d+\s*[—–-]\s*/, "").trim();
@@ -929,7 +939,8 @@ export function ProjectModal({
                               <button
                                 key={nextP._id || nextP.id || nextIdx}
                                 type="button"
-                                onClick={() => {
+                                onClick={(e) => {
+                                  e.stopPropagation();
                                   play("page", { volume: 0.35 });
                                   onSelectProject?.(nextIdx);
                                   scrollContainerRef.current?.scrollTo({ top: 0, behavior: "smooth" });
@@ -1038,9 +1049,11 @@ export function ProjectModal({
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 12 }}
             transition={{ duration: 0.28, delay: 0.12, ease: [0.22, 1, 0.36, 1] }}
+            onClick={(e) => e.stopPropagation()}
             className="fixed bottom-4 sm:bottom-6 left-1/2 -translate-x-1/2 z-50 pointer-events-auto select-none"
           >
             <nav
+              onClick={(e) => e.stopPropagation()}
               className="group/pill flex items-center gap-2 sm:gap-3 px-3.5 sm:px-4 py-1.5 sm:py-2 rounded-full border border-zinc-300/70 bg-[#fbfaf5]/90 backdrop-blur-md shadow-[0_8px_30px_rgba(0,0,0,0.12),0_2px_8px_rgba(0,0,0,0.04)] sm:shadow-[0_4px_20px_rgba(0,0,0,0.06)] transition-[background-color,border-color,box-shadow,transform] duration-200"
               aria-label="Project switcher"
             >
@@ -1096,7 +1109,8 @@ export function ProjectModal({
 
                       <button
                         type="button"
-                        onClick={() => {
+                        onClick={(e) => {
+                          e.stopPropagation();
                           play("page", { volume: 0.35 });
                           onSelectProject?.(idx);
                         }}

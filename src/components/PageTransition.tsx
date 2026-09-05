@@ -8,10 +8,14 @@ export default function PageTransition({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   const reduce = useReducedMotion();
 
+  // Guard: group /projects routes under a stable key so modal URL sync
+  // and inter-project navigation do not cause AnimatePresence to unmount the page
+  const transitionKey = pathname.startsWith("/projects") ? "/projects" : pathname;
+
   return (
     <AnimatePresence mode="popLayout" initial={false}>
       <motion.div
-        key={pathname}
+        key={transitionKey}
         initial={{
           opacity: 0,
           y: reduce ? 0 : 8,

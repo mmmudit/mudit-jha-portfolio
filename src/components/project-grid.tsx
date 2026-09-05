@@ -62,6 +62,17 @@ export function ProjectGrid({ projects }: ProjectGridProps) {
   const { isZeroGravity, isRestoring } = useZeroGravity();
   const isZeroG = isZeroGravity && !isRestoring;
 
+  // Listen to browser popstate (e.g. Back button) while modal is open
+  React.useEffect(() => {
+    const handlePopState = () => {
+      if (activeCard) {
+        setActiveCard(null);
+      }
+    };
+    window.addEventListener("popstate", handlePopState);
+    return () => window.removeEventListener("popstate", handlePopState);
+  }, [activeCard]);
+
   const openProjectAtIndex = (index: number) => {
     if (!projects || projects.length === 0) return;
     cursorPillRef.current?.hide();
@@ -75,7 +86,13 @@ export function ProjectGrid({ projects }: ProjectGridProps) {
     if (typeof window !== "undefined") {
       const path = projectPath(project);
       const method = activeCard ? "replaceState" : "pushState";
-      window.history[method]({ projectModal: true }, "", path);
+      try {
+        // Passing __NA: true prevents Next.js 15 internal router from treating modal URL sync
+        // as a cross-page route navigation that unmounts the page tree
+        window.history[method]({ __NA: true, projectModal: true }, "", path);
+      } catch {
+        // Fallback for sandboxed or restricted history environments
+      }
     }
 
     const el = cardRefs.current[projectKey];
@@ -95,7 +112,15 @@ export function ProjectGrid({ projects }: ProjectGridProps) {
       height: targetH,
     };
 
-    if (el) {
+    if (activeCard) {
+      // Modal is already open: maintain seamless in-place position and crossfade content smoothly
+      play("bloom", { volume: 0.45 });
+      setActiveCard({
+        project,
+        origin: activeCard.target,
+        target: activeCard.target,
+      });
+    } else if (el) {
       const r = el.getBoundingClientRect();
       const origin = {
         top: r.top,
@@ -134,40 +159,33 @@ export function ProjectGrid({ projects }: ProjectGridProps) {
         return;
       }
 
+      // If modal is active, let ProjectModal handle key navigation to avoid double-triggers
+      if (activeCard !== null) {
+        return;
+      }
+
       const isNextKey = e.key === "ArrowRight" || e.key === "ArrowDown" || e.key === "j" || e.key === "J";
       const isPrevKey = e.key === "ArrowLeft" || e.key === "ArrowUp" || e.key === "k" || e.key === "K";
 
       if (isNextKey) {
         e.preventDefault();
-        if (activeCard !== null && currentIdx !== null) {
-          // Modal is open: flip to next case study
-          openProjectAtIndex(currentIdx + 1);
-        } else {
-          // Grid view: navigate cards
-          const nextIdx = currentIdx === null ? 0 : (currentIdx + 1) % projects.length;
-          setCurrentIdx(nextIdx);
-          const nextProject = projects[nextIdx];
-          const nextKey = String(nextProject._id || nextProject.id || nextIdx);
-          setHoveredId(nextProject._id || nextProject.id || nextIdx);
-          cardRefs.current[nextKey]?.scrollIntoView({ behavior: "smooth", block: "nearest" });
-          play("tick", { volume: 0.35 });
-        }
+        const nextIdx = currentIdx === null ? 0 : (currentIdx + 1) % projects.length;
+        setCurrentIdx(nextIdx);
+        const nextProject = projects[nextIdx];
+        const nextKey = String(nextProject._id || nextProject.id || nextIdx);
+        setHoveredId(nextProject._id || nextProject.id || nextIdx);
+        cardRefs.current[nextKey]?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        play("tick", { volume: 0.35 });
       } else if (isPrevKey) {
         e.preventDefault();
-        if (activeCard !== null && currentIdx !== null) {
-          // Modal is open: flip to prev case study
-          openProjectAtIndex(currentIdx - 1);
-        } else {
-          // Grid view: navigate cards
-          const prevIdx = currentIdx === null ? projects.length - 1 : (currentIdx - 1 + projects.length) % projects.length;
-          setCurrentIdx(prevIdx);
-          const prevProject = projects[prevIdx];
-          const prevKey = String(prevProject._id || prevProject.id || prevIdx);
-          setHoveredId(prevProject._id || prevProject.id || prevIdx);
-          cardRefs.current[prevKey]?.scrollIntoView({ behavior: "smooth", block: "nearest" });
-          play("tick", { volume: 0.35 });
-        }
-      } else if ((e.key === "Enter" || e.key === " ") && activeCard === null && currentIdx !== null) {
+        const prevIdx = currentIdx === null ? projects.length - 1 : (currentIdx - 1 + projects.length) % projects.length;
+        setCurrentIdx(prevIdx);
+        const prevProject = projects[prevIdx];
+        const prevKey = String(prevProject._id || prevProject.id || prevIdx);
+        setHoveredId(prevProject._id || prevProject.id || prevIdx);
+        cardRefs.current[prevKey]?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        play("tick", { volume: 0.35 });
+      } else if ((e.key === "Enter" || e.key === " ") && currentIdx !== null) {
         // Enter / Space opens the highlighted card
         e.preventDefault();
         openProjectAtIndex(currentIdx);
@@ -348,7 +366,13 @@ export function ProjectGrid({ projects }: ProjectGridProps) {
           }
         }}
         onClose={() => {
-          if (typeof window !== "undefined") window.history.pushState({}, "", "/");
+          if (typeof window !== "undefined" && window.location.pathname !== "/") {
+            try {
+              window.history.pushState({ __NA: true }, "", "/");
+            } catch {
+              // Fallback
+            }
+          }
           setActiveCard(null);
         }}
       />
