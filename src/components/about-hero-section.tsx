@@ -13,6 +13,8 @@ import {
 import { TactilePhotoCard } from "./TactilePhotoCard";
 import { SmartLinkPreview } from "./smart-link-preview";
 import { EmailPreviewBadge } from "./email-preview-badge";
+import { useNotification } from "@/context/notification-context";
+import { play } from "@/lib/sound";
 import {
   MapPin,
   GraduationCap,
@@ -128,7 +130,7 @@ export function AboutHeroSection() {
   }, [scrollYProgress, maxProgress]);
 
   const [message, setMessage] = useState("");
-  const [copiedEmail, setCopiedEmail] = useState(false);
+  const { triggerNotification } = useNotification();
   const [isSending, setIsSending] = useState(false);
   const [isSent, setIsSent] = useState(false);
 
@@ -163,8 +165,21 @@ export function AboutHeroSection() {
   const handleCopyEmail = (e: React.MouseEvent) => {
     e.preventDefault();
     navigator.clipboard?.writeText("hello@muditjha.me");
-    setCopiedEmail(true);
-    setTimeout(() => setCopiedEmail(false), 2000);
+    play("success", { volume: 0.6 });
+    triggerNotification({
+      id: "email-copied",
+      type: "info",
+      badge: "COPIED",
+      title: "Email Copied",
+      subtitle: "hello@muditjha.me",
+      duration: 3200,
+      action: {
+        label: "Send Mail",
+        onClick: () => {
+          window.location.href = "mailto:hello@muditjha.me";
+        },
+      },
+    });
   };
 
   const handleSendMessage = (e: React.FormEvent) => {
@@ -326,49 +341,16 @@ export function AboutHeroSection() {
 
                 {/* Right Quick Actions */}
                 <div className="flex items-center gap-1 sm:gap-2 text-[11px] sm:text-xs font-mono tracking-wider uppercase text-[#82745d]">
-                  {/* Email button with copy state and rich preview */}
+                  {/* Email button with rich preview and Dynamic Island notification */}
                   <EmailPreviewBadge>
-                    <div className="relative inline-flex items-center">
-                      <button
-                        type="button"
-                        onClick={handleCopyEmail}
-                        className="pressable inline-flex items-center gap-1.5 px-2 py-1 rounded-md hover:text-zinc-800 hover:bg-[#eae3d2]/40 active:scale-[0.96] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-400 focus-visible:ring-offset-1 transition-[transform,color,background-color] duration-150"
-                      >
-                        <Mail className="size-3.5 stroke-[1.75]" />
-                        <span>{copiedEmail ? "Copied!" : "Email"}</span>
-                      </button>
-                      <AnimatePresence>
-                        {copiedEmail && (
-                          <motion.span
-                            initial={reduce ? { opacity: 0 } : { opacity: 0, y: -16, scale: 0.92 }}
-                            animate={
-                              reduce
-                                ? { opacity: 1 }
-                                : {
-                                  opacity: 1,
-                                  y: -24,
-                                  scale: 1,
-                                  transition: { type: "spring", stiffness: 450, damping: 26 },
-                                }
-                            }
-                            exit={
-                              reduce
-                                ? { opacity: 0 }
-                                : {
-                                  opacity: 0,
-                                  y: -28,
-                                  scale: 0.92,
-                                  transition: { duration: 0.12, ease: [0.22, 1, 0.36, 1] },
-                                }
-                            }
-                            className="absolute left-1/2 -translate-x-1/2 inline-flex items-center gap-1 px-2 py-0.5 text-[11px] font-mono font-medium text-emerald-800 bg-emerald-100/90 backdrop-blur-sm rounded-full border border-emerald-300 shadow-sm whitespace-nowrap z-20"
-                          >
-                            <Check className="size-2.5 text-emerald-700" />
-                            <span>Copied hello@muditjha.me</span>
-                          </motion.span>
-                        )}
-                      </AnimatePresence>
-                    </div>
+                    <button
+                      type="button"
+                      onClick={handleCopyEmail}
+                      className="pressable inline-flex items-center gap-1.5 px-2 py-1 rounded-md hover:text-zinc-800 hover:bg-[#eae3d2]/40 active:scale-[0.96] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-400 focus-visible:ring-offset-1 transition-[transform,color,background-color] duration-150"
+                    >
+                      <Mail className="size-3.5 stroke-[1.75]" />
+                      <span>Email</span>
+                    </button>
                   </EmailPreviewBadge>
 
                   {/* Book a call */}

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useMemo } from "react";
-import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
+import { motion, AnimatePresence, useReducedMotion, useScroll, useTransform } from "framer-motion";
 import { useZeroGravity } from "@/context/zero-gravity-context";
 
 interface Star {
@@ -17,6 +17,8 @@ interface Star {
 export function ZeroGravityCosmos() {
   const { isZeroGravity, isRestoring } = useZeroGravity();
   const reduce = useReducedMotion();
+  const { scrollY } = useScroll();
+  const cosmosParallaxY = useTransform(scrollY, [0, 2400], [0, -120]);
 
   // Generate deterministic stars
   const stars: Star[] = useMemo(() => {
@@ -67,8 +69,11 @@ export function ZeroGravityCosmos() {
             }}
           />
 
-          {/* Twinkling and drifting micro-stars */}
-          <div className="absolute inset-0">
+          {/* Twinkling and drifting micro-stars with celestial scroll parallax */}
+          <motion.div
+            style={{ y: reduce ? 0 : cosmosParallaxY }}
+            className="absolute inset-0 will-change-transform transform-gpu"
+          >
             {stars.map((star) => (
               <motion.div
                 key={star.id}
@@ -96,7 +101,7 @@ export function ZeroGravityCosmos() {
                 }}
               />
             ))}
-          </div>
+          </motion.div>
         </motion.div>
       )}
     </AnimatePresence>

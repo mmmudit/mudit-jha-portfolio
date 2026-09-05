@@ -75,7 +75,13 @@ export function DecisionBlock({ block, className = "" }: DecisionBlockProps) {
         <div className="space-y-5 sm:space-y-6 pt-1 max-w-3xl">
           {/* Context */}
           {contextList.length > 0 && (
-            <div className="space-y-2  border-l-2 border-[#c8d5bb] bg-[#c8d5bb]/12 px-4 py-3.5 sm:px-5 sm:py-4">
+            <motion.div
+              initial={prefersReducedMotion ? false : { opacity: 0, y: 8 }}
+              whileInView={prefersReducedMotion ? undefined : { opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-40px" }}
+              transition={{ duration: 0.25, ease: [0.23, 1, 0.32, 1] }}
+              className="space-y-2 border-l-2 border-[#c8d5bb] bg-[#c8d5bb]/12 px-4 py-3.5 sm:px-5 sm:py-4"
+            >
               <p className="font-mono text-[11px] uppercase tracking-wider text-[#47585c] font-semibold">
                 Context
               </p>
@@ -84,12 +90,18 @@ export function DecisionBlock({ block, className = "" }: DecisionBlockProps) {
                   <p key={i}>{c}</p>
                 ))}
               </div>
-            </div>
+            </motion.div>
           )}
 
           {/* Decision */}
           {(decisionList.length > 0 || (block.decisionPoints && block.decisionPoints.length > 0)) && (
-            <div className="space-y-2.5  border-l-2 border-zinc-900 bg-zinc-900/[0.035] px-4 py-3.5 sm:px-5 sm:py-4">
+            <motion.div
+              initial={prefersReducedMotion ? false : { opacity: 0, y: 8 }}
+              whileInView={prefersReducedMotion ? undefined : { opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-40px" }}
+              transition={{ duration: 0.25, delay: 0.05, ease: [0.23, 1, 0.32, 1] }}
+              className="space-y-2.5 border-l-2 border-zinc-900 bg-zinc-900/[0.035] px-4 py-3.5 sm:px-5 sm:py-4"
+            >
               <p className="font-mono text-[11px] uppercase tracking-wider text-zinc-900 font-semibold">
                 Decision
               </p>
@@ -117,12 +129,18 @@ export function DecisionBlock({ block, className = "" }: DecisionBlockProps) {
                   ))}
                 </div>
               )}
-            </div>
+            </motion.div>
           )}
 
           {/* Why */}
           {whyList.length > 0 && (
-            <div className="space-y-2 border-l-2 border-[#aebd9d] bg-[#c8d5bb]/10 px-4 py-3.5 sm:px-5 sm:py-4">
+            <motion.div
+              initial={prefersReducedMotion ? false : { opacity: 0, y: 8 }}
+              whileInView={prefersReducedMotion ? undefined : { opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-40px" }}
+              transition={{ duration: 0.25, delay: 0.1, ease: [0.23, 1, 0.32, 1] }}
+              className="space-y-2 border-l-2 border-[#aebd9d] bg-[#c8d5bb]/10 px-4 py-3.5 sm:px-5 sm:py-4"
+            >
               <p className="font-mono text-[11px] uppercase tracking-wider text-[#47585c] font-semibold">
                 Why
               </p>
@@ -131,12 +149,18 @@ export function DecisionBlock({ block, className = "" }: DecisionBlockProps) {
                   <p key={i}>{w}</p>
                 ))}
               </div>
-            </div>
+            </motion.div>
           )}
 
           {/* Trade-off */}
           {tradeoffList.length > 0 && (
-            <div className="space-y-2 border-l-2 border-amber-600/60 bg-amber-50/70 px-4 py-3.5 sm:px-5 sm:py-4">
+            <motion.div
+              initial={prefersReducedMotion ? false : { opacity: 0, y: 8 }}
+              whileInView={prefersReducedMotion ? undefined : { opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-40px" }}
+              transition={{ duration: 0.25, delay: 0.15, ease: [0.23, 1, 0.32, 1] }}
+              className="space-y-2 border-l-2 border-amber-600/60 bg-amber-50/70 px-4 py-3.5 sm:px-5 sm:py-4"
+            >
               <p className="font-mono text-[11px] uppercase tracking-wider text-amber-800 font-semibold">
                 Trade-off
               </p>
@@ -145,7 +169,7 @@ export function DecisionBlock({ block, className = "" }: DecisionBlockProps) {
                   <p key={i}>{t}</p>
                 ))}
               </div>
-            </div>
+            </motion.div>
           )}
         </div>
       )}

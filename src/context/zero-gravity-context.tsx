@@ -8,7 +8,7 @@ import React, {
   useCallback,
   useEffect,
 } from "react";
-import { play } from "@/lib/sound";
+import { play, setZeroGMuted } from "@/lib/sound";
 
 interface ZeroGravityContextType {
   isZeroGravity: boolean;
@@ -82,6 +82,7 @@ export function ZeroGravityProvider({ children }: { children: React.ReactNode })
   const restoreGravity = useCallback(() => {
     if (!isZeroGravity || isRestoring) return;
 
+    setZeroGMuted(false);
     setIsRestoring(true);
     play("success", { volume: 0.55 });
 
@@ -94,16 +95,25 @@ export function ZeroGravityProvider({ children }: { children: React.ReactNode })
   }, [isZeroGravity, isRestoring, resetTaps]);
 
   useEffect(() => {
+    const isZeroGActive = isZeroGravity && !isRestoring;
+    setZeroGMuted(isZeroGActive);
     if (typeof document !== "undefined") {
-      document.body.dataset.zeroGravity = isZeroGravity && !isRestoring ? "true" : "false";
+      document.body.dataset.zeroGravity = isZeroGActive ? "true" : "false";
+      if (isZeroGActive) {
+        document.documentElement.classList.add("dark");
+      } else {
+        document.documentElement.classList.remove("dark");
+      }
     }
   }, [isZeroGravity, isRestoring]);
 
   useEffect(() => {
     return () => {
       if (timerRef.current) clearTimeout(timerRef.current);
+      setZeroGMuted(false);
       if (typeof document !== "undefined") {
         delete document.body.dataset.zeroGravity;
+        document.documentElement.classList.remove("dark");
       }
     };
   }, []);

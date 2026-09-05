@@ -133,7 +133,7 @@ export function AboutSectionHeader({
                       key={year}
                       type="button"
                       onClick={() => handleSelectYear(year)}
-                      className="flex w-full items-center justify-between rounded-lg px-3 py-1.5 text-xs font-mono font-medium tracking-wide uppercase text-zinc-700 hover:bg-[#eae3d2]/60 hover:text-zinc-900 transition-colors"
+                      className="pressable flex w-full items-center justify-between rounded-lg px-3 py-1.5 text-xs font-mono font-medium tracking-wide uppercase text-zinc-700 hover:bg-[#eae3d2]/60 hover:text-zinc-900 active:scale-[0.98] transition-[color,background-color,transform] duration-150 ease-out cursor-pointer"
                     >
                       <span className="tabular-nums">{year}</span>
                       {currentYear === year && (
@@ -200,7 +200,7 @@ export function AboutSectionHeader({
                         key={cat}
                         type="button"
                         onClick={() => handleSelectCategory(cat)}
-                        className="flex w-full items-center justify-between rounded-lg px-3 py-1.5 text-xs font-mono font-medium tracking-wide uppercase text-zinc-700 hover:bg-[#eae3d2]/60 hover:text-zinc-900 transition-colors"
+                        className="pressable flex w-full items-center justify-between rounded-lg px-3 py-1.5 text-xs font-mono font-medium tracking-wide uppercase text-zinc-700 hover:bg-[#eae3d2]/60 hover:text-zinc-900 active:scale-[0.98] transition-[color,background-color,transform] duration-150 ease-out cursor-pointer"
                       >
                         <span className="truncate">{cat}</span>
                         {currentCategory === cat && (

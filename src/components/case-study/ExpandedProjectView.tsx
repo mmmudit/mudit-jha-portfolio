@@ -233,7 +233,7 @@ export function ExpandedProjectView({
         {/* Avatar Stack Switcher Pill */}
         {projects && projects.length > 1 && (
           <nav
-            className="group/pill flex items-center gap-1 sm:gap-2.5 px-2 sm:px-3 py-1 sm:py-1.5 rounded-full bg-white border border-black/10 shadow-[0_2px_12px_rgba(0,0,0,0.06)] transition-all duration-200 select-none"
+            className="group/pill flex items-center gap-1 sm:gap-2.5 px-2 sm:px-3 py-1 sm:py-1.5 rounded-full bg-white border border-black/10 shadow-[0_2px_12px_rgba(0,0,0,0.06)] transition-[box-shadow,border-color,background-color] duration-200 ease-out select-none"
             aria-label="Project switcher"
           >
             <span className="hidden sm:inline text-xs font-mono font-medium text-zinc-500 tracking-wider uppercase tabular-nums whitespace-nowrap pl-0.5">
@@ -526,7 +526,7 @@ export function ExpandedProjectView({
                 <Link
                   href="/"
                   data-cuelume-hover="tick"
-                  className="pressable inline-flex items-center justify-center px-6 py-2 rounded-full border border-black/10 text-zinc-700 hover:text-zinc-950 hover:bg-black/5 hover:border-black/20 text-xs sm:text-sm font-sans font-medium transition-all shadow-2xs active:scale-[0.98] cursor-pointer"
+                  className="pressable inline-flex items-center justify-center px-6 py-2 rounded-full border border-black/10 text-zinc-700 hover:text-zinc-950 hover:bg-black/5 hover:border-black/20 text-xs sm:text-sm font-sans font-medium transition-[color,background-color,border-color,transform,box-shadow] duration-150 ease-out shadow-2xs active:scale-[0.98] cursor-pointer"
                 >
                   View all projects
                 </Link>

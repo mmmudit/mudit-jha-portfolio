@@ -1361,10 +1361,16 @@ function transformEpiludeWordmarkSource(source: string, mode: EffectMode, text?:
   const wordmarkSvg = text ? makeWordmarkSvg(text) : SHADERS_WORDMARK_SVG;
 
   return str
-    .replace("<title>Epilude — Footer</title>", `<title>${text ?? "Shaders"} Particle Wordmark</title>`)
+    .replace("<title>Epilude — Footer</title>", `<title>${text ?? "Shaders"} Particle Wordmark</title>
+<style>
+html, body, footer, .storm-wrap, .storm, canvas {
+  background: transparent !important;
+  background-color: transparent !important;
+}
+</style>`)
     .replace("aspect-ratio: 8.541554959785524;", "aspect-ratio: 4.444444444444445; width: 100% !important; height: 100% !important;")
-    .replaceAll("background: var(--olive-950);", "background: transparent;")
-    .replaceAll("background: #0c0c0d;", "background: transparent;")
+    .replaceAll("background: var(--olive-950);", "background: transparent !important;")
+    .replaceAll("background: #0c0c0d;", "background: transparent !important;")
     .replace(/var WORDMARK =[\s\S]*?"<\/svg>";/, `var WORDMARK = ${JSON.stringify(wordmarkSvg)};`)
     .replace("var PALETTE = [[255, 255, 255], [226, 232, 240], [191, 205, 225]];", `var PALETTE = ${palette};`)
     .replace("a: 0.04 + 0.95 * band * Math.pow(flake, 1.8)", "a: 0.14 + 0.86 * band * Math.pow(flake, 1.8)");
@@ -1706,8 +1712,10 @@ function buildFocusedDocument(definition: EffectDefinition, mode: EffectMode) {
   const introWordmarkStyle = definition.introWordmark
     ? `${definition.introWordmark.sceneSelector} .tx { font-size: ${definition.introWordmark.fontSize}px !important; }`
     : "";
+  const isTransparent = background === "transparent";
+  const effectiveColorScheme = isTransparent ? "normal" : mode;
   const focusStyle = `<style data-threeui-focus>
-html, body { width: 100% !important; height: 100% !important; min-height: 0 !important; margin: 0 !important; padding: 0 !important; overflow: hidden !important; background: ${background} !important; color-scheme: ${mode} !important; }
+html, body { width: 100% !important; height: 100% !important; min-height: 0 !important; margin: 0 !important; padding: 0 !important; overflow: hidden !important; background: ${background} !important; background-color: ${background} !important; color-scheme: ${effectiveColorScheme} !important; }
 body { position: relative !important; display: flex !important; align-items: center !important; justify-content: center !important; }
 body > * { visibility: hidden !important; }
 body[data-threeui-ready] > [data-threeui-role] { visibility: visible !important; }
@@ -1889,12 +1897,14 @@ function NeuformIsolatedEffect({
       srcDoc={source}
       sandbox="allow-scripts"
       loading="eager"
+      allowTransparency={true}
       style={{
         display: "block",
         width: "100%",
         height: "100%",
         border: 0,
-        background,
+        background: background === "transparent" ? "transparent" : background,
+        backgroundColor: background === "transparent" ? "transparent" : background,
         filter,
         ...style,
       }}

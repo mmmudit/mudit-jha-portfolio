@@ -6,10 +6,20 @@ import { ProjectCard } from "./project-card";
 import { CursorPill, type CursorPillHandle } from "./cursor-pill";
 import { ProjectModal, type ProjectData, type ActiveProjectCardState } from "./project-modal";
 import { play } from "@/lib/sound";
+import { useZeroGravity } from "@/context/zero-gravity-context";
 
 export type ProjectGridProps = {
   projects: ProjectData[];
 };
+
+const CARD_DRIFT_PRESETS = [
+  { y: -32, x: -18, rotate: -2.8, duration: 6.2 },
+  { y: -44, x: 22, rotate: 3.2, duration: 5.5 },
+  { y: -28, x: -14, rotate: 2.1, duration: 7.0 },
+  { y: -52, x: 16, rotate: -3.5, duration: 5.8 },
+  { y: -36, x: -20, rotate: -1.8, duration: 6.5 },
+  { y: -48, x: 24, rotate: 2.5, duration: 6.1 },
+];
 
 const PROJECT_CURSOR_LABELS: Record<string, string> = {
   clarity: "View case study",
@@ -49,6 +59,8 @@ export function ProjectGrid({ projects }: ProjectGridProps) {
   const cardRefs = useRef<Record<string, HTMLDivElement | null>>({});
   const cursorPillRef = useRef<CursorPillHandle | null>(null);
   const reduce = useReducedMotion();
+  const { isZeroGravity, isRestoring } = useZeroGravity();
+  const isZeroG = isZeroGravity && !isRestoring;
 
   const openProjectAtIndex = (index: number) => {
     if (!projects || projects.length === 0) return;
@@ -176,81 +188,139 @@ export function ProjectGrid({ projects }: ProjectGridProps) {
           const id = project._id || project.id || index;
           const projectKey = String(id);
           const isDimmed = hoveredId !== null && hoveredId !== id;
+          const cardPreset = CARD_DRIFT_PRESETS[index % CARD_DRIFT_PRESETS.length];
 
           return (
             <motion.div
               key={id}
               initial={reduce ? { opacity: 0 } : { opacity: 0, y: 16 }}
-              animate={reduce ? { opacity: 1 } : { opacity: 1, y: 0 }}
-              transition={{
-                duration: reduce ? 0.15 : 0.25,
-                delay: reduce ? 0 : Math.min(index * 0.04, 0.24),
-                ease: [0.22, 1, 0.36, 1],
-              }}
-              className="w-full"
+              animate={
+                reduce
+                  ? { opacity: 1 }
+                  : isZeroG
+                  ? {
+                      opacity: 1,
+                      y: cardPreset.y,
+                      x: cardPreset.x,
+                      rotate: cardPreset.rotate,
+                    }
+                  : { opacity: 1, y: 0, x: 0, rotate: 0 }
+              }
+              transition={
+                reduce
+                  ? { duration: 0.15 }
+                  : isZeroG
+                  ? {
+                      type: "spring",
+                      stiffness: 35,
+                      damping: 11,
+                      mass: 1.15,
+                      delay: 0.1 + index * 0.08,
+                    }
+                  : isRestoring
+                  ? {
+                      duration: 0.65,
+                      ease: [0.23, 1, 0.32, 1],
+                      delay: Math.min(index * 0.04, 0.2),
+                    }
+                  : {
+                      duration: 0.25,
+                      delay: Math.min(index * 0.04, 0.24),
+                      ease: [0.22, 1, 0.36, 1],
+                    }
+              }
+              className="w-full will-change-transform transform-gpu"
             >
-              <ProjectCard
-                ref={(el) => {
-                  cardRefs.current[projectKey] = el;
-                }}
-                index={index}
-                title={project.title}
-                slug={project.slug}
-                year={project.year}
-                description={project.description}
-                image={project.image}
-                muxPlaybackId={project.muxPlaybackId || project.muxVideo?.playbackId}
-                muxThumbTime={project.muxThumbTime ?? project.muxVideo?.thumbTime}
-                gradient={project.gradient}
-                href={project.href}
-                actionText={project.actionText}
-                cursorLabel={getProjectCursorLabel(project)}
-                priority={index < 2}
-                isDimmed={isDimmed}
-                onPointerEnter={(event, cursorLabel) => {
-                  if (!cursorLabel) return;
-                  cursorPillRef.current?.show({
-                    anchor: event.currentTarget,
-                    label: cursorLabel,
-                    clientX: event.clientX,
-                    clientY: event.clientY,
-                    pointerType: event.pointerType,
-                  });
-                }}
-                onPointerMove={(event) => {
-                  cursorPillRef.current?.move({
-                    clientX: event.clientX,
-                    clientY: event.clientY,
-                  });
-                }}
-                onPointerLeave={() => cursorPillRef.current?.hide()}
-                onPointerDown={(event) => {
-                  if (event.pointerType === "mouse" && event.button === 0) {
-                    cursorPillRef.current?.press();
-                  }
-                }}
-                onPointerUp={(event) => {
-                  if (event.pointerType === "mouse" && event.button === 0) {
-                    cursorPillRef.current?.release();
-                  }
-                }}
-                onPointerCancel={() => cursorPillRef.current?.hide()}
-                onMouseEnter={() => {
-                  if (hoveredId !== id) {
-                    play("ready", { volume: 0.35 });
-                  }
-                  setHoveredId(id);
-                }}
-                onMouseLeave={() => setHoveredId(null)}
-                onFocus={() => {
-                  if (hoveredId !== id) {
-                    play("ready", { volume: 0.35 });
-                  }
-                  setHoveredId(id);
-                }}
-                onBlur={() => setHoveredId(null)}
-                onClick={() => handleCardClick(project, projectKey, index)}
-              />
+              {/* Continuous microgravity ambient floating layer */}
+              <motion.div
+                animate={
+                  isZeroG && !reduce
+                    ? {
+                        y: [-8, 8, -8],
+                        x: [-6, 6, -6],
+                        rotate: [-1.2, 1.2, -1.2],
+                      }
+                    : { y: 0, x: 0, rotate: 0 }
+                }
+                transition={
+                  isZeroG && !reduce
+                    ? {
+                        duration: cardPreset.duration,
+                        repeat: Infinity,
+                        repeatType: "reverse",
+                        ease: "easeInOut",
+                        delay: 0.35 + index * 0.1,
+                      }
+                    : {
+                        duration: 0.4,
+                        ease: [0.23, 1, 0.32, 1],
+                      }
+                }
+                className="w-full will-change-transform transform-gpu"
+              >
+                <ProjectCard
+                  ref={(el) => {
+                    cardRefs.current[projectKey] = el;
+                  }}
+                  index={index}
+                  title={project.title}
+                  slug={project.slug}
+                  year={project.year}
+                  description={project.description}
+                  image={project.image}
+                  muxPlaybackId={project.muxPlaybackId || project.muxVideo?.playbackId}
+                  muxThumbTime={project.muxThumbTime ?? project.muxVideo?.thumbTime}
+                  gradient={project.gradient}
+                  href={project.href}
+                  actionText={project.actionText}
+                  cursorLabel={getProjectCursorLabel(project)}
+                  priority={index < 2}
+                  isDimmed={isDimmed}
+                  onPointerEnter={(event, cursorLabel) => {
+                    if (!cursorLabel) return;
+                    cursorPillRef.current?.show({
+                      anchor: event.currentTarget,
+                      label: cursorLabel,
+                      clientX: event.clientX,
+                      clientY: event.clientY,
+                      pointerType: event.pointerType,
+                    });
+                  }}
+                  onPointerMove={(event) => {
+                    cursorPillRef.current?.move({
+                      clientX: event.clientX,
+                      clientY: event.clientY,
+                    });
+                  }}
+                  onPointerLeave={() => cursorPillRef.current?.hide()}
+                  onPointerDown={(event) => {
+                    if (event.pointerType === "mouse" && event.button === 0) {
+                      cursorPillRef.current?.press();
+                    }
+                  }}
+                  onPointerUp={(event) => {
+                    if (event.pointerType === "mouse" && event.button === 0) {
+                      cursorPillRef.current?.release();
+                    }
+                  }}
+                  onPointerCancel={() => cursorPillRef.current?.hide()}
+                  onMouseEnter={() => {
+                    if (hoveredId !== id) {
+                      play("ready", { volume: 0.35 });
+                    }
+                    setHoveredId(id);
+                  }}
+                  onMouseLeave={() => setHoveredId(null)}
+                  onFocus={() => {
+                    if (hoveredId !== id) {
+                      play("ready", { volume: 0.35 });
+                    }
+                    setHoveredId(id);
+                  }}
+                  onBlur={() => setHoveredId(null)}
+                  onClick={() => handleCardClick(project, projectKey, index)}
+                />
+              </motion.div>
             </motion.div>
           );
         })}

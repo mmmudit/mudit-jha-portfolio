@@ -285,7 +285,7 @@ export function FlipCard({
                   e.stopPropagation();
                   handleFlipToggle(false);
                 }}
-                className="absolute top-4 right-4 z-30 p-2 text-zinc-500 hover:text-zinc-900 rounded-full hover:bg-black/5 active:scale-[0.96] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-400 cursor-pointer"
+                className="absolute top-4 right-4 z-30 p-2 text-zinc-500 hover:text-zinc-900 rounded-full hover:bg-black/5 active:scale-[0.96] transition-[color,background-color,transform] duration-150 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-400 cursor-pointer"
                 aria-label="Close modal"
                 data-prevent-flip
               >

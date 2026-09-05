@@ -69,18 +69,14 @@ export default function NavigationTabs({
             className={clsx(
               "relative rounded-full px-[15px] py-[6px] text-[18px] tracking-[-1px] transition-[transform,color] duration-150 pressable active:scale-[0.97] motion-reduce:transform-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-400 focus-visible:ring-offset-1 select-none",
               isActive
-                ? "font-medium text-zinc-900"
-                : "font-normal text-zinc-500 [@media(hover:hover)]:hover:text-zinc-900"
+                ? "font-medium text-zinc-900 dark:text-zinc-100"
+                : "font-normal text-zinc-500 dark:text-zinc-400 [@media(hover:hover)]:hover:text-zinc-900 dark:[@media(hover:hover)]:hover:text-zinc-100"
             )}
           >
             {isActive && (
               <motion.div
                 layoutId={reduce ? undefined : layoutId}
-                className="absolute inset-0 rounded-full shadow-[inset_0_1px_1px_rgba(255,255,255,0.9),inset_0_-1px_1px_rgba(0,0,0,0.02),0_2px_4px_rgba(0,0,0,0.06)] pointer-events-none"
-                style={{
-                  backgroundColor: WILLOW_HEX,
-                  border: `1px solid rgba(200, 213, 187, 0.9)`,
-                }}
+                className="absolute inset-0 rounded-full shadow-[inset_0_1px_1px_rgba(255,255,255,0.9),inset_0_-1px_1px_rgba(0,0,0,0.02),0_2px_4px_rgba(0,0,0,0.06)] dark:shadow-[inset_0_1px_1px_rgba(255,255,255,0.15),0_2px_8px_rgba(0,0,0,0.4)] pointer-events-none bg-[#C8D5BB]  dark:bg-willow-grey border border-[rgba(200,213,187,0.9)] dark:border-white/15"
                 transition={
                   reduce
                     ? { duration: 0 }

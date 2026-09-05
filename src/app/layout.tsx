@@ -12,8 +12,8 @@ import { CursorClickEffect } from "../components/cursor-click-effect";
 import { SoundProvider } from "../components/sound-provider";
 import { AboutEyeProvider } from "../context/about-eye-context";
 import { ZeroGravityProvider } from "../context/zero-gravity-context";
+import { NotificationProvider } from "../context/notification-context";
 import { ZeroGravityCosmos } from "../components/zero-gravity/ZeroGravityCosmos";
-import { ZeroGravityNotification } from "../components/zero-gravity/ZeroGravityNotification";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -60,20 +60,21 @@ export default function RootLayout({
       <body className="min-h-full text-zinc-800 relative">
         <IntroLoader>
           <ZeroGravityProvider>
-            <AboutEyeProvider>
-              <SoundProvider />
-              <GrainOverlay />
-              <ZeroGravityCosmos />
-              <CursorClickEffect />
-              <div className="sticky md:relative top-0 z-50 w-full px-6 pt-[calc(1rem+env(safe-area-inset-top,0px))] sm:px-14 sm:pt-[calc(1.5rem+env(safe-area-inset-top,0px))] pointer-events-none">
-                <Header />
-              </div>
-              <div className="mx-auto flex w-full max-w-[1334px] flex-col px-6 sm:px-14 pt-8">
-                <PageTransition>{children}</PageTransition>
-              </div>
-              <ZeroGravityNotification />
-              <AgentationClient />
-            </AboutEyeProvider>
+            <NotificationProvider>
+              <AboutEyeProvider>
+                <SoundProvider />
+                <GrainOverlay />
+                <ZeroGravityCosmos />
+                <CursorClickEffect />
+                <div className="sticky md:relative top-0 z-50 w-full px-6 pt-[calc(1rem+env(safe-area-inset-top,0px))] sm:px-14 sm:pt-[calc(1.5rem+env(safe-area-inset-top,0px))] pointer-events-none">
+                  <Header />
+                </div>
+                <div className="mx-auto flex w-full max-w-[1334px] flex-col px-6 sm:px-14 pt-8">
+                  <PageTransition>{children}</PageTransition>
+                </div>
+                <AgentationClient />
+              </AboutEyeProvider>
+            </NotificationProvider>
           </ZeroGravityProvider>
         </IntroLoader>
       </body>

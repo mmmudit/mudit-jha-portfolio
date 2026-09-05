@@ -249,16 +249,16 @@ export function SmartLinkPreview({
             }}
             className={
               variant === "compact"
-                ? "relative inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border-[1.5px] border-zinc-950 bg-[#fffdfa] shadow-[3px_3px_0px_#18181b] whitespace-nowrap will-change-transform"
+                ? "relative inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border-[1.5px] border-zinc-950 dark:border-white/20 bg-[#fffdfa] dark:bg-zinc-900 shadow-[3px_3px_0px_#18181b] dark:shadow-[3px_3px_0px_rgba(255,255,255,0.15)] whitespace-nowrap will-change-transform"
                 : isEmail
-                ? "relative rounded-[18px] border-[1.5px] border-zinc-950 bg-[#fffdfb] shadow-[5px_5px_0px_#18181b] overflow-hidden will-change-transform group"
-                : "relative rounded-[18px] border-[1.5px] border-zinc-950 bg-[#fffdfa] p-3 shadow-[4px_4px_0px_#18181b] overflow-hidden will-change-transform flex flex-col gap-2.5"
+                ? "relative rounded-[18px] border-[1.5px] border-zinc-950 dark:border-white/20 bg-[#fffdfb] dark:bg-zinc-900 shadow-[5px_5px_0px_#18181b] dark:shadow-[5px_5px_0px_rgba(255,255,255,0.15)] overflow-hidden will-change-transform group"
+                : "relative rounded-[18px] border-[1.5px] border-zinc-950 dark:border-white/20 bg-[#fffdfa] dark:bg-zinc-900 p-3 shadow-[4px_4px_0px_#18181b] dark:shadow-[4px_4px_0px_rgba(255,255,255,0.15)] overflow-hidden will-change-transform flex flex-col gap-2.5"
             }
           >
             {variant === "compact" ? (
               <>
                 {isEmail ? (
-                  <Mail className="size-3.5 text-zinc-700 shrink-0" />
+                  <Mail className="size-3.5 text-zinc-700 dark:text-zinc-300 shrink-0" />
                 ) : (
                   <div className="size-4 rounded-full border border-zinc-950/15 bg-white p-0.5 shadow-xs overflow-hidden shrink-0">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -272,32 +272,32 @@ export function SmartLinkPreview({
                     />
                   </div>
                 )}
-                <span className="font-mono text-[12px] font-bold text-zinc-900 tracking-tight">
+                <span className="font-mono text-[12px] font-bold text-zinc-900 dark:text-zinc-100 tracking-tight">
                   {cleanUrl}
                 </span>
-                {!isEmail && <ArrowUpRight className="size-3.5 text-zinc-400 shrink-0" />}
+                {!isEmail && <ArrowUpRight className="size-3.5 text-zinc-400 dark:text-zinc-300 shrink-0" />}
 
                 {/* Compact Pointer Tail */}
                 {isFlipped ? (
                   <>
                     <div
                       style={{ left: `${tailLeft - 6}px` }}
-                      className="absolute -bottom-[5px] w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-t-[5px] border-t-zinc-950 drop-shadow-[0_1px_0_#18181b]"
+                      className="absolute -bottom-[5px] w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-t-[5px] border-t-zinc-950 dark:border-t-white/20 drop-shadow-[0_1px_0_#18181b]"
                     />
                     <div
                       style={{ left: `${tailLeft - 5}px` }}
-                      className="absolute -bottom-[4px] w-0 h-0 border-l-[5px] border-l-transparent border-r-[5px] border-r-transparent border-t-[4px] border-t-[#fffdfa]"
+                      className="absolute -bottom-[4px] w-0 h-0 border-l-[5px] border-l-transparent border-r-[5px] border-r-transparent border-t-[4px] border-t-[#fffdfa] dark:border-t-zinc-900"
                     />
                   </>
                 ) : (
                   <>
                     <div
                       style={{ left: `${tailLeft - 6}px` }}
-                      className="absolute -top-[5px] w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-b-[5px] border-b-zinc-950 drop-shadow-[0_-1px_0_#18181b]"
+                      className="absolute -top-[5px] w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-b-[5px] border-b-zinc-950 dark:border-b-white/20 drop-shadow-[0_-1px_0_#18181b]"
                     />
                     <div
                       style={{ left: `${tailLeft - 5}px` }}
-                      className="absolute -top-[4px] w-0 h-0 border-l-[5px] border-l-transparent border-r-[5px] border-r-transparent border-b-[4px] border-b-[#fffdfa]"
+                      className="absolute -top-[4px] w-0 h-0 border-l-[5px] border-l-transparent border-r-[5px] border-r-transparent border-b-[4px] border-b-[#fffdfa] dark:border-b-zinc-900"
                     />
                   </>
                 )}
@@ -306,7 +306,7 @@ export function SmartLinkPreview({
               /* ── Figma Postcard Email Preview (Node 248:2982) ── */
               <div
                 onClick={handleCopyEmail}
-                className="relative bg-[#fffdfb] p-5 flex flex-col justify-between overflow-hidden cursor-pointer select-none min-h-[175px]"
+                className="relative bg-[#fffdfb] dark:bg-zinc-900 p-5 flex flex-col justify-between overflow-hidden cursor-pointer select-none min-h-[175px]"
                 title="Click to copy email address"
               >
                 {/* Envelope Flap Fold Triangular Watermark */}
@@ -314,7 +314,7 @@ export function SmartLinkPreview({
                   viewBox="0 0 360 110"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
-                  className="absolute top-0 inset-x-0 w-full h-[110px] pointer-events-none"
+                  className="absolute top-0 inset-x-0 w-full h-[110px] pointer-events-none dark:opacity-20"
                 >
                   <path
                     d="M0 0 L180 90 L360 0"
@@ -326,14 +326,14 @@ export function SmartLinkPreview({
 
                 {/* Top Row: FROM Details (Left) and Tilted Eyes Sticker (Right) */}
                 <div className="flex items-start justify-between relative z-10">
-                  <div className="flex flex-col text-black">
-                    <span className="font-mono text-[12px] text-zinc-500 font-normal tracking-wider">
+                  <div className="flex flex-col text-black dark:text-white">
+                    <span className="font-mono text-[12px] text-zinc-500 dark:text-zinc-400 font-normal tracking-wider">
                       FROM
                     </span>
-                    <span className="font-mono text-[14px] font-bold text-zinc-950 tracking-[1.28px] leading-tight mt-0.5">
+                    <span className="font-mono text-[14px] font-bold text-zinc-950 dark:text-zinc-100 tracking-[1.28px] leading-tight mt-0.5">
                       MUDIT JHA
                     </span>
-                    <span className="font-mono text-[14px] font-bold text-zinc-950 tracking-[1.28px] leading-tight">
+                    <span className="font-mono text-[14px] font-bold text-zinc-950 dark:text-zinc-100 tracking-[1.28px] leading-tight">
                       MINNEAPOLIS
                     </span>
                   </div>
@@ -376,12 +376,12 @@ export function SmartLinkPreview({
                 </div>
 
                 {/* Bottom Row: TO & Email Address */}
-                <div className="flex flex-col text-black relative z-10 pt-5">
-                  <span className="font-mono text-[12px] text-zinc-500 font-normal tracking-wider">
+                <div className="flex flex-col text-black dark:text-white relative z-10 pt-5">
+                  <span className="font-mono text-[12px] text-zinc-500 dark:text-zinc-400 font-normal tracking-wider">
                     TO
                   </span>
                   <div className="flex items-center justify-between gap-2 mt-0.5">
-                    <span className="font-mono text-[18px] sm:text-[20px] font-bold text-zinc-950 tracking-[1.5px] leading-none">
+                    <span className="font-mono text-[18px] sm:text-[20px] font-bold text-zinc-950 dark:text-zinc-100 tracking-[1.5px] leading-none">
                       hello@muditjha.me
                     </span>
                     {copied ? (
@@ -389,7 +389,7 @@ export function SmartLinkPreview({
                         COPIED!
                       </span>
                     ) : (
-                      <span className="font-mono text-[10px] text-zinc-400 font-medium tracking-tight group-hover:text-zinc-700">
+                      <span className="font-mono text-[10px] text-zinc-400 dark:text-zinc-500 font-medium tracking-tight group-hover:text-zinc-700 dark:group-hover:text-zinc-300">
                         CLICK TO COPY
                       </span>
                     )}
@@ -401,22 +401,22 @@ export function SmartLinkPreview({
                   <>
                     <div
                       style={{ left: `${tailLeft - 6}px` }}
-                      className="absolute -bottom-[5px] w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-t-[5px] border-t-zinc-950 drop-shadow-[0_1px_0_#18181b]"
+                      className="absolute -bottom-[5px] w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-t-[5px] border-t-zinc-950 dark:border-t-white/20 drop-shadow-[0_1px_0_#18181b]"
                     />
                     <div
                       style={{ left: `${tailLeft - 5}px` }}
-                      className="absolute -bottom-[4px] w-0 h-0 border-l-[5px] border-l-transparent border-r-[5px] border-r-transparent border-t-[4px] border-t-[#fffdfb]"
+                      className="absolute -bottom-[4px] w-0 h-0 border-l-[5px] border-l-transparent border-r-[5px] border-r-transparent border-t-[4px] border-t-[#fffdfb] dark:border-t-zinc-900"
                     />
                   </>
                 ) : (
                   <>
                     <div
                       style={{ left: `${tailLeft - 6}px` }}
-                      className="absolute -top-[5px] w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-b-[5px] border-b-zinc-950 drop-shadow-[0_-1px_0_#18181b]"
+                      className="absolute -top-[5px] w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-b-[5px] border-b-zinc-950 dark:border-b-white/20 drop-shadow-[0_-1px_0_#18181b]"
                     />
                     <div
                       style={{ left: `${tailLeft - 5}px` }}
-                      className="absolute -top-[4px] w-0 h-0 border-l-[5px] border-l-transparent border-r-[5px] border-r-transparent border-b-[4px] border-b-[#fffdfb]"
+                      className="absolute -top-[4px] w-0 h-0 border-l-[5px] border-l-transparent border-r-[5px] border-r-transparent border-b-[4px] border-b-[#fffdfb] dark:border-b-zinc-900"
                     />
                   </>
                 )}
@@ -470,7 +470,7 @@ export function SmartLinkPreview({
                         }}
                       />
                     </div>
-                    <span className="font-mono text-[11px] font-medium text-zinc-500 truncate">
+                    <span className="font-mono text-[11px] font-medium text-zinc-500 dark:text-zinc-400 truncate">
                       {domain}
                     </span>
                   </div>
@@ -478,17 +478,17 @@ export function SmartLinkPreview({
 
                 {/* 3. Page Title (bold, single line, line-clamp-1) */}
                 <div className="flex flex-col gap-0.5">
-                  <h4 className="font-sans font-bold text-[13.5px] text-zinc-950 leading-snug line-clamp-1 truncate">
+                  <h4 className="font-sans font-bold text-[13.5px] text-zinc-950 dark:text-zinc-100 leading-snug line-clamp-1 truncate">
                     {activeTitle}
                   </h4>
 
                   {/* 4. Page Description (smaller, muted, max 2 lines with line-clamp-2) */}
                   {activeDesc ? (
-                    <p className="font-sans text-[12px] text-zinc-600 leading-relaxed line-clamp-2">
+                    <p className="font-sans text-[12px] text-zinc-600 dark:text-zinc-300 leading-relaxed line-clamp-2">
                       {activeDesc}
                     </p>
                   ) : (
-                    <p className="font-sans text-[11.5px] text-zinc-400 italic">
+                    <p className="font-sans text-[11.5px] text-zinc-400 dark:text-zinc-400 italic">
                       Visit {domain} ↗
                     </p>
                   )}
@@ -499,22 +499,22 @@ export function SmartLinkPreview({
                   <>
                     <div
                       style={{ left: `${tailLeft - 6}px` }}
-                      className="absolute -bottom-[5px] w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-t-[5px] border-t-zinc-950 drop-shadow-[0_1px_0_#18181b]"
+                      className="absolute -bottom-[5px] w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-t-[5px] border-t-zinc-950 dark:border-t-white/20 drop-shadow-[0_1px_0_#18181b]"
                     />
                     <div
                       style={{ left: `${tailLeft - 5}px` }}
-                      className="absolute -bottom-[4px] w-0 h-0 border-l-[5px] border-l-transparent border-r-[5px] border-r-transparent border-t-[4px] border-t-[#fffdfa]"
+                      className="absolute -bottom-[4px] w-0 h-0 border-l-[5px] border-l-transparent border-r-[5px] border-r-transparent border-t-[4px] border-t-[#fffdfa] dark:border-t-zinc-900"
                     />
                   </>
                 ) : (
                   <>
                     <div
                       style={{ left: `${tailLeft - 6}px` }}
-                      className="absolute -top-[5px] w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-b-[5px] border-b-zinc-950 drop-shadow-[0_-1px_0_#18181b]"
+                      className="absolute -top-[5px] w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-b-[5px] border-b-zinc-950 dark:border-b-white/20 drop-shadow-[0_-1px_0_#18181b]"
                     />
                     <div
                       style={{ left: `${tailLeft - 5}px` }}
-                      className="absolute -top-[4px] w-0 h-0 border-l-[5px] border-l-transparent border-r-[5px] border-r-transparent border-b-[4px] border-b-[#fffdfa]"
+                      className="absolute -top-[4px] w-0 h-0 border-l-[5px] border-l-transparent border-r-[5px] border-r-transparent border-b-[4px] border-b-[#fffdfa] dark:border-b-zinc-900"
                     />
                   </>
                 )}

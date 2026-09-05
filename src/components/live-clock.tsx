@@ -9,9 +9,19 @@ import { useZeroGravity } from "@/context/zero-gravity-context";
 import { VoxelGlobeHero } from "./hero/VoxelGlobeHero";
 
 function TickingCharacter({ char, index }: { char: string; index: number }) {
+  const reduce = useReducedMotion();
+
   // Only animate numeric digits
   if (!/\d/.test(char)) {
     return <span className="inline-block whitespace-pre">{char}</span>;
+  }
+
+  if (reduce) {
+    return (
+      <span className="relative inline-flex h-[1.25em] w-[0.62em] items-center justify-center align-middle font-mono tabular-nums">
+        {char}
+      </span>
+    );
   }
 
   return (
@@ -33,20 +43,22 @@ function TickingCharacter({ char, index }: { char: string; index: number }) {
 }
 
 function DayNightIcon({ isDay, size = 13 }: { isDay: boolean; size?: number }) {
+  const reduce = useReducedMotion();
+
   return (
     <span
       className="relative inline-flex items-center justify-center shrink-0 select-none"
       style={{ width: size, height: size }}
       aria-hidden="true"
     >
-      <AnimatePresence mode="wait" initial={false}>
+      <AnimatePresence mode="popLayout" initial={false}>
         {isDay ? (
           <motion.span
             key="sun"
-            initial={{ scale: 0.6, rotate: -60, opacity: 0 }}
+            initial={reduce ? { opacity: 0 } : { scale: 0.9, rotate: -20, opacity: 0 }}
             animate={{ scale: 1, rotate: 0, opacity: 1 }}
-            exit={{ scale: 0.6, rotate: 60, opacity: 0 }}
-            transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+            exit={reduce ? { opacity: 0 } : { scale: 0.9, rotate: 20, opacity: 0 }}
+            transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
             className="flex items-center justify-center text-[#7a926d]"
             title="Daytime (Minneapolis)"
           >
@@ -55,10 +67,10 @@ function DayNightIcon({ isDay, size = 13 }: { isDay: boolean; size?: number }) {
         ) : (
           <motion.span
             key="moon"
-            initial={{ scale: 0.6, rotate: 60, opacity: 0 }}
+            initial={reduce ? { opacity: 0 } : { scale: 0.9, rotate: 20, opacity: 0 }}
             animate={{ scale: 1, rotate: 0, opacity: 1 }}
-            exit={{ scale: 0.6, rotate: -60, opacity: 0 }}
-            transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+            exit={reduce ? { opacity: 0 } : { scale: 0.9, rotate: -20, opacity: 0 }}
+            transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
             className="flex items-center justify-center text-[#7a926d]"
             title="Nighttime (Minneapolis)"
           >
@@ -157,10 +169,12 @@ export function LiveClock({ variant = "footer" }: LiveClockProps) {
           }
           transition={
             isZeroG
-              ? { duration: reduce ? 0.3 : 0.8, ease: [0.23, 1, 0.32, 1] }
+              ? reduce
+                ? { duration: 0.35, ease: [0.23, 1, 0.32, 1] }
+                : { type: "spring", stiffness: 35, damping: 11, mass: 1.15 }
               : tapCount >= 3
               ? { duration: 0.35, ease: "easeInOut" }
-              : { duration: 0.5, ease: [0.23, 1, 0.32, 1] }
+              : { duration: 0.65, ease: [0.23, 1, 0.32, 1] }
           }
           className="scale-[0.85] origin-center md:scale-100 md:origin-center will-change-transform z-20 cursor-pointer"
         >
@@ -178,7 +192,7 @@ export function LiveClock({ variant = "footer" }: LiveClockProps) {
           transition={{ duration: 0.6, ease: [0.23, 1, 0.32, 1] }}
           className="flex flex-col items-start md:items-center gap-0.5 pt-0.5 md:pt-1 text-left md:text-center"
         >
-          <div className="flex items-center gap-1.5 font-mono text-[12px] sm:text-[13px] font-medium text-zinc-800 tracking-tight tabular-nums">
+          <div className="flex items-center gap-1.5 font-mono text-[12px] sm:text-[13px] font-medium text-zinc-800 dark:text-zinc-100 tracking-tight tabular-nums">
             <DayNightIcon isDay={isDay} size={13} />
             <span aria-hidden="true" className="inline-flex items-center">
               {timeChars.length > 0 ? (
@@ -189,12 +203,12 @@ export function LiveClock({ variant = "footer" }: LiveClockProps) {
                 <span>--:--:-- --</span>
               )}
             </span>
-            <span className="text-zinc-300 font-sans mx-0.5">•</span>
-            <span className="font-mono text-[11px] uppercase tracking-wider text-[#7f7f80]">
+            <span className="text-zinc-300 dark:text-zinc-600 font-sans mx-0.5">•</span>
+            <span className="font-mono text-[11px] uppercase tracking-wider text-[#7f7f80] dark:text-zinc-400">
               {isZeroG ? "ORBITAL ZERO-G" : "GMT −05:00"}
             </span>
           </div>
-          <span className="font-mono text-[10px] uppercase tracking-widest text-[#7f7f80]/80">
+          <span className="font-mono text-[10px] uppercase tracking-widest text-[#7f7f80]/80 dark:text-zinc-400/80">
             {isZeroG ? "COSMIC DRIFT • LOCAL TIME" : "Minneapolis, MN, USA"}
           </span>
         </motion.div>
@@ -206,9 +220,9 @@ export function LiveClock({ variant = "footer" }: LiveClockProps) {
     <time
       dateTime={time}
       aria-label={`Mudit Standard Time: ${time || "Loading"}`}
-      className="font-mono text-xs sm:text-[13px] uppercase tracking-wide leading-none text-[#7f7f80] inline-flex items-center gap-2 select-none"
+      className="font-mono text-xs sm:text-[13px] uppercase tracking-wide leading-none text-[#7f7f80] dark:text-zinc-400 inline-flex items-center gap-2 select-none"
     >
-      <span aria-hidden="true" className="text-[#7f7f80]">Mudit Standard Time:</span>
+      <span aria-hidden="true" className="text-[#7f7f80] dark:text-zinc-400">Mudit Standard Time:</span>
       <span className="inline-flex items-center gap-1.5 tabular-nums">
         <DayNightIcon isDay={isDay} size={13} />
         <span aria-hidden="true" className="inline-flex items-center">

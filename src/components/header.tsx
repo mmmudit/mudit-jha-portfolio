@@ -1,17 +1,31 @@
 "use client";
 
-import { motion, useReducedMotion } from "framer-motion";
-import { useState, useEffect } from "react";
-import NavigationTabs from "./NavigationTabs";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
+import { useState, useEffect, useCallback } from "react";
+import clsx from "clsx";
+import { DynamicIslandNav } from "./dynamic-island-nav";
 import { InteractiveTsuLogo } from "./tsu-logo";
 import { useAboutEye } from "@/context/about-eye-context";
+import { useZeroGravity } from "@/context/zero-gravity-context";
+import { useNotification } from "@/context/notification-context";
+
+const CHAT_PHRASES = ["let’s chat", "say hello", "reach out", "try it lol ;)", "¯\\(ツ) /¯"] as const;
 
 export function Header() {
   const [hover, setHover] = useState(false);
+  const [phraseIndex, setPhraseIndex] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
   const [isAtBoundary, setIsAtBoundary] = useState(true);
   const reduce = useReducedMotion();
   const { activeSection, isAbout } = useAboutEye();
+  const { isZeroGravity, isRestoring } = useZeroGravity();
+  const { activeNotification } = useNotification();
+  const isZeroG = isZeroGravity && !isRestoring;
+  const isNotificationActive = Boolean(activeNotification);
+
+  const cyclePhrase = useCallback(() => {
+    setPhraseIndex((prev) => (prev + 1) % CHAT_PHRASES.length);
+  }, []);
 
   useEffect(() => {
     const mql = window.matchMedia("(max-width: 767px)");
@@ -46,7 +60,7 @@ export function Header() {
   }, []);
 
   const minW = 56;
-  const expandedW = 125;
+  const expandedW = 126;
   const isExpanded = isMobile ? isAtBoundary || hover : hover;
 
   const showEyeInHeader = !isAbout || activeSection === "hero";
@@ -55,11 +69,9 @@ export function Header() {
     <>
       {/* Top Solid Translucent Header Background on Mobile */}
       <div
-        className="fixed top-0 left-0 right-0 w-full h-[calc(5rem+env(safe-area-inset-top,0px))] -z-10 pointer-events-none select-none bg-[#fbfaf5]/50 backdrop-blur-md  md:hidden"
+        className="fixed top-0 left-0 right-0 w-full h-[calc(5rem+env(safe-area-inset-top,0px))] -z-10 pointer-events-none select-none bg-[#fbfaf5]/50 dark:bg-[#090b10]/60 backdrop-blur-md md:hidden transition-colors duration-700"
         aria-hidden="true"
       />
-
-
 
       <header className="relative z-10 flex items-center justify-between w-full pointer-events-none">
         {/* Left: Interactive Eye Toon Logo in Header */}
@@ -80,26 +92,41 @@ export function Header() {
           )}
         </div>
 
-        {/* Center: Navigation Bar (Bottom-centered floating dock on mobile, absolutely centered in header on desktop) */}
-        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 mb-[env(safe-area-inset-bottom,0px)] md:absolute md:top-1/2 md:bottom-auto md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2 flex items-center justify-center pointer-events-auto z-50">
-          <div className="rounded-full border border-zinc-300/70 bg-[#fbfaf5]/90 backdrop-blur-md p-1 shadow-[0_8px_30px_rgba(0,0,0,0.12),0_2px_8px_rgba(0,0,0,0.04)] md:shadow-[0_4px_20px_rgba(0,0,0,0.06)]">
-            <NavigationTabs />
-          </div>
+        {/* Center: Dynamic Island Navigation & Notification Bar (Sticky on scroll when notification is active) */}
+        <div
+          className={clsx(
+            "pointer-events-auto z-50 flex items-center justify-center",
+            isNotificationActive
+              ? "fixed bottom-6 left-1/2 -translate-x-1/2 mb-[env(safe-area-inset-bottom,0px)] md:fixed md:top-[calc(1.5rem+env(safe-area-inset-top,0px)+27px)] md:bottom-auto md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2"
+              : "fixed bottom-6 left-1/2 -translate-x-1/2 mb-[env(safe-area-inset-bottom,0px)] md:absolute md:top-1/2 md:bottom-auto md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2"
+          )}
+        >
+          <DynamicIslandNav />
         </div>
 
         {/* Right: Contact email button (Always expanded on mobile at top/bottom, hover-expanded on desktop) */}
         <motion.a
           href="mailto:hello@muditjha.me"
           aria-label="Email Mudit Jha"
-          onHoverStart={() => setHover(true)}
-          onHoverEnd={() => setHover(false)}
+          onHoverStart={() => {
+            setHover(true);
+          }}
+          onHoverEnd={() => {
+            setHover(false);
+            cyclePhrase();
+          }}
+          onClick={() => {
+            cyclePhrase();
+          }}
           initial={false}
           animate={
             reduce
               ? { width: isExpanded ? expandedW : minW }
               : {
                 width: isExpanded ? expandedW : minW,
-                backgroundColor: hover ? "#e6e6e6" : "#fbfaf5",
+                backgroundColor: isZeroG
+                  ? hover ? "#27272a" : "#18181b"
+                  : hover ? "#e6e6e6" : "#fbfaf5",
               }
           }
           transition={
@@ -110,32 +137,53 @@ export function Header() {
           data-cuelume-hover="tick"
           data-cuelume-press
           data-cuelume-release
-          className="pressable pointer-events-auto relative inline-flex shrink-0 items-center overflow-hidden rounded-full border-2 border-zinc-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-400 focus-visible:ring-offset-2"
+          className="pressable pointer-events-auto relative inline-flex shrink-0 items-center overflow-hidden rounded-full border-2 border-zinc-300 dark:border-white/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-400 focus-visible:ring-offset-2 transition-colors duration-700"
         >
           <div className="relative h-[54px] w-full">
             <div className="absolute inset-0">
               {/* Left-aligned text */}
-              <div className="absolute inset-0 flex items-center justify-start ps-4">
-                <motion.span
-                  className="whitespace-nowrap text-sm font-bold tracking-[0.01em] text-zinc-800"
-                  initial={false}
-                  animate={
-                    reduce
-                      ? { opacity: isExpanded ? 1 : 0 }
-                      : {
-                        transform: isExpanded
-                          ? "translateX(0px) scale(1)"
-                          : "translateX(8px) scale(0.96)",
-                        filter: isExpanded ? "blur(0px)" : "blur(2px)",
-                        opacity: isExpanded ? 1 : 0,
-                      }
-                  }
-                  transition={
-                    reduce ? {} : { duration: 0.15, ease: [0.22, 1, 0.36, 1] }
-                  }
-                >
-                  let’s chat
-                </motion.span>
+              <div className="absolute inset-0 flex items-center justify-start ps-4 overflow-hidden">
+                <AnimatePresence mode="wait" initial={false}>
+                  <motion.span
+                    key={CHAT_PHRASES[phraseIndex]}
+                    className="whitespace-nowrap text-sm font-bold tracking-[0.01em] text-zinc-800 dark:text-zinc-100"
+                    initial={
+                      reduce
+                        ? { opacity: isExpanded ? 1 : 0 }
+                        : {
+                          opacity: 0,
+                          y: 3,
+                          filter: "blur(2px)",
+                        }
+                    }
+                    animate={
+                      reduce
+                        ? { opacity: isExpanded ? 1 : 0 }
+                        : {
+                          transform: isExpanded
+                            ? "translateX(0px) scale(1)"
+                            : "translateX(8px) scale(0.96)",
+                          filter: isExpanded ? "blur(0px)" : "blur(2px)",
+                          opacity: isExpanded ? 1 : 0,
+                          y: 0,
+                        }
+                    }
+                    exit={
+                      reduce
+                        ? { opacity: 0 }
+                        : {
+                          opacity: 0,
+                          y: -3,
+                          filter: "blur(2px)",
+                        }
+                    }
+                    transition={
+                      reduce ? {} : { duration: 0.15, ease: [0.22, 1, 0.36, 1] }
+                    }
+                  >
+                    {CHAT_PHRASES[phraseIndex]}
+                  </motion.span>
+                </AnimatePresence>
               </div>
 
               {/* Icon fixed at right */}
@@ -146,9 +194,13 @@ export function Header() {
                     reduce
                       ? {}
                       : {
-                        color: isExpanded ? "#374151" : "#9CA3AF",
+                        color: isZeroG
+                          ? isExpanded ? "#f4f4f5" : "#a1a1aa"
+                          : isExpanded ? "#374151" : "#9CA3AF",
                         rotate: isExpanded && hover ? 5 : 0,
-                        backgroundColor: isExpanded && hover ? "#e6e6e6" : "#fbfaf5",
+                        backgroundColor: isZeroG
+                          ? isExpanded && hover ? "#27272a" : "#18181b"
+                          : isExpanded && hover ? "#e6e6e6" : "#fbfaf5",
                       }
                   }
                   transition={
