@@ -594,3 +594,39 @@ html.intro-dismissed #intro-overlay {
   bottom: auto;
   top: 24px;
 }
+
+/* ==========================================================================
+   ZERO-GRAVITY OUTER SPACE EASTER EGG
+   ========================================================================== */
+body[data-zero-gravity="true"] {
+  background: #090a0f !important;
+  color: #f4f4f5 !important;
+  transition: background-color 700ms cubic-bezier(0.23, 1, 0.32, 1), color 700ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+body[data-zero-gravity="true"] .text-zinc-900,
+body[data-zero-gravity="true"] .text-zinc-800,
+body[data-zero-gravity="true"] h1,
+body[data-zero-gravity="true"] h2,
+body[data-zero-gravity="true"] h3 {
+  color: #fafafa !important;
+  transition: color 700ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+body[data-zero-gravity="true"] .text-zinc-600,
+body[data-zero-gravity="true"] .text-zinc-500 {
+  color: #a1a1aa !important;
+  transition: color 700ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+body[data-zero-gravity="true"] .paper-card {
+  background-color: rgba(20, 22, 28, 0.85) !important;
+  border-color: rgba(255, 255, 255, 0.12) !important;
+  box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.8), 0 0 25px rgba(255, 255, 255, 0.04) !important;
+  transition: background-color 700ms cubic-bezier(0.23, 1, 0.32, 1), border-color 700ms cubic-bezier(0.23, 1, 0.32, 1), box-shadow 700ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+body[data-zero-gravity="true"] .gradient-divider {
+  background: rgba(255, 255, 255, 0.15) !important;
+  transition: background 700ms cubic-bezier(0.23, 1, 0.32, 1);
+}

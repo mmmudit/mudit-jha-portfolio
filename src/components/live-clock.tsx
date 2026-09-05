@@ -1,11 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { Sun, Moon } from "lucide-react";
 import { play } from "@/lib/sound";
+import { useZeroGravity } from "@/context/zero-gravity-context";
 
-import { PulsingGlobe } from "./pulsing-globe";
+import { VoxelGlobeHero } from "./hero/VoxelGlobeHero";
 
 function TickingCharacter({ char, index }: { char: string; index: number }) {
   // Only animate numeric digits
@@ -76,6 +77,10 @@ interface LiveClockProps {
 export function LiveClock({ variant = "footer" }: LiveClockProps) {
   const [time, setTime] = useState<string>("");
   const [isDay, setIsDay] = useState<boolean>(true);
+  const { isZeroGravity, isRestoring, tapCount, registerGlobeTap } = useZeroGravity();
+  const reduce = useReducedMotion();
+
+  const isZeroG = isZeroGravity && !isRestoring;
 
   useEffect(() => {
     const formatter = new Intl.DateTimeFormat("en-US", {
@@ -112,25 +117,67 @@ export function LiveClock({ variant = "footer" }: LiveClockProps) {
         dateTime={time}
         aria-label={`Current time in Minneapolis: ${time || "Loading"}`}
         data-cuelume-hover="pulse"
-        onClick={() => play("pulse", { volume: 0.35 })}
-        className="group relative flex flex-col items-start md:items-center gap-2.5 md:gap-3 shrink-0 self-start md:self-auto py-1 md:py-3 px-0 md:px-6 select-none cursor-pointer"
+        className="group relative flex flex-col items-start md:items-center gap-2.5 md:gap-3 shrink-0 self-start md:self-auto py-1 md:py-3 px-0 md:px-6 select-none"
       >
-        {/* Soft Radial Ambient Halo */}
-        <div
-          className="absolute inset-0 -z-10 rounded-full blur-2xl pointer-events-none opacity-80 group-hover:opacity-100 transition-opacity duration-300"
+        {/* Soft Radial Ambient Halo (Expands into celestial corona in zero-g) */}
+        <motion.div
+          animate={
+            isZeroG
+              ? { scale: 1.8, opacity: 0.95 }
+              : { scale: 1, opacity: 0.8 }
+          }
+          transition={{ duration: 0.7, ease: [0.23, 1, 0.32, 1] }}
+          className="absolute inset-0 -z-10 rounded-full blur-2xl pointer-events-none transition-opacity duration-300"
           style={{
-            background: "radial-gradient(circle, rgba(200, 213, 187, 0.65) 0%, rgba(200, 213, 187, 0) 70%)",
+            background: isZeroG
+              ? "radial-gradient(circle, rgba(140, 180, 255, 0.75) 0%, rgba(100, 140, 240, 0.25) 45%, rgba(0, 0, 0, 0) 75%)"
+              : "radial-gradient(circle, rgba(200, 213, 187, 0.65) 0%, rgba(200, 213, 187, 0) 70%)",
           }}
           aria-hidden="true"
         />
 
-        {/* Free-Floating 3D Globe */}
-        <div className="scale-[0.8] origin-left md:scale-100 md:origin-center transition-transform duration-300">
-          <PulsingGlobe size={120} className="group-hover:scale-105 transition-transform duration-300" />
-        </div>
+        {/* Free-Floating 3D Voxel Globe with Clouds and Parallax */}
+        <motion.div
+          onClick={(e) => {
+            e.stopPropagation();
+            registerGlobeTap();
+          }}
+          animate={
+            isZeroG
+              ? {
+                  scale: reduce ? 1.25 : 1.75,
+                  y: -24,
+                  x: 0,
+                }
+              : tapCount === 4
+              ? { x: [-4, 4, -4, 4, -2, 2, 0], scale: 1.05 }
+              : tapCount === 3
+              ? { x: [-2, 2, -2, 2, 0], scale: 1.02 }
+              : { scale: 1, y: 0, x: 0 }
+          }
+          transition={
+            isZeroG
+              ? { duration: reduce ? 0.3 : 0.8, ease: [0.23, 1, 0.32, 1] }
+              : tapCount >= 3
+              ? { duration: 0.35, ease: "easeInOut" }
+              : { duration: 0.5, ease: [0.23, 1, 0.32, 1] }
+          }
+          className="scale-[0.85] origin-center md:scale-100 md:origin-center will-change-transform z-20 cursor-pointer"
+        >
+          <VoxelGlobeHero
+            size={300}
+            onTap={registerGlobeTap}
+            isZeroG={isZeroG}
+            className="group-hover:scale-[1.025] transition-transform duration-200 ease-[cubic-bezier(0.23,1,0.32,1)]"
+          />
+        </motion.div>
 
         {/* Telemetry Stack (No pills, no borders) */}
-        <div className="flex flex-col items-start md:items-center gap-0.5 pt-0.5 md:pt-1 text-left md:text-center">
+        <motion.div
+          animate={isZeroG ? { y: 16 } : { y: 0 }}
+          transition={{ duration: 0.6, ease: [0.23, 1, 0.32, 1] }}
+          className="flex flex-col items-start md:items-center gap-0.5 pt-0.5 md:pt-1 text-left md:text-center"
+        >
           <div className="flex items-center gap-1.5 font-mono text-[12px] sm:text-[13px] font-medium text-zinc-800 tracking-tight tabular-nums">
             <DayNightIcon isDay={isDay} size={13} />
             <span aria-hidden="true" className="inline-flex items-center">
@@ -143,12 +190,14 @@ export function LiveClock({ variant = "footer" }: LiveClockProps) {
               )}
             </span>
             <span className="text-zinc-300 font-sans mx-0.5">•</span>
-            <span className="font-mono text-[11px] uppercase tracking-wider text-[#7f7f80]">GMT −05:00</span>
+            <span className="font-mono text-[11px] uppercase tracking-wider text-[#7f7f80]">
+              {isZeroG ? "ORBITAL ZERO-G" : "GMT −05:00"}
+            </span>
           </div>
           <span className="font-mono text-[10px] uppercase tracking-widest text-[#7f7f80]/80">
-            Minneapolis, MN, USA
+            {isZeroG ? "COSMIC DRIFT • LOCAL TIME" : "Minneapolis, MN, USA"}
           </span>
-        </div>
+        </motion.div>
       </time>
     );
   }

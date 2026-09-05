@@ -5,6 +5,14 @@ import { ArrowLeft, ArrowUpRight, Sparkles, Layers, Folder, Maximize2 } from "lu
 
 const PROTOTYPES = [
   {
+    title: "3D Voxel Globe Hero System",
+    slug: "voxel-globe",
+    description: "3 interactive 3D Voxel Globe Hero variations: Architectural Monochrome with tactile pop physics, Earth Topo with city targeting HUD, and Kinetic Wave Matrix.",
+    badge: "NEW",
+    icon: Sparkles,
+    href: "/prototypes/voxel-globe",
+  },
+  {
     title: "Interactive Motion Timeline Lab",
     slug: "timeline",
     description: "3 distinct motion & interaction paradigms for case study navigation: Liquid Rail, Tactile Dial, and Floating Capsule with live scroll tracking.",

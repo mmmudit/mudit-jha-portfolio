@@ -2,6 +2,7 @@ import { Intro } from "@/components/intro";
 import { Divider } from "@/components/divider";
 import { Footer } from "@/components/footer";
 import { ProjectGrid } from "@/components/project-grid";
+import { ZeroGravityHome } from "@/components/zero-gravity/ZeroGravityHome";
 import { client } from "@/sanity/client";
 import { PROJECTS_QUERY } from "@/sanity/queries";
 import { Project } from "@/types/project";
@@ -19,7 +20,7 @@ export default async function Home() {
 
   return (
     <main className="min-h-screen">
-      <div className="flex w-full flex-col gap-12">
+      <ZeroGravityHome>
         <Intro />
         {/* <SpaceFSOrbitHero /> */}
         <Divider />
@@ -28,7 +29,7 @@ export default async function Home() {
 
         <Divider />
         <Footer />
-      </div>
+      </ZeroGravityHome>
     </main>
   );
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import { TextAnimationCollection } from "@designcodeio/threeui";
 import { useState } from "react";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { Check } from "lucide-react";
@@ -128,24 +128,24 @@ export function Footer() {
                           reduce
                             ? { opacity: 1, transition: { duration: 0.15 } }
                             : {
-                                opacity: 1,
-                                y: 0,
-                                scale: 1,
-                                transition: { type: "spring", duration: 0.5, bounce: 0 },
-                              }
+                              opacity: 1,
+                              y: 0,
+                              scale: 1,
+                              transition: { type: "spring", duration: 0.5, bounce: 0 },
+                            }
                         }
                         exit={
                           reduce
                             ? { opacity: 0, transition: { duration: 0.15 } }
                             : {
-                                opacity: 0,
-                                y: -4,
-                                scale: 0.96,
-                                transition: {
-                                  duration: 0.35,
-                                  ease: [0.22, 1, 0.36, 1],
-                                },
-                              }
+                              opacity: 0,
+                              y: -4,
+                              scale: 0.96,
+                              transition: {
+                                duration: 0.35,
+                                ease: [0.22, 1, 0.36, 1],
+                              },
+                            }
                         }
                         className="absolute left-1/2 -top-9 -translate-x-1/2 inline-flex items-center gap-1.5 px-3 py-1 text-xs font-mono font-medium text-emerald-800 bg-emerald-100/95 backdrop-blur-sm rounded-full border border-emerald-300 shadow-sm whitespace-nowrap z-20"
                       >
@@ -204,15 +204,15 @@ export function Footer() {
           </div>
         </div>
 
-        {/* Giant "mudit" Wordmark Asset (Bottom Anchor) */}
-        <div className="relative flex items-center justify-center w-full pt-2 overflow-visible">
-          <Image
-            src="/assets/mudit-wordmark.png"
-            alt="mudit"
-            width={1024}
-            height={449}
-            priority
-            className="w-full max-w-[1100px] h-auto object-contain pointer-events-none select-none drop-shadow-sm"
+        {/* Giant "MUDIT" Shaded Particle Wordmark (Bottom Anchor - Full Page Width) */}
+        <div className="relative flex items-center justify-center w-screen left-1/2 -translate-x-1/2 pt-2 overflow-visible aspect-[2200/320]">
+          <TextAnimationCollection
+            variant="particle-wordmark"
+            text="mudit"
+            mode="light"
+            hue={45}
+            saturation={1.2}
+            brightness={1.05}
           />
         </div>
       </div>

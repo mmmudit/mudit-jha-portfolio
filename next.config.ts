@@ -1,5 +1,6 @@
 import type { NextConfig } from "next";
 import { execSync } from "child_process";
+import path from "path";
 
 function getDeploymentDate(): string {
   try {
@@ -108,6 +109,50 @@ const nextConfig: NextConfig = {
   },
   env: {
     NEXT_PUBLIC_BUILD_DATE: getDeploymentDate(),
+  },
+  turbopack: {
+    rules: {
+      "*.html": {
+        type: "raw",
+      },
+      "*:raw": {
+        type: "raw",
+      },
+      "*": {
+        condition: {
+          any: [
+            { path: "*.html" },
+            { query: "?raw" },
+            { query: /[?&]raw(?=&|$)/ }
+          ]
+        },
+        type: "raw"
+      }
+    },
+    resolveAlias: {
+      "@designcodeio/threeui/style.css": "./src/shaders/threeui.css",
+      "@designcodeio/threeui": "./src/shaders/index.ts",
+      "./sources/epilude-footer.html?raw": "./src/shaders/neuform-isolated/sources/epilude-footer.ts",
+      "./sources/epilude-footer.html": "./src/shaders/neuform-isolated/sources/epilude-footer.ts",
+    },
+  },
+  webpack: (config) => {
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      "@designcodeio/threeui/style.css": path.resolve(__dirname, "src/shaders/threeui.css"),
+      "@designcodeio/threeui": path.resolve(__dirname, "src/shaders/index.ts"),
+      "./sources/epilude-footer.html?raw": path.resolve(__dirname, "src/shaders/neuform-isolated/sources/epilude-footer.ts"),
+      "./sources/epilude-footer.html": path.resolve(__dirname, "src/shaders/neuform-isolated/sources/epilude-footer.ts"),
+    };
+    config.module.rules.push({
+      test: /\.html$/,
+      type: "asset/source",
+    });
+    config.module.rules.push({
+      resourceQuery: /raw/,
+      type: "asset/source",
+    });
+    return config;
   },
 };
 
