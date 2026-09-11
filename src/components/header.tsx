@@ -9,6 +9,7 @@ import { InteractiveTsuLogo } from "./tsu-logo";
 import { useAboutEye } from "@/context/about-eye-context";
 import { useZeroGravity } from "@/context/zero-gravity-context";
 import { useNotification } from "@/context/notification-context";
+import { Magnetic } from "./magnetic";
 
 const CHAT_PHRASES = ["let’s chat", "say hello", "reach out", "try it lol ;)", "¯\\(ツ) /¯"] as const;
 
@@ -111,141 +112,143 @@ export function Header() {
         )}
 
         {/* Right: Contact email button (Always expanded on mobile at top/bottom, hover-expanded on desktop) */}
-        <motion.a
-          href="mailto:hello@muditjha.me"
-          aria-label="Email Mudit Jha"
-          onHoverStart={() => {
-            setHover(true);
-          }}
-          onHoverEnd={() => {
-            setHover(false);
-            cyclePhrase();
-          }}
-          onClick={() => {
-            cyclePhrase();
-          }}
-          initial={false}
-          animate={
-            reduce
-              ? { width: isExpanded ? expandedW : minW }
-              : {
-                width: isExpanded ? expandedW : minW,
-                backgroundColor: isZeroG
-                  ? hover ? "#27272a" : "#18181b"
-                  : hover ? "#c8d5bb" : "#fbfaf5",
-                borderColor: isZeroG
-                  ? "rgba(255,255,255,0.15)"
-                  : hover ? "rgba(200,213,187,0.9)" : "#d4d4d8",
-                boxShadow: isZeroG || !hover
-                  ? "none"
-                  : "inset 0 1px 1px rgba(255,255,255,0.9), inset 0 -1px 1px rgba(0,0,0,0.02), 0 2px 4px rgba(0,0,0,0.06)",
-              }
-          }
-          transition={
-            reduce
-              ? {}
-              : { type: "spring", stiffness: 420, damping: 30, mass: 0.8 }
-          }
-          data-cuelume-hover="tick"
-          data-cuelume-press
-          data-cuelume-release
-          className="pressable pointer-events-auto relative inline-flex shrink-0 items-center overflow-hidden rounded-full border border-zinc-300 dark:border-white/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-400 focus-visible:ring-offset-2 transition-colors duration-700"
-        >
-          <div className="relative h-[54px] w-full">
-            <div className="absolute inset-0">
-              {/* Left-aligned text */}
-              <div className="absolute inset-0 flex items-center justify-start ps-4 overflow-hidden">
-                <AnimatePresence mode="wait" initial={false}>
+        <Magnetic intensity={0.2} range={60} className="pointer-events-auto">
+          <motion.a
+            href="mailto:hello@muditjha.me"
+            aria-label="Email Mudit Jha"
+            onHoverStart={() => {
+              setHover(true);
+            }}
+            onHoverEnd={() => {
+              setHover(false);
+              cyclePhrase();
+            }}
+            onClick={() => {
+              cyclePhrase();
+            }}
+            initial={false}
+            animate={
+              reduce
+                ? { width: isExpanded ? expandedW : minW }
+                : {
+                  width: isExpanded ? expandedW : minW,
+                  backgroundColor: isZeroG
+                    ? hover ? "#27272a" : "#18181b"
+                    : hover ? "#c8d5bb" : "#fbfaf5",
+                  borderColor: isZeroG
+                    ? "rgba(255,255,255,0.15)"
+                    : hover ? "rgba(200,213,187,0.9)" : "#d4d4d8",
+                  boxShadow: isZeroG || !hover
+                    ? "none"
+                    : "inset 0 1px 1px rgba(255,255,255,0.9), inset 0 -1px 1px rgba(0,0,0,0.02), 0 2px 4px rgba(0,0,0,0.06)",
+                }
+            }
+            transition={
+              reduce
+                ? {}
+                : { type: "spring", stiffness: 420, damping: 30, mass: 0.8 }
+            }
+            data-cuelume-hover="tick"
+            data-cuelume-press
+            data-cuelume-release
+            className="pressable relative inline-flex shrink-0 items-center overflow-hidden rounded-full border border-zinc-300 dark:border-white/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-400 focus-visible:ring-offset-2 transition-colors duration-700"
+          >
+            <div className="relative h-[54px] w-full">
+              <div className="absolute inset-0">
+                {/* Left-aligned text */}
+                <div className="absolute inset-0 flex items-center justify-start ps-4 overflow-hidden">
+                  <AnimatePresence mode="wait" initial={false}>
+                    <motion.span
+                      key={CHAT_PHRASES[phraseIndex]}
+                      className="whitespace-nowrap text-sm font-bold tracking-[0.01em] text-zinc-800 dark:text-zinc-100"
+                      initial={
+                        reduce
+                          ? { opacity: isExpanded ? 1 : 0 }
+                          : {
+                            opacity: 0,
+                            y: 3,
+                            filter: "blur(2px)",
+                          }
+                      }
+                      animate={
+                        reduce
+                          ? { opacity: isExpanded ? 1 : 0 }
+                          : {
+                            transform: isExpanded
+                              ? "translateX(0px) scale(1)"
+                              : "translateX(8px) scale(0.96)",
+                            filter: isExpanded ? "blur(0px)" : "blur(2px)",
+                            opacity: isExpanded ? 1 : 0,
+                            y: 0,
+                          }
+                      }
+                      exit={
+                        reduce
+                          ? { opacity: 0 }
+                          : {
+                            opacity: 0,
+                            y: -3,
+                            filter: "blur(2px)",
+                          }
+                      }
+                      transition={
+                        reduce ? {} : { duration: 0.15, ease: [0.22, 1, 0.36, 1] }
+                      }
+                    >
+                      {CHAT_PHRASES[phraseIndex]}
+                    </motion.span>
+                  </AnimatePresence>
+                </div>
+
+                {/* Center the icon in the compact button; keep it at the trailing edge once text is visible. */}
+                <div
+                  className={clsx(
+                    "absolute inset-0 flex items-center pointer-events-none",
+                    isExpanded ? "justify-end pe-2.5" : "justify-center"
+                  )}
+                >
                   <motion.span
-                    key={CHAT_PHRASES[phraseIndex]}
-                    className="whitespace-nowrap text-sm font-bold tracking-[0.01em] text-zinc-800 dark:text-zinc-100"
-                    initial={
-                      reduce
-                        ? { opacity: isExpanded ? 1 : 0 }
-                        : {
-                          opacity: 0,
-                          y: 3,
-                          filter: "blur(2px)",
-                        }
-                    }
+                    initial={false}
                     animate={
                       reduce
-                        ? { opacity: isExpanded ? 1 : 0 }
+                        ? {}
                         : {
-                          transform: isExpanded
-                            ? "translateX(0px) scale(1)"
-                            : "translateX(8px) scale(0.96)",
-                          filter: isExpanded ? "blur(0px)" : "blur(2px)",
-                          opacity: isExpanded ? 1 : 0,
-                          y: 0,
-                        }
-                    }
-                    exit={
-                      reduce
-                        ? { opacity: 0 }
-                        : {
-                          opacity: 0,
-                          y: -3,
-                          filter: "blur(2px)",
+                          color: isZeroG
+                            ? isExpanded ? "#f4f4f5" : "#a1a1aa"
+                            : isExpanded ? "#374151" : "#9CA3AF",
+                          rotate: isExpanded && hover ? 5 : 0,
                         }
                     }
                     transition={
                       reduce ? {} : { duration: 0.15, ease: [0.22, 1, 0.36, 1] }
                     }
+                    style={{ backgroundColor: "transparent" }}
+                    className="flex h-[30px] w-[30px] items-center justify-center bg-transparent text-zinc-400"
                   >
-                    {CHAT_PHRASES[phraseIndex]}
+                    <svg
+                      preserveAspectRatio="none"
+                      overflow="visible"
+                      style={{ display: "block" }}
+                      width="22.8333"
+                      height="18.6667"
+                      viewBox="0 0 22.8333 18.6667"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M21.8333 3.08333C21.8333 1.9375 20.8958 1 19.75 1H3.08333C1.9375 1 1 1.9375 1 3.08333M21.8333 3.08333V15.5833C21.8333 16.7292 20.8958 17.6667 19.75 17.6667H3.08333C1.9375 17.6667 1 16.7292 1 15.5833V3.08333M21.8333 3.08333L11.4167 10.375L1 3.08333"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
                   </motion.span>
-                </AnimatePresence>
-              </div>
-
-              {/* Center the icon in the compact button; keep it at the trailing edge once text is visible. */}
-              <div
-                className={clsx(
-                  "absolute inset-0 flex items-center pointer-events-none",
-                  isExpanded ? "justify-end pe-2.5" : "justify-center"
-                )}
-              >
-                <motion.span
-                  initial={false}
-                  animate={
-                    reduce
-                      ? {}
-                      : {
-                        color: isZeroG
-                          ? isExpanded ? "#f4f4f5" : "#a1a1aa"
-                          : isExpanded ? "#374151" : "#9CA3AF",
-                        rotate: isExpanded && hover ? 5 : 0,
-                      }
-                  }
-                  transition={
-                    reduce ? {} : { duration: 0.15, ease: [0.22, 1, 0.36, 1] }
-                  }
-                  style={{ backgroundColor: "transparent" }}
-                  className="flex h-[30px] w-[30px] items-center justify-center bg-transparent text-zinc-400"
-                >
-                  <svg
-                    preserveAspectRatio="none"
-                    overflow="visible"
-                    style={{ display: "block" }}
-                    width="22.8333"
-                    height="18.6667"
-                    viewBox="0 0 22.8333 18.6667"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M21.8333 3.08333C21.8333 1.9375 20.8958 1 19.75 1H3.08333C1.9375 1 1 1.9375 1 3.08333M21.8333 3.08333V15.5833C21.8333 16.7292 20.8958 17.6667 19.75 17.6667H3.08333C1.9375 17.6667 1 16.7292 1 15.5833V3.08333M21.8333 3.08333L11.4167 10.375L1 3.08333"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                </motion.span>
+                </div>
               </div>
             </div>
-          </div>
-        </motion.a>
+          </motion.a>
+        </Magnetic>
       </header>
     </>
   );

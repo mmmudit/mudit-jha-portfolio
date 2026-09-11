@@ -7,6 +7,7 @@ import { Check } from "lucide-react";
 import { LiveClock } from "./live-clock";
 import { SmartLinkPreview } from "./smart-link-preview";
 import { play } from "@/lib/sound";
+import { Magnetic } from "./magnetic";
 import { useZeroGravity } from "@/context/zero-gravity-context";
 import { useNotification } from "@/context/notification-context";
 
@@ -118,18 +119,20 @@ export function Footer() {
             const isEmail = link.label === "Email";
             const linkElement = (
               <div className="relative inline-flex items-center">
-                <a
-                  href={link.href}
-                  onClick={(e) => handleEmailClick(e, link.href)}
-                  target={link.href.startsWith("mailto:") ? undefined : "_blank"}
-                  rel={link.href.startsWith("mailto:") ? undefined : "noopener noreferrer"}
-                  data-cuelume-hover="tick"
-                  data-cuelume-press
-                  data-cuelume-release
-                  className="pressable transition-[color,transform] duration-200 hover:text-zinc-900 dark:hover:text-white dark:hover:drop-shadow-[0_0_12px_rgba(255,255,255,0.7)] [@media(hover:hover)]:hover:scale-[1.03] active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-400 focus-visible:ring-offset-2 rounded-lg"
-                >
-                  {link.label.toLowerCase()}
-                </a>
+                <Magnetic intensity={0.25} range={120}>
+                  <a
+                    href={link.href}
+                    onClick={(e) => handleEmailClick(e, link.href)}
+                    target={link.href.startsWith("mailto:") ? undefined : "_blank"}
+                    rel={link.href.startsWith("mailto:") ? undefined : "noopener noreferrer"}
+                    data-cuelume-hover="tick"
+                    data-cuelume-press
+                    data-cuelume-release
+                    className="pressable transition-[color] duration-200 hover:text-zinc-900 dark:hover:text-white dark:hover:drop-shadow-[0_0_12px_rgba(255,255,255,0.7)] active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-400 focus-visible:ring-offset-2 rounded-lg"
+                  >
+                    {link.label.toLowerCase()}
+                  </a>
+                </Magnetic>
               </div>
             );
 
