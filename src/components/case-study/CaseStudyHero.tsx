@@ -100,7 +100,7 @@ export function CaseStudyHero({ project, className = "" }: CaseStudyHeroProps) {
                 isBorderless ? "rounded-[16px] sm:rounded-[22px]" : "rounded-[20px] sm:rounded-[26px]"
               }`}
               title={heroMedia?.alt || `${project.title} Hero Demo`}
-              style={{ "--controls": "none" }}
+              style={{ "--controls": "none", aspectRatio: "var(--aspect-ratio, auto)" }}
             />
           ) : heroVideo ? (
             <video

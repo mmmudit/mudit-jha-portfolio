@@ -1,14 +1,11 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { useRouter } from "next/navigation";
 import { motion, useSpring, useReducedMotion } from "framer-motion";
 import { play } from "@/lib/sound";
 
 export function InteractiveTsuLogo() {
-  const router = useRouter();
   const containerRef = useRef<HTMLDivElement | null>(null);
-  const lastClickRef = useRef<number>(0);
   const [manualBlink, setManualBlink] = useState(false);
   const shouldReduceMotion = useReducedMotion();
 
@@ -22,11 +19,6 @@ export function InteractiveTsuLogo() {
   // Smooth springs for pupil tracking (X, Y)
   const pupilX = useSpring(0, { stiffness: 300, damping: 20 });
   const pupilY = useSpring(0, { stiffness: 300, damping: 20 });
-
-  // Prefetch /design-system route immediately on mount for instant zero-latency transition
-  useEffect(() => {
-    router.prefetch("/design-system");
-  }, [router]);
 
   // Mouse / Pointer tracking for organic alive directional movement
   useEffect(() => {
@@ -102,38 +94,18 @@ export function InteractiveTsuLogo() {
     setTimeout(() => setManualBlink(false), 200);
   };
 
-  const handleTriggerNavigation = (e?: React.SyntheticEvent) => {
-    if (e) {
-      e.stopPropagation();
-    }
-    handleManualBlink();
-    play("arrival", { volume: 0.5 });
-    router.push("/design-system");
-  };
-
   const handleClick = (e: React.MouseEvent) => {
     e.stopPropagation();
-    const now = Date.now();
-    const diff = now - lastClickRef.current;
-    if (diff > 0 && diff < 550) {
-      lastClickRef.current = 0;
-      handleTriggerNavigation(e);
-    } else {
-      lastClickRef.current = now;
-      handleManualBlink();
-      play("sparkle", { volume: 0.4 });
-      router.prefetch("/design-system");
-    }
+    handleManualBlink();
+    play("sparkle", { volume: 0.4 });
   };
 
   return (
     <motion.div
       ref={containerRef}
       onClick={handleClick}
-      onDoubleClick={(e) => handleTriggerNavigation(e)}
       onHoverStart={() => {
         handleManualBlink();
-        router.prefetch("/design-system");
       }}
       whileHover={{ scale: shouldReduceMotion ? 1 : 1.08 }}
       whileTap={{ scale: shouldReduceMotion ? 1 : 0.96 }}

@@ -437,10 +437,9 @@ export function ProjectModal({
     ? { top: 0, left: 0, width: viewportSize.width, height: viewportSize.height }
     : (isFlipped ? dynamicTarget : target);
 
-  // Transitions-Polish: Asymmetric Horizon Flip Timings
-  // Open is an invitation (580ms weighted entrance); close gets out of the way (320ms crisp dismissal)
-  const openDuration = 0.58;
-  const closeDuration = 0.32;
+  // Keep direct manipulation responsive: opening settles quickly and dismissal clears immediately.
+  const openDuration = 0.28;
+  const closeDuration = 0.2;
 
   const openTransition = {
     duration: openDuration,
@@ -449,7 +448,7 @@ export function ProjectModal({
 
   const closeTransition = {
     duration: closeDuration,
-    ease: CINEMATIC_GENTLE_EASE,
+    ease: "easeIn" as const,
   };
 
   const springResizeTransition = {
@@ -485,7 +484,7 @@ export function ProjectModal({
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: isClosing ? 0 : 1 }}
-        transition={isClosing ? { duration: 0.22, ease: CINEMATIC_GENTLE_EASE } : { duration: openDuration * 0.7, ease: CINEMATIC_GENTLE_EASE }}
+        transition={isClosing ? { duration: closeDuration, ease: "easeIn" } : { duration: openDuration * 0.7, ease: CINEMATIC_GENTLE_EASE }}
         onClick={handleClose}
         className="fixed inset-0 bg-black/15 cursor-pointer"
         aria-hidden="true"
@@ -595,7 +594,7 @@ export function ProjectModal({
                     ? 180
                     : 0,
             }}
-            transition={isClosing ? { duration: closeDuration * 1.05, ease: CINEMATIC_GENTLE_EASE } : openTransition}
+            transition={isClosing ? closeTransition : openTransition}
             style={{
               transformStyle: prefersReducedMotion ? "flat" : "preserve-3d",
               willChange: "transform",

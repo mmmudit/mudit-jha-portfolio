@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import Image from "next/image";
+import MuxPlayer from "@mux/mux-player-react";
 import { motion, useReducedMotion } from "framer-motion";
 import { MediaBlockItem } from "@/types/project";
 import { HanddrawnAnnotation } from "./HanddrawnAnnotation";
@@ -94,22 +95,20 @@ export function MediaBlock({ block, className = "" }: MediaBlockProps) {
 
         {hasRealMedia ? (
           muxPlaybackId ? (
-            <video
+            <MuxPlayer
+              playbackId={muxPlaybackId}
               autoPlay={!prefersReducedMotion}
               muted
               playsInline
               loop
-              controls={false}
-              poster={posterImage}
-              className={`w-full max-w-full h-auto max-h-[82vh] object-contain mx-auto block ${
+              thumbnailTime={muxThumbTime}
+              metadataVideoTitle={block.alt || placeholderLabel}
+              className={`w-full max-w-full h-auto max-h-[82vh] mx-auto block ${
                 isBorderless ? "rounded-[14px] sm:rounded-[20px]" : "rounded-[20px] sm:rounded-[26px]"
               }`}
-              aria-label={block.alt || placeholderLabel}
-            >
-              <source src={`https://stream.mux.com/${muxPlaybackId}.m3u8`} type="application/x-mpegURL" />
-              <source src={`https://stream.mux.com/${muxPlaybackId}/high.mp4`} type="video/mp4" />
-              <source src={`https://stream.mux.com/${muxPlaybackId}/medium.mp4`} type="video/mp4" />
-            </video>
+              title={block.alt || placeholderLabel}
+              style={{ "--controls": "none", aspectRatio: "var(--aspect-ratio, auto)" }}
+            />
           ) : block.mediaType === "video" && block.video ? (
             <video
               src={block.video}

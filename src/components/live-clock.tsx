@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { Sun, Moon } from "lucide-react";
-import { play } from "@/lib/sound";
 import { useZeroGravity } from "@/context/zero-gravity-context";
 
 import { VoxelGlobeHero } from "./hero/VoxelGlobeHero";
@@ -150,9 +149,22 @@ export function LiveClock({ variant = "footer" }: LiveClockProps) {
 
         {/* Free-Floating 3D Voxel Globe with Clouds and Parallax */}
         <motion.div
-          onClick={(e) => {
-            e.stopPropagation();
-            registerGlobeTap();
+          role="button"
+          tabIndex={0}
+          aria-label="Activate zero-gravity mode"
+          aria-keyshortcuts="Enter Space"
+          onClick={(event) => {
+            // The canvas owns pointer/touch activation; this retains activation
+            // for assistive technology without counting a canvas tap twice.
+            if (event.target === event.currentTarget) {
+              registerGlobeTap();
+            }
+          }}
+          onKeyDown={(event) => {
+            if (event.key === "Enter" || event.key === " ") {
+              event.preventDefault();
+              registerGlobeTap();
+            }
           }}
           animate={
             isZeroG
@@ -176,7 +188,7 @@ export function LiveClock({ variant = "footer" }: LiveClockProps) {
               ? { duration: 0.35, ease: "easeInOut" }
               : { duration: 0.65, ease: [0.23, 1, 0.32, 1] }
           }
-          className="scale-[0.85] origin-center md:scale-100 md:origin-center will-change-transform z-20 cursor-pointer"
+          className="scale-[0.85] origin-center md:scale-100 md:origin-center will-change-transform z-20 cursor-pointer rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-700 focus-visible:ring-offset-4 focus-visible:ring-offset-[#fbfaf5] dark:focus-visible:ring-zinc-100 dark:focus-visible:ring-offset-[#090b10]"
         >
           <VoxelGlobeHero
             size={300}

@@ -2,6 +2,7 @@
 
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { useState, useEffect, useCallback } from "react";
+import { usePathname } from "next/navigation";
 import clsx from "clsx";
 import { DynamicIslandNav } from "./dynamic-island-nav";
 import { InteractiveTsuLogo } from "./tsu-logo";
@@ -17,11 +18,13 @@ export function Header() {
   const [isMobile, setIsMobile] = useState(false);
   const [isAtBoundary, setIsAtBoundary] = useState(true);
   const reduce = useReducedMotion();
+  const pathname = usePathname();
   const { activeSection, isAbout } = useAboutEye();
   const { isZeroGravity, isRestoring } = useZeroGravity();
   const { activeNotification } = useNotification();
   const isZeroG = isZeroGravity && !isRestoring;
   const isNotificationActive = Boolean(activeNotification);
+  const isPlay = pathname === "/play";
 
   const cyclePhrase = useCallback(() => {
     setPhraseIndex((prev) => (prev + 1) % CHAT_PHRASES.length);
@@ -63,7 +66,8 @@ export function Header() {
   const expandedW = 126;
   const isExpanded = isMobile ? isAtBoundary || hover : hover;
 
-  const showEyeInHeader = !isAbout || activeSection === "hero";
+  const isDesignSystem = pathname === "/design-system";
+  const showEyeInHeader = (!isAbout || activeSection === "hero") && !isPlay;
 
   return (
     <>
@@ -92,17 +96,19 @@ export function Header() {
           )}
         </div>
 
-        {/* Center: Dynamic Island Navigation & Notification Bar (Sticky on scroll when notification is active) */}
-        <div
-          className={clsx(
-            "pointer-events-auto z-50 flex items-center justify-center",
-            isNotificationActive
-              ? "fixed bottom-6 left-1/2 -translate-x-1/2 mb-[env(safe-area-inset-bottom,0px)] md:fixed md:top-[calc(1.5rem+env(safe-area-inset-top,0px)+27px)] md:bottom-auto md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2"
-              : "fixed bottom-6 left-1/2 -translate-x-1/2 mb-[env(safe-area-inset-bottom,0px)] md:absolute md:top-1/2 md:bottom-auto md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2"
-          )}
-        >
-          <DynamicIslandNav />
-        </div>
+        {/* Center: Dynamic Island Navigation & Notification Bar (Hidden on /design-system) */}
+        {!isDesignSystem && (
+          <div
+            className={clsx(
+              "pointer-events-auto z-50 flex items-center justify-center",
+              isNotificationActive
+                ? "fixed bottom-6 left-1/2 -translate-x-1/2 mb-[env(safe-area-inset-bottom,0px)] md:fixed md:top-[calc(1.5rem+env(safe-area-inset-top,0px)+27px)] md:bottom-auto md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2"
+                : "fixed bottom-6 left-1/2 -translate-x-1/2 mb-[env(safe-area-inset-bottom,0px)] md:absolute md:top-1/2 md:bottom-auto md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2"
+            )}
+          >
+            <DynamicIslandNav />
+          </div>
+        )}
 
         {/* Right: Contact email button (Always expanded on mobile at top/bottom, hover-expanded on desktop) */}
         <motion.a
@@ -126,7 +132,13 @@ export function Header() {
                 width: isExpanded ? expandedW : minW,
                 backgroundColor: isZeroG
                   ? hover ? "#27272a" : "#18181b"
-                  : hover ? "#e6e6e6" : "#fbfaf5",
+                  : hover ? "#c8d5bb" : "#fbfaf5",
+                borderColor: isZeroG
+                  ? "rgba(255,255,255,0.15)"
+                  : hover ? "rgba(200,213,187,0.9)" : "#d4d4d8",
+                boxShadow: isZeroG || !hover
+                  ? "none"
+                  : "inset 0 1px 1px rgba(255,255,255,0.9), inset 0 -1px 1px rgba(0,0,0,0.02), 0 2px 4px rgba(0,0,0,0.06)",
               }
           }
           transition={
@@ -137,7 +149,7 @@ export function Header() {
           data-cuelume-hover="tick"
           data-cuelume-press
           data-cuelume-release
-          className="pressable pointer-events-auto relative inline-flex shrink-0 items-center overflow-hidden rounded-full border-2 border-zinc-300 dark:border-white/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-400 focus-visible:ring-offset-2 transition-colors duration-700"
+          className="pressable pointer-events-auto relative inline-flex shrink-0 items-center overflow-hidden rounded-full border border-zinc-300 dark:border-white/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-400 focus-visible:ring-offset-2 transition-colors duration-700"
         >
           <div className="relative h-[54px] w-full">
             <div className="absolute inset-0">
@@ -186,8 +198,13 @@ export function Header() {
                 </AnimatePresence>
               </div>
 
-              {/* Icon fixed at right */}
-              <div className="absolute inset-0 flex items-center justify-end pe-2.5 pointer-events-none">
+              {/* Center the icon in the compact button; keep it at the trailing edge once text is visible. */}
+              <div
+                className={clsx(
+                  "absolute inset-0 flex items-center pointer-events-none",
+                  isExpanded ? "justify-end pe-2.5" : "justify-center"
+                )}
+              >
                 <motion.span
                   initial={false}
                   animate={
@@ -198,15 +215,13 @@ export function Header() {
                           ? isExpanded ? "#f4f4f5" : "#a1a1aa"
                           : isExpanded ? "#374151" : "#9CA3AF",
                         rotate: isExpanded && hover ? 5 : 0,
-                        backgroundColor: isZeroG
-                          ? isExpanded && hover ? "#27272a" : "#18181b"
-                          : isExpanded && hover ? "#e6e6e6" : "#fbfaf5",
                       }
                   }
                   transition={
                     reduce ? {} : { duration: 0.15, ease: [0.22, 1, 0.36, 1] }
                   }
-                  className="flex items-center justify-center w-[30px] h-[30px] text-zinc-400"
+                  style={{ backgroundColor: "transparent" }}
+                  className="flex h-[30px] w-[30px] items-center justify-center bg-transparent text-zinc-400"
                 >
                   <svg
                     preserveAspectRatio="none"
@@ -235,4 +250,3 @@ export function Header() {
     </>
   );
 }
-

@@ -48,6 +48,14 @@
   --font-hand: var(--font-myfont);
 }
 
+/* Keep the custom typeface's pair spacing active and prevent horizontal character collisions when headings add tracking. */
+.font-hand {
+  font-kerning: normal;
+  letter-spacing: 0.01em;
+  font-feature-settings: "kern" 1, "liga" 1, "calt" 1;
+  font-variant-ligatures: normal;
+}
+
 html {
   scrollbar-gutter: stable;
 }
@@ -676,4 +684,18 @@ body[data-zero-gravity="true"] .paper-card {
 body[data-zero-gravity="true"] .gradient-divider {
   background: rgba(255, 255, 255, 0.15) !important;
   transition: background 700ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+/* Mux Player Responsive Aspect Ratio & Auto Height */
+mux-player {
+  --controls: none;
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+  aspect-ratio: var(--aspect-ratio, auto);
+  display: block;
+}
+
+mux-player::part(video) {
+  object-fit: contain;
 }

@@ -29,7 +29,7 @@ function ZeroGravitySectionItem({
 }) {
   const itemRef = useRef<HTMLDivElement>(null);
   const preset = DRIFT_PRESETS[index % DRIFT_PRESETS.length];
-  const staggerDelay = reduce ? 0 : index * 0.09;
+  const staggerDelay = reduce ? 0 : index * 0.04;
 
   // Viewport scroll tracking for subtle 3D orbital parallax
   const { scrollYProgress } = useScroll({

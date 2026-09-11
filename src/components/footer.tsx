@@ -172,8 +172,8 @@ export function Footer() {
           </div>
         </div>
 
-        {/* Giant "MUDIT" Shaded Particle Wordmark (Bottom Anchor - Full Page Width) */}
-        <div className="relative flex items-center justify-center w-screen left-1/2 -translate-x-1/2 pt-2 overflow-visible aspect-[2200/320] bg-transparent">
+        {/* Giant "MUDIT" Shaded Particle Wordmark (Bottom Anchor - Centered & Responsive) */}
+        <div className="relative flex items-center justify-center w-full max-w-[1400px] mx-auto pt-2 overflow-hidden aspect-[1600/360] min-h-[80px] sm:min-h-[140px] md:min-h-[180px] lg:min-h-[220px] max-h-[320px] bg-transparent">
           <TextAnimationCollection
             variant="particle-wordmark"
             text="mudit"

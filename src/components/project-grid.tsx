@@ -233,7 +233,7 @@ export function ProjectGrid({ projects }: ProjectGridProps) {
                       stiffness: 35,
                       damping: 11,
                       mass: 1.15,
-                      delay: 0.1 + index * 0.08,
+                      delay: 0.08 + index * 0.04,
                     }
                   : isRestoring
                   ? {

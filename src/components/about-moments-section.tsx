@@ -363,8 +363,9 @@ export function AboutMomentsSection() {
                 animate={{ x: ["0%", "-50%"] }}
                 transition={{
                   duration: 22,
-                  ease: "linear",
+                  ease: "easeInOut",
                   repeat: Infinity,
+                  repeatType: "mirror",
                 }}
                 className="flex items-center gap-6 min-w-max text-[#636366] font-display italic text-[15px] sm:text-[17px]"
               >

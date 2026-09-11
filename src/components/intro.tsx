@@ -5,6 +5,7 @@ import { useReducedMotion, motion } from "framer-motion";
 import { LiveClock } from "./live-clock";
 import { AppleDockText } from "./apple-dock-text";
 import { useZeroGravity } from "@/context/zero-gravity-context";
+import { UmnHoverPreview } from "./umn-hover-preview";
 
 export function Intro() {
   const reduce = useReducedMotion();
@@ -31,7 +32,7 @@ export function Intro() {
           transition={
             isZeroG
               ? { type: "spring", stiffness: 36, damping: 11, mass: 1.1, delay: 0.04 }
-              : { duration: 0.65, ease: [0.23, 1, 0.32, 1], delay: 0.12 }
+              : { duration: 0.28, ease: [0.23, 1, 0.32, 1], delay: 0.08 }
           }
           className="overflow-visible py-3 -my-3 will-change-transform"
         >
@@ -43,7 +44,7 @@ export function Intro() {
                 : { y: reduce ? 0 : -42, opacity: 0, filter: reduce ? "none" : "blur(6px)" }
             }
             transition={{
-              duration: reduce ? 0.2 : 0.55,
+              duration: reduce ? 0.2 : 0.28,
               ease: [0.22, 1, 0.36, 1],
             }}
             className="font-display text-[48px] sm:text-[56px] font-semibold tracking-[-0.035em] text-zinc-900 dark:text-zinc-50 text-balance will-change-transform"
@@ -62,7 +63,7 @@ export function Intro() {
           transition={
             isZeroG
               ? { type: "spring", stiffness: 36, damping: 11, mass: 1.1, delay: 0.1 }
-              : { duration: 0.65, ease: [0.23, 1, 0.32, 1], delay: 0.08 }
+              : { duration: 0.28, ease: [0.23, 1, 0.32, 1], delay: 0.12 }
           }
           className="font-display text-[23px] sm:text-[25px] font-normal leading-[1.4] tracking-[-0.015em] text-zinc-600 dark:text-zinc-300 text-pretty overflow-visible will-change-transform"
         >
@@ -83,8 +84,8 @@ export function Intro() {
                 }
             }
             transition={{
-              duration: reduce ? 0.15 : 0.5,
-              delay: reduce ? 0 : 0.08,
+              duration: reduce ? 0.15 : 0.24,
+              delay: reduce ? 0 : 0.12,
               ease: [0.22, 1, 0.36, 1],
             }}
             className="inline-block font-semibold text-zinc-900 dark:text-zinc-100 will-change-transform overflow-visible mr-[0.22em]"
@@ -115,13 +116,13 @@ export function Intro() {
                 }
             }
             transition={{
-              duration: reduce ? 0.15 : 0.5,
-              delay: reduce ? 0 : 0.18,
+              duration: reduce ? 0.15 : 0.24,
+              delay: reduce ? 0 : 0.2,
               ease: [0.22, 1, 0.36, 1],
             }}
             className="inline text-zinc-600 dark:text-zinc-300 font-normal"
           >
-            Building thoughtful things at the intersection of tech and human behavior.
+            Building thoughtful things at the intersection of tech and human behavior. Current undergrad <UmnHoverPreview /> studying CS, Psychology and UX.
           </motion.span>
         </motion.p>
       </div>
@@ -130,7 +131,7 @@ export function Intro() {
       <motion.div
         initial={{ y: reduce ? 0 : -32, opacity: 0 }}
         animate={hasMounted ? { y: 0, opacity: 1 } : { y: reduce ? 0 : -32, opacity: 0 }}
-        transition={{ duration: 0.5, delay: 0.05, ease: [0.22, 1, 0.36, 1] }}
+        transition={{ duration: 0.25, delay: 0.28, ease: [0.22, 1, 0.36, 1] }}
         className="self-start md:self-auto order-1 md:order-2 will-change-transform"
       >
         <LiveClock variant="header" />

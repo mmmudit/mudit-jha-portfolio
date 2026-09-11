@@ -20,8 +20,27 @@ export function HighlightFeatureBlock({ block }: { block: HighlightFeatureBlockD
       {body.length > 0 && <div className="max-w-2xl space-y-2 font-sans text-sm sm:text-base leading-[1.65] text-zinc-700 text-pretty">{body.map((item, index) => <p key={index}>{item}</p>)}</div>}
     </div>
     {hasMedia && <figure className="border-t border-black/5 bg-[#e8ebe4]/45">
-      <div className="relative aspect-[16/10] w-full overflow-hidden">
-        {muxPlaybackId ? <MuxPlayer playbackId={muxPlaybackId} autoPlay={!prefersReducedMotion} muted playsInline loop thumbnailTime={block.muxThumbTime ?? block.muxVideo?.thumbTime ?? 0} metadataVideoTitle={title} title={block.alt || title} className="size-full" style={{ "--controls": "none" }} /> : block.video ? <video src={block.video} autoPlay={!prefersReducedMotion} muted playsInline loop className="size-full object-contain" aria-label={block.alt || title} /> : block.image ? <Image src={block.image} alt={block.alt || title} fill sizes="(max-width: 768px) 100vw, 960px" className="object-contain" /> : null}
+      <div className="relative w-full overflow-hidden flex items-center justify-center">
+        {muxPlaybackId ? (
+          <MuxPlayer
+            playbackId={muxPlaybackId}
+            autoPlay={!prefersReducedMotion}
+            muted
+            playsInline
+            loop
+            thumbnailTime={block.muxThumbTime ?? block.muxVideo?.thumbTime ?? 0}
+            metadataVideoTitle={title}
+            title={block.alt || title}
+            className="w-full max-w-full h-auto max-h-[82vh] mx-auto block"
+            style={{ "--controls": "none", aspectRatio: "var(--aspect-ratio, auto)" }}
+          />
+        ) : block.video ? (
+          <video src={block.video} autoPlay={!prefersReducedMotion} muted playsInline loop className="w-full h-auto max-h-[82vh] object-contain" aria-label={block.alt || title} />
+        ) : block.image ? (
+          <div className="relative aspect-[16/10] w-full overflow-hidden">
+            <Image src={block.image} alt={block.alt || title} fill sizes="(max-width: 768px) 100vw, 960px" className="object-contain" />
+          </div>
+        ) : null}
       </div>
       {block.caption && <figcaption className="px-5 py-3 text-center font-sans text-xs sm:text-[13px] text-[#47585c]">{block.caption}</figcaption>}
     </figure>}

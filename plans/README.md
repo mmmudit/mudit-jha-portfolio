@@ -6,10 +6,11 @@
 | [013](013-voxel-globe-gc-and-frame-budget.md) | Eliminate Voxel Globe GC Thrashing & Frame-Budget Allocations | HIGH | DONE | None |
 | [014](014-voxel-globe-reduced-motion-accessibility.md) | Voxel Globe Reduced-Motion Accessibility | MEDIUM | DONE | None |
 | [015](015-voxel-globe-organic-cloud-breathe-and-hover-easing.md) | Voxel Globe Organic Cloud Breathing & Hover Easing | LOW | DONE | 013 |
+| [016](016-center-play-mode-badge.md) | Center the Play Mode Badge at the Canvas Hero | MEDIUM | TODO | None |
 
 ## Recommended Execution Order
 
 1. **013-voxel-globe-gc-and-frame-budget.md** — Pre-allocate Vector3 & Material arrays to eliminate 15,000+ objects/sec GC thrashing in render loop.
 2. **014-voxel-globe-reduced-motion-accessibility.md** — Add `prefers-reduced-motion` detection to pause auto-rotation & parallax drift for vestibular accessibility.
 3. **015-voxel-globe-organic-cloud-breathe-and-hover-easing.md** — Add `cubic-bezier(0.23, 1, 0.32, 1)` hover easing and per-cloud organic sine breathing.
-
+4. **016-center-play-mode-badge.md** — Replace the canvas hero's verified icon with the centered, circular Play mode badge.

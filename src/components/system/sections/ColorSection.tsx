@@ -18,8 +18,6 @@ export function ColorSection({ filterTag }: { filterTag?: TokenTag | "all" }) {
     { id: "brand", label: "Brand & Identity" },
     { id: "neutral", label: "Neutrals & Strokes" },
     { id: "functional", label: "Functional & Feedback" },
-    { id: "gradient", label: "Atmospheric Gradients" },
-    { id: "spine", label: "Bookshelf Spines" },
   ];
 
   return (
@@ -27,21 +25,21 @@ export function ColorSection({ filterTag }: { filterTag?: TokenTag | "all" }) {
       <SectionHeader
         id="colors"
         title="Colors & Palette"
-        subtitle="The earth-tone paper palette grounded in warm Dough (#fbfaf5), subtle Willow Grey (#c8d5bb) accents, and Rust Grey (#47585c) typography. Includes both canonical foundation tokens and real one-offs found in production."
+        subtitle="The earth-tone paper palette grounded in warm Dough (#fbfaf5), subtle Willow Grey (#c8d5bb) accents, Rust Grey (#47585c) typography, and Status Green (#31b564)."
         count={COLOR_TOKENS.length}
       />
 
       {/* Category Sub-Filters */}
-      <div className="flex flex-wrap items-center gap-1.5 mb-6">
+      <div className="flex flex-wrap items-center gap-1 mb-6 text-xs font-mono">
         {categories.map((cat) => (
           <button
             key={cat.id}
             type="button"
             onClick={() => setActiveCategory(cat.id)}
-            className={`px-3 py-1 text-xs rounded-full font-medium transition-colors ${
+            className={`px-2.5 py-1 rounded-md transition-colors cursor-pointer ${
               activeCategory === cat.id
-                ? "bg-zinc-800 text-white"
-                : "bg-zinc-200/80 text-zinc-600 hover:bg-zinc-300"
+                ? "bg-zinc-900 text-white font-medium"
+                : "text-zinc-500 hover:text-zinc-900 hover:bg-zinc-100"
             }`}
           >
             {cat.label}

@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import Image from "next/image";
+import MuxPlayer from "@mux/mux-player-react";
 import { motion, useReducedMotion } from "framer-motion";
 import { FeatureBlockItem } from "@/types/project";
 
@@ -86,32 +87,18 @@ export function FeatureBlock({ block, className = "" }: FeatureBlockProps) {
                       }`}
                     />
                   ) : feat.muxPlaybackId || feat.muxVideo?.playbackId ? (
-                    <video
+                    <MuxPlayer
+                      playbackId={feat.muxPlaybackId || feat.muxVideo?.playbackId}
                       autoPlay={!prefersReducedMotion}
                       muted
                       playsInline
                       loop
-                      poster={
-                        feat.image ||
-                        `https://image.mux.com/${feat.muxPlaybackId || feat.muxVideo?.playbackId}/thumbnail.webp?time=${
-                          feat.muxThumbTime ?? feat.muxVideo?.thumbTime ?? 0
-                        }&width=1200&fit_mode=smartcrop`
-                      }
-                      className="size-full object-contain"
-                    >
-                      <source
-                        src={`https://stream.mux.com/${feat.muxPlaybackId || feat.muxVideo?.playbackId}.m3u8`}
-                        type="application/x-mpegURL"
-                      />
-                      <source
-                        src={`https://stream.mux.com/${feat.muxPlaybackId || feat.muxVideo?.playbackId}/high.mp4`}
-                        type="video/mp4"
-                      />
-                      <source
-                        src={`https://stream.mux.com/${feat.muxPlaybackId || feat.muxVideo?.playbackId}/medium.mp4`}
-                        type="video/mp4"
-                      />
-                    </video>
+                      thumbnailTime={feat.muxThumbTime ?? feat.muxVideo?.thumbTime ?? 0}
+                      metadataVideoTitle={feat.title}
+                      title={feat.title}
+                      className="w-full max-w-full h-auto max-h-[82vh] mx-auto block"
+                      style={{ "--controls": "none", aspectRatio: "var(--aspect-ratio, auto)" }}
+                    />
                   ) : feat.video ? (
                     <video
                       src={feat.video}

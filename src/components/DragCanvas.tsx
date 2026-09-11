@@ -14,6 +14,7 @@ import {
 import { Hand, Sparkles, X, ArrowUpRight, Play, Maximize2 } from "lucide-react";
 import { play } from "@/lib/sound";
 import { TactileFolderCard } from "@/components/TactileFolderCard";
+import { InteractiveTsuLogo } from "@/components/tsu-logo";
 
 import { PlaygroundCardSize, SIZE_DIMENSIONS } from "@/lib/generateScatterLayout";
 
@@ -54,6 +55,10 @@ export interface DragCanvasProps {
   initialCenter?: boolean;
   hintText?: string;
   showCenterHero?: boolean;
+  showCanvasBadge?: boolean;
+  /** Plays only when entering the play route, preserving the header eye's spatial origin. */
+  animateCenterEyeFromHeader?: boolean;
+  centerHeroBadge?: React.ReactNode;
   onItemClick?: (item: DragCanvasItem) => void;
 }
 
@@ -237,14 +242,42 @@ export function DragCanvas({
   initialCenter = true,
   hintText = "Scroll or drag to explore canvas",
   showCenterHero = true,
+  showCanvasBadge = true,
+  animateCenterEyeFromHeader = false,
+  centerHeroBadge,
   onItemClick,
 }: DragCanvasProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const reduce = useReducedMotion();
+  const eyeEntryTransform = (() => {
+    if (typeof window === "undefined") return null;
 
-  // Persistent drag coordinates (initialized to center)
-  const panX = useMotionValue(0);
-  const panY = useMotionValue(0);
+    const sourceX = window.innerWidth < 640
+      ? 48
+      : Math.max(0, (window.innerWidth - 1334) / 2) + 84;
+    const sourceY = window.innerWidth < 640 ? 40 : 52;
+    const centerHeroEyeY = window.innerHeight / 2 - 105;
+
+    return `translate3d(${sourceX - window.innerWidth / 2}px, ${sourceY - centerHeroEyeY}px, 0) scale(0.96)`;
+  })();
+
+  // Initialize pan coordinates to centered canvas offset so layoutId registers center position immediately
+  const getInitialPanX = () => {
+    if (typeof window !== "undefined") {
+      return (window.innerWidth - canvasWidth) / 2;
+    }
+    return (1200 - canvasWidth) / 2;
+  };
+
+  const getInitialPanY = () => {
+    if (typeof window !== "undefined") {
+      return (window.innerHeight - canvasHeight) / 2;
+    }
+    return (800 - canvasHeight) / 2;
+  };
+
+  const panX = useMotionValue(getInitialPanX());
+  const panY = useMotionValue(getInitialPanY());
 
   // Dynamic drag constraints computed from viewport and canvas dimensions
   const [constraints, setConstraints] = useState<{
@@ -485,21 +518,33 @@ export function DragCanvas({
               }}
               className="flex flex-col items-center justify-center text-center pointer-events-none select-none z-10 p-4"
             >
-              {/* Verified Checkmark Badge Icon */}
-              <motion.div
-                className="mb-3 flex items-center justify-center pointer-events-auto cursor-pointer"
-                onClick={() => play("chime", { volume: 0.4 })}
-                whileHover={{ scale: 1.08 }}
-                whileTap={{ scale: 0.95 }}
-                initial={{ opacity: 0, y: 6 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
-              >
-                <svg width="44" height="44" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="drop-shadow-sm">
-                  <path d="M22.5 12.5c0-1.58-.875-2.95-2.148-3.66.152-.51.238-1.05.238-1.61 0-2.9-2.35-5.25-5.25-5.25-.56 0-1.1.086-1.61.238C12.95 1.025 11.58.15 10 .15c-1.58 0-2.95.875-3.66 2.148-.51-.152-1.05-.238-1.61-.238-2.9 0-5.25 2.35-5.25 5.25 0 .56.086 1.1.238 1.61C1.025 9.55.15 10.92.15 12.5c0 1.58.875 2.95 2.148 3.66-.152.51-.238 1.05-.238 1.61 0 2.9 2.35 5.25 5.25 5.25 0 .56-.086 1.1-.238-1.61 1.273-.71 2.148-2.08 2.148-3.66z" fill="#c8d5bb" />
-                  <path d="M10.2 16.2l-3.7-3.7 1.4-1.4 2.3 2.3 5.3-5.3 1.4 1.4-6.7 6.7z" fill="#ffffff" />
-                </svg>
-              </motion.div>
+              {/* Interactive Eye Logo positioned above header */}
+              <div className="mb-3 flex items-center justify-center pointer-events-auto">
+                <motion.div
+                  layoutId="about-tsu-eye"
+                  initial={
+                    animateCenterEyeFromHeader && eyeEntryTransform
+                      ? reduce
+                        ? { opacity: 0.82 }
+                        : {
+                            // Header eye center → centered hero eye center.
+                            // Match the shared header's responsive padding and logo size.
+                            opacity: 0.9,
+                            transform: eyeEntryTransform,
+                          }
+                      : false
+                  }
+                  animate={{ opacity: 1, transform: "translate3d(0, 0, 0) scale(1)" }}
+                  transition={
+                    reduce
+                      ? { duration: 0.15, ease: [0.23, 1, 0.32, 1] }
+                      : { type: "spring", duration: 0.55, bounce: 0.12 }
+                  }
+                  className="size-[48px] sm:size-[56px]"
+                >
+                  <InteractiveTsuLogo />
+                </motion.div>
+              </div>
 
               {/* Serif Title */}
               <motion.h1
@@ -513,13 +558,20 @@ export function DragCanvas({
 
               {/* Subtitle Paragraph */}
               <motion.p
-                className="font-display text-zinc-600 text-base sm:text-lg leading-relaxed font-normal max-w-lg"
+                className="font-display text-zinc-600 text-base sm:text-lg leading-relaxed font-normal max-w-lg mb-4"
                 initial={{ opacity: 0, y: 6 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1], delay: 0.08 }}
               >
                 Unpublished design experiments, spatial UI prototypes, video studies, and real-time shaders. Drag around to explore.
               </motion.p>
+
+              {/* Cursor / Mode Badge positioned below header and subheader */}
+              {centerHeroBadge && (
+                <div className="mt-4 pointer-events-auto flex items-center justify-center">
+                  {centerHeroBadge}
+                </div>
+              )}
             </div>
           )}
 
@@ -584,14 +636,29 @@ export function DragCanvas({
         )}
       </AnimatePresence>
 
-      {/* Floating Spatial Badge HUD */}
-      <div className="absolute top-5 left-5 z-20 pointer-events-none flex items-center gap-2 px-3 py-1.5 rounded-full border border-zinc-300/70 bg-[#fbfaf5]/80 backdrop-blur-md text-[11px] font-mono text-zinc-500 shadow-xs">
-        <Sparkles className="size-3 text-amber-600/70" />
-        <span>PLAYGROUND CANVAS • {items.length} PIECES</span>
-      </div>
+      {showCanvasBadge && (
+        <div className="absolute top-5 left-5 z-20 pointer-events-none flex items-center gap-2 px-3 py-1.5 rounded-full border border-zinc-300/70 bg-[#fbfaf5]/80 backdrop-blur-md text-[11px] font-mono text-zinc-500 shadow-xs">
+          <Sparkles className="size-3 text-amber-600/70" />
+          <span>PLAYGROUND CANVAS • {items.length} PIECES</span>
+        </div>
+      )}
 
     </div>
   );
+}
+
+function parseAspectString(aspectStr?: string): number | undefined {
+  if (!aspectStr) return undefined;
+  if (aspectStr.includes("video")) return 16 / 9;
+  if (aspectStr.includes("square")) return 1;
+  const clean = aspectStr.replace("aspect-[", "").replace("]", "");
+  const parts = clean.split("/");
+  if (parts.length === 2) {
+    const w = parseFloat(parts[0]);
+    const h = parseFloat(parts[1]);
+    if (!isNaN(w) && !isNaN(h) && h > 0) return w / h;
+  }
+  return undefined;
 }
 
 // Individual Scattered Mood-board Card Component
@@ -604,6 +671,7 @@ function CanvasImageCard({
 }) {
   const [isHovered, setIsHovered] = useState(false);
   const [mediaLoaded, setMediaLoaded] = useState(false);
+  const [aspectRatio, setAspectRatio] = useState<number | undefined>(() => parseAspectString(item.aspect));
   const reduce = useReducedMotion();
 
   const sizeWidth = item.size ? SIZE_DIMENSIONS[item.size] : undefined;
@@ -681,11 +749,17 @@ function CanvasImageCard({
         }}
         className="group select-none cursor-pointer will-change-transform"
       >
-        <div className="relative rounded-[22px] bg-gradient-to-br from-amber-100 to-yellow-100 p-5 border border-amber-200/80 shadow-[0_8px_24px_rgba(0,0,0,0.06)] group-hover:shadow-[0_16px_40px_rgba(0,0,0,0.12)] transition-shadow">
-          <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-amber-900/60 block mb-2">
-            {item.tag || "Note"}
-          </span>
-          <p className="font-hand text-xl text-zinc-900 leading-relaxed">
+        <div className="relative rounded-2xl bg-[#fbf8f1] p-5 border border-[#e8e2d4] shadow-xs group-hover:shadow-lg transition-all">
+          <div className="flex items-center justify-between mb-3">
+            <div className="inline-flex items-center gap-1.5 font-mono text-[10px] font-semibold uppercase tracking-wider text-amber-900 bg-amber-100/90 px-3 py-1 rounded-full border border-amber-200 shadow-2xs">
+              <Sparkles className="size-3 text-amber-700" />
+              <span>{item.tag || "Note"}</span>
+            </div>
+            {item.year && (
+              <span className="font-mono text-[10px] text-zinc-400">{item.year}</span>
+            )}
+          </div>
+          <p className="font-hand text-2xl text-zinc-900 leading-snug">
             &ldquo;{item.caption || item.title}&rdquo;
           </p>
         </div>
@@ -718,11 +792,12 @@ function CanvasImageCard({
       }}
       className="group select-none cursor-pointer will-change-transform"
     >
-      <div className="relative rounded-[22px] bg-white p-3 border border-zinc-300/80 shadow-[0_8px_24px_rgba(0,0,0,0.06),0_1px_3px_rgba(0,0,0,0.04)] transition-shadow duration-300 group-hover:shadow-[0_16px_40px_rgba(0,0,0,0.12)]">
-        {/* Media Container with 16:10 or Custom Aspect Ratio */}
+      {/* Editorial Card Layout */}
+      <div className="relative flex flex-col">
+        {/* Media Container */}
         <div
-          className={`relative w-full rounded-[14px] overflow-hidden bg-zinc-100 dark:bg-zinc-800 border border-zinc-200/80 ${item.aspect || "aspect-[16/10]"
-            }`}
+          className="relative w-full rounded-xl overflow-hidden bg-zinc-200/80 border border-zinc-200/60 shadow-xs transition-[aspect-ratio] duration-300 ease-out"
+          style={{ aspectRatio: aspectRatio ? `${aspectRatio}` : "4/3" }}
         >
           {item.type === "video" || item.videoSrc ? (
             <video
@@ -732,9 +807,19 @@ function CanvasImageCard({
               muted
               playsInline
               preload="metadata"
+              onLoadedMetadata={(e) => {
+                setMediaLoaded(true);
+                const video = e.currentTarget;
+                if (video.videoWidth && video.videoHeight) {
+                  const ratio = video.videoWidth / video.videoHeight;
+                  const clamped = Math.max(0.65, Math.min(2.2, ratio));
+                  setAspectRatio(clamped);
+                }
+              }}
               onCanPlay={() => setMediaLoaded(true)}
-              className={`size-full object-cover pointer-events-none select-none transition-[opacity,transform] duration-500 ease-out [@media(hover:hover)]:group-hover:scale-105 ${mediaLoaded ? "opacity-100" : "opacity-0"
-                }`}
+              className={`size-full object-cover pointer-events-none select-none transition-[opacity,transform] duration-500 ease-out [@media(hover:hover)]:group-hover:scale-105 ${
+                mediaLoaded ? "opacity-100" : "opacity-0"
+              }`}
             />
           ) : item.imageSrc ? (
             <Image
@@ -743,55 +828,45 @@ function CanvasImageCard({
               fill
               sizes="(max-width: 768px) 300px, 460px"
               draggable={false}
-              onLoad={() => setMediaLoaded(true)}
-              className={`object-cover size-full pointer-events-none select-none transition-[opacity,transform] duration-500 ease-out [@media(hover:hover)]:group-hover:scale-105 ${mediaLoaded ? "opacity-100" : "opacity-0"
-                }`}
+              onLoad={(e) => {
+                setMediaLoaded(true);
+                const img = e.currentTarget;
+                if (img.naturalWidth && img.naturalHeight) {
+                  const ratio = img.naturalWidth / img.naturalHeight;
+                  const clamped = Math.max(0.65, Math.min(2.2, ratio));
+                  setAspectRatio(clamped);
+                }
+              }}
+              className={`object-cover size-full pointer-events-none select-none transition-[opacity,transform] duration-500 ease-out [@media(hover:hover)]:group-hover:scale-105 ${
+                mediaLoaded ? "opacity-100" : "opacity-0"
+              }`}
             />
           ) : null}
 
-          {/* Optional Tag Pill */}
+          {/* Tag Badge */}
           {item.tag && (
             <div className="absolute top-2.5 left-2.5 z-10 pointer-events-none">
-              <span className="px-2 py-0.5 text-[10px] font-mono font-bold uppercase tracking-wider text-zinc-800 bg-[#fbfaf5]/90 backdrop-blur-md rounded-md border border-zinc-300/80 shadow-xs">
+              <span className="px-2.5 py-0.5 text-[10px] font-mono font-medium uppercase tracking-wider text-white bg-black/40 backdrop-blur-md rounded-full">
                 {item.tag}
               </span>
             </div>
           )}
-
-          {/* Video Play Icon */}
-          {item.type === "video" && (
-            <div className="absolute top-2.5 right-2.5 z-10 pointer-events-none px-2 py-0.5 rounded-full bg-black/60 backdrop-blur-md text-[10px] font-mono text-white flex items-center gap-1 border border-white/10">
-              <Play className="size-2.5 fill-white" />
-              <span>Video</span>
-            </div>
-          )}
-
-          {/* Frosted Caption Overlay — Fades in on Hover */}
-          <div
-            className={`absolute inset-x-0 bottom-0 z-20 pointer-events-none p-3.5 pt-8 bg-gradient-to-t from-black/80 via-black/40 to-transparent transition-[opacity,transform] duration-200 ease-out ${isHovered ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2"
-              }`}
-          >
-            <h3 className="font-display font-bold text-sm text-white tracking-tight leading-snug drop-shadow-xs flex items-center justify-between">
-              <span>{item.title}</span>
-              <Maximize2 className="size-3 text-zinc-300" />
-            </h3>
-            {item.caption && (
-              <p className="font-sans text-[11.5px] text-zinc-200 font-normal leading-relaxed mt-0.5 line-clamp-2 drop-shadow-xs text-pretty">
-                {item.caption}
-              </p>
-            )}
-          </div>
         </div>
 
-        {/* Polaroid Style Clean Bottom Label (Visible Always) */}
-        <div className="flex items-center justify-between px-1 pt-2 text-zinc-700">
-          <span className="font-sans font-medium text-xs text-zinc-800 tracking-tight truncate max-w-[75%]">
+        {/* Editorial Caption Header */}
+        <div className="flex items-baseline justify-between gap-2 px-0.5 mt-2.5">
+          <h3 className="font-hand text-xl font-medium tracking-tight text-zinc-900 dark:text-zinc-100 group-hover:text-black dark:group-hover:text-white transition-colors truncate">
             {item.title}
-          </span>
-          <span className="font-mono text-[10px] text-zinc-400">
-            {rot > 0 ? `+${rot}°` : `${rot}°`}
+          </h3>
+          <span className="font-mono text-[10px] text-zinc-400 uppercase tracking-widest shrink-0">
+            {item.year || "2026"}
           </span>
         </div>
+        {item.caption && (
+          <p className="font-sans text-xs text-zinc-500 line-clamp-2 mt-0.5 leading-relaxed px-0.5">
+            {item.caption}
+          </p>
+        )}
       </div>
     </motion.div>
   );

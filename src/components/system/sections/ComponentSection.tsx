@@ -12,6 +12,7 @@ import { Divider } from "../../divider";
 import { SmartLinkPreview } from "../../smart-link-preview";
 import { EmailPreviewBadge } from "../../email-preview-badge";
 import { LinkPreview } from "../../LinkPreview";
+import { TactileFolderCard } from "../../TactileFolderCard";
 
 export function ComponentSection() {
   const [chatHover, setChatHover] = useState(false);
@@ -28,87 +29,95 @@ export function ComponentSection() {
       <SectionHeader
         id="components"
         title="Live Shared Components"
-        subtitle="Mounting real, live instances of components directly imported from existing files across the repository."
+        subtitle="Production components powering the portfolio experience."
       />
 
-      <div className="flex flex-col gap-10">
+      <div className="flex flex-col gap-8">
         {/* 1. Interactive Toon Eye Logo */}
-        <div className="p-6 bg-[#fbfaf5] rounded-2xl border border-zinc-300 shadow-xs">
-          <div className="flex items-center justify-between mb-5">
+        <div className="p-4 rounded-xl border border-zinc-200/70 bg-white hover:border-zinc-300 transition-all">
+          <div className="flex items-center justify-between mb-3">
             <div>
-              <h3 className="font-sans font-semibold text-base text-zinc-900">
-                Interactive Toon Eye Logo (`&lt;InteractiveTsuLogo /&gt;`)
+              <h3 className="font-sans font-semibold text-sm text-zinc-900">
+                Interactive Toon Eye Logo
               </h3>
               <p className="text-xs text-zinc-500">
-                Spring pupil tracking pointer coordinates, auto-blink (15s), hover trigger, and double-click easter egg.
+                Spring pupil tracking, auto-blink, and audio feedback on pointer hover &amp; click.
               </p>
             </div>
-            <code className="text-xs font-mono text-zinc-500">src/components/tsu-logo.tsx</code>
+            <code className="text-xs font-mono text-zinc-400 bg-zinc-50 px-2 py-0.5 rounded border border-zinc-200/60">
+              tsu-logo.tsx
+            </code>
           </div>
-          <div className="flex items-center justify-center p-8 bg-white/70 rounded-xl border border-zinc-200">
+          <div className="flex items-center justify-center p-6 bg-zinc-50/50 rounded-lg border border-zinc-100">
             <InteractiveTsuLogo />
           </div>
         </div>
 
         {/* 2. Floating Navigation Bar & Tabs */}
-        <div className="p-6 bg-[#fbfaf5] rounded-2xl border border-zinc-300 shadow-xs">
-          <div className="flex items-center justify-between mb-5">
+        <div className="p-4 rounded-xl border border-zinc-200/70 bg-white hover:border-zinc-300 transition-all">
+          <div className="flex items-center justify-between mb-3">
             <div>
-              <h3 className="font-sans font-semibold text-base text-zinc-900">
-                Navigation Tabs (`&lt;NavigationTabs /&gt;`)
+              <h3 className="font-sans font-semibold text-sm text-zinc-900">
+                Navigation Tabs
               </h3>
               <p className="text-xs text-zinc-500">
-                Active pill with Willow Grey background and Framer Motion shared layoutId spring transition.
+                Shared layout spring animation with active pill highlight.
               </p>
             </div>
-            <code className="text-xs font-mono text-zinc-500">src/components/NavigationTabs.tsx</code>
+            <code className="text-xs font-mono text-zinc-400 bg-zinc-50 px-2 py-0.5 rounded border border-zinc-200/60">
+              NavigationTabs.tsx
+            </code>
           </div>
-          <div className="flex items-center justify-center p-8 bg-white/70 rounded-xl border border-zinc-200">
+          <div className="flex items-center justify-center p-6 bg-zinc-50/50 rounded-lg border border-zinc-100">
             <div className="rounded-full border border-zinc-300/70 bg-[#fbfaf5]/85 backdrop-blur-md p-1 shadow-[0_4px_20px_rgba(0,0,0,0.06)]">
               <NavigationTabs layoutId="demo-active-nav-pill" initialActiveId="work" />
             </div>
           </div>
         </div>
 
-        {/* 3. Live Clock (Both Variants) */}
-        <div className="p-6 bg-[#fbfaf5] rounded-2xl border border-zinc-300 shadow-xs">
-          <div className="flex items-center justify-between mb-5">
+        {/* 3. Live Clock HUD */}
+        <div className="p-4 rounded-xl border border-zinc-200/70 bg-white hover:border-zinc-300 transition-all">
+          <div className="flex items-center justify-between mb-3">
             <div>
-              <h3 className="font-sans font-semibold text-base text-zinc-900">
-                Live Clock HUD (`&lt;LiveClock /&gt;`)
+              <h3 className="font-sans font-semibold text-sm text-zinc-900">
+                Live Clock HUD
               </h3>
               <p className="text-xs text-zinc-500">
-                Real-time ticking characters with AnimatePresence per digit and Minneapolis green status beacon.
+                Real-time character engine with Minneapolis status beacon.
               </p>
             </div>
-            <code className="text-xs font-mono text-zinc-500">src/components/live-clock.tsx</code>
+            <code className="text-xs font-mono text-zinc-400 bg-zinc-50 px-2 py-0.5 rounded border border-zinc-200/60">
+              live-clock.tsx
+            </code>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-6 bg-white/70 rounded-xl border border-zinc-200">
-            <div className="p-4 bg-[#fbfaf5] rounded-xl border border-zinc-200 flex flex-col items-center justify-center gap-2">
-              <span className="text-[11px] font-mono text-zinc-400 uppercase">Header Variant</span>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 bg-zinc-50/50 rounded-lg border border-zinc-100">
+            <div className="p-3 bg-white rounded-lg border border-zinc-200/60 flex flex-col items-center justify-center gap-2">
+              <span className="text-[11px] font-mono text-zinc-400 uppercase font-semibold">Header Variant</span>
               <LiveClock variant="header" />
             </div>
-            <div className="p-4 bg-[#fbfaf5] rounded-xl border border-zinc-200 flex flex-col items-center justify-center gap-2">
-              <span className="text-[11px] font-mono text-zinc-400 uppercase">Footer Variant</span>
+            <div className="p-3 bg-white rounded-lg border border-zinc-200/60 flex flex-col items-center justify-center gap-2">
+              <span className="text-[11px] font-mono text-zinc-400 uppercase font-semibold">Footer Variant</span>
               <LiveClock variant="footer" />
             </div>
           </div>
         </div>
 
-        {/* 4. Let's Chat Expandable Contact Pill Button */}
-        <div className="p-6 bg-[#fbfaf5] rounded-2xl border border-zinc-300 shadow-xs">
-          <div className="flex items-center justify-between mb-5">
+        {/* 4. Let's Chat Contact Pill */}
+        <div className="p-4 rounded-xl border border-zinc-200/70 bg-white hover:border-zinc-300 transition-all">
+          <div className="flex items-center justify-between mb-3">
             <div>
-              <h3 className="font-sans font-semibold text-base text-zinc-900">
-                Header Contact Email Pill
+              <h3 className="font-sans font-semibold text-sm text-zinc-900">
+                Header Contact Pill
               </h3>
               <p className="text-xs text-zinc-500">
-                Spring expansion on hover (56px $\rightarrow$ 125px) with blurred text reveal and rotating mail icon.
+                Expandable contact button with smooth text reveal on hover.
               </p>
             </div>
-            <code className="text-xs font-mono text-zinc-500">src/components/header.tsx</code>
+            <code className="text-xs font-mono text-zinc-400 bg-zinc-50 px-2 py-0.5 rounded border border-zinc-200/60">
+              header.tsx
+            </code>
           </div>
-          <div className="flex items-center justify-center p-8 bg-white/70 rounded-xl border border-zinc-200">
+          <div className="flex items-center justify-center p-6 bg-zinc-50/50 rounded-lg border border-zinc-100">
             <motion.div
               onHoverStart={() => setChatHover(true)}
               onHoverEnd={() => setChatHover(false)}
@@ -143,7 +152,7 @@ export function ComponentSection() {
                         backgroundColor: chatHover ? "#e6e6e6" : "#fbfaf5",
                       }}
                       transition={{ duration: 0.15, ease: [0.22, 1, 0.36, 1] }}
-                      className="flex items-center justify-center w-[30px] h-[30px] text-zinc-400"
+                      className="flex items-center justify-center size-[30px] text-zinc-400"
                     >
                       <svg
                         width="22.8"
@@ -168,20 +177,22 @@ export function ComponentSection() {
           </div>
         </div>
 
-        {/* 5. Live Project Card Instance */}
-        <div className="p-6 bg-[#fbfaf5] rounded-2xl border border-zinc-300 shadow-xs">
-          <div className="flex items-center justify-between mb-5">
+        {/* 5. Live Project Card */}
+        <div className="p-4 rounded-xl border border-zinc-200/70 bg-white hover:border-zinc-300 transition-all">
+          <div className="flex items-center justify-between mb-3">
             <div>
-              <h3 className="font-sans font-semibold text-base text-zinc-900">
-                Project Card (`&lt;ProjectCard /&gt;`)
+              <h3 className="font-sans font-semibold text-sm text-zinc-900">
+                Project Card
               </h3>
               <p className="text-xs text-zinc-500">
-                Media aspect container with squircle radius (26px), floating glass badge, image scale, and scroll transforms.
+                Media container with squircle radius, floating glass badge, and cursor parallax.
               </p>
             </div>
-            <code className="text-xs font-mono text-zinc-500">src/components/project-card.tsx</code>
+            <code className="text-xs font-mono text-zinc-400 bg-zinc-50 px-2 py-0.5 rounded border border-zinc-200/60">
+              project-card.tsx
+            </code>
           </div>
-          <div className="max-w-xl mx-auto p-4 bg-white/70 rounded-2xl border border-zinc-200">
+          <div className="max-w-xl mx-auto p-4 bg-zinc-50/50 rounded-lg border border-zinc-100">
             <ProjectCard
               title="Polaroid Studio"
               year="2025"
@@ -192,21 +203,50 @@ export function ComponentSection() {
             />
           </div>
         </div>
-
-        {/* 6. Email Copied Micro-Toast */}
-        <div className="p-6 bg-[#fbfaf5] rounded-2xl border border-zinc-300 shadow-xs">
-          <div className="flex items-center justify-between mb-5">
+        {/* 6. Tactile 3D Folder Card */}
+        <div className="p-4 rounded-xl border border-zinc-200/70 bg-white hover:border-zinc-300 transition-all">
+          <div className="flex items-center justify-between mb-3">
             <div>
-              <h3 className="font-sans font-semibold text-base text-zinc-900">
-                Copied Feedback Pill Toast
+              <h3 className="font-sans font-semibold text-sm text-zinc-900">
+                Tactile 3D Folder Card
               </h3>
               <p className="text-xs text-zinc-500">
-                Spring pop-up toast on clipboard interaction in the footer.
+                3D perspective stage with emerging media card and frosted pocket.
               </p>
             </div>
-            <code className="text-xs font-mono text-zinc-500">src/components/footer.tsx</code>
+            <code className="text-xs font-mono text-zinc-400 bg-zinc-50 px-2 py-0.5 rounded border border-zinc-200/60">
+              TactileFolderCard.tsx
+            </code>
           </div>
-          <div className="flex items-center justify-center p-8 bg-white/70 rounded-xl border border-zinc-200">
+          <div className="flex items-center justify-center p-6 bg-zinc-50/50 rounded-lg border border-zinc-100 min-h-[440px]">
+            <TactileFolderCard
+              title="Spatial Interface Systems"
+              category="Interaction Design"
+              date="2026.04"
+              itemCount="12 Assets"
+              previewImage="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1200&auto=format&fit=crop"
+              description="Experimental 3D spatial UI patterns, physical spring kinetics & tactile folder depth shaders."
+              accentColor="#31b564"
+            />
+          </div>
+        </div>
+
+        {/* 7. Copied Email Micro-Toast */}
+        <div className="p-4 rounded-xl border border-zinc-200/70 bg-white hover:border-zinc-300 transition-all">
+          <div className="flex items-center justify-between mb-3">
+            <div>
+              <h3 className="font-sans font-semibold text-sm text-zinc-900">
+                Copied Feedback Toast
+              </h3>
+              <p className="text-xs text-zinc-500">
+                Spring toast notification triggered on email copy.
+              </p>
+            </div>
+            <code className="text-xs font-mono text-zinc-400 bg-zinc-50 px-2 py-0.5 rounded border border-zinc-200/60">
+              footer.tsx
+            </code>
+          </div>
+          <div className="flex items-center justify-center p-6 bg-zinc-50/50 rounded-lg border border-zinc-100">
             <div className="relative inline-flex items-center">
               <button
                 type="button"
@@ -237,20 +277,22 @@ export function ComponentSection() {
           </div>
         </div>
 
-        {/* 7. Smart Link Preview Badges */}
-        <div className="p-6 bg-[#fbfaf5] rounded-2xl border border-zinc-300 shadow-xs">
-          <div className="flex items-center justify-between mb-5">
+        {/* 8. Smart Link Preview Badges */}
+        <div className="p-4 rounded-xl border border-zinc-200/70 bg-white hover:border-zinc-300 transition-all">
+          <div className="flex items-center justify-between mb-3">
             <div>
-              <h3 className="font-sans font-semibold text-base text-zinc-900">
-                Link Previews &amp; Social Badges (`&lt;SmartLinkPreview /&gt;`)
+              <h3 className="font-sans font-semibold text-sm text-zinc-900">
+                Link Previews &amp; Badges
               </h3>
               <p className="text-xs text-zinc-500">
-                Standard hover cards with live OpenGraph metadata extraction (favicon, domain, cover image, title, and description) in the warm paper theme.
+                Interactive badges with live OpenGraph metadata cards.
               </p>
             </div>
-            <code className="text-xs font-mono text-zinc-500">src/components/smart-link-preview.tsx</code>
+            <code className="text-xs font-mono text-zinc-400 bg-zinc-50 px-2 py-0.5 rounded border border-zinc-200/60">
+              smart-link-preview.tsx
+            </code>
           </div>
-          <div className="flex flex-wrap items-center justify-center gap-6 p-8 bg-white/70 rounded-xl border border-zinc-200">
+          <div className="flex flex-wrap items-center justify-center gap-6 p-6 bg-zinc-50/50 rounded-lg border border-zinc-100">
             <SmartLinkPreview url="https://x.com/MuditJ1">
               <span className="px-3.5 py-1.5 rounded-full bg-white hover:bg-zinc-100 border border-zinc-950 text-zinc-900 font-mono text-xs font-bold transition-colors cursor-pointer inline-flex items-center gap-1.5 shadow-[2px_2px_0px_#18181b]">
                 <span>X / Twitter</span>
@@ -281,20 +323,22 @@ export function ComponentSection() {
           </div>
         </div>
 
-        {/* 8. Accessible Radix LinkPreview (<LinkPreview />) */}
-        <div className="p-6 bg-[#fbfaf5] rounded-2xl border border-zinc-300 shadow-xs">
-          <div className="flex items-center justify-between mb-5">
+        {/* 9. Accessible Radix Link Preview */}
+        <div className="p-4 rounded-xl border border-zinc-200/70 bg-white hover:border-zinc-300 transition-all">
+          <div className="flex items-center justify-between mb-3">
             <div>
-              <h3 className="font-sans font-semibold text-base text-zinc-900">
-                Accessible Radix Link Preview (`&lt;LinkPreview /&gt;`)
+              <h3 className="font-sans font-semibold text-sm text-zinc-900">
+                Accessible Radix Link Preview
               </h3>
               <p className="text-xs text-zinc-500">
-                Built on `@radix-ui/react-hover-card` with full keyboard ARIA focus support, 200ms intent delay, server-side OpenGraph scraper, and Framer Motion spring physics.
+                Keyboard accessible hover card built on Radix UI.
               </p>
             </div>
-            <code className="text-xs font-mono text-zinc-500">src/components/LinkPreview.tsx</code>
+            <code className="text-xs font-mono text-zinc-400 bg-zinc-50 px-2 py-0.5 rounded border border-zinc-200/60">
+              LinkPreview.tsx
+            </code>
           </div>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-6 p-8 bg-white/70 rounded-xl border border-zinc-200 text-sm font-sans text-zinc-700">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-6 p-6 bg-zinc-50/50 rounded-lg border border-zinc-100 text-sm font-sans text-zinc-700">
             <p className="text-center sm:text-left leading-relaxed">
               Check out reference designs on{" "}
               <LinkPreview
@@ -322,20 +366,22 @@ export function ComponentSection() {
           </div>
         </div>
 
-        {/* 9. Divider Line */}
-        <div className="p-6 bg-[#fbfaf5] rounded-2xl border border-zinc-300 shadow-xs">
-          <div className="flex items-center justify-between mb-5">
+        {/* 10. Gradient Divider */}
+        <div className="p-4 rounded-xl border border-zinc-200/70 bg-white hover:border-zinc-300 transition-all">
+          <div className="flex items-center justify-between mb-3">
             <div>
-              <h3 className="font-sans font-semibold text-base text-zinc-900">
-                Gradient Divider (`&lt;Divider /&gt;`)
+              <h3 className="font-sans font-semibold text-sm text-zinc-900">
+                Gradient Divider
               </h3>
               <p className="text-xs text-zinc-500">
-                1px subtle horizontal divider with Willow Grey tint.
+                Subtle 1px horizontal divider.
               </p>
             </div>
-            <code className="text-xs font-mono text-zinc-500">src/components/divider.tsx</code>
+            <code className="text-xs font-mono text-zinc-400 bg-zinc-50 px-2 py-0.5 rounded border border-zinc-200/60">
+              divider.tsx
+            </code>
           </div>
-          <div className="p-6 bg-white/70 rounded-xl border border-zinc-200">
+          <div className="p-6 bg-zinc-50/50 rounded-lg border border-zinc-100">
             <Divider />
           </div>
         </div>

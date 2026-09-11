@@ -49,7 +49,7 @@ export function MobileScrollReveal({
         margin: "0px 0px -36px 0px",
       }}
       transition={{
-        duration: 0.48,
+        duration: 0.28,
         delay,
         ease: [0.22, 1, 0.36, 1], // transitions-dev standard smooth deceleration
       }}

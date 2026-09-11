@@ -465,7 +465,7 @@ export function AboutReadsSection() {
                 exit={{ opacity: 0, y: -4 }}
                 className="w-full flex items-center"
               >
-                <motion.div animate={{ x: ["0%", "-50%"] }} transition={{ duration: 20, ease: "linear", repeat: Infinity }} className="flex items-center gap-6 min-w-max text-[15px]">
+                <motion.div animate={{ x: ["0%", "-50%"] }} transition={{ duration: 20, ease: "easeInOut", repeat: Infinity, repeatType: "mirror" }} className="flex items-center gap-6 min-w-max text-[15px]">
                   {[...Array(4)].map((_, idx) => (
                     <span key={idx} className="flex items-center gap-6">
                       <span className="text-zinc-900 font-medium">{activeBook.title}:</span>

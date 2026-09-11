@@ -38,7 +38,6 @@ export type ProjectCardProps = {
 
 export const ProjectCard = React.forwardRef<HTMLDivElement, ProjectCardProps>(function ProjectCard({
   title,
-  slug,
   year = "2025",
   description,
   image,
@@ -48,7 +47,6 @@ export const ProjectCard = React.forwardRef<HTMLDivElement, ProjectCardProps>(fu
   actionText,
   cursorLabel,
   gradient = "from-zinc-200 to-zinc-300",
-  animationDelay = 0,
   priority = false,
   index = 0,
   isDimmed = false,
@@ -129,7 +127,7 @@ export const ProjectCard = React.forwardRef<HTMLDivElement, ProjectCardProps>(fu
               rotate,
             }
         }
-        className="w-full transform-gpu will-change-transform"
+        className="w-full transform-gpu"
       >
         <Link
           href={href || "#"}
@@ -145,12 +143,12 @@ export const ProjectCard = React.forwardRef<HTMLDivElement, ProjectCardProps>(fu
           onPointerDown={onPointerDown}
           onPointerUp={onPointerUp}
           onPointerCancel={onPointerCancel}
-          className={`project-card pressable group relative flex flex-col gap-3 items-start w-full cursor-pointer text-left focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-black/10 dark:focus-visible:ring-white/10 focus-visible:ring-offset-1 rounded-[28px] transition-[opacity,filter] duration-200 ease-out ${isDimmed ? "opacity-40 blur-[0.5px]" : "opacity-100 blur-0"
+          className={`project-card pressable group relative flex flex-col gap-3 items-start w-full cursor-pointer text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-700 focus-visible:ring-offset-4 focus-visible:ring-offset-[#fbfaf5] dark:focus-visible:ring-zinc-100 dark:focus-visible:ring-offset-[#090b10] rounded-[28px] transition-[opacity,filter] duration-200 ease-out ${isDimmed ? "opacity-40 blur-[0.5px]" : "opacity-100 blur-0"
             }`}
         >
           {/* Aspect Ratio Media Container with Hover Scale */}
           <div
-            className="content-stretch flex flex-col items-start justify-end overflow-hidden relative rounded-[26px] shrink-0 w-full transition-transform duration-200 [@media(hover:hover)]:group-hover:scale-[0.99] active:scale-[0.96] motion-reduce:transition-none motion-reduce:transform-none"
+            className="content-stretch flex flex-col items-start justify-end overflow-hidden relative rounded-[26px] shrink-0 w-full transition-transform duration-200 [@media(hover:hover)]:group-hover:scale-[0.99] group-focus-visible:scale-[0.99] active:scale-[0.96] motion-reduce:transition-none motion-reduce:transform-none"
             style={{ transitionTimingFunction: "cubic-bezier(0.23, 1, 0.32, 1)" }}
           >
             <div className="aspect-[16/9] relative isolate rounded-[26px] shrink-0 w-full overflow-hidden bg-[#f4f3ed] dark:bg-zinc-900">
@@ -181,7 +179,7 @@ export const ProjectCard = React.forwardRef<HTMLDivElement, ProjectCardProps>(fu
 
                 <p className={`relative z-10 font-sans font-medium tracking-[0.005em] leading-snug text-base transition-colors duration-200 ease-out flex items-baseline gap-1.5 ${isDimmed
                   ? "text-zinc-400 dark:text-zinc-500"
-                  : "text-[#18181b] dark:text-zinc-100 group-hover:text-black dark:group-hover:text-white"
+                  : "text-[#18181b] dark:text-zinc-100 group-hover:text-black group-focus-visible:text-black dark:group-hover:text-white dark:group-focus-visible:text-white"
                   }`}>
                   <span>{title}</span>
                   <span className={`font-mono text-xs tracking-wider tabular-nums transition-colors duration-200 ease-out ${isDimmed
@@ -199,21 +197,21 @@ export const ProjectCard = React.forwardRef<HTMLDivElement, ProjectCardProps>(fu
           <div className="hidden md:flex content-stretch items-start px-[13px] py-0 -mt-1.5 -mb-0.5 relative shrink-0 w-full">
             <p className={`font-sans font-normal leading-snug transition-colors duration-200 ease-out text-base tracking-[0.005em] text-left text-pretty ${isDimmed
               ? "text-zinc-400 dark:text-zinc-600"
-              : "text-zinc-500 dark:text-zinc-400 group-hover:text-black dark:group-hover:text-zinc-100 font-medium"
+              : "text-zinc-500 dark:text-zinc-400 group-hover:text-black group-focus-visible:text-black dark:group-hover:text-zinc-100 dark:group-focus-visible:text-zinc-100 font-medium"
               }`}>
               <span
-                className="inline-block transition-transform duration-200 motion-reduce:transform-none group-hover:translate-x-0.5"
+                className="inline-block transition-transform duration-200 motion-reduce:transform-none group-hover:translate-x-0.5 group-focus-visible:translate-x-0.5"
                 style={{ transitionTimingFunction: "cubic-bezier(0.23, 1, 0.32, 1)" }}
               >
                 {description}
               </span>
               {actionText && (
                 <span
-                  className="inline-flex items-center ms-1.5 font-medium text-blue-500 dark:text-blue-400 group-hover:text-blue-600 dark:group-hover:text-blue-300 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-[opacity,transform,color] duration-200 motion-reduce:transition-none motion-reduce:transform-none pointer-events-none"
+                  className="inline-flex items-center ms-1.5 font-medium text-blue-500 dark:text-blue-400 group-hover:text-blue-600 group-focus-visible:text-blue-600 dark:group-hover:text-blue-300 dark:group-focus-visible:text-blue-300 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 group-focus-visible:opacity-100 group-focus-visible:translate-x-0 transition-[opacity,transform,color] duration-200 motion-reduce:transition-none motion-reduce:transform-none pointer-events-none"
                   style={{ transitionTimingFunction: "cubic-bezier(0.23, 1, 0.32, 1)" }}
                 >
                   <svg
-                    className="w-3.5 h-3.5 transition-transform duration-200 motion-reduce:transform-none group-hover:rotate-12 mr-1 shrink-0"
+                    className="w-3.5 h-3.5 transition-transform duration-200 motion-reduce:transform-none group-hover:rotate-12 group-focus-visible:rotate-12 mr-1 shrink-0"
                     viewBox="0 0 24 24"
                     fill="currentColor"
                     style={{ transitionTimingFunction: "cubic-bezier(0.23, 1, 0.32, 1)" }}
