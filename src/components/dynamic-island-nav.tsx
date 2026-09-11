@@ -46,8 +46,8 @@ export function DynamicIslandNav() {
         className={clsx(
           "relative flex items-center justify-center rounded-full backdrop-blur-md overflow-hidden p-1 transition-colors duration-500",
           isNotificationActive
-            ? "bg-zinc-900/90 border border-white/15 text-zinc-100 shadow-[0_8px_30px_rgba(0,0,0,0.6)]"
-            : "border border-zinc-300/70 dark:border-white/15 bg-[#fbfaf5]/90 dark:bg-zinc-900/90 shadow-[0_8px_30px_rgba(0,0,0,0.12),0_2px_8px_rgba(0,0,0,0.04)] md:shadow-[0_4px_20px_rgba(0,0,0,0.06)] dark:shadow-[0_8px_30px_rgba(0,0,0,0.6)]"
+            ? "bg-zinc-900/90 border border-white/15 text-zinc-100"
+            : "border border-zinc-300/70 dark:border-white/15 bg-[#fbfaf5]/90 dark:bg-zinc-900/90"
         )}
       >
         <AnimatePresence mode="popLayout" initial={false}>
@@ -112,7 +112,7 @@ export function DynamicIslandNav() {
                   data-cuelume-hover="tick"
                   data-cuelume-press
                   data-cuelume-release
-                  className="pressable inline-flex items-center justify-center gap-1.5 px-3 py-1.5 sm:px-3.5 sm:py-1.5 rounded-full bg-[#C8D5BB] text-zinc-950 font-medium text-[12px] sm:text-[13px] tracking-[-0.02em] border border-white/15 shadow-[inset_0_1px_1px_rgba(255,255,255,0.2),0_2px_8px_rgba(0,0,0,0.4)] hover:brightness-105 active:scale-[0.96] transition-[transform,filter] duration-150 ease-[cubic-bezier(0.22,1,0.36,1)] shrink-0 cursor-pointer select-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C8D5BB] focus-visible:ring-offset-1 focus-visible:ring-offset-zinc-900"
+                  className="pressable inline-flex items-center justify-center gap-1.5 px-3 py-1.5 sm:px-3.5 sm:py-1.5 rounded-full bg-[#C8D5BB] text-zinc-950 font-medium text-[12px] sm:text-[13px] tracking-[-0.02em] border border-white/15 hover:brightness-105 active:scale-[0.96] transition-[transform,filter] duration-150 ease-[cubic-bezier(0.22,1,0.36,1)] shrink-0 cursor-pointer select-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C8D5BB] focus-visible:ring-offset-1 focus-visible:ring-offset-zinc-900"
                 >
                   {activeNotification.action.icon || (
                     activeNotification.type === "zero-g" ? (

@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { usePathname } from "next/navigation";
 import clsx from "clsx";
 import { DynamicIslandNav } from "./dynamic-island-nav";
@@ -63,6 +63,36 @@ export function Header() {
     };
   }, []);
 
+  const [isNavVisible, setIsNavVisible] = useState(true);
+  const lastScrollYRef = useRef(0);
+
+  // Track scroll direction on About page to hide/show navigation pill
+  useEffect(() => {
+    if (!isAbout) {
+      setIsNavVisible(true);
+      return;
+    }
+
+    const handleAboutScroll = () => {
+      if (typeof window === "undefined") return;
+      const currentScrollY = window.scrollY || document.documentElement.scrollTop;
+      const delta = currentScrollY - lastScrollYRef.current;
+
+      if (currentScrollY <= 80) {
+        setIsNavVisible(true);
+      } else if (delta > 8) {
+        setIsNavVisible(false);
+      } else if (delta < -8) {
+        setIsNavVisible(true);
+      }
+
+      lastScrollYRef.current = currentScrollY;
+    };
+
+    window.addEventListener("scroll", handleAboutScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleAboutScroll);
+  }, [isAbout]);
+
   const minW = 56;
   const expandedW = 126;
   const isExpanded = isMobile ? isAtBoundary || hover : hover;
@@ -99,16 +129,27 @@ export function Header() {
 
         {/* Center: Dynamic Island Navigation & Notification Bar (Hidden on /design-system) */}
         {!isDesignSystem && (
-          <div
+          <motion.div
+            initial={false}
+            animate={{
+              y: !isAbout || isNavVisible || isNotificationActive ? 0 : (isMobile ? 100 : -75),
+              opacity: !isAbout || isNavVisible || isNotificationActive ? 1 : 0,
+            }}
+            transition={
+              reduce
+                ? { duration: 0.15 }
+                : { type: "spring", stiffness: 360, damping: 28, mass: 0.8 }
+            }
             className={clsx(
-              "pointer-events-auto z-50 flex items-center justify-center",
+              "z-50 flex items-center justify-center transition-opacity",
+              !isAbout || isNavVisible || isNotificationActive ? "pointer-events-auto" : "pointer-events-none",
               isNotificationActive
                 ? "fixed bottom-6 left-1/2 -translate-x-1/2 mb-[env(safe-area-inset-bottom,0px)] md:fixed md:top-[calc(1.5rem+env(safe-area-inset-top,0px)+27px)] md:bottom-auto md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2"
                 : "fixed bottom-6 left-1/2 -translate-x-1/2 mb-[env(safe-area-inset-bottom,0px)] md:absolute md:top-1/2 md:bottom-auto md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2"
             )}
           >
             <DynamicIslandNav />
-          </div>
+          </motion.div>
         )}
 
         {/* Right: Contact email button (Always expanded on mobile at top/bottom, hover-expanded on desktop) */}

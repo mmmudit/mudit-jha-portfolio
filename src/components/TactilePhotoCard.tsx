@@ -5,13 +5,15 @@ import Image from "next/image";
 import {
   motion,
   useMotionValue,
-  useMotionTemplate,
   useSpring,
   useTransform,
   useReducedMotion,
+  type MotionValue,
 } from "framer-motion";
 import { MapPin, Camera } from "lucide-react";
 import { play } from "@/lib/sound";
+import { LiquidGlassReveal } from "./LiquidGlassReveal";
+import { PixelDissolveReveal } from "./PixelDissolveReveal";
 
 export interface TactilePhotoCardProps {
   /** Name displayed on the bottom polaroid margin */
@@ -26,6 +28,8 @@ export interface TactilePhotoCardProps {
   imageSrc?: string;
   /** Portrait revealed beneath the cursor */
   revealImageSrc?: string;
+  /** Monotonic story-reading progress used to dissolve into the original portrait */
+  revealProgress?: MotionValue<number>;
   /** Alt text for accessibility */
   imageAlt?: string;
   /** Status indicator pill text */
@@ -47,6 +51,7 @@ export function TactilePhotoCard({
   location = "Minneapolis, MN",
   imageSrc = "/assets/portrait-dithered.png",
   revealImageSrc = "/assets/portrait-original.png",
+  revealProgress,
   imageAlt = "Mudit Jha",
   statusText = "Available for work",
   accentColor = "#31b564",
@@ -67,9 +72,15 @@ export function TactilePhotoCard({
   // Normalized coordinates (-0.5 to 0.5 from center)
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
-  const revealX = useMotionValue(140);
-  const revealY = useMotionValue(130);
-  const revealMask = useMotionTemplate`radial-gradient(circle 78px at ${revealX}px ${revealY}px, black 0%, black 76%, transparent 100%)`;
+  const revealX = useMotionValue(0.5);
+  const revealY = useMotionValue(0.5);
+  const fallbackRevealProgress = useMotionValue(0);
+  const storyRevealProgress = revealProgress ?? fallbackRevealProgress;
+  const ditherOpacity = useTransform(
+    storyRevealProgress,
+    [0, 0.96, 1],
+    [1, 1, 0]
+  );
 
   // Physics Spring configuration matching the portfolio tactile motion scale
   const tiltSpringConfig = { stiffness: 220, damping: 22, mass: 0.6 };
@@ -124,8 +135,12 @@ export function TactilePhotoCard({
 
       if (photoRef.current) {
         const photoRect = photoRef.current.getBoundingClientRect();
-        revealX.set(Math.min(Math.max(e.clientX - photoRect.left, 0), photoRect.width));
-        revealY.set(Math.min(Math.max(e.clientY - photoRect.top, 0), photoRect.height));
+        revealX.set(
+          Math.min(Math.max((e.clientX - photoRect.left) / photoRect.width, 0), 1)
+        );
+        revealY.set(
+          Math.min(Math.max((e.clientY - photoRect.top) / photoRect.height, 0), 1)
+        );
       }
 
       if (prefersReducedMotion) return;
@@ -189,8 +204,12 @@ export function TactilePhotoCard({
 
     if (photoRef.current) {
       const photoRect = photoRef.current.getBoundingClientRect();
-      revealX.set(Math.min(Math.max(e.clientX - photoRect.left, 0), photoRect.width));
-      revealY.set(Math.min(Math.max(e.clientY - photoRect.top, 0), photoRect.height));
+      revealX.set(
+        Math.min(Math.max((e.clientX - photoRect.left) / photoRect.width, 0), 1)
+      );
+      revealY.set(
+        Math.min(Math.max((e.clientY - photoRect.top) / photoRect.height, 0), 1)
+      );
     }
 
     play("sparkle");
@@ -337,39 +356,30 @@ export function TactilePhotoCard({
               }}
             >
               {/* Avatar Image */}
-              <Image
-                src={imageSrc}
-                alt={imageAlt}
-                fill
-                preload
-                className="object-cover object-top transition-transform duration-500 ease-out group-hover/photo:scale-[1.04]"
-                sizes="(max-width: 768px) 280px, 320px"
-              />
-
-              {/* Original portrait revealed by a feathered spotlight under the cursor */}
-              <motion.div
-                aria-hidden="true"
-                className="absolute inset-0 pointer-events-none"
-                style={{
-                  opacity: isPointerRevealActive ? 1 : 0,
-                  maskImage: revealMask,
-                  WebkitMaskImage: revealMask,
-                  transitionProperty: "opacity",
-                  transitionDuration: prefersReducedMotion
-                    ? "0ms"
-                    : "var(--duration-quick)",
-                  transitionTimingFunction: "var(--ease-smooth-out)",
-                }}
-              >
+              <motion.div className="absolute inset-0" style={{ opacity: ditherOpacity }}>
                 <Image
-                  src={revealImageSrc}
-                  alt=""
+                  src={imageSrc}
+                  alt={imageAlt}
                   fill
-                  loading="eager"
-                  className="object-cover object-top"
+                  preload
+                  className="object-cover object-top transition-transform duration-500 ease-out group-hover/photo:scale-[1.04]"
                   sizes="(max-width: 768px) 280px, 320px"
                 />
               </motion.div>
+
+              <PixelDissolveReveal
+                src={revealImageSrc}
+                progress={storyRevealProgress}
+                reducedMotion={Boolean(prefersReducedMotion)}
+              />
+
+              <LiquidGlassReveal
+                src={revealImageSrc}
+                pointerX={revealX}
+                pointerY={revealY}
+                active={isPointerRevealActive}
+                reducedMotion={Boolean(prefersReducedMotion)}
+              />
 
               {/* Soft Vignette Gradient */}
               <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/10 to-transparent pointer-events-none" />

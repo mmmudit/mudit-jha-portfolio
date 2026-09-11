@@ -28,6 +28,7 @@ import {
 } from "lucide-react";
 
 const ease = [0.22, 1, 0.36, 1] as const;
+let persistedStoryProgress = 0;
 
 const STORY_PARAGRAPHS = [
   "Design engineer & creative generalist. Building thoughtful things at the intersection of tech and human behavior.",
@@ -114,17 +115,20 @@ export function AboutHeroSection() {
   });
 
   // Track max scroll progress reached so filled text never reverts during the session
-  const maxProgress = useMotionValue(0);
+  const maxProgress = useMotionValue(persistedStoryProgress);
+  const photoRevealProgress = useTransform(maxProgress, [0, 0.93], [0, 1]);
 
   useEffect(() => {
-    const initial = scrollYProgress.get();
+    const initial = Math.max(persistedStoryProgress, scrollYProgress.get());
     if (initial > maxProgress.get()) {
       maxProgress.set(initial);
     }
+    persistedStoryProgress = initial;
 
     const unsubscribe = scrollYProgress.on("change", (latest) => {
       if (latest > maxProgress.get()) {
         maxProgress.set(latest);
+        persistedStoryProgress = latest;
       }
     });
     return () => unsubscribe();
@@ -475,7 +479,7 @@ export function AboutHeroSection() {
 
           {/* Right Column: Physical Polaroid / Interactive 3D Photo Card */}
           <div className="order-first lg:order-none lg:col-span-4 flex justify-center lg:justify-end pt-4 lg:pt-0">
-            <TactilePhotoCard />
+            <TactilePhotoCard revealProgress={photoRevealProgress} />
           </div>
         </div>
       </div>
