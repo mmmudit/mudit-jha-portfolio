@@ -5,6 +5,7 @@ import * as HoverCard from "@radix-ui/react-hover-card";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { MapPin } from "lucide-react";
 import { play } from "@/lib/sound";
+import { Magnetic } from "./magnetic";
 
 export function UmnHoverPreview() {
   const [isOpen, setIsOpen] = useState(false);
@@ -44,14 +45,18 @@ export function UmnHoverPreview() {
   return (
     <HoverCard.Root openDelay={80} closeDelay={120} onOpenChange={handleOpenChange}>
       <HoverCard.Trigger asChild>
-        <a
-          href="https://twin-cities.umn.edu"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex items-center px-1.5 py-0.5 rounded-md font-mono text-[0.88em] font-semibold text-amber-800 dark:text-amber-300 bg-amber-500/10 dark:bg-amber-400/10 hover:bg-amber-500/20 dark:hover:bg-amber-400/20 hover:scale-[1.04] active:scale-[0.98] transition-all duration-150 cursor-pointer align-baseline select-none"
-        >
-          <span>@UMN</span>
-        </a>
+        <span className="inline-block align-baseline">
+          <Magnetic intensity={0.4} range={100}>
+            <a
+              href="https://twin-cities.umn.edu"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center px-1.5 py-0.5 rounded-md font-mono text-[0.88em] font-semibold text-amber-800 dark:text-amber-300 bg-amber-500/10 dark:bg-amber-400/10 hover:bg-amber-500/20 dark:hover:bg-amber-400/20 hover:scale-[1.04] active:scale-[0.98] transition-all duration-150 cursor-pointer select-none"
+            >
+              <span>@UMN</span>
+            </a>
+          </Magnetic>
+        </span>
       </HoverCard.Trigger>
 
       <HoverCard.Portal>
