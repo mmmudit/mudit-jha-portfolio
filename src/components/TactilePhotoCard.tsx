@@ -5,6 +5,7 @@ import Image from "next/image";
 import {
   motion,
   useMotionValue,
+  useMotionTemplate,
   useSpring,
   useTransform,
   useReducedMotion,
@@ -23,6 +24,8 @@ export interface TactilePhotoCardProps {
   location?: string;
   /** Avatar or photo source */
   imageSrc?: string;
+  /** Portrait revealed beneath the cursor */
+  revealImageSrc?: string;
   /** Alt text for accessibility */
   imageAlt?: string;
   /** Status indicator pill text */
@@ -42,7 +45,8 @@ export function TactilePhotoCard({
   role = "Design Engineer",
   year = "2026",
   location = "Minneapolis, MN",
-  imageSrc = "/assets/avatar.png",
+  imageSrc = "/assets/portrait-dithered.png",
+  revealImageSrc = "/assets/portrait-original.png",
   imageAlt = "Mudit Jha",
   statusText = "Available for work",
   accentColor = "#31b564",
@@ -51,7 +55,9 @@ export function TactilePhotoCard({
   className = "",
 }: TactilePhotoCardProps) {
   const cardRef = useRef<HTMLDivElement>(null);
+  const photoRef = useRef<HTMLDivElement>(null);
   const [isHovered, setIsHovered] = useState(false);
+  const [isPointerRevealActive, setIsPointerRevealActive] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
   const prefersReducedMotion = useReducedMotion();
 
@@ -61,6 +67,9 @@ export function TactilePhotoCard({
   // Normalized coordinates (-0.5 to 0.5 from center)
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
+  const revealX = useMotionValue(140);
+  const revealY = useMotionValue(130);
+  const revealMask = useMotionTemplate`radial-gradient(circle 78px at ${revealX}px ${revealY}px, black 0%, black 76%, transparent 100%)`;
 
   // Physics Spring configuration matching the portfolio tactile motion scale
   const tiltSpringConfig = { stiffness: 220, damping: 22, mass: 0.6 };
@@ -111,7 +120,15 @@ export function TactilePhotoCard({
 
   const handleMouseMove = useCallback(
     (e: React.MouseEvent<HTMLDivElement>) => {
-      if (prefersReducedMotion || !cardRef.current) return;
+      if (!cardRef.current) return;
+
+      if (photoRef.current) {
+        const photoRect = photoRef.current.getBoundingClientRect();
+        revealX.set(Math.min(Math.max(e.clientX - photoRect.left, 0), photoRect.width));
+        revealY.set(Math.min(Math.max(e.clientY - photoRect.top, 0), photoRect.height));
+      }
+
+      if (prefersReducedMotion) return;
       const rect = cardRef.current.getBoundingClientRect();
       const clientX = e.clientX - rect.left;
       const clientY = e.clientY - rect.top;
@@ -122,7 +139,7 @@ export function TactilePhotoCard({
       mouseX.set(normX);
       mouseY.set(normY);
     },
-    [mouseX, mouseY, prefersReducedMotion]
+    [mouseX, mouseY, prefersReducedMotion, revealX, revealY]
   );
 
   const handleTouchMove = useCallback(
@@ -164,13 +181,24 @@ export function TactilePhotoCard({
     setIsHovered(false);
   }, []);
 
-  const handleMouseEnter = useCallback(() => {
+  const handleMouseEnter = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
     setIsHovered(true);
+    setIsPointerRevealActive(
+      window.matchMedia("(hover: hover) and (pointer: fine)").matches
+    );
+
+    if (photoRef.current) {
+      const photoRect = photoRef.current.getBoundingClientRect();
+      revealX.set(Math.min(Math.max(e.clientX - photoRect.left, 0), photoRect.width));
+      revealY.set(Math.min(Math.max(e.clientY - photoRect.top, 0), photoRect.height));
+    }
+
     play("sparkle");
-  }, []);
+  }, [revealX, revealY]);
 
   const handleMouseLeave = useCallback(() => {
     setIsHovered(false);
+    setIsPointerRevealActive(false);
     mouseX.set(0);
     mouseY.set(0);
   }, [mouseX, mouseY]);
@@ -291,6 +319,7 @@ export function TactilePhotoCard({
             {/* Outer radius 26px - padding 12px = 14px concentric inner radius         */}
             {/* ======================================================================= */}
             <motion.div
+              ref={photoRef}
               className="relative w-full h-[83%] rounded-[14px] overflow-hidden bg-gradient-to-tr from-stone-200 via-stone-100 to-stone-50 ring-1 ring-black/10 dark:ring-white/10 ring-inset shadow-inner group/photo"
               initial={false}
               animate={{
@@ -312,10 +341,35 @@ export function TactilePhotoCard({
                 src={imageSrc}
                 alt={imageAlt}
                 fill
-                priority
+                preload
                 className="object-cover object-top transition-transform duration-500 ease-out group-hover/photo:scale-[1.04]"
                 sizes="(max-width: 768px) 280px, 320px"
               />
+
+              {/* Original portrait revealed by a feathered spotlight under the cursor */}
+              <motion.div
+                aria-hidden="true"
+                className="absolute inset-0 pointer-events-none"
+                style={{
+                  opacity: isPointerRevealActive ? 1 : 0,
+                  maskImage: revealMask,
+                  WebkitMaskImage: revealMask,
+                  transitionProperty: "opacity",
+                  transitionDuration: prefersReducedMotion
+                    ? "0ms"
+                    : "var(--duration-quick)",
+                  transitionTimingFunction: "var(--ease-smooth-out)",
+                }}
+              >
+                <Image
+                  src={revealImageSrc}
+                  alt=""
+                  fill
+                  loading="eager"
+                  className="object-cover object-top"
+                  sizes="(max-width: 768px) 280px, 320px"
+                />
+              </motion.div>
 
               {/* Soft Vignette Gradient */}
               <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/10 to-transparent pointer-events-none" />
