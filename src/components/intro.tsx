@@ -32,19 +32,19 @@ export function Intro() {
           transition={
             isZeroG
               ? { type: "spring", stiffness: 36, damping: 11, mass: 1.1, delay: 0.04 }
-              : { duration: 0.28, ease: [0.23, 1, 0.32, 1], delay: 0.08 }
+              : { duration: 0.25, ease: [0.22, 1, 0.36, 1], delay: 0.08 }
           }
           className="overflow-visible py-3 -my-3 will-change-transform"
         >
           <motion.h1
-            initial={{ y: reduce ? 0 : -42, opacity: 0, filter: reduce ? "none" : "blur(6px)" }}
+            initial={{ y: reduce ? 0 : -12, opacity: 0, filter: reduce ? "none" : "blur(3px)" }}
             animate={
               hasMounted
                 ? { y: 0, opacity: 1, filter: "blur(0px)" }
-                : { y: reduce ? 0 : -42, opacity: 0, filter: reduce ? "none" : "blur(6px)" }
+                : { y: reduce ? 0 : -12, opacity: 0, filter: reduce ? "none" : "blur(3px)" }
             }
             transition={{
-              duration: reduce ? 0.2 : 0.28,
+              duration: reduce ? 0.15 : 0.25,
               ease: [0.22, 1, 0.36, 1],
             }}
             className="font-display text-[48px] sm:text-[56px] font-semibold tracking-[-0.035em] text-zinc-900 dark:text-zinc-50 text-balance will-change-transform"
@@ -84,7 +84,7 @@ export function Intro() {
                 }
             }
             transition={{
-              duration: reduce ? 0.15 : 0.24,
+              duration: reduce ? 0.15 : 0.25,
               delay: reduce ? 0 : 0.12,
               ease: [0.22, 1, 0.36, 1],
             }}
@@ -116,7 +116,7 @@ export function Intro() {
                 }
             }
             transition={{
-              duration: reduce ? 0.15 : 0.24,
+              duration: reduce ? 0.15 : 0.25,
               delay: reduce ? 0 : 0.2,
               ease: [0.22, 1, 0.36, 1],
             }}

@@ -67,9 +67,9 @@ export function DynamicIslandNav() {
                   : { opacity: 0, scale: 0.94, filter: "blur(4px)" }
               }
               transition={{
-                opacity: { duration: 0.18, ease: [0.22, 1, 0.36, 1] },
-                scale: { duration: 0.18, ease: [0.22, 1, 0.36, 1] },
-                filter: { duration: 0.18, ease: [0.22, 1, 0.36, 1] },
+                opacity: { duration: 0.15, ease: [0.22, 1, 0.36, 1] },
+                scale: { duration: 0.15, ease: [0.22, 1, 0.36, 1] },
+                filter: { duration: 0.15, ease: [0.22, 1, 0.36, 1] },
               }}
               className="flex items-center justify-between gap-3 sm:gap-4 w-full min-w-0 px-2.5 py-1 sm:px-3.5 sm:py-1 max-w-[calc(100vw-32px)] sm:max-w-md whitespace-nowrap"
             >
@@ -141,9 +141,9 @@ export function DynamicIslandNav() {
                   : { opacity: 0, scale: 0.94, filter: "blur(4px)" }
               }
               transition={{
-                opacity: { duration: 0.18, ease: [0.22, 1, 0.36, 1] },
-                scale: { duration: 0.18, ease: [0.22, 1, 0.36, 1] },
-                filter: { duration: 0.18, ease: [0.22, 1, 0.36, 1] },
+                opacity: { duration: 0.15, ease: [0.22, 1, 0.36, 1] },
+                scale: { duration: 0.15, ease: [0.22, 1, 0.36, 1] },
+                filter: { duration: 0.15, ease: [0.22, 1, 0.36, 1] },
               }}
               className="flex items-center whitespace-nowrap"
             >
