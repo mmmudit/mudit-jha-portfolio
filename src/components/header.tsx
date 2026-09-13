@@ -98,6 +98,7 @@ export function Header() {
   const isExpanded = isMobile ? isAtBoundary || hover : hover;
 
   const isDesignSystem = pathname === "/design-system";
+  if (isDesignSystem) return null;
   const showEyeInHeader = (!isAbout || activeSection === "hero") && !isPlay;
 
   return (

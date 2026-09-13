@@ -3,7 +3,7 @@
 import { TextAnimationCollection } from "@designcodeio/threeui";
 import "@designcodeio/threeui/style.css";
 
-export function Scene() {
+function Scene() {
   return (
     <div className="shader-frame" style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center" }}>
       <TextAnimationCollection

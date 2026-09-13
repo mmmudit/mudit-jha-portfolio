@@ -4,9 +4,7 @@ import { Figtree, Geist } from "next/font/google";
 import { GeistPixelSquare } from "geist/font/pixel";
 import "./globals.css";
 import AgentationClient from "../components/agentation-client";
-import { LayoutGroup } from "framer-motion";
-import PageTransition from "../components/PageTransition";
-import { Header } from "../components/header";
+import { AppShell } from "../components/AppShell";
 import { GrainOverlay } from "../components/grain-overlay";
 import { IntroLoader } from "../components/IntroLoader";
 import { CursorClickEffect } from "../components/cursor-click-effect";
@@ -67,14 +65,7 @@ export default function RootLayout({
                 <GrainOverlay />
                 <ZeroGravityCosmos />
                 <CursorClickEffect />
-                <LayoutGroup id="global-eye-transition">
-                  <div className="sticky top-0 z-50 w-full px-6 pt-[calc(1rem+env(safe-area-inset-top,0px))] sm:px-14 sm:pt-[calc(1.5rem+env(safe-area-inset-top,0px))] pointer-events-none">
-                    <Header />
-                  </div>
-                  <div className="mx-auto flex w-full max-w-[1334px] flex-col px-6 sm:px-14 pt-8">
-                    <PageTransition>{children}</PageTransition>
-                  </div>
-                </LayoutGroup>
+                <AppShell>{children}</AppShell>
                 <AgentationClient />
               </AboutEyeProvider>
             </NotificationProvider>
