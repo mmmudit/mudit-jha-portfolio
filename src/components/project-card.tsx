@@ -143,8 +143,7 @@ export const ProjectCard = React.forwardRef<HTMLDivElement, ProjectCardProps>(fu
           onPointerDown={onPointerDown}
           onPointerUp={onPointerUp}
           onPointerCancel={onPointerCancel}
-          className={`project-card pressable group relative flex flex-col gap-3 items-start w-full cursor-pointer text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-700 focus-visible:ring-offset-4 focus-visible:ring-offset-[#fbfaf5] dark:focus-visible:ring-zinc-100 dark:focus-visible:ring-offset-[#090b10] rounded-[28px] transition-[opacity,filter] duration-200 ease-out ${isDimmed ? "opacity-40 blur-[0.5px]" : "opacity-100 blur-0"
-            }`}
+          className="project-card pressable group relative flex flex-col gap-3 items-start w-full cursor-pointer text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-700 focus-visible:ring-offset-4 focus-visible:ring-offset-[#fbfaf5] dark:focus-visible:ring-zinc-100 dark:focus-visible:ring-offset-[#090b10] rounded-[28px] transition-[opacity,filter] duration-200 ease-out opacity-100 blur-0"
         >
           {/* Aspect Ratio Media Container with Hover Scale */}
           <div
@@ -177,14 +176,9 @@ export const ProjectCard = React.forwardRef<HTMLDivElement, ProjectCardProps>(fu
                 <div aria-hidden="true" className="absolute inset-0 bg-white/30 dark:bg-white/5 mix-blend-overlay pointer-events-none rounded-full" />
                 <div aria-hidden="true" className="absolute inset-0 bg-white/20 dark:bg-transparent mix-blend-plus-lighter pointer-events-none rounded-full" />
 
-                <p className={`relative z-10 font-sans font-medium tracking-[0.005em] leading-snug text-base transition-colors duration-200 ease-out flex items-baseline gap-1.5 ${isDimmed
-                  ? "text-zinc-400 dark:text-zinc-500"
-                  : "text-[#18181b] dark:text-zinc-100 group-hover:text-black group-focus-visible:text-black dark:group-hover:text-white dark:group-focus-visible:text-white"
-                  }`}>
+                <p className="relative z-10 font-sans font-medium tracking-[0.005em] leading-snug text-base transition-colors duration-200 ease-out flex items-baseline gap-1.5 text-[#18181b] dark:text-zinc-100 group-hover:text-black group-focus-visible:text-black dark:group-hover:text-white dark:group-focus-visible:text-white">
                   <span>{title}</span>
-                  <span className={`font-mono text-xs tracking-wider tabular-nums transition-colors duration-200 ease-out ${isDimmed
-                    ? "text-zinc-300 dark:text-zinc-600"
-                    : isHovered
+                  <span className={`font-mono text-xs tracking-wider tabular-nums transition-colors duration-200 ease-out ${isHovered
                     ? "text-zinc-800 dark:text-zinc-200 font-medium"
                     : "text-zinc-500 dark:text-zinc-400 group-hover:text-zinc-800 dark:group-hover:text-zinc-200 font-medium"
                     }`}>• {year}</span>
@@ -195,10 +189,7 @@ export const ProjectCard = React.forwardRef<HTMLDivElement, ProjectCardProps>(fu
 
           {/* Subtitle / Description text below card (Desktop) */}
           <div className="hidden md:flex content-stretch items-start px-[13px] py-0 -mt-1.5 -mb-0.5 relative shrink-0 w-full">
-            <p className={`font-sans font-normal leading-snug transition-colors duration-200 ease-out text-base tracking-[0.005em] text-left text-pretty ${isDimmed
-              ? "text-zinc-400 dark:text-zinc-600"
-              : "text-zinc-500 dark:text-zinc-400 group-hover:text-black group-focus-visible:text-black dark:group-hover:text-zinc-100 dark:group-focus-visible:text-zinc-100 font-medium"
-              }`}>
+            <p className="font-sans font-normal leading-snug transition-colors duration-200 ease-out text-base tracking-[0.005em] text-left text-pretty text-zinc-500 dark:text-zinc-400 group-hover:text-black group-focus-visible:text-black dark:group-hover:text-zinc-100 dark:group-focus-visible:text-zinc-100 font-medium">
               <span
                 className="inline-block transition-transform duration-200 motion-reduce:transform-none group-hover:translate-x-0.5 group-focus-visible:translate-x-0.5"
                 style={{ transitionTimingFunction: "cubic-bezier(0.23, 1, 0.32, 1)" }}
@@ -227,23 +218,15 @@ export const ProjectCard = React.forwardRef<HTMLDivElement, ProjectCardProps>(fu
           {/* Mobile Layout */}
           <div className="md:hidden content-stretch flex flex-col font-sans font-normal items-start leading-snug px-[13px] py-0 relative shrink-0 text-base tracking-[0.01em] gap-1 text-left w-full">
             <div className="flex items-center w-full">
-              <p className={`relative shrink-0 text-left font-medium transition-colors duration-200 flex items-baseline gap-1.5 ${isDimmed
-                ? "text-zinc-400 dark:text-zinc-500"
-                : "text-[#18181b] dark:text-zinc-100 group-hover:text-black dark:group-hover:text-white"
-                }`}>
+              <p className="relative shrink-0 text-left font-medium transition-colors duration-200 flex items-baseline gap-1.5 text-[#18181b] dark:text-zinc-100 group-hover:text-black dark:group-hover:text-white">
                 <span>{title}</span>
-                <span className={`font-mono text-xs tracking-wider tabular-nums transition-colors duration-200 ${isDimmed
-                  ? "text-zinc-300 dark:text-zinc-600"
-                  : isHovered
+                <span className={`font-mono text-xs tracking-wider tabular-nums transition-colors duration-200 ${isHovered
                   ? "text-zinc-800 dark:text-zinc-200 font-medium"
                   : "text-zinc-500 dark:text-zinc-400 group-hover:text-zinc-800 dark:group-hover:text-zinc-200 font-medium"
                   }`}>• {year}</span>
               </p>
             </div>
-            <p className={`relative shrink-0 w-full text-left font-normal leading-tight text-pretty transition-colors duration-200 ${isDimmed
-              ? "text-zinc-400 dark:text-zinc-600"
-              : "text-zinc-500 dark:text-zinc-300 [@media(hover:hover)]:group-hover:text-black dark:[@media(hover:hover)]:group-hover:text-white"
-              }`}>
+            <p className="relative shrink-0 w-full text-left font-normal leading-tight text-pretty transition-colors duration-200 text-zinc-500 dark:text-zinc-300 [@media(hover:hover)]:group-hover:text-black dark:[@media(hover:hover)]:group-hover:text-white">
               {description}
               {actionText && (
                 <span className="inline-flex items-center ms-1.5 font-medium text-blue-500 dark:text-blue-400">

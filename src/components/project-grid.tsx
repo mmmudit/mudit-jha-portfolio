@@ -205,7 +205,6 @@ export function ProjectGrid({ projects }: ProjectGridProps) {
         {projects.map((project, index) => {
           const id = project._id || project.id || index;
           const projectKey = String(id);
-          const isDimmed = hoveredId !== null && hoveredId !== id;
           const cardPreset = CARD_DRIFT_PRESETS[index % CARD_DRIFT_PRESETS.length];
 
           return (
@@ -293,7 +292,6 @@ export function ProjectGrid({ projects }: ProjectGridProps) {
                   actionText={project.actionText}
                   cursorLabel={getProjectCursorLabel(project)}
                   priority={index < 2}
-                  isDimmed={isDimmed}
                   onPointerEnter={(event, cursorLabel) => {
                     if (!cursorLabel) return;
                     cursorPillRef.current?.show({
