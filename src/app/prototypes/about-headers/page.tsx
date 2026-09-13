@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import Typewriter from "@/components/fancy/text/typewriter";
-import { ChevronsUpDown, Check } from "lucide-react";
+import { ChevronsUpDown } from "lucide-react";
 import Image from "next/image";
 
 // Sample book cards for realistic surrounding context

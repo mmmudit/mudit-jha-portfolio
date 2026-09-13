@@ -5,7 +5,6 @@ import { MuxHoverVideo } from "./mux-hover-video";
 
 export type ProjectCardProps = {
   title: string;
-  slug?: string;
   year?: string;
   description: string;
   image?: string;
@@ -14,12 +13,9 @@ export type ProjectCardProps = {
   href?: string;
   actionText?: string;
   cursorLabel?: string;
-  actionHref?: string;
   gradient?: string;
-  animationDelay?: number;
   priority?: boolean;
   index?: number;
-  isDimmed?: boolean;
   onClick?: (e: React.MouseEvent) => void;
   onMouseEnter?: () => void;
   onMouseLeave?: () => void;
@@ -49,7 +45,6 @@ export const ProjectCard = React.forwardRef<HTMLDivElement, ProjectCardProps>(fu
   gradient = "from-zinc-200 to-zinc-300",
   priority = false,
   index = 0,
-  isDimmed = false,
   onClick,
   onMouseEnter,
   onMouseLeave,
@@ -157,7 +152,6 @@ export const ProjectCard = React.forwardRef<HTMLDivElement, ProjectCardProps>(fu
                 thumbTime={muxThumbTime}
                 posterImage={image}
                 alt={title}
-                isHovered={isHovered}
                 priority={priority}
                 gradient={gradient}
               />

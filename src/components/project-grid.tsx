@@ -140,7 +140,7 @@ export function ProjectGrid({ projects }: ProjectGridProps) {
     }
   };
 
-  const handleCardClick = (project: ProjectData, projectKey: string, index: number) => {
+  const handleCardClick = (index: number) => {
     setCurrentIdx(index);
     openProjectAtIndex(index);
   };
@@ -281,7 +281,6 @@ export function ProjectGrid({ projects }: ProjectGridProps) {
                   }}
                   index={index}
                   title={project.title}
-                  slug={project.slug}
                   year={project.year}
                   description={project.description}
                   image={project.image}
@@ -334,7 +333,7 @@ export function ProjectGrid({ projects }: ProjectGridProps) {
                     setHoveredId(id);
                   }}
                   onBlur={() => setHoveredId(null)}
-                  onClick={() => handleCardClick(project, projectKey, index)}
+                  onClick={() => handleCardClick(index)}
                 />
               </motion.div>
             </motion.div>
@@ -349,7 +348,6 @@ export function ProjectGrid({ projects }: ProjectGridProps) {
         activeCard={activeCard}
         projects={projects}
         currentIndex={currentIdx ?? 0}
-        totalCount={projects.length}
         onSelectProject={(idx) => {
           openProjectAtIndex(idx);
         }}

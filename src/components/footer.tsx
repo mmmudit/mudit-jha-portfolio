@@ -1,9 +1,7 @@
 "use client";
 
 import { TextAnimationCollection } from "@designcodeio/threeui";
-import { useState } from "react";
-import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
-import { Check } from "lucide-react";
+import { motion, useReducedMotion } from "framer-motion";
 import { LiveClock } from "./live-clock";
 import { SmartLinkPreview } from "./smart-link-preview";
 import { play } from "@/lib/sound";

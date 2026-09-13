@@ -11,12 +11,9 @@ import {
   Play,
   Copy,
   Compass,
-  Activity,
   Maximize2,
   Wind,
-  Layers,
   Eye,
-  Sliders,
 } from "lucide-react";
 import { play } from "@/lib/sound";
 import { MagneticText, type MagneticVariant } from "@/components/magnetic-text";

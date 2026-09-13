@@ -1,4 +1,3 @@
-import React from "react";
 import { AnnotationItem } from "@/types/project";
 
 interface HanddrawnAnnotationProps {

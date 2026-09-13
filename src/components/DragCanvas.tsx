@@ -11,7 +11,7 @@ import {
   useReducedMotion,
   AnimatePresence,
 } from "framer-motion";
-import { Hand, Sparkles, X, ArrowUpRight, Play, Maximize2 } from "lucide-react";
+import { Hand, Sparkles } from "lucide-react";
 import { play } from "@/lib/sound";
 import { TactileFolderCard } from "@/components/TactileFolderCard";
 import { InteractiveTsuLogo } from "@/components/tsu-logo";
@@ -51,7 +51,6 @@ export interface DragCanvasProps {
   canvasHeight?: number;
   className?: string;
   dragAxis?: "both" | "x" | "y";
-  dragElastic?: number;
   initialCenter?: boolean;
   hintText?: string;
   showCenterHero?: boolean;
@@ -238,7 +237,6 @@ export function DragCanvas({
   canvasHeight = 2000,
   className = "h-screen w-screen",
   dragAxis = "both",
-  dragElastic = 0.18,
   initialCenter = true,
   hintText = "Scroll or drag to explore canvas",
   showCenterHero = true,
@@ -714,7 +712,6 @@ function CanvasImageCard({
           itemCount={item.itemCount || "12 Assets"}
           previewImage={item.imageSrc || "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1200&auto=format&fit=crop"}
           description={item.caption || item.description || item.details || ""}
-          tags={item.tags || (item.tag ? [item.tag] : ["Interactive", "3D Canvas"])}
           accentColor={item.accentColor || "#6366f1"}
           href={item.href}
           onClick={() => onItemClick?.(item)}

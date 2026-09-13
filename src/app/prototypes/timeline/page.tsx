@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useState, useEffect, useRef, useCallback } from "react";
-import { motion, useSpring, useMotionValue, useTransform } from "framer-motion";
-import { ArrowLeft, Check, Sliders, Activity, Disc, Sparkles } from "lucide-react";
+import { useState, useEffect, useRef, useCallback } from "react";
+import { motion } from "framer-motion";
+import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { CLARITY_PROJECT } from "@/data/projects";
 import { CaseStudyRenderer } from "@/components/case-study/CaseStudyRenderer";

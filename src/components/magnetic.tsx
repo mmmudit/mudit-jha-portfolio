@@ -8,7 +8,6 @@ export interface MagneticProps {
   className?: string;
   intensity?: number;
   range?: number;
-  as?: React.ElementType;
 }
 
 export function Magnetic({

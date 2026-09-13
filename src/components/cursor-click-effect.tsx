@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState, useCallback, useSyncExternalStore } from "react";
+import { useEffect, useState, useCallback, useSyncExternalStore } from "react";
 
 interface ClickBurst {
   id: string;
@@ -155,4 +155,3 @@ function ThreeDashBurstInstance({
 }
 
 export default CursorClickEffect;
-

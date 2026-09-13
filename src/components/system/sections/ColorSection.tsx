@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useState } from "react";
-import { COLOR_TOKENS, type ColorToken, type TokenTag } from "../tokens";
+import { useState } from "react";
+import { COLOR_TOKENS, type TokenTag } from "../tokens";
 import { SectionHeader, TokenCard, Swatch } from "../primitives";
 
 export function ColorSection({ filterTag }: { filterTag?: TokenTag | "all" }) {
@@ -56,7 +56,6 @@ export function ColorSection({ filterTag }: { filterTag?: TokenTag | "all" }) {
             preview={
               <Swatch
                 hex={token.hex}
-                name={token.name}
                 variable={token.variable}
               />
             }

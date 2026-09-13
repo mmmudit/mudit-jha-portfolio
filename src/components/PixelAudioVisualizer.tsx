@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 
 interface PixelAudioVisualizerProps {
   color?: string;
@@ -125,7 +125,6 @@ export function PixelAudioVisualizer({
         const envelope = Math.sin(Math.PI * normIndex) * 0.65 + 0.35;
 
         // Dynamic harmonic wave calculations
-        const animSpeed = prefersReducedMotion ? 0.005 : speed;
         const wave1 = Math.sin(time * col.speedMult + col.phase);
         const wave2 = Math.cos(time * 0.7 * col.speedMult + col.phase * 1.4);
         const wave3 = Math.sin(time * 1.8 + i * 0.4);

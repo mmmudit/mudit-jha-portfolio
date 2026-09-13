@@ -135,7 +135,6 @@ export function AboutMomentsSection() {
         <motion.div
           drag="x"
           dragConstraints={{ left: 0, right: 0 }}
-          dragElastic={0.18}
           onDragEnd={(_, info) => {
             const swipeThreshold = 35;
             const velocityThreshold = 250;

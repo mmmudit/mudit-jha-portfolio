@@ -1,9 +1,9 @@
 "use client";
 
-import React, { useState } from "react";
+import { useState } from "react";
 import Image from "next/image";
 import MuxPlayer from "@mux/mux-player-react";
-import { motion, useReducedMotion } from "framer-motion";
+import { useReducedMotion } from "framer-motion";
 import { FeatureBlockItem } from "@/types/project";
 
 interface FeatureBlockProps {

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import { useState } from "react";
 import { CaseStudySection } from "@/components/case-study/CaseStudySection";
 import { MediaBlock } from "@/components/case-study/MediaBlock";
 import { DecisionBlock } from "@/components/case-study/DecisionBlock";

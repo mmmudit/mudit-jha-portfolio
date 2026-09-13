@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect } from "react";
 import Image from "next/image";
 import { motion, useReducedMotion } from "framer-motion";
 
@@ -9,7 +9,6 @@ export interface MuxHoverVideoProps {
   thumbTime?: number;
   posterImage?: string;
   alt: string;
-  isHovered: boolean;
   priority?: boolean;
   gradient?: string;
   className?: string;
@@ -20,7 +19,6 @@ export function MuxHoverVideo({
   thumbTime = 0,
   posterImage,
   alt,
-  isHovered,
   priority = false,
   gradient = "from-zinc-200 to-zinc-300",
   className = "",

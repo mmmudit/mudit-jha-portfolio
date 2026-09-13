@@ -7,7 +7,7 @@ import { motion, useReducedMotion } from "framer-motion";
 import { DragCanvas, DragCanvasItem } from "@/components/DragCanvas";
 import { TactileFolderCard } from "@/components/TactileFolderCard";
 import { InteractiveTsuLogo } from "@/components/tsu-logo";
-import { Grid3X3, MousePointer2, Sparkles, ArrowUpRight, Play } from "lucide-react";
+import { Grid3X3, MousePointer2, Sparkles } from "lucide-react";
 import { play } from "@/lib/sound";
 
 function PlayModeBadge({
@@ -109,20 +109,14 @@ export function PlayPageClient({
 }) {
   const [portalContainer, setPortalContainer] = useState<HTMLElement | null>(null);
   const [viewMode, setViewMode] = useState<"canvas" | "grid">("canvas");
-  const [isMobile, setIsMobile] = useState(false);
   const [isModeControlExpanded, setIsModeControlExpanded] = useState(false);
   const hasPlayedCanvasEntryRef = useRef(false);
 
   // Initialize responsive view mode: gallery grid on mobile, interactive canvas on desktop
   useEffect(() => {
     const mql = window.matchMedia("(max-width: 767px)");
-    const update = () => {
-      setIsMobile(mql.matches);
-    };
-    update();
     setViewMode(mql.matches ? "grid" : "canvas");
     const handleChange = () => {
-      update();
       if (mql.matches) setViewMode("grid");
     };
     mql.addEventListener("change", handleChange);
@@ -171,7 +165,6 @@ export function PlayPageClient({
           canvasWidth={3000}
           canvasHeight={2000}
           dragAxis="both"
-          dragElastic={0.18}
           className="size-full border-none rounded-none shadow-none"
           showCenterHero={true}
           showCanvasBadge={false}
@@ -309,7 +302,6 @@ function MobilePlayCard({
           itemCount={item.itemCount || "12 Assets"}
           previewImage={item.imageSrc || "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1200&auto=format&fit=crop"}
           description={item.caption || item.description || item.details || ""}
-          tags={item.tags || (item.tag ? [item.tag] : ["Interactive", "3D Canvas"])}
           accentColor={item.accentColor || "#6366f1"}
           href={item.href}
           onClick={onClick}

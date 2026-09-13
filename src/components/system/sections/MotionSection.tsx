@@ -1,14 +1,13 @@
 "use client";
 
-import React, { useState } from "react";
+import { useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
-import { Play, RotateCcw } from "lucide-react";
+import { Play } from "lucide-react";
 import { MOTION_TOKENS, type TokenTag } from "../tokens";
 import { SectionHeader, TokenCard } from "../primitives";
 
 export function MotionSection({ filterTag }: { filterTag?: TokenTag | "all" }) {
   const [playTrigger, setPlayTrigger] = useState(0);
-  const [isHoveredSquare, setIsHoveredSquare] = useState(false);
   const reduce = useReducedMotion();
 
   const handleReplay = () => {

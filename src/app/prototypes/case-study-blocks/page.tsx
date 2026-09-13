@@ -1,6 +1,6 @@
 "use client";
 
-import React, { Suspense, useState, useEffect, useRef, useLayoutEffect } from "react";
+import { Suspense, useState, useEffect, useRef, useLayoutEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { FieldReference } from "./variants/FieldReference";
 import { DesignIntent } from "./variants/DesignIntent";

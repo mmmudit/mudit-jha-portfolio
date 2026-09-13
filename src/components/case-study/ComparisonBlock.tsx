@@ -1,8 +1,7 @@
 "use client";
 
-import React, { useState } from "react";
+import { useState } from "react";
 import Image from "next/image";
-import { motion, useReducedMotion } from "framer-motion";
 import { ComparisonBlockItem } from "@/types/project";
 import { SlidersHorizontal, Columns2 } from "lucide-react";
 
@@ -12,7 +11,6 @@ interface ComparisonBlockProps {
 }
 
 export function ComparisonBlock({ block, className = "" }: ComparisonBlockProps) {
-  const prefersReducedMotion = useReducedMotion();
   const [mode, setMode] = useState<"sideBySide" | "slider">("sideBySide");
   const [sliderPos, setSliderPos] = useState(50);
 

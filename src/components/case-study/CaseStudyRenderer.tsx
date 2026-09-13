@@ -1,6 +1,5 @@
 "use client";
 
-import React from "react";
 import { Project, CaseStudyBlock, ProjectContentBlock } from "@/types/project";
 import { CaseStudyHero } from "./CaseStudyHero";
 import { CaseStudySection } from "./CaseStudySection";

@@ -1,9 +1,9 @@
 "use client";
 
-import React, { useState } from "react";
+import { useState } from "react";
 import Image from "next/image";
 import MuxPlayer from "@mux/mux-player-react";
-import { motion, useReducedMotion } from "framer-motion";
+import { useReducedMotion } from "framer-motion";
 import { MediaBlockItem } from "@/types/project";
 import { HanddrawnAnnotation } from "./HanddrawnAnnotation";
 
@@ -62,16 +62,10 @@ export function MediaBlock({ block, className = "" }: MediaBlockProps) {
     getMuxPlaybackId(block.video) ||
     getMuxPlaybackId(block.image);
   const muxThumbTime = block.muxThumbTime ?? block.muxVideo?.thumbTime ?? 0;
-  const muxPosterUrl = muxPlaybackId
-    ? `https://image.mux.com/${muxPlaybackId}/thumbnail.webp?time=${muxThumbTime}&width=1920&fit_mode=smartcrop`
-    : undefined;
-
   const hasRealMedia = Boolean(block.image || block.video || muxPlaybackId);
   const placeholderLabel =
     block.placeholderTitle ||
     (block.mediaType === "video" || block.mediaType === "mux" || muxPlaybackId ? "VIDEO DEMO" : "IMAGE ASSET");
-
-  const posterImage = block.image || muxPosterUrl;
 
   const isBorderless = Boolean(block.borderless || block.removeBorder);
 

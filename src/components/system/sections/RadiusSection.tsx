@@ -1,6 +1,5 @@
 "use client";
 
-import React from "react";
 import { RADIUS_TOKENS, type TokenTag } from "../tokens";
 import { SectionHeader, TokenCard } from "../primitives";
 

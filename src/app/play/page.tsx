@@ -1,4 +1,4 @@
-import { DragCanvas, type DragCanvasItem } from "@/components/DragCanvas";
+import { type DragCanvasItem } from "@/components/DragCanvas";
 import { getPlaygroundItems, PLAYGROUND_CONFIG_ITEMS } from "@/data/playgroundItems";
 import { client } from "@/sanity/client";
 import { PLAY_ITEMS_QUERY } from "@/sanity/queries";
@@ -77,7 +77,7 @@ function resolveFallbackMedia(item: any): { imageSrc?: string; videoSrc?: string
 export default async function PlayPage() {
   let sanityItems: any[] = [];
   try {
-    sanityItems = await client.fetch(PLAY_ITEMS_QUERY, {}, { cache: "no-store" });
+    sanityItems = await client.fetch(PLAY_ITEMS_QUERY);
   } catch (err) {
     console.warn("Failed to fetch Play items from Sanity:", err);
     sanityItems = [];

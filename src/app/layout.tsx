@@ -4,7 +4,7 @@ import { Figtree, Geist } from "next/font/google";
 import { GeistPixelSquare } from "geist/font/pixel";
 import "./globals.css";
 import AgentationClient from "../components/agentation-client";
-import { motion, AnimatePresence, LayoutGroup } from "framer-motion";
+import { LayoutGroup } from "framer-motion";
 import PageTransition from "../components/PageTransition";
 import { Header } from "../components/header";
 import { GrainOverlay } from "../components/grain-overlay";

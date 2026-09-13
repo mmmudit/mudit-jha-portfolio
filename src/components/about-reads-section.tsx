@@ -160,8 +160,6 @@ export function AboutReadsSection() {
   );
   const activeQuote = activeBook?.notes?.trim() || (activeBook ? `${activeBook.title} by ${activeBook.author || "Selected Read"}` : null);
 
-  const isTwoRows = filteredBooks.length > 5;
-
   return (
     <section className="relative w-full py-4 flex flex-col gap-6">
       <AboutSectionHeader

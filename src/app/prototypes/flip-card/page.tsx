@@ -15,27 +15,11 @@ import {
   X,
   ExternalLink,
   Sparkles,
-  Layers,
-  Sliders,
-  Maximize2,
   ChevronRight,
-  RotateCcw,
-  Compass,
-  FileText,
-  Activity,
-  Code2,
-  Volume2,
-  Bookmark,
-  Play,
-  Pause,
-  Columns,
-  Cpu,
-  Eye,
   Zap,
   RotateCw,
   Orbit,
   ArrowDownUp,
-  Sparkle,
 } from "lucide-react";
 import { play } from "@/lib/sound";
 
@@ -160,10 +144,9 @@ const WorkPageCard = React.forwardRef<
   {
     project: ProjectItem;
     onClick?: (e: React.MouseEvent<HTMLDivElement>) => void;
-    isHidden?: boolean;
     cueLabel?: string;
   }
->(function WorkPageCard({ project, onClick, isHidden = false, cueLabel = "CLICK TO FLIP ↻" }, ref) {
+>(function WorkPageCard({ project, onClick, cueLabel = "CLICK TO FLIP ↻" }, ref) {
   const cardRef = useRef<HTMLDivElement | null>(null);
   const prefersReducedMotion = useReducedMotion();
 

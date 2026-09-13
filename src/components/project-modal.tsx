@@ -41,7 +41,6 @@ export type ProjectModalProps = {
   onSelectProject?: (index: number) => void;
   projects?: ProjectData[];
   currentIndex?: number;
-  totalCount?: number;
 };
 
 const DEFAULT_SECTIONS = [
@@ -64,7 +63,6 @@ export function ProjectModal({
   onSelectProject,
   projects,
   currentIndex = 0,
-  totalCount,
 }: ProjectModalProps) {
   const [mounted, setMounted] = useState(false);
   const [isFlipped, setIsFlipped] = useState(false);
@@ -76,7 +74,6 @@ export function ProjectModal({
   });
   const [activeSectionId, setActiveSectionId] = useState("sec-overview");
   const [scrollProgress, setScrollProgress] = useState(0);
-  const [hoveredSectionId, setHoveredSectionId] = useState<string | null>(null);
   const [timelineHoveredIdx, setTimelineHoveredIdx] = useState<number | null>(null);
   const [hoveredAvatarIdx, setHoveredAvatarIdx] = useState<number | null>(null);
 
@@ -423,7 +420,6 @@ export function ProjectModal({
   if (!mounted || !activeCard) return null;
 
   const { project, origin, target } = activeCard;
-  const gradientPreset = project.gradient || "from-zinc-200 to-zinc-300";
 
   // Dynamic responsive target recalibrated on viewport resize with expansive reading dimensions
   const dynamicTarget = {
@@ -621,7 +617,6 @@ export function ProjectModal({
             >
               <ProjectCard
                 title={project.title}
-                slug={project.slug}
                 year={project.year}
                 description={project.description}
                 image={project.image}
@@ -838,7 +833,6 @@ export function ProjectModal({
                         {activeSections.map((sec, idx) => {
                           const activeIdx = activeSections.findIndex((s) => s.id === activeSectionId);
                           const isActive = activeIdx === idx;
-                          const isPassed = idx < activeIdx;
                           const isHovered = timelineHoveredIdx === idx;
                           const focusIndex = timelineHoveredIdx !== null ? timelineHoveredIdx : Math.max(0, activeIdx);
                           const distance = Math.abs(idx - focusIndex);

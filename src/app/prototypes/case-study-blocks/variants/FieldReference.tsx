@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import { useState } from "react";
 import { CASE_STUDY_BLOCKS_DATA } from "../types";
 import { Check, Copy, Terminal, Database, Code2, ShieldAlert } from "lucide-react";
 

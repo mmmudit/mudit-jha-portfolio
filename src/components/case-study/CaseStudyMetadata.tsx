@@ -1,4 +1,3 @@
-import React from "react";
 import { ArrowUpRight } from "lucide-react";
 import { ProjectMetadataItem, MetadataValueItem } from "@/types/project";
 

@@ -1,6 +1,5 @@
 "use client";
 
-import React from "react";
 import { SHADOW_TOKENS, type TokenTag } from "../tokens";
 import { SectionHeader, TokenCard } from "../primitives";
 

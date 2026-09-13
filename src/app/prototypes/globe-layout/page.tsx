@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { PulsingGlobe } from "@/components/pulsing-globe";
 import { ProjectGrid } from "@/components/project-grid";
 import { Divider } from "@/components/divider";

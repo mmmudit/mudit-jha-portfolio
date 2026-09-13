@@ -1,4 +1,3 @@
-import React from "react";
 import { notFound } from "next/navigation";
 import { client } from "@/sanity/client";
 import { PROJECT_BY_SLUG_QUERY, PROJECTS_QUERY } from "@/sanity/queries";

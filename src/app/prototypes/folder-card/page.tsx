@@ -8,24 +8,16 @@ import {
   useSpring,
   useTransform,
   useReducedMotion,
-  AnimatePresence,
 } from "framer-motion";
 import {
   ArrowLeft,
   Layers,
   Sparkles,
   Folder,
-  ArrowUpRight,
   Copy,
   Check,
-  RotateCcw,
-  Sliders,
   Image as ImageIcon,
-  FileText,
-  Eye,
-  Terminal,
   Bookmark,
-  Compass,
 } from "lucide-react";
 import { TactileFolderCard } from "@/components/TactileFolderCard";
 
@@ -44,7 +36,6 @@ function VariantTactileArchive({ keyTrigger }: { keyTrigger: number }) {
           itemCount="12 Assets"
           previewImage="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1200&auto=format&fit=crop"
           description="Experimental 3D spatial UI patterns, physical spring kinetics & tactile folder depth shaders."
-          tags={["Framer Motion", "3D Canvas", "WebGPU"]}
           accentColor="#6366f1"
         />
 
@@ -55,7 +46,6 @@ function VariantTactileArchive({ keyTrigger }: { keyTrigger: number }) {
           itemCount="8 Presets"
           previewImage="https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=1200&auto=format&fit=crop"
           description="Haptic auditory feedback engines paired with low-latency browser WebAudio oscillator nodes."
-          tags={["WebAudio", "Haptics", "DSP"]}
           accentColor="#10b981"
         />
       </div>
@@ -536,7 +526,6 @@ export default function FolderCardPrototypePage() {
   itemCount="12 Assets"
   previewImage="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1200&auto=format&fit=crop"
   description="Experimental 3D spatial UI patterns, physical spring kinetics & tactile folder depth shaders."
-  tags={["Framer Motion", "3D Canvas", "WebGPU"]}
   accentColor="#6366f1"
 />`;
     navigator.clipboard.writeText(snippet);

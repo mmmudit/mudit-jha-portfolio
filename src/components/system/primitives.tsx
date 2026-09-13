@@ -94,11 +94,9 @@ export function SectionHeader({
 
 export function Swatch({
   hex,
-  name,
   variable,
 }: {
   hex: string;
-  name: string;
   variable?: string;
 }) {
   const isLight =

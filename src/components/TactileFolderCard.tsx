@@ -23,8 +23,6 @@ export interface TactileFolderCardProps {
   previewImage?: string;
   /** Secondary subtitle or short brief */
   description?: string;
-  /** Optional badge or tag list */
-  tags?: string[];
   /** Optional click handler or link */
   onClick?: () => void;
   /** External href if used as a navigation link */

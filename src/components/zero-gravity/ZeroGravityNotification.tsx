@@ -1,6 +1,5 @@
 "use client";
 
-import React from "react";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { RotateCcw } from "lucide-react";
 import { useZeroGravity } from "@/context/zero-gravity-context";

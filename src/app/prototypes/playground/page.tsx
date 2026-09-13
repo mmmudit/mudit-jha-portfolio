@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
-import { ArrowLeft, Sparkles, Move, Sliders, Layout, Layers, RefreshCw } from "lucide-react";
+import { ArrowLeft, Move, RefreshCw } from "lucide-react";
 import { DragCanvas, DragCanvasItem } from "@/components/DragCanvas";
 
 const DEMO_PLAYGROUND_ITEMS: DragCanvasItem[] = [
@@ -147,7 +147,6 @@ export default function DragCanvasPrototypePage() {
             canvasWidth={2400}
             canvasHeight={1600}
             dragAxis={dragAxis}
-            dragElastic={elasticity}
             className="h-[75vh] min-h-[580px] w-full"
             onItemClick={(item) => setSelectedItem(item)}
           />

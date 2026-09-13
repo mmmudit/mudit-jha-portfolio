@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useCallback, ReactNode } from "react";
+import { useState, useCallback, type ReactNode } from "react";
 import * as HoverCard from "@radix-ui/react-hover-card";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
@@ -18,8 +18,6 @@ export interface LinkPreviewProps {
 
 // Global in-memory client cache across component instances
 const clientPreviewCache = new Map<string, LinkPreviewData>();
-
-const EASE_OUT = [0.23, 1, 0.32, 1] as const;
 
 export function LinkPreview({
   href,

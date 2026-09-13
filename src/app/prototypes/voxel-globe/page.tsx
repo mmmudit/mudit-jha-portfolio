@@ -1,20 +1,14 @@
 "use client";
 
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
 import * as THREE from "three";
 import {
   ArrowLeft,
-  Sparkles,
   Play,
   Pause,
-  Sun,
-  Cloud,
-  Layers,
   Move3D,
-  Zap,
   Eye,
-  Sliders,
   Image as ImageIcon,
 } from "lucide-react";
 

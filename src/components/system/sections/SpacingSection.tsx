@@ -1,6 +1,5 @@
 "use client";
 
-import React from "react";
 import { SPACING_TOKENS, type TokenTag } from "../tokens";
 import { SectionHeader, TokenCard } from "../primitives";
 

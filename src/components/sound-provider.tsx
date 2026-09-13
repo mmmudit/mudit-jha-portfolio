@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { bind, setVolume, setEnabled } from "cuelume";
+import { bind, setVolume } from "cuelume";
 
 /**
  * SoundProvider wires up cuelume sound interaction listeners across the whole application.

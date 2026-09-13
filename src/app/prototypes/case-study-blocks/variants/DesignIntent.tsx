@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useState } from "react";
-import { Sparkles, BookOpen, Compass, ArrowRight, Lightbulb, AlertCircle, CheckCircle2 } from "lucide-react";
+import { useState } from "react";
+import { Sparkles, BookOpen, AlertCircle, CheckCircle2 } from "lucide-react";
 
 interface NarrativeAct {
   act: string;

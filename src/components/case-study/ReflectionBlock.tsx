@@ -1,7 +1,5 @@
 "use client";
 
-import React from "react";
-import { motion, useReducedMotion } from "framer-motion";
 import { ReflectionBlockItem } from "@/types/project";
 
 interface ReflectionBlockProps {
@@ -10,7 +8,6 @@ interface ReflectionBlockProps {
 }
 
 export function ReflectionBlock({ block, className = "" }: ReflectionBlockProps) {
-  const prefersReducedMotion = useReducedMotion();
   const paragraphs = Array.isArray(block.body)
     ? block.body
     : block.body

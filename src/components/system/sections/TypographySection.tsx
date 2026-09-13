@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import { useState } from "react";
 import { TYPOGRAPHY_TOKENS, type TokenTag } from "../tokens";
 import { SectionHeader, TokenCard } from "../primitives";
 

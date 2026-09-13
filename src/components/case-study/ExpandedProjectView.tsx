@@ -1,10 +1,10 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { ChevronRight, ArrowLeft, ExternalLink } from "lucide-react";
 import { play } from "@/lib/sound";
 import { Project } from "@/types/project";
@@ -31,14 +31,13 @@ export function ExpandedProjectView({
   currentIndex,
 }: ExpandedProjectViewProps) {
   const router = useRouter();
-  const prefersReducedMotion = useReducedMotion();
   const [activeSectionId, setActiveSectionId] = useState("sec-overview");
   const [scrollProgress, setScrollProgress] = useState(0);
   const [timelineHoveredIdx, setTimelineHoveredIdx] = useState<number | null>(null);
   const [hoveredAvatarIdx, setHoveredAvatarIdx] = useState<number | null>(null);
 
   // Compute other projects for "Also check out..." section
-  const otherProjects = React.useMemo(() => {
+  const otherProjects = useMemo(() => {
     if (!projects || projects.length <= 1) return [];
     const count = Math.min(2, projects.length - 1);
     const result = [];
@@ -77,7 +76,7 @@ export function ExpandedProjectView({
   };
 
   // Derive dynamic navigation sections from case study blocks
-  const activeSections = React.useMemo(() => {
+  const activeSections = useMemo(() => {
     if (project.timelineItems && project.timelineItems.length > 0) {
       return project.timelineItems;
     }
@@ -364,7 +363,6 @@ export function ExpandedProjectView({
               {activeSections.map((sec, idx) => {
                 const activeIdx = activeSections.findIndex((s) => s.id === activeSectionId);
                 const isActive = activeIdx === idx;
-                const isPassed = idx < activeIdx;
                 const isHovered = timelineHoveredIdx === idx;
                 const focusIndex = timelineHoveredIdx !== null ? timelineHoveredIdx : Math.max(0, activeIdx);
                 const distance = Math.abs(idx - focusIndex);

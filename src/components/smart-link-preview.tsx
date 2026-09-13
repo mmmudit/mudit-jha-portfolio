@@ -13,7 +13,6 @@ export interface SmartLinkPreviewProps {
   className?: string;
   variant?: "card" | "compact";
   fallbackTitle?: string;
-  fallbackCategory?: string;
   fallbackDescription?: string;
   fallbackImage?: string;
 }
