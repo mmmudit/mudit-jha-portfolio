@@ -78,9 +78,9 @@ export function UmnHoverPreview() {
                     ? { opacity: 0 }
                     : {
                         opacity: 0,
-                        scale: 0.97,
-                        rotate: -2,
-                        y: 8,
+                        scale: 0.82,
+                        rotate: -3,
+                        y: 12,
                       }
                 }
                 animate={{
