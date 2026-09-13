@@ -17,7 +17,7 @@ export function TypographySection({ filterTag }: { filterTag?: TokenTag | "all" 
       <SectionHeader
         id="typography"
         title="Typography & Fonts"
-        subtitle="Curated typography hierarchy combining Figtree (Display headlines), Geist Sans (Body copy & navigation), Geist Mono (HUD & Live Clock stats), and MyFont (Custom handwriting accent)."
+        subtitle="Curated typography hierarchy combining Delight (Display headlines), Geist Sans (Body copy & navigation), Geist Mono (HUD & Live Clock stats), and MyFont (Custom handwriting accent)."
         count={TYPOGRAPHY_TOKENS.length}
       />
 
@@ -39,12 +39,12 @@ export function TypographySection({ filterTag }: { filterTag?: TokenTag | "all" 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
         <div className="p-5 bg-white/60 rounded-2xl border border-zinc-200">
           <span className="text-xs font-mono uppercase text-zinc-400">Display Face</span>
-          <h3 className="font-display text-2xl font-semibold text-zinc-900 mt-1">Figtree</h3>
+          <h3 className="font-display text-2xl font-semibold text-zinc-900 mt-1">Delight</h3>
           <p className="font-display text-lg mt-2 text-zinc-700 leading-snug">
             {sampleText}
           </p>
           <div className="mt-3 text-xs font-mono text-zinc-400">
-            Variable: --font-figtree • Weights: 400, 500, 600, 700
+            Variable: --font-figtree • Weights: 100 to 900
           </div>
         </div>
 

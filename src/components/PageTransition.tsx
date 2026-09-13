@@ -3,6 +3,7 @@
 import { ReactNode } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { usePathname } from "next/navigation";
+import { FrozenRouter } from "./FrozenRouter";
 
 export default function PageTransition({ children }: { children: ReactNode }) {
   const pathname = usePathname();
@@ -15,7 +16,7 @@ export default function PageTransition({ children }: { children: ReactNode }) {
   const isPlayPage = pathname === "/play";
 
   return (
-    <AnimatePresence mode="popLayout" initial={false}>
+    <AnimatePresence mode="wait" initial={false}>
       <motion.div
         key={transitionKey}
         initial={{
@@ -35,7 +36,7 @@ export default function PageTransition({ children }: { children: ReactNode }) {
         }}
         className="w-full transform-gpu"
       >
-        {children}
+        <FrozenRouter>{children}</FrozenRouter>
       </motion.div>
     </AnimatePresence>
   );

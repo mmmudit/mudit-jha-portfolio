@@ -173,7 +173,7 @@ export const TYPOGRAPHY_TOKENS: TypographyToken[] = [
   {
     id: "type-hero-display",
     name: "Display Hero (mudit jha)",
-    value: "Figtree 600 • 48px • tracking -3px • line-height 1",
+    value: "Delight 600 • 48px • tracking -3px • line-height 1",
     fontFamily: "var(--font-figtree)",
     fontSize: "48px",
     fontWeight: 600,
@@ -187,7 +187,7 @@ export const TYPOGRAPHY_TOKENS: TypographyToken[] = [
   {
     id: "type-section-title",
     name: "Section Display Title",
-    value: "Figtree 600 • 36px • tracking -3px",
+    value: "Delight 600 • 36px • tracking -3px",
     fontFamily: "var(--font-figtree)",
     fontSize: "36px",
     fontWeight: 600,
@@ -200,7 +200,7 @@ export const TYPOGRAPHY_TOKENS: TypographyToken[] = [
   {
     id: "type-subheading-shimmer",
     name: "Shimmer Subtitle Lead",
-    value: "Figtree 500 • 26px • tracking -0.1px • line-height 1.3",
+    value: "Delight 500 • 26px • tracking -0.1px • line-height 1.3",
     fontFamily: "var(--font-figtree)",
     fontSize: "26px",
     fontWeight: 500,

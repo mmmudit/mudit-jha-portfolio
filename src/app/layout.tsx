@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
-import { Figtree, Geist } from "next/font/google";
+import { Geist } from "next/font/google";
 import { GeistPixelSquare } from "geist/font/pixel";
 import "./globals.css";
 import AgentationClient from "../components/agentation-client";
@@ -19,11 +19,20 @@ const geistSans = Geist({
   subsets: ["latin"],
 });
 
-const figtree = Figtree({
+const delightFont = localFont({
+  src: [
+    { path: "../../public/fonts/Delight-Thin.woff2", weight: "100", style: "normal" },
+    { path: "../../public/fonts/Delight-ExtraLight.woff2", weight: "200", style: "normal" },
+    { path: "../../public/fonts/Delight-Light.woff2", weight: "300", style: "normal" },
+    { path: "../../public/fonts/Delight-Regular.woff2", weight: "400", style: "normal" },
+    { path: "../../public/fonts/Delight-Medium.woff2", weight: "500", style: "normal" },
+    { path: "../../public/fonts/Delight-SemiBold.woff2", weight: "600", style: "normal" },
+    { path: "../../public/fonts/Delight-Bold.woff2", weight: "700", style: "normal" },
+    { path: "../../public/fonts/Delight-ExtraBold.woff2", weight: "800", style: "normal" },
+    { path: "../../public/fonts/Delight-Black.woff2", weight: "900", style: "normal" },
+  ],
   variable: "--font-figtree",
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700", "800", "900"],
-  style: ["normal", "italic"],
+  display: "swap",
 });
 
 const myFont = localFont({
@@ -54,7 +63,7 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={`${geistSans.variable} ${GeistPixelSquare.variable} ${figtree.variable} ${myFont.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${GeistPixelSquare.variable} ${delightFont.variable} ${myFont.variable} h-full antialiased`}
     >
       <body className="min-h-full text-zinc-800 relative">
         <IntroLoader>
