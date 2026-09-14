@@ -1,5 +1,6 @@
 "use client";
 
+import { useCallback, useEffect, useMemo, useState, type CSSProperties } from "react";
 import { TextAnimationCollection } from "@designcodeio/threeui";
 import { motion, useReducedMotion } from "framer-motion";
 import { LiveClock } from "./live-clock";
@@ -8,6 +9,19 @@ import { play } from "@/lib/sound";
 import { Magnetic } from "./magnetic";
 import { useZeroGravity } from "@/context/zero-gravity-context";
 import { useNotification } from "@/context/notification-context";
+import { OrganicStars } from "@/app/prototypes/solar-footer/organic-stars";
+import { getSolarPosition } from "@/app/prototypes/solar-footer/solar-position";
+import styles from "@/app/prototypes/solar-footer/solar-footer.module.css";
+
+type SolarStyle = CSSProperties & Record<`--${string}`, string>;
+
+const SOLAR_CONFIG = {
+  intensity: 0.50,
+  softness: "100px",
+  rayReach: "1500px",
+  starStrength: "1.00",
+  timeShift: 0, // Live Chicago solar time
+};
 
 const socialLinks = [
   { label: "Insta", href: "https://www.instagram.com/mmmudit/" },
@@ -17,6 +31,85 @@ const socialLinks = [
   { label: "Substack", href: "https://mmmudit.substack.com/" },
   { label: "Email", href: "mailto:hello@muditjha.me" },
 ] as const;
+
+interface FooterStar {
+  id: number;
+  x: number;
+  y: number;
+  size: number;
+  opacity: number;
+  duration: number;
+  delay: number;
+}
+
+function FooterSparklingStars() {
+  const reduce = useReducedMotion();
+
+  const stars: FooterStar[] = useMemo(() => {
+    const list: FooterStar[] = [];
+    const count = 48;
+    for (let i = 0; i < count; i++) {
+      const seed1 = Math.sin((i + 42) * 883.1) * 10000;
+      const r1 = seed1 - Math.floor(seed1);
+      const seed2 = Math.cos((i + 42) * 419.3) * 10000;
+      const r2 = seed2 - Math.floor(seed2);
+      const seed3 = Math.sin((i + 42) * 617.7) * 10000;
+      const r3 = seed3 - Math.floor(seed3);
+
+      list.push({
+        id: i,
+        x: Math.floor(r1 * 96) + 2,
+        y: Math.floor(r2 * 90) + 5,
+        size: 1 + r3 * 2.2,
+        opacity: 0.35 + r3 * 0.6,
+        duration: 2.5 + r1 * 3.5,
+        delay: r2 * 2.5,
+      });
+    }
+    return list;
+  }, []);
+
+  return (
+    <div className="absolute inset-0 pointer-events-none overflow-hidden z-0" aria-hidden="true">
+      {/* Subtle radial celestial gradient overlay */}
+      <div
+        className="absolute inset-0 opacity-50 pointer-events-none"
+        style={{
+          background:
+            "radial-gradient(ellipse at 50% 40%, rgba(45, 60, 80, 0.25) 0%, rgba(9, 10, 15, 0.95) 85%)",
+        }}
+      />
+      {stars.map((star) => (
+        <motion.div
+          key={star.id}
+          className="absolute rounded-full bg-white"
+          style={{
+            left: `${star.x}%`,
+            top: `${star.y}%`,
+            width: `${star.size}px`,
+            height: `${star.size}px`,
+            boxShadow: star.size > 2 ? "0 0 6px rgba(255, 255, 255, 0.85)" : "none",
+          }}
+          animate={
+            reduce
+              ? { opacity: star.opacity }
+              : {
+                opacity: [star.opacity * 0.25, star.opacity, star.opacity * 0.25],
+                scale: [0.8, 1.25, 0.8],
+                y: ["0px", "-6px", "0px"],
+              }
+          }
+          transition={{
+            duration: star.duration,
+            delay: star.delay,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+        />
+      ))}
+    </div>
+  );
+}
 
 function getLatestDeploymentDate(): string {
   const rawDate =
@@ -44,6 +137,43 @@ export function Footer() {
   const { triggerNotification } = useNotification();
   const isZeroG = isZeroGravity && !isRestoring;
 
+  const [solarStyle, setSolarStyle] = useState<SolarStyle>({
+    "--sun-intensity": SOLAR_CONFIG.intensity.toFixed(2),
+    "--sun-softness": SOLAR_CONFIG.softness,
+    "--ray-reach": SOLAR_CONFIG.rayReach,
+    "--star-strength": SOLAR_CONFIG.starStrength,
+    "--sun-x": "50%",
+    "--sun-y": "0%",
+    "--sun-ray-angle": "90deg",
+    "--sun-azimuth": "180deg",
+    "--sun-opacity": SOLAR_CONFIG.intensity.toFixed(2),
+  });
+
+  const applySolarPosition = useCallback(() => {
+    const shiftedDate = new Date(Date.now() + SOLAR_CONFIG.timeShift * 3_600_000);
+    const solar = getSolarPosition(shiftedDate);
+    // Maintain a minimum ambient twilight floor so the solar haze light stays visible in all orientations & night hours
+    const effectiveDaylight = Math.max(0.45, solar.daylight);
+
+    setSolarStyle({
+      "--sun-intensity": SOLAR_CONFIG.intensity.toFixed(2),
+      "--sun-softness": SOLAR_CONFIG.softness,
+      "--ray-reach": SOLAR_CONFIG.rayReach,
+      "--star-strength": SOLAR_CONFIG.starStrength,
+      "--sun-x": `${solar.edgeX.toFixed(3)}%`,
+      "--sun-y": `${solar.edgeY.toFixed(3)}%`,
+      "--sun-ray-angle": `${solar.rayAngle.toFixed(3)}deg`,
+      "--sun-azimuth": `${solar.azimuth.toFixed(2)}deg`,
+      "--sun-opacity": (effectiveDaylight * SOLAR_CONFIG.intensity).toFixed(3),
+    });
+  }, []);
+
+  useEffect(() => {
+    applySolarPosition();
+    const interval = window.setInterval(() => applySolarPosition(), 30_000);
+    return () => window.clearInterval(interval);
+  }, [applySolarPosition]);
+
   const handleEmailClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     if (href.startsWith("mailto:")) {
       e.preventDefault();
@@ -67,7 +197,7 @@ export function Footer() {
   };
 
   return (
-    <footer className="relative w-screen left-1/2 -translate-x-1/2 px-6 sm:px-14 pb-[calc(7.5rem+env(safe-area-inset-bottom,0px))] sm:pb-[max(1.5rem,env(safe-area-inset-bottom))] select-none">
+    <footer className="relative w-screen left-1/2 -translate-x-1/2 select-none">
       {/* Subtle Frost Blur Gradient Overlay with Color Willow (Spanning entire viewport width) */}
       <div
         className="absolute inset-0 pointer-events-none -z-10 select-none transition-[backdrop-filter,opacity] duration-250 ease-out dark:opacity-0"
@@ -83,9 +213,9 @@ export function Footer() {
         }}
         aria-hidden="true"
       />
-      <div className="relative z-10 flex flex-col items-center w-full gap-10 md:gap-14">
+      <div className="relative z-10 flex flex-col items-center w-full gap-10 md:gap-14 pt-8">
         {/* Top: Say Hi! + Chevron Down */}
-        <div className="flex flex-col items-center gap-1">
+        <div className="flex flex-col items-center gap-1 px-6 sm:px-14">
           <p className="font-hand text-[36px] sm:text-[44px] md:text-[48px] leading-tight tracking-[-1px] text-willow-grey dark:text-[#c8d5bb]">
             say hi!
           </p>
@@ -112,7 +242,7 @@ export function Footer() {
         </div>
 
         {/* Social Links Row */}
-        <div className="relative flex flex-col md:flex-row items-center justify-center md:justify-between gap-y-3 sm:gap-y-4 md:gap-y-0 w-full font-sans font-semibold text-[26px] sm:text-[32px] md:text-[38px] lg:text-[46px] tracking-[-1px] leading-tight md:leading-none text-willow-grey dark:text-[#c8d5bb]">
+        <div className="relative flex flex-col md:flex-row items-center justify-center md:justify-between gap-y-3 sm:gap-y-4 md:gap-y-0 w-full px-6 sm:px-14 font-sans font-semibold text-[26px] sm:text-[32px] md:text-[38px] lg:text-[46px] tracking-[-1px] leading-tight md:leading-none text-willow-grey dark:text-[#c8d5bb]">
           {socialLinks.map((link) => {
             const isEmail = link.label === "Email";
             const linkElement = (
@@ -147,43 +277,73 @@ export function Footer() {
           })}
         </div>
 
-        {/* Divider Line */}
-        <div className="w-full h-px bg-gradient-to-r from-transparent via-[#c8d5bb]/80 dark:via-white/20 to-transparent" />
-
-        {/* Metadata Bar (Live Clock, Copyright, Changelog) */}
-        <div className="relative z-30 pt-1 grid grid-cols-1 sm:grid-cols-3 items-center w-full gap-4 text-[#7f7f80] dark:text-zinc-400 text-[13px] sm:text-[14px] md:text-[15px] tracking-tight">
-          {/* Left: Live Clock + Status Dot */}
-          <div className="flex items-center justify-center sm:justify-start">
-            <LiveClock />
-          </div>
-
-          {/* Center: Copyright (Centered in middle grid track) */}
-          <div className="flex items-center justify-center font-mono text-xs sm:text-[13px] tracking-wider text-[#7f7f80] dark:text-zinc-400">
-            <a
-              href="https://muditjha.me"
-              className="pressable transition-opacity [@media(hover:hover)]:hover:opacity-70 dark:[@media(hover:hover)]:hover:text-zinc-200"
+        {/* Brand Black Footer Area Below Social Links with Organic Stars & Adaptive Sunlight */}
+        <div
+          style={solarStyle}
+          className={`relative w-full text-zinc-400 pt-8 sm:pt-10 pb-[calc(1.25rem+env(safe-area-inset-bottom,0px))] sm:pb-[max(1rem,env(safe-area-inset-bottom))] px-6 sm:px-14 flex flex-col items-center gap-6 sm:gap-8 mt-2 transition-[background-color,border-color] duration-300 ${isZeroG
+            ? "bg-transparent border-t-0 overflow-visible"
+            : "bg-[#090a0f] border-t border-white/10 overflow-hidden"
+            }`}
+        >
+          {/* Organic Celestial Stars (Starlight 1.00 - Hidden in Zero-G in favor of ZeroG Cosmos) */}
+          {!isZeroG && (
+            <div
+              className="absolute inset-0 pointer-events-none z-0"
+              style={{ overflow: "hidden" }}
             >
-              © 2026 MUDIT JHA
-            </a>
+              <OrganicStars tone="haze" />
+            </div>
+          )}
+
+          {/* Adaptive Sunlight — Haze Variant */}
+          <div
+            className={styles.astralHaze}
+            style={{ overflow: isZeroG ? "visible" : "hidden" }}
+            aria-hidden="true"
+          >
+            <span className={styles.hazeBloom} />
+            <span className={styles.hazeRibbon} />
+            <span className={styles.hazeMote} />
           </div>
 
-          {/* Right: Changelog */}
-          <div className="flex items-center justify-center sm:justify-end uppercase font-mono text-xs sm:text-[13px] tracking-wider text-[#7f7f80] dark:text-zinc-400">
-            <span>Changelog: {deploymentDate}</span>
-          </div>
-        </div>
+          {/* Sparkling Micro-Stars (Hidden in Zero-G mode) */}
+          {!isZeroG && <FooterSparklingStars />}
 
-        {/* Giant "MUDIT" Shaded Particle Wordmark (Bottom Anchor - Centered & Responsive) */}
-        <div className="relative flex items-center justify-center w-full max-w-[1400px] mx-auto pt-2 overflow-hidden aspect-[1600/360] min-h-[80px] sm:min-h-[140px] md:min-h-[180px] lg:min-h-[220px] max-h-[320px] bg-transparent">
-          <TextAnimationCollection
-            variant="particle-wordmark"
-            text="mudit"
-            mode={isZeroG ? "dark" : "light"}
-            hue={45}
-            saturation={1.2}
-            brightness={1.05}
-            style={{ background: "transparent", backgroundColor: "transparent" }}
-          />
+          {/* Metadata Bar (Live Clock, Copyright, Changelog) */}
+          <div className="relative z-30 pt-1 grid grid-cols-1 sm:grid-cols-3 items-center w-full max-w-[1400px] mx-auto gap-4 text-zinc-400 text-[13px] sm:text-[14px] md:text-[15px] tracking-tight">
+            {/* Left: Live Clock + Status Dot */}
+            <div className="flex items-center justify-center sm:justify-start text-zinc-300">
+              <LiveClock />
+            </div>
+
+            {/* Center: Copyright (Centered in middle grid track) */}
+            <div className="flex items-center justify-center font-mono text-xs sm:text-[13px] tracking-wider text-zinc-400">
+              <a
+                href="https://muditjha.me"
+                className="pressable transition-opacity hover:opacity-80 hover:text-white"
+              >
+                © 2026 MUDIT JHA
+              </a>
+            </div>
+
+            {/* Right: Changelog */}
+            <div className="flex items-center justify-center sm:justify-end uppercase font-mono text-xs sm:text-[13px] tracking-wider text-zinc-400">
+              <span>Changelog: {deploymentDate}</span>
+            </div>
+          </div>
+
+          {/* Giant "MUDIT" Shaded Particle Wordmark (Bottom Anchor - Centered & Responsive) */}
+          <div className="relative z-10 flex items-center justify-center w-full max-w-[1400px] mx-auto overflow-hidden aspect-[1600/210] min-h-[60px] sm:min-h-[100px] md:min-h-[130px] lg:min-h-[160px] max-h-[220px] bg-transparent">
+            <TextAnimationCollection
+              variant="particle-wordmark"
+              text="mudit"
+              mode="dark"
+              hue={45}
+              saturation={1.2}
+              brightness={1.05}
+              style={{ background: "transparent", backgroundColor: "transparent" }}
+            />
+          </div>
         </div>
       </div>
     </footer>

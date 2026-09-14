@@ -8,6 +8,8 @@ import dotBorderButtonSource from "./sources/dot-border-button.html?raw";
 import creatorStudioIntroSource from "./sources/creator-studio-intro.html?raw";
 import epiludeFooterSourceRaw from "./sources/epilude-footer.html?raw";
 import { epiludeFooterSource as epiludeFooterSourceTS } from "./sources/epilude-footer";
+import { DELIGHT_BLACK_B64 } from "./delight-black-base64";
+import { makeDelightWordmarkSvg } from "./delight-black-vector";
 
 const epiludeFooterSource = (typeof epiludeFooterSourceRaw === "string" ? epiludeFooterSourceRaw : (epiludeFooterSourceRaw as any)?.default) || epiludeFooterSourceTS;
 import expanseSource from "./sources/digital-expanse.html?raw";
@@ -84,7 +86,17 @@ const THREEUI_MARK_SVG = `<svg viewBox="0 0 512 512" aria-hidden="true">
 </svg>`;
 
 const SHADERS_WORDMARK_SVG = `<svg width="1600" height="300" viewBox="0 0 1600 300" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <text x="800" y="235" text-anchor="middle" fill="#F4F4F0" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="240" font-weight="900" letter-spacing="-8">SHADERS</text>
+  <defs>
+    <style>
+      @font-face {
+        font-family: 'DelightBlack';
+        src: url('data:font/woff2;charset=utf-8;base64,${DELIGHT_BLACK_B64}') format('woff2');
+        font-weight: 900;
+        font-style: normal;
+      }
+    </style>
+  </defs>
+  <text x="800" y="235" text-anchor="middle" fill="#F4F4F0" font-family="'DelightBlack', 'Delight', 'Delight-Black', var(--font-figtree), system-ui, sans-serif" font-size="240" font-weight="900" letter-spacing="-8">SHADERS</text>
 </svg>`;
 
 export type NeuformIsolatedEffectProps = {
@@ -1346,11 +1358,8 @@ function transformRecursiveErosionSource(source: string, style: RecursiveErosion
   return served;
 }
 
-function makeWordmarkSvg(text: string) {
-  const safeText = text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-  return `<svg width="1600" height="360" viewBox="0 0 1600 360" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <text x="800" y="270" text-anchor="middle" fill="#F4F4F0" font-family="Helvetica, Arial, sans-serif" font-size="320" font-weight="900" letter-spacing="-4">${safeText.toUpperCase()}</text>
-</svg>`;
+function makeWordmarkSvg(_text: string) {
+  return makeDelightWordmarkSvg(1600, 210);
 }
 
 function transformEpiludeWordmarkSource(source: string, mode: EffectMode, text?: string) {
@@ -1368,7 +1377,7 @@ html, body, footer, .storm-wrap, .storm, canvas {
   background-color: transparent !important;
 }
 </style>`)
-    .replace("aspect-ratio: 8.541554959785524;", "aspect-ratio: 4.444444444444445; width: 100% !important; height: 100% !important;")
+    .replace("aspect-ratio: 8.541554959785524;", "aspect-ratio: 7.619047619047619; width: 100% !important; height: 100% !important;")
     .replaceAll("background: var(--olive-950);", "background: transparent !important;")
     .replaceAll("background: #0c0c0d;", "background: transparent !important;")
     .replace(/var WORDMARK =[\s\S]*?"<\/svg>";/, `var WORDMARK = ${JSON.stringify(wordmarkSvg)};`)
