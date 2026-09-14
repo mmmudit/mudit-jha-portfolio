@@ -142,7 +142,7 @@ export function Header() {
                 : { type: "spring", stiffness: 360, damping: 28, mass: 0.8 }
             }
             className={clsx(
-              "z-50 flex items-center justify-center transition-opacity",
+              "z-50 flex items-center justify-center transition-opacity overflow-visible",
               !isAbout || isNavVisible || isNotificationActive ? "pointer-events-auto" : "pointer-events-none",
               isNotificationActive
                 ? "fixed bottom-6 left-1/2 -translate-x-1/2 mb-[env(safe-area-inset-bottom,0px)] md:fixed md:top-[calc(1.5rem+env(safe-area-inset-top,0px)+27px)] md:bottom-auto md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2"

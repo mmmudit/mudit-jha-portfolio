@@ -4,15 +4,31 @@ import React from "react";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { RotateCcw, Mail } from "lucide-react";
 import clsx from "clsx";
+import { usePathname } from "next/navigation";
 import NavigationTabs from "./NavigationTabs";
 import { useNotification } from "@/context/notification-context";
 import { play } from "@/lib/sound";
+import {
+  DynamicIslandGooLoader,
+  useScrollUpRefreshGesture,
+} from "./dynamic-island-goo-loader";
+import { useSoftReload } from "@/context/soft-reload-context";
 
 export function DynamicIslandNav() {
+  const pathname = usePathname();
+  const isPlayPage = pathname === "/play" || pathname?.startsWith("/play/");
   const { activeNotification, resolveNotification } = useNotification();
+  const { triggerSoftReload } = useSoftReload();
   const reduce = useReducedMotion();
 
   const isNotificationActive = Boolean(activeNotification);
+
+  const { pullProgress, isRefreshing, isGooActive } = useScrollUpRefreshGesture({
+    enabled: !isNotificationActive && !isPlayPage,
+    onRefresh: () => {
+      triggerSoftReload(1600);
+    },
+  });
 
   const handleActionClick = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -36,15 +52,32 @@ export function DynamicIslandNav() {
   return (
     <div
       role="region"
-      aria-label={isNotificationActive ? "System Alert" : "Navigation"}
-      className="relative flex items-center justify-center"
+      aria-label={
+        isNotificationActive
+          ? "System Alert"
+          : isGooActive
+          ? "Loading State"
+          : "Navigation"
+      }
+      className="relative flex flex-col items-center justify-center overflow-visible"
     >
+      {/* Background Goo Layer: emerges and detaches BELOW the nav bar */}
+      {isGooActive && (
+        <div className="absolute top-0 z-0 pointer-events-none overflow-visible flex items-center justify-center">
+          <DynamicIslandGooLoader
+            progress={pullProgress}
+            isLoading={isRefreshing}
+          />
+        </div>
+      )}
+
+      {/* The Main Dynamic Island Pill (Nav tabs or Notification) */}
       <motion.div
         layout
         transition={springTransition}
         style={{ borderRadius: 9999 }}
         className={clsx(
-          "relative flex items-center justify-center rounded-full backdrop-blur-md overflow-hidden p-1 transition-colors duration-500",
+          "relative z-10 flex items-center justify-center rounded-full transition-colors duration-500 backdrop-blur-md overflow-hidden p-1",
           isNotificationActive
             ? "bg-zinc-900/90 border border-white/15 text-zinc-100"
             : "border border-zinc-300/70 dark:border-white/15 bg-[#fbfaf5]/90 dark:bg-zinc-900/90"

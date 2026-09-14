@@ -5,6 +5,14 @@ import { ArrowLeft, ArrowUpRight, Sparkles, Layers, Folder, Maximize2 } from "lu
 
 const PROTOTYPES = [
   {
+    title: "Dynamic Island Gooey Loading Puck",
+    slug: "dynamic-island-loader",
+    description: "Squeezes out a circular 32×32 loading puck as you scroll UP using an SVG filter goo neck (feColorMatrix 18 -7 + feComposite atop).",
+    badge: "NEW",
+    icon: Sparkles,
+    href: "/prototypes/dynamic-island-loader",
+  },
+  {
     title: "3D Voxel Globe Hero System",
     slug: "voxel-globe",
     description: "3 interactive 3D Voxel Globe Hero variations: Architectural Monochrome with tactile pop physics, Earth Topo with city targeting HUD, and Kinetic Wave Matrix.",

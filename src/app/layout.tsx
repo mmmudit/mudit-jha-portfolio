@@ -37,6 +37,8 @@ const myFont = localFont({
   display: "swap",
 });
 
+import { SoftReloadProvider } from "../context/soft-reload-context";
+
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
@@ -66,12 +68,14 @@ export default function RootLayout({
           <ZeroGravityProvider>
             <NotificationProvider>
               <AboutEyeProvider>
-                <SoundProvider />
-                <GrainOverlay />
-                <ZeroGravityCosmos />
-                <CursorClickEffect />
-                <AppShell>{children}</AppShell>
-                <AgentationClient />
+                <SoftReloadProvider>
+                  <SoundProvider />
+                  <GrainOverlay />
+                  <ZeroGravityCosmos />
+                  <CursorClickEffect />
+                  <AppShell>{children}</AppShell>
+                  <AgentationClient />
+                </SoftReloadProvider>
               </AboutEyeProvider>
             </NotificationProvider>
           </ZeroGravityProvider>
