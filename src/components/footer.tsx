@@ -215,19 +215,14 @@ export function Footer() {
         aria-hidden="true"
       />
       <div className="relative z-10 flex flex-col items-center w-full gap-10 md:gap-14 pt-8">
-        {/* Top: Say Hi! + Chevron Down */}
-        <div className="flex flex-col items-center gap-1 px-6 sm:px-14">
+        {/* Top: Say Hi! + Chevron Down (Interactive directional nudge) */}
+        <div className="group flex flex-col items-center gap-1 px-6 sm:px-14 cursor-default">
           <p className="font-hand text-[36px] sm:text-[44px] md:text-[48px] leading-tight tracking-[-1px] text-willow-grey dark:text-[#c8d5bb]">
             say hi!
           </p>
-          <motion.div
-            animate={reduce ? undefined : { y: [0, 5, 0] }}
-            transition={
-              reduce
-                ? undefined
-                : { duration: 2.6, repeat: Infinity, ease: [0.45, 0, 0.55, 1] }
-            }
-            className="text-willow-grey dark:text-[#c8d5bb] flex items-center justify-center -mt-1"
+          <div
+            className="text-willow-grey dark:text-[#c8d5bb] flex items-center justify-center -mt-1 transition-transform duration-200 ease-[cubic-bezier(0.23,1,0.32,1)] group-hover:translate-y-1 group-focus-within:translate-y-1 motion-reduce:transform-none"
+            aria-hidden="true"
           >
             <svg
               className="size-8 sm:size-10 stroke-current"
@@ -236,10 +231,11 @@ export function Footer() {
               strokeWidth="2.2"
               strokeLinecap="round"
               strokeLinejoin="round"
+              aria-hidden="true"
             >
               <polyline points="6 9 12 15 18 9" />
             </svg>
-          </motion.div>
+          </div>
         </div>
 
         {/* Social Links Row */}
@@ -321,7 +317,7 @@ export function Footer() {
             <div className="flex items-center justify-center font-mono text-xs sm:text-[13px] tracking-wider text-zinc-400">
               <a
                 href="https://muditjha.me"
-                className="pressable transition-opacity hover:opacity-80 hover:text-white"
+                className="pressable transition-all duration-150 ease-out hover:opacity-80 hover:text-white active:scale-[0.97] touch-manipulation focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-400 rounded px-1.5 py-1"
               >
                 © 2026 MUDIT JHA
               </a>

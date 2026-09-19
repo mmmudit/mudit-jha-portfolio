@@ -573,7 +573,7 @@ html.intro-dismissed #intro-overlay {
     cursorRayBot 520ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-@media (prefers-reduced-motion: reduce) {
+@media (prefers-reduced-motion: reduce), (max-width: 767px) {
 
   .cursor-spark-container,
   .cursor-spark-line {

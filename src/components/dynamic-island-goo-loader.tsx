@@ -32,28 +32,65 @@ export const DERIVED_TRAVEL =
   ISLAND_HEIGHT / 2 + DETACH_GAP + PUCK_SIZE / 2 + SCALED_AWAY_HALF; // 58.5px
 
 /**
- * Custom hook to drive the loader strictly from the scroll GESTURE (wheel & touchmove deltas),
- * not from scroll position. Non-passive preventDefault locks the native page scroll.
+ * Asymmetric elastic rubberband resistance curve:
+ * Features an initial deadband to ignore minor inadvertent twitches,
+ * and ramps up friction progressively as displacement grows, mimicking a viscous liquid droplet.
+ */
+function calculateElasticProgress(rawDelta: number, targetTravel = 240): number {
+  if (rawDelta <= 24) return 0;
+  const effectiveDelta = rawDelta - 24;
+  const k = 0.55;
+  const rubberband = (effectiveDelta * k) / (targetTravel * 0.42 + effectiveDelta * k);
+  const normalized = rubberband * 1.78;
+  return Math.min(1, Math.max(0, normalized));
+}
+
+/**
+ * Custom hook to drive the loader strictly from deliberate scroll GESTURES (wheel, touch & pointer deltas),
+ * with natural elastic resistance, scroll-from-below immunity, and immediate physical snap-back on gesture cessation.
  */
 export function useScrollUpRefreshGesture({
   enabled = true,
+  disableOnMobile = true,
   onRefresh,
-  sensitivity = 140,
+  sensitivity = 240,
 }: {
   enabled?: boolean;
+  disableOnMobile?: boolean;
   onRefresh?: () => void;
   sensitivity?: number;
 } = {}) {
   const [pullProgress, setPullProgress] = useState(0);
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [isSnapping, setIsSnapping] = useState(false);
+
   const touchStartY = useRef<number | null>(null);
+  const pointerStartY = useRef<number | null>(null);
   const isGesturingRef = useRef(false);
   const accumulatedDeltaRef = useRef(0);
+  const arrivedAtTopTimeRef = useRef(0);
   const wheelTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const snapTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  const snapBack = useCallback(() => {
+    if (isRefreshing) return;
+    accumulatedDeltaRef.current = 0;
+    touchStartY.current = null;
+    pointerStartY.current = null;
+    isGesturingRef.current = false;
+    setIsSnapping(true);
+    setPullProgress(0);
+
+    if (snapTimeoutRef.current) clearTimeout(snapTimeoutRef.current);
+    snapTimeoutRef.current = setTimeout(() => {
+      setIsSnapping(false);
+    }, 420);
+  }, [isRefreshing]);
 
   const triggerRefresh = useCallback(() => {
     setIsRefreshing(true);
     setPullProgress(1);
+    setIsSnapping(false);
     play("droplet", { volume: 0.5 });
     onRefresh?.();
 
@@ -68,43 +105,85 @@ export function useScrollUpRefreshGesture({
   useEffect(() => {
     if (!enabled) return;
 
+    if (disableOnMobile && typeof window !== "undefined") {
+      const isMobile = window.matchMedia("(max-width: 767px)").matches;
+      if (isMobile) return;
+    }
+
+    const handleScroll = () => {
+      if (window.scrollY > 4) {
+        arrivedAtTopTimeRef.current = Date.now();
+      }
+    };
+
     const handleWheel = (e: WheelEvent) => {
       if (isRefreshing) return;
+      if (disableOnMobile && window.innerWidth < 768) return;
 
-      const isAtTop = window.scrollY <= 1;
+      const currentScrollY = window.scrollY;
+      if (currentScrollY > 4) {
+        arrivedAtTopTimeRef.current = Date.now();
+        return;
+      }
 
-      // Scrolling UP produces negative deltaY (e.deltaY < 0).
-      // Pulling a surface upward is the gesture that asks for a refresh.
+      const isAtTop = currentScrollY <= 1;
+      const isSettledAtTop = Date.now() - arrivedAtTopTimeRef.current >= 400;
+
+      // Prevent accidental reload when user is just scrolling up from lower on the page:
+      // If user hasn't settled at the top for at least 400ms, ignore upward wheel momentum.
+      if (accumulatedDeltaRef.current === 0 && !isSettledAtTop) {
+        return;
+      }
+
+      // When pulling down / overscrolling at top (negative deltaY):
       if (isAtTop && (e.deltaY < 0 || accumulatedDeltaRef.current > 0)) {
+        // Handle reverse scroll retraction:
+        if (e.deltaY > 0 && accumulatedDeltaRef.current > 0) {
+          accumulatedDeltaRef.current = Math.max(0, accumulatedDeltaRef.current - e.deltaY * 1.5);
+          const nextProg = calculateElasticProgress(accumulatedDeltaRef.current, sensitivity);
+          setPullProgress(nextProg);
+          if (nextProg <= 0.01) {
+            snapBack();
+          }
+          return;
+        }
+
         // Prevent default native page scroll and overscroll rubberbanding
         e.preventDefault();
 
-        accumulatedDeltaRef.current -= e.deltaY;
-        const nextProg = Math.min(
-          1,
-          Math.max(0, accumulatedDeltaRef.current / sensitivity)
-        );
+        // Progressive friction: resistance increases as displacement grows
+        const currentProg = calculateElasticProgress(accumulatedDeltaRef.current, sensitivity);
+        const frictionMultiplier = Math.max(0.32, 1 - Math.pow(currentProg, 1.1) * 0.68);
+
+        accumulatedDeltaRef.current += Math.abs(e.deltaY) * frictionMultiplier;
+        const nextProg = calculateElasticProgress(accumulatedDeltaRef.current, sensitivity);
         setPullProgress(nextProg);
 
         if (wheelTimeoutRef.current) clearTimeout(wheelTimeoutRef.current);
 
-        if (nextProg >= 0.94) {
+        // Require deliberate, deep pull and minimum travel distance to activate
+        if (nextProg >= 0.96 && accumulatedDeltaRef.current >= 230) {
           triggerRefresh();
         } else {
-          // If user stops scrolling upward before threshold, smoothly spring back to 0
+          // If user stops scrolling before threshold, snap back immediately
           wheelTimeoutRef.current = setTimeout(() => {
             if (!isRefreshing) {
-              accumulatedDeltaRef.current = 0;
-              setPullProgress(0);
+              snapBack();
             }
-          }, 180);
+          }, 110);
         }
       }
     };
 
     const handleTouchStart = (e: TouchEvent) => {
       if (isRefreshing) return;
-      if (window.scrollY <= 2) {
+      if (disableOnMobile && window.innerWidth < 768) return;
+      if (window.scrollY > 4) {
+        arrivedAtTopTimeRef.current = Date.now();
+        return;
+      }
+      if (Date.now() - arrivedAtTopTimeRef.current < 400) return;
+      if (window.scrollY <= 1) {
         touchStartY.current = e.touches[0].clientY;
         isGesturingRef.current = true;
       }
@@ -115,14 +194,19 @@ export function useScrollUpRefreshGesture({
         return;
 
       const currentY = e.touches[0].clientY;
-      // Dragging upward: startY - currentY > 0
-      const pullUpDelta = touchStartY.current - currentY;
+      const pullDelta = currentY - touchStartY.current;
 
-      if (pullUpDelta > 0 || accumulatedDeltaRef.current > 0) {
+      if (pullDelta > 0) {
         if (e.cancelable) e.preventDefault();
-
-        const prog = Math.min(1, Math.max(0, pullUpDelta / sensitivity));
+        accumulatedDeltaRef.current = pullDelta * 1.0;
+        const prog = calculateElasticProgress(accumulatedDeltaRef.current, sensitivity);
         setPullProgress(prog);
+        if (prog >= 0.96 && accumulatedDeltaRef.current >= 230) {
+          triggerRefresh();
+        }
+      } else {
+        accumulatedDeltaRef.current = 0;
+        setPullProgress(0);
       }
     };
 
@@ -131,34 +215,102 @@ export function useScrollUpRefreshGesture({
       isGesturingRef.current = false;
       touchStartY.current = null;
 
-      if (pullProgress >= 0.92) {
+      if (pullProgress >= 0.96 && accumulatedDeltaRef.current >= 230) {
         triggerRefresh();
       } else {
-        setPullProgress(0);
-        accumulatedDeltaRef.current = 0;
+        snapBack();
       }
     };
 
+    // Pointer (mouse drag) pull-down near top of viewport / island
+    const handlePointerDown = (e: PointerEvent) => {
+      if (isRefreshing || e.button !== 0) return;
+      if (disableOnMobile && window.innerWidth < 768) return;
+      if (window.scrollY > 4) {
+        arrivedAtTopTimeRef.current = Date.now();
+        return;
+      }
+      if (Date.now() - arrivedAtTopTimeRef.current < 400) return;
+      if (window.scrollY <= 1 && e.clientY <= 140) {
+        pointerStartY.current = e.clientY;
+        isGesturingRef.current = true;
+      }
+    };
+
+    const handlePointerMove = (e: PointerEvent) => {
+      if (!isGesturingRef.current || pointerStartY.current === null || isRefreshing) return;
+      const pullDelta = e.clientY - pointerStartY.current;
+
+      if (pullDelta > 0) {
+        if (e.cancelable) e.preventDefault();
+        accumulatedDeltaRef.current = pullDelta * 1.0;
+        const prog = calculateElasticProgress(accumulatedDeltaRef.current, sensitivity);
+        setPullProgress(prog);
+        if (prog >= 0.96 && accumulatedDeltaRef.current >= 230) {
+          triggerRefresh();
+        }
+      } else {
+        accumulatedDeltaRef.current = 0;
+        setPullProgress(0);
+      }
+    };
+
+    const handlePointerUp = () => {
+      if (!isGesturingRef.current || isRefreshing) return;
+      isGesturingRef.current = false;
+      pointerStartY.current = null;
+
+      if (pullProgress >= 0.96 && accumulatedDeltaRef.current >= 230) {
+        triggerRefresh();
+      } else {
+        snapBack();
+      }
+    };
+
+    // Immediate snap-back if cursor leaves window or tab loses focus
+    const handleWindowLeave = () => {
+      if (!isRefreshing && (accumulatedDeltaRef.current > 0 || isGesturingRef.current || pullProgress > 0)) {
+        snapBack();
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
     window.addEventListener("wheel", handleWheel, { passive: false });
     window.addEventListener("touchstart", handleTouchStart, { passive: true });
     window.addEventListener("touchmove", handleTouchMove, { passive: false });
     window.addEventListener("touchend", handleTouchEnd, { passive: true });
+    window.addEventListener("pointerdown", handlePointerDown, { passive: true });
+    window.addEventListener("pointermove", handlePointerMove, { passive: false });
+    window.addEventListener("pointerup", handlePointerUp, { passive: true });
+    window.addEventListener("pointercancel", handlePointerUp, { passive: true });
+    window.addEventListener("mouseleave", handleWindowLeave);
+    document.addEventListener("mouseleave", handleWindowLeave);
+    window.addEventListener("blur", handleWindowLeave);
 
     return () => {
+      window.removeEventListener("scroll", handleScroll);
       window.removeEventListener("wheel", handleWheel);
       window.removeEventListener("touchstart", handleTouchStart);
       window.removeEventListener("touchmove", handleTouchMove);
       window.removeEventListener("touchend", handleTouchEnd);
+      window.removeEventListener("pointerdown", handlePointerDown);
+      window.removeEventListener("pointermove", handlePointerMove);
+      window.removeEventListener("pointerup", handlePointerUp);
+      window.removeEventListener("pointercancel", handlePointerUp);
+      window.removeEventListener("mouseleave", handleWindowLeave);
+      document.removeEventListener("mouseleave", handleWindowLeave);
+      window.removeEventListener("blur", handleWindowLeave);
       if (wheelTimeoutRef.current) clearTimeout(wheelTimeoutRef.current);
+      if (snapTimeoutRef.current) clearTimeout(snapTimeoutRef.current);
     };
-  }, [enabled, isRefreshing, pullProgress, sensitivity, triggerRefresh]);
+  }, [enabled, isRefreshing, pullProgress, sensitivity, triggerRefresh, snapBack]);
 
   return {
     pullProgress,
     isRefreshing,
     setPullProgress,
     triggerRefresh,
-    isGooActive: pullProgress > 0 || isRefreshing,
+    isGooActive: pullProgress > 0 || isRefreshing || isSnapping,
   };
 }
 
@@ -222,12 +374,13 @@ export function DynamicIslandGooLoader({
 }: DynamicIslandGooLoaderProps) {
   const effectiveProgress = isLoading ? 1 : progress;
 
-  // Spring animation for smooth, physical gesture tracking & snap-back
+  // Spring animation calibrated for Apple-like fluid elasticity:
+  // Damping ratio (~0.76) allows organic, tactile recoil and snappy physical snap-back
   const progressMotion = useMotionValue(effectiveProgress);
   const smoothProgress = useSpring(progressMotion, {
-    stiffness: 420,
-    damping: 32,
-    mass: 0.6,
+    stiffness: 350,
+    damping: 23,
+    mass: 0.65,
   });
 
   useEffect(() => {
@@ -241,34 +394,33 @@ export function DynamicIslandGooLoader({
   // scaling to 1.0 as it detaches.
   const puckScale = useTransform(
     smoothProgress,
-    [0, 0.85, 1],
+    [0, 0.82, 1],
     [PUCK_MIN_SCALE, 0.96, 1]
   );
 
-  // Spinner entrance: brought in while the puck is STILL ATTACHED (between 0.32 and 0.72),
-  // not after it lands. Held to the end it reads as a second animation starting;
-  // bringing it in early makes it read as one thing becoming a loader.
+  // Spinner entrance: brought in while the puck is STILL ATTACHED (between 0.30 and 0.70),
+  // so it reads as one entity becoming a loader.
   const spinnerOpacity = useTransform(
     smoothProgress,
-    [0, 0.32, 0.72, 1],
+    [0, 0.30, 0.70, 1],
     [0, 0, 1, 1]
   );
   const spinnerScale = useTransform(
     smoothProgress,
-    [0, 0.32, 0.72, 1],
+    [0, 0.30, 0.70, 1],
     [0.4, 0.4, 1, 1]
   );
 
-  // Slight Island squash & stretch during downward pulling to feel organic
+  // Pronounced Island squash & stretch during downward pulling for a highly elastic feel
   const islandScaleX = useTransform(
     smoothProgress,
-    [0, 0.4, 0.75, 1],
-    [1, 0.97, 0.985, 1]
+    [0, 0.35, 0.75, 1],
+    [1, 0.95, 0.98, 1]
   );
   const islandScaleY = useTransform(
     smoothProgress,
-    [0, 0.4, 0.75, 1],
-    [1, 1.04, 1.01, 1]
+    [0, 0.35, 0.75, 1],
+    [1, 1.06, 1.02, 1]
   );
 
   // Opacity of the decorative border ring on the detached puck

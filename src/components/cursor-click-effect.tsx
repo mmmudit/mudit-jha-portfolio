@@ -26,17 +26,27 @@ function getReducedMotionServerSnapshot() {
 
 export function CursorClickEffect() {
   const [bursts, setBursts] = useState<ClickBurst[]>([]);
+  const [isMobile, setIsMobile] = useState(false);
   const reducedMotion = useSyncExternalStore(
     subscribeReducedMotion,
     getReducedMotionSnapshot,
     getReducedMotionServerSnapshot
   );
 
+  useEffect(() => {
+    const mql = window.matchMedia("(max-width: 767px)");
+    const updateMobile = () => setIsMobile(mql.matches);
+    updateMobile();
+    mql.addEventListener("change", updateMobile);
+    return () => mql.removeEventListener("change", updateMobile);
+  }, []);
+
   const handleClick = useCallback(
     (e: PointerEvent) => {
-      // Only primary mouse button or touch/pen
-      if (e.button !== 0 && e.pointerType === "mouse") return;
-      if (reducedMotion) return;
+      // Exclude touch taps and non-primary mouse clicks
+      if (e.pointerType === "touch" || (e.button !== 0 && e.pointerType === "mouse")) return;
+      if (reducedMotion || isMobile) return;
+      if (typeof window !== "undefined" && window.innerWidth < 768) return;
 
       const x = e.clientX;
       const y = e.clientY;
@@ -56,7 +66,7 @@ export function CursorClickEffect() {
 
       setBursts((prev) => [...prev.slice(-15), newBurst]);
     },
-    [reducedMotion]
+    [reducedMotion, isMobile]
   );
 
   const removeBurst = useCallback((id: string) => {
@@ -64,13 +74,14 @@ export function CursorClickEffect() {
   }, []);
 
   useEffect(() => {
+    if (isMobile) return;
     window.addEventListener("pointerdown", handleClick, { passive: true });
     return () => {
       window.removeEventListener("pointerdown", handleClick);
     };
-  }, [handleClick]);
+  }, [handleClick, isMobile]);
 
-  if (reducedMotion || bursts.length === 0) {
+  if (reducedMotion || isMobile || bursts.length === 0) {
     return null;
   }
 

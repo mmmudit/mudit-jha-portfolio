@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { RotateCcw, Mail } from "lucide-react";
 import clsx from "clsx";
@@ -20,11 +20,21 @@ export function DynamicIslandNav() {
   const { activeNotification, resolveNotification } = useNotification();
   const { triggerSoftReload } = useSoftReload();
   const reduce = useReducedMotion();
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const mql = window.matchMedia("(max-width: 767px)");
+    const onChange = () => setIsMobile(mql.matches);
+    onChange();
+    mql.addEventListener("change", onChange);
+    return () => mql.removeEventListener("change", onChange);
+  }, []);
 
   const isNotificationActive = Boolean(activeNotification);
 
   const { pullProgress, isRefreshing, isGooActive } = useScrollUpRefreshGesture({
-    enabled: !isNotificationActive && !isPlayPage,
+    enabled: !isMobile && !isNotificationActive && !isPlayPage,
+    disableOnMobile: true,
     onRefresh: () => {
       triggerSoftReload(1600);
     },
@@ -61,8 +71,8 @@ export function DynamicIslandNav() {
       }
       className="relative flex flex-col items-center justify-center overflow-visible"
     >
-      {/* Background Goo Layer: emerges and detaches BELOW the nav bar */}
-      {isGooActive && (
+      {/* Background Goo Layer: emerges and detaches BELOW the nav bar (Desktop only) */}
+      {!isMobile && isGooActive && (
         <div className="absolute top-0 z-0 pointer-events-none overflow-visible flex items-center justify-center">
           <DynamicIslandGooLoader
             progress={pullProgress}
