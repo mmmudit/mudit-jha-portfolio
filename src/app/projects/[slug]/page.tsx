@@ -65,7 +65,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
   }
 
   return (
-    <main className="min-h-screen">
+    <main id="main-content" className="min-h-screen" tabIndex={-1}>
       <div className="flex w-full flex-col gap-12">
         <ExpandedProjectView
           project={project}

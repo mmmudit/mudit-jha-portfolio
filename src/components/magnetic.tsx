@@ -16,14 +16,14 @@ export function Magnetic({
   intensity = 0.35,
   range = 100,
 }: MagneticProps) {
-  const ref = useRef<HTMLDivElement>(null);
+  const ref = useRef<HTMLSpanElement>(null);
   const reduce = useReducedMotion();
 
   const springConfig = { stiffness: 350, damping: 18, mass: 0.5 };
   const x = useSpring(0, springConfig);
   const y = useSpring(0, springConfig);
 
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+  const handleMouseMove = (e: React.MouseEvent<HTMLSpanElement>) => {
     if (!ref.current || reduce) return;
     const { left, top, width, height } = ref.current.getBoundingClientRect();
     const centerX = left + width / 2;
@@ -47,11 +47,11 @@ export function Magnetic({
   };
 
   if (reduce) {
-    return <div className={className}>{children}</div>;
+    return <span className={`inline-block ${className}`}>{children}</span>;
   }
 
   return (
-    <motion.div
+    <motion.span
       ref={ref}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
@@ -59,7 +59,7 @@ export function Magnetic({
       className={`inline-block will-change-transform ${className}`}
     >
       {children}
-    </motion.div>
+    </motion.span>
   );
 }
 

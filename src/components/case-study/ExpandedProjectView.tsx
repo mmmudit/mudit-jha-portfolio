@@ -290,7 +290,7 @@ export function ExpandedProjectView({
                       title={`${title} [${idx + 1}]`}
                       aria-label={`Switch to ${title}`}
                       aria-current={isActive ? "true" : undefined}
-                      className={`relative size-5 sm:size-[26px] rounded-full overflow-hidden border-[1.5px] transition-all duration-200 ease-out cursor-pointer ${
+                      className={`relative size-5 sm:size-[26px] rounded-full overflow-hidden border-[1.5px] transition-[filter,opacity,border-color,box-shadow,transform] duration-200 ease-out cursor-pointer ${
                         isActive
                           ? "grayscale-0 opacity-100 border-[#c8d5bb] ring-2 ring-[#c8d5bb] scale-105 z-20 shadow-xs bg-white"
                           : "grayscale opacity-45 border-white bg-zinc-100 hover:grayscale-0 hover:opacity-100 hover:scale-115 hover:z-30"

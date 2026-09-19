@@ -25,7 +25,7 @@ export default function Loading() {
   }, []);
 
   const content = (
-    <main aria-busy="true" aria-live="polite" className="fixed inset-0 w-screen h-[100dvh] z-0 overflow-hidden bg-[#fbfaf5] select-none dark:bg-zinc-950">
+    <main id="main-content" aria-busy="true" aria-live="polite" className="fixed inset-0 w-screen h-[100dvh] z-0 overflow-hidden bg-dough select-none" tabIndex={-1}>
       <span className="sr-only">Loading playground</span>
 
       <div aria-hidden="true" className="absolute left-1/2 top-20 z-10 -translate-x-1/2 rounded-full border border-zinc-300/80 bg-[#fbfaf5]/90 px-4 py-2 shadow-sm dark:border-zinc-700 dark:bg-zinc-900/90">

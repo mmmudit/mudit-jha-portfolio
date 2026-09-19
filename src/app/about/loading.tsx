@@ -16,7 +16,7 @@ function CarouselSkeleton({ cardClassName }: { cardClassName: string }) {
 
 export default function Loading() {
   return (
-    <main aria-busy="true" aria-live="polite" className="min-h-screen">
+    <main id="main-content" aria-busy="true" aria-live="polite" className="min-h-screen" tabIndex={-1}>
       <span className="sr-only">Loading about page</span>
 
       <section aria-hidden="true" className="grid grid-cols-1 gap-8 pb-10 pt-28 sm:pb-20 sm:pt-36 lg:grid-cols-12 lg:gap-12">

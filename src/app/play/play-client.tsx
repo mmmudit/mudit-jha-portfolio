@@ -147,7 +147,7 @@ export function PlayPageClient({
   const handleCardClick = (item: DragCanvasItem) => {
     play("bloom", { volume: 0.35 });
     if (item.href) {
-      window.open(item.href, "_blank");
+      window.open(item.href, "_blank", "noopener,noreferrer");
     }
   };
 
@@ -156,9 +156,10 @@ export function PlayPageClient({
   // ─────────────────────────────────────────────────────────────
   const canvasElement = portalContainer && viewMode === "canvas"
     ? createPortal(
-      <div
-        className="fixed inset-0 w-screen h-[100dvh] z-0 overflow-hidden select-none bg-[#fbfaf5]"
-        id="play-canvas-portal"
+      <main
+        id="main-content"
+        tabIndex={-1}
+        className="fixed inset-0 z-0 h-[100dvh] w-screen select-none overflow-hidden bg-dough"
       >
         <DragCanvas
           items={items}
@@ -182,7 +183,7 @@ export function PlayPageClient({
           }
           onItemClick={handleCardClick}
         />
-      </div>,
+      </main>,
       portalContainer
     )
     : null;
@@ -196,7 +197,7 @@ export function PlayPageClient({
           2. GALLERY GRID VIEW (Responsive 1/2/3-column view)
          ───────────────────────────────────────────────────────────── */}
       {viewMode === "grid" && (
-        <div className="w-full min-h-screen pb-28 pt-4">
+        <main id="main-content" className="min-h-screen w-full pb-28 pt-4" tabIndex={-1}>
           {/* Header Block */}
           <div className="flex flex-col items-center justify-center text-center max-w-xl mx-auto mb-10 px-2">
             {/* Interactive Eye Logo */}
@@ -248,7 +249,7 @@ export function PlayPageClient({
               </div>
             ))}
           </div>
-        </div>
+        </main>
       )}
     </>
   );

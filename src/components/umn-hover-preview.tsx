@@ -51,7 +51,7 @@ export function UmnHoverPreview() {
               href="https://twin-cities.umn.edu"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center px-1.5 py-0.5 rounded-md font-mono text-[0.88em] font-semibold text-amber-800 dark:text-amber-300 bg-amber-500/10 dark:bg-amber-400/10 hover:bg-amber-500/20 dark:hover:bg-amber-400/20 hover:scale-[1.04] active:scale-[0.98] transition-all duration-150 cursor-pointer select-none"
+              className="inline-flex items-center rounded-md bg-amber-500/10 px-1.5 py-0.5 font-mono text-[0.88em] font-semibold text-amber-800 transition-[color,background-color,transform] duration-150 [@media(hover:hover)]:hover:scale-[1.04] [@media(hover:hover)]:hover:bg-amber-500/20 active:scale-[0.98] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-700 dark:bg-amber-400/10 dark:text-amber-300 dark:[@media(hover:hover)]:hover:bg-amber-400/20"
             >
               <span>@UMN</span>
             </a>

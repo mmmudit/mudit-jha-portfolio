@@ -587,6 +587,7 @@ export function DragCanvas({
                   <CanvasImageCard
                     key={item.id}
                     item={item}
+                    priority={idx < 3}
                     onItemClick={handleCardInspect}
                   />
                 );
@@ -609,6 +610,7 @@ export function DragCanvas({
                 <CanvasImageCard
                   key={item.id}
                   item={computedItem}
+                  priority={idx < 3}
                   onItemClick={handleCardInspect}
                 />
               );
@@ -662,9 +664,11 @@ function parseAspectString(aspectStr?: string): number | undefined {
 // Individual Scattered Mood-board Card Component
 function CanvasImageCard({
   item,
+  priority = false,
   onItemClick,
 }: {
   item: DragCanvasItem;
+  priority?: boolean;
   onItemClick?: (item: DragCanvasItem) => void;
 }) {
   const [isHovered, setIsHovered] = useState(false);
@@ -746,7 +750,7 @@ function CanvasImageCard({
         }}
         className="group select-none cursor-pointer will-change-transform"
       >
-        <div className="relative rounded-2xl bg-[#fbf8f1] p-5 border border-[#e8e2d4] shadow-xs group-hover:shadow-lg transition-all">
+        <div className="relative rounded-2xl border border-[#e8e2d4] bg-[#fbf8f1] p-5 shadow-xs transition-shadow duration-250 [@media(hover:hover)]:group-hover:shadow-lg">
           <div className="flex items-center justify-between mb-3">
             <div className="inline-flex items-center gap-1.5 font-mono text-[10px] font-semibold uppercase tracking-wider text-amber-900 bg-amber-100/90 px-3 py-1 rounded-full border border-amber-200 shadow-2xs">
               <Sparkles className="size-3 text-amber-700" />
@@ -823,6 +827,7 @@ function CanvasImageCard({
               src={item.imageSrc}
               alt={item.title}
               fill
+              priority={priority}
               sizes="(max-width: 768px) 300px, 460px"
               draggable={false}
               onLoad={(e) => {

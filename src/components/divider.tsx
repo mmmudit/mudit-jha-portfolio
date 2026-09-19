@@ -3,5 +3,5 @@ type DividerProps = {
 };
 
 export function Divider({ className = "" }: DividerProps) {
-  return <div className={`gradient-divider h-px w-full ${className}`} />;
+  return <div aria-hidden="true" className={`gradient-divider h-px w-full ${className}`} />;
 }

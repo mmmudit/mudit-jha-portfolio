@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { Divider } from "@/components/divider";
 import { Footer } from "@/components/footer";
 import { AboutHeroSection } from "@/components/about-hero-section";
@@ -10,9 +11,15 @@ import { MobileScrollReveal } from "@/components/mobile-scroll-reveal";
 
 export const revalidate = 0;
 
+export const metadata: Metadata = {
+  title: "About Mudit Jha — Design Engineer",
+  description:
+    "Mudit Jha is a design engineer exploring tactile interfaces, spatial computing, and thoughtful software.",
+};
+
 export default function AboutPage() {
   return (
-    <main className="min-h-screen">
+    <main id="main-content" className="min-h-screen" tabIndex={-1}>
       {/* Gentle Magnetic Auto-Centering for Sections */}
       <MagneticScroll selector="[data-magnetic-section]" />
 

@@ -76,19 +76,49 @@ body {
 }
 
 body {
-  background: linear-gradient(180deg, oklch(0.985 0.007 95.8) 71.63%, oklch(0.908 0.010 137.2) 100%);
+  background-color: var(--background);
   color: var(--foreground);
   font-family: var(--font-geist-sans), system-ui, sans-serif;
-  /* Soft warm paper finish */
-  background-image: radial-gradient(rgba(0, 0, 0, 0.015) 1px, transparent 1px);
-  background-size: 16px 16px;
-  transition: background 0.7s cubic-bezier(0.23, 1, 0.32, 1), color 0.7s cubic-bezier(0.23, 1, 0.32, 1);
+  /* Warm paper finish: the texture sits above the page tint instead of replacing it. */
+  background-image:
+    radial-gradient(rgba(0, 0, 0, 0.015) 1px, transparent 1px),
+    linear-gradient(180deg, var(--dough) 72%, color-mix(in oklch, var(--dough) 88%, var(--willow-grey)) 100%);
+  background-size: 16px 16px, 100% 100%;
+  background-repeat: repeat, no-repeat;
+  background-attachment: local, fixed;
+  transition:
+    background-color var(--duration-fast) var(--ease-smooth-out),
+    color var(--duration-fast) var(--ease-smooth-out);
 }
 
 html.dark body {
-  background: #090b10;
+  background-color: var(--background);
   color: #f4f4f5;
-  background-image: radial-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+  background-image:
+    radial-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+    linear-gradient(180deg, var(--background) 70%, var(--dough) 100%);
+  background-size: 16px 16px, 100% 100%;
+}
+
+.skip-link {
+  position: fixed;
+  inset-block-start: calc(0.75rem + env(safe-area-inset-top, 0px));
+  inset-inline-start: 1rem;
+  z-index: 1000000;
+  transform: translateY(-160%);
+  border-radius: 999px;
+  background: var(--button-primary);
+  color: var(--dough);
+  padding: 0.65rem 1rem;
+  font: 600 0.8125rem/1 var(--font-geist-sans), system-ui, sans-serif;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.14);
+  transition: transform var(--duration-quick) var(--ease-smooth-out);
+}
+
+.skip-link:focus-visible {
+  transform: translateY(0);
+  outline: 2px solid var(--willow-grey);
+  outline-offset: 3px;
 }
 
 /* Paper Card Utility: Tactile layered shadows & subtle edge stroke */

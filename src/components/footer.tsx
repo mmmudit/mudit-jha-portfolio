@@ -60,10 +60,10 @@ function FooterSparklingStars() {
         id: i,
         x: Math.floor(r1 * 96) + 2,
         y: Math.floor(r2 * 90) + 5,
-        size: 1 + r3 * 2.2,
-        opacity: 0.35 + r3 * 0.6,
-        duration: 2.5 + r1 * 3.5,
-        delay: r2 * 2.5,
+        size: Number((1 + r3 * 2.2).toFixed(3)),
+        opacity: Number((0.35 + r3 * 0.6).toFixed(3)),
+        duration: Number((2.5 + r1 * 3.5).toFixed(3)),
+        delay: Number((r2 * 2.5).toFixed(3)),
       });
     }
     return list;
@@ -117,7 +117,8 @@ function getLatestDeploymentDate(): string {
     process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_DATE;
 
   try {
-    const d = rawDate ? new Date(rawDate) : new Date();
+    if (!rawDate) return "09-13-2026";
+    const d = new Date(rawDate);
     if (isNaN(d.getTime())) {
       return "09-03-2026";
     }

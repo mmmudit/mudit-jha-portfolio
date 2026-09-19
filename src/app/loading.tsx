@@ -14,7 +14,7 @@ function ProjectCardSkeleton() {
 
 export default function Loading() {
   return (
-    <main aria-busy="true" aria-live="polite" className="min-h-screen">
+    <main id="main-content" aria-busy="true" aria-live="polite" className="min-h-screen" tabIndex={-1}>
       <span className="sr-only">Loading portfolio</span>
 
       <section aria-hidden="true" className="mt-14 flex flex-col items-start justify-between gap-8 sm:mt-24 md:mt-40 md:flex-row md:items-center md:gap-10">

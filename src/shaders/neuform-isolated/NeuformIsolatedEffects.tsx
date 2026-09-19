@@ -1906,7 +1906,6 @@ function NeuformIsolatedEffect({
       srcDoc={source}
       sandbox="allow-scripts"
       loading="eager"
-      allowTransparency={true}
       style={{
         display: "block",
         width: "100%",

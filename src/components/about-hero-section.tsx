@@ -49,19 +49,19 @@ function ScrollWord({
   const opacity = useTransform(progress, range, [0, 1]);
 
   if (reduce) {
-    return <span className="inline-block mr-[0.28em] text-zinc-700 font-medium">{word}</span>;
+    return <span className="mr-[0.28em] inline-block font-medium text-foreground">{word}</span>;
   }
 
   return (
     <span className="relative inline-block mr-[0.28em]">
       {/* Lightened, subtle unfilled ghost text */}
-      <span className="text-zinc-400/30 select-none">
+      <span className="select-none text-button-secondary">
         {word}
       </span>
       {/* Refined filled charcoal text (harmonious with page hierarchy) */}
       <motion.span
         style={{ opacity }}
-        className="absolute inset-0 text-zinc-700 font-medium will-change-[opacity]"
+        className="absolute inset-0 font-medium text-foreground will-change-[opacity]"
         aria-hidden="true"
       >
         {word}
@@ -223,17 +223,26 @@ export function AboutHeroSection() {
               className="flex flex-wrap items-baseline gap-3.5 sm:gap-4"
             >
               <h1
-                data-cuelume-hover="ready"
-                data-cuelume-press
-                data-cuelume-release
                 ref={headingRef}
-                onClick={() => setIsHeadingNear((prev) => !prev)}
-                aria-label="Mudit Jha (pronounced MOO-dit JHAH)"
-                className="font-display text-[38px] sm:text-[48px] font-semibold tracking-[-0.5px] text-zinc-900 leading-none cursor-pointer sm:cursor-default text-balance select-none"
+                aria-label="Mudit Jha"
+                className="text-balance font-display text-[38px] font-semibold leading-none tracking-[-0.5px] text-zinc-900 sm:text-[48px]"
               >
-                mudit jha
+                <button
+                  type="button"
+                  data-cuelume-hover="ready"
+                  data-cuelume-press
+                  data-cuelume-release
+                  onClick={() => setIsHeadingNear((prev) => !prev)}
+                  aria-label="Hear how to pronounce Mudit Jha"
+                  aria-expanded={isHeadingNear}
+                  aria-controls="name-pronunciation"
+                  className="cursor-pointer select-none rounded-md text-left focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-zinc-700 sm:cursor-default"
+                >
+                  mudit jha
+                </button>
               </h1>
               <motion.span
+                id="name-pronunciation"
                 animate={
                   reduce
                     ? { opacity: isHeadingNear ? 1 : 0 }

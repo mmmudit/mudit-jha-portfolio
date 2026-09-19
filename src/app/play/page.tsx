@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { type DragCanvasItem } from "@/components/DragCanvas";
 import { getPlaygroundItems, PLAYGROUND_CONFIG_ITEMS } from "@/data/playgroundItems";
 import { client } from "@/sanity/client";
@@ -6,6 +7,12 @@ import { PlayPageClient } from "./play-client";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
+
+export const metadata: Metadata = {
+  title: "Playground — Mudit Jha",
+  description:
+    "Unpublished interaction experiments, spatial interface prototypes, video studies, and real-time shaders by Mudit Jha.",
+};
 
 // Natural scatter fallback positions around canvas center (1500, 1000)
 const SCATTER_POSITIONS = [

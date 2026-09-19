@@ -18,6 +18,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   // Standard portfolio layout with framed max-width, side gutters, header, and page transitions
   return (
     <LayoutGroup id="global-eye-transition">
+      <a href="#main-content" className="skip-link">
+        Skip to content
+      </a>
       <div className="sticky top-0 z-50 w-full px-6 pt-[calc(1rem+env(safe-area-inset-top,0px))] sm:px-14 sm:pt-[calc(1.5rem+env(safe-area-inset-top,0px))] pointer-events-none">
         <Header />
       </div>

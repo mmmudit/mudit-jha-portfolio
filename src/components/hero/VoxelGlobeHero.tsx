@@ -375,11 +375,13 @@ export function VoxelGlobeHero({
     motionQuery.addEventListener("change", handleMotionChange);
 
     let animationFrameId: number;
-    let clock = new THREE.Clock();
+    const timer = new THREE.Timer();
+    timer.connect(document);
 
     const animate = () => {
       animationFrameId = requestAnimationFrame(animate);
-      const elapsedTime = clock.getElapsedTime();
+      timer.update();
+      const elapsedTime = timer.getElapsed();
 
       // ACCESSIBILITY: IF REDUCED MOTION IS PREFERRED, FREEZE UNNECESSARY SPIN & PARALLAX
       if (prefersReduced) {
@@ -478,6 +480,7 @@ export function VoxelGlobeHero({
 
     return () => {
       cancelAnimationFrame(animationFrameId);
+      timer.dispose();
       motionQuery.removeEventListener("change", handleMotionChange);
       window.removeEventListener("resize", handleResize);
       domEl.removeEventListener("mousedown", onMouseDown);

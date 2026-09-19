@@ -63,7 +63,7 @@ export default function RootLayout({
       suppressHydrationWarning
       className={`${geistSans.variable} ${GeistPixelSquare.variable} ${delightFont.variable} ${myFont.variable} h-full antialiased`}
     >
-      <body className="min-h-full text-zinc-800 relative">
+      <body className="relative min-h-full text-foreground">
         <IntroLoader>
           <ZeroGravityProvider>
             <NotificationProvider>

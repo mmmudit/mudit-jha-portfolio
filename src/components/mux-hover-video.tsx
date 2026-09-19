@@ -29,9 +29,12 @@ export function MuxHoverVideo({
   const [hasStartedPlaying, setHasStartedPlaying] = useState(false);
   const prefersReducedMotion = useReducedMotion();
 
+  const normalizedThumbTime =
+    typeof thumbTime === "number" && Number.isFinite(thumbTime) ? thumbTime : 0;
+
   // Compute Mux high-res thumbnail URL if playbackId is present
   const muxThumbnailUrl = playbackId
-    ? `https://image.mux.com/${playbackId}/thumbnail.webp?time=${thumbTime}&width=1200&fit_mode=smartcrop`
+    ? `https://image.mux.com/${playbackId}/thumbnail.webp?time=${normalizedThumbTime}&width=1200&fit_mode=smartcrop`
     : undefined;
 
   const displayImage = posterImage || muxThumbnailUrl;
