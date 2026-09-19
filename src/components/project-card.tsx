@@ -142,6 +142,7 @@ export const ProjectCard = React.forwardRef<HTMLDivElement, ProjectCardProps>(fu
         >
           {/* Aspect Ratio Media Container with Hover Scale */}
           <div
+            data-project-card-media
             className="content-stretch flex flex-col items-start justify-end overflow-hidden relative rounded-[26px] shrink-0 w-full transition-transform duration-200 [@media(hover:hover)]:group-hover:scale-[0.99] group-focus-visible:scale-[0.99] active:scale-[0.96] motion-reduce:transition-none motion-reduce:transform-none"
             style={{ transitionTimingFunction: "cubic-bezier(0.23, 1, 0.32, 1)" }}
           >

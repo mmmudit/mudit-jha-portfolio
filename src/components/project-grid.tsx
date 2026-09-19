@@ -121,7 +121,9 @@ export function ProjectGrid({ projects }: ProjectGridProps) {
         target: activeCard.target,
       });
     } else if (el) {
-      const r = el.getBoundingClientRect();
+      const media = el.querySelector<HTMLElement>("[data-project-card-media]") || el;
+      const r = media.getBoundingClientRect();
+      const previewImage = media.querySelector<HTMLImageElement>("img")?.currentSrc;
       const origin = {
         top: r.top,
         left: r.left,
@@ -129,7 +131,7 @@ export function ProjectGrid({ projects }: ProjectGridProps) {
         height: r.height,
       };
       play("bloom", { volume: 0.45 });
-      setActiveCard({ project, origin, target });
+      setActiveCard({ project, origin, target, previewImage });
     } else {
       play("bloom", { volume: 0.45 });
       setActiveCard({
@@ -343,7 +345,7 @@ export function ProjectGrid({ projects }: ProjectGridProps) {
 
       <CursorPill ref={cursorPillRef} />
 
-      {/* 3D Slow & Savory Weighted Horizon Morph Overlay */}
+      {/* Project detail overlay */}
       <ProjectModal
         activeCard={activeCard}
         projects={projects}

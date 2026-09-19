@@ -13,7 +13,6 @@ import {
 } from "framer-motion";
 import { ExternalLink, ChevronLeft, ChevronRight, X } from "lucide-react";
 import { play } from "@/lib/sound";
-import { ProjectCard } from "./project-card";
 import { CaseStudyRenderer } from "./case-study/CaseStudyRenderer";
 import type { Project } from "@/types/project";
 
@@ -30,6 +29,7 @@ export interface ActiveProjectCardState {
   project: ProjectData;
   origin: CardRect;
   target: CardRect;
+  previewImage?: string;
 }
 
 export type ProjectModalProps = {
@@ -52,7 +52,8 @@ const DEFAULT_SECTIONS = [
   { id: "sec-reflection", label: "Reflection" },
 ];
 
-const CINEMATIC_GENTLE_EASE = [0.19, 1, 0.22, 1] as [number, number, number, number];
+const MODAL_EASE = [0.19, 1, 0.22, 1] as [number, number, number, number];
+const OPEN_DURATION = 0.28;
 
 export function ProjectModal({
   project: fallbackProject,
@@ -65,7 +66,7 @@ export function ProjectModal({
   currentIndex = 0,
 }: ProjectModalProps) {
   const [mounted, setMounted] = useState(false);
-  const [isFlipped, setIsFlipped] = useState(false);
+  const [isOpening, setIsOpening] = useState(true);
   const [isClosing, setIsClosing] = useState(false);
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [viewportSize, setViewportSize] = useState({
@@ -165,10 +166,12 @@ export function ProjectModal({
     setMounted(true);
   }, []);
 
-  // Handle open / lock scrolling
+  const isOpen = Boolean(activeCard);
+
+  // Keep the scroll lock and focus stable when switching projects.
   useEffect(() => {
-    if (!activeCard) {
-      setIsFlipped(false);
+    if (!isOpen) {
+      setIsOpening(true);
       setIsClosing(false);
       setIsFullScreen(false);
       return;
@@ -178,20 +181,16 @@ export function ProjectModal({
     document.documentElement.style.overflow = "hidden";
 
     setIsClosing(false);
-    const frame = requestAnimationFrame(() => {
-      setIsFlipped(true);
-    });
-
     const focusTimer = setTimeout(() => {
-      closeButtonRef.current?.focus();
-    }, 120);
+      setIsOpening(false);
+      closeButtonRef.current?.focus({ preventScroll: true });
+    }, prefersReducedMotion ? 0 : OPEN_DURATION * 1000);
 
     return () => {
-      cancelAnimationFrame(frame);
       clearTimeout(focusTimer);
       document.documentElement.style.overflow = originalOverflow;
     };
-  }, [activeCard]);
+  }, [isOpen, prefersReducedMotion]);
 
   // Clean scroll position & section reset when switching projects
   const activeProjectId = activeCard?.project?._id || activeCard?.project?.id || activeCard?.project?.slug || activeCard?.project?.title;
@@ -205,9 +204,13 @@ export function ProjectModal({
 
   const handleClose = useCallback(() => {
     if (isClosing) return;
+    if (prefersReducedMotion) {
+      onClose();
+      return;
+    }
     setIsClosing(true);
     play("droplet", { volume: 0.45 });
-  }, [isClosing]);
+  }, [isClosing, onClose, prefersReducedMotion]);
 
   const handleAnimationComplete = useCallback(() => {
     if (isClosing) {
@@ -419,7 +422,7 @@ export function ProjectModal({
 
   if (!mounted || !activeCard) return null;
 
-  const { project, origin, target } = activeCard;
+  const { project, origin, previewImage } = activeCard;
 
   // Dynamic responsive target recalibrated on viewport resize with expansive reading dimensions
   const dynamicTarget = {
@@ -431,41 +434,17 @@ export function ProjectModal({
 
   const currentTarget = isFullScreen
     ? { top: 0, left: 0, width: viewportSize.width, height: viewportSize.height }
-    : (isFlipped ? dynamicTarget : target);
+    : dynamicTarget;
 
-  // Keep direct manipulation responsive: opening settles quickly and dismissal clears immediately.
-  const openDuration = 0.28;
-  const closeDuration = 0.2;
-
-  const openTransition = {
-    duration: openDuration,
-    ease: CINEMATIC_GENTLE_EASE,
+  const openDuration = prefersReducedMotion ? 0 : OPEN_DURATION;
+  const closeDuration = prefersReducedMotion ? 0 : 0.2;
+  const modalTransition = {
+    duration: isClosing ? closeDuration : openDuration,
+    ease: MODAL_EASE,
   };
-
-  const closeTransition = {
-    duration: closeDuration,
-    ease: "easeIn" as const,
-  };
-
-  const springResizeTransition = {
-    type: "spring" as const,
-    stiffness: 380,
-    damping: 32,
-    mass: 0.8,
-  };
-
-  const modalAnimationTransition = isClosing
-    ? closeTransition
-    : isFlipped
-      ? {
-          top: springResizeTransition,
-          left: springResizeTransition,
-          width: springResizeTransition,
-          height: springResizeTransition,
-          opacity: { duration: 0.25, ease: CINEMATIC_GENTLE_EASE },
-          default: openTransition,
-        }
-      : openTransition;
+  // Lay out the case study once at its final size; only composite its trajectory.
+  const originTransform = `translate3d(${origin.left - currentTarget.left}px, ${origin.top - currentTarget.top}px, 0) scale(${origin.width / currentTarget.width}, ${origin.height / currentTarget.height})`;
+  const restingTransform = "translate3d(0px, 0px, 0) scale(1, 1)";
 
   return createPortal(
     <div
@@ -478,88 +457,35 @@ export function ProjectModal({
     >
       {/* Backdrop Dimmer (Subtly lowers background opacity, 0 blur filters) */}
       <motion.div
-        initial={{ opacity: 0 }}
+        initial={prefersReducedMotion ? false : { opacity: 0 }}
         animate={{ opacity: isClosing ? 0 : 1 }}
-        transition={isClosing ? { duration: closeDuration, ease: "easeIn" } : { duration: openDuration * 0.7, ease: CINEMATIC_GENTLE_EASE }}
+        transition={modalTransition}
         onClick={handleClose}
         className="fixed inset-0 bg-black/15 cursor-pointer"
         aria-hidden="true"
       />
 
-      {/* Pure Numeric Trajectory Container */}
-      <div
-        style={{ perspective: prefersReducedMotion ? "none" : "1400px" }}
-        className="fixed inset-0 pointer-events-none"
-      >
+      <div className="fixed inset-0 pointer-events-none">
         <motion.div
           ref={modalRef}
           role="dialog"
           aria-modal="true"
           aria-labelledby="modal-project-title"
-          initial={
-            prefersReducedMotion
-              ? {
-                top: currentTarget.top,
-                left: currentTarget.left,
-                width: currentTarget.width,
-                height: currentTarget.height,
-                opacity: 0,
-                scale: 0.96,
-                position: "fixed",
-              }
-              : {
-                top: origin.top,
-                left: origin.left,
-                width: origin.width,
-                height: origin.height,
-                opacity: 1,
-                scale: 1,
-                position: "fixed",
-              }
-          }
-          animate={
-            isClosing
-              ? {
-                top: currentTarget.top,
-                left: currentTarget.left,
-                width: currentTarget.width,
-                height: currentTarget.height,
-                opacity: 0,
-                scale: 0.90,
-                position: "fixed",
-              }
-              : prefersReducedMotion
-                ? {
-                  top: currentTarget.top,
-                  left: currentTarget.left,
-                  width: currentTarget.width,
-                  height: currentTarget.height,
-                  opacity: isFlipped ? 1 : 0,
-                  scale: isFlipped ? 1 : 0.96,
-                  position: "fixed",
-                }
-                : {
-                  top: isFlipped ? currentTarget.top : origin.top,
-                  left: isFlipped ? currentTarget.left : origin.left,
-                  width: isFlipped ? currentTarget.width : origin.width,
-                  height: isFlipped ? currentTarget.height : origin.height,
-                  opacity: 1,
-                  scale: 1,
-                  position: "fixed",
-                }
-          }
-          transition={modalAnimationTransition}
-          onAnimationComplete={handleAnimationComplete}
-          drag={isFullScreen ? false : "x"}
-          dragDirectionLock
-          dragConstraints={{ left: 0, right: 0 }}
-          dragElastic={0.65}
-          onDragEnd={handleDragEnd}
-          style={{
-            x: dragX,
-            rotate: dragRotate,
+          initial={prefersReducedMotion ? false : { transform: originTransform, opacity: 1 }}
+          animate={{
+            ...currentTarget,
+            transform: isClosing ? "translate3d(0px, 8px, 0) scale(0.98, 0.98)" : restingTransform,
+            opacity: isClosing ? 0 : 1,
           }}
-          className="pointer-events-auto relative will-change-transform"
+          transition={modalTransition}
+          onAnimationComplete={handleAnimationComplete}
+          style={{
+            position: "fixed",
+            ...currentTarget,
+            transformOrigin: "top left",
+            willChange: isOpening || isClosing ? "transform, opacity" : undefined,
+          }}
+          className="pointer-events-auto"
         >
           {/* Left / Prev Swipe Floating Indicator (Tinder Style) */}
           <motion.div
@@ -578,79 +504,31 @@ export function ProjectModal({
             <span>Next</span>
             <ChevronRight className="size-4 text-emerald-400" />
           </motion.div>
-          {/* Inner 3D Flipper (Slow & Savory Horizon Flip) */}
           <motion.div
-            initial={{ rotateY: 0 }}
-            animate={{
-              rotateY: prefersReducedMotion
-                ? 0
-                : isClosing
-                  ? 0
-                  : isFlipped
-                    ? 180
-                    : 0,
-            }}
-            transition={isClosing ? closeTransition : openTransition}
-            style={{
-              transformStyle: prefersReducedMotion ? "flat" : "preserve-3d",
-              willChange: "transform",
-            }}
-            className="w-full h-full relative"
+            drag={isFullScreen || isOpening || isClosing || prefersReducedMotion ? false : "x"}
+            dragDirectionLock
+            dragConstraints={{ left: 0, right: 0 }}
+            dragElastic={0.65}
+            onDragEnd={handleDragEnd}
+            style={{ x: dragX, rotate: dragRotate }}
+            className={`w-full h-full relative bg-[#fbfaf5] ${isFullScreen ? "rounded-none" : "rounded-[22px] sm:rounded-[28px]"}`}
           >
-            {/* FRONT FACE (exact ProjectCard design, 0 blur) */}
+            {isOpening && !prefersReducedMotion && previewImage && (
+              <motion.div
+                aria-hidden="true"
+                initial={{ opacity: 1 }}
+                animate={{ opacity: 0 }}
+                transition={{ duration: openDuration, ease: MODAL_EASE }}
+                className="absolute inset-0 z-30 overflow-hidden rounded-[26px] pointer-events-none"
+              >
+                <Image src={previewImage} alt="" fill unoptimized loading="eager" className="object-fill" />
+              </motion.div>
+            )}
             <motion.div
-              initial={{ opacity: 1 }}
-              animate={{
-                opacity: isFlipped ? 0 : 1,
-              }}
-              transition={{
-                duration: prefersReducedMotion ? 0.2 : openDuration * 0.38,
-                delay: prefersReducedMotion ? 0 : isFlipped ? openDuration * 0.08 : 0,
-                ease: CINEMATIC_GENTLE_EASE,
-              }}
-              style={{
-                backfaceVisibility: "hidden",
-                WebkitBackfaceVisibility: "hidden",
-                pointerEvents: isFlipped ? "none" : "auto",
-              }}
-              className="absolute inset-0 w-full h-full rounded-[28px] overflow-hidden bg-[#fbfaf5]"
-            >
-              <ProjectCard
-                title={project.title}
-                year={project.year}
-                description={project.description}
-                image={project.image}
-                muxPlaybackId={project.muxPlaybackId || project.muxVideo?.playbackId}
-                muxThumbTime={project.muxThumbTime ?? project.muxVideo?.thumbTime}
-                gradient={project.gradient}
-                href={project.href}
-                actionText={project.actionText}
-              />
-
-              {/* Specular Light Reflection Sweep on Flip */}
-              {!prefersReducedMotion && (
-                <motion.div
-                  initial={{ opacity: 0, x: "-100%" }}
-                  animate={{
-                    opacity: isFlipped ? 0 : [0, 0.45, 0],
-                    x: isFlipped ? "-100%" : ["-100%", "200%"],
-                  }}
-                  transition={{ duration: openDuration * 0.75, ease: CINEMATIC_GENTLE_EASE }}
-                  className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent pointer-events-none z-30 rounded-[28px]"
-                />
-              )}
-            </motion.div>
-
-            {/* BACK FACE (100% Crisp Canonical Case Study Modal) */}
-            <div
-              style={{
-                backfaceVisibility: "hidden",
-                WebkitBackfaceVisibility: "hidden",
-                transform: prefersReducedMotion ? "none" : "rotateY(180deg)",
-                pointerEvents: isFlipped ? "auto" : "none",
-              }}
-              className={`absolute inset-0 w-full h-full flex flex-col overflow-hidden select-text transition-[border-radius] duration-500 ease-out ${isFullScreen ? "rounded-none" : "rounded-[22px] sm:rounded-[28px]"
-                }`}
+              initial={prefersReducedMotion ? false : { opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: openDuration, ease: MODAL_EASE }}
+              className={`absolute inset-0 w-full h-full flex flex-col overflow-hidden select-text ${isFullScreen ? "rounded-none" : "rounded-[22px] sm:rounded-[28px]"}`}
             >
               {/* Inner Modal Content Container */}
               <div
@@ -740,7 +618,6 @@ export function ProjectModal({
                   <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
                     {!isFullScreen ? (
                       <button
-                        ref={closeButtonRef}
                         onClick={() => {
                           play("bloom", { volume: 0.45 });
                           setIsFullScreen(true);
@@ -793,6 +670,7 @@ export function ProjectModal({
 
                     <button
                       type="button"
+                      ref={closeButtonRef}
                       onClick={handleClose}
                       data-cuelume-hover="tick"
                       className="pressable p-1.5 sm:p-2 text-zinc-500 hover:text-zinc-900 rounded-full hover:bg-black/5 active:scale-[0.97] transition-[transform,color,background-color] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-400 cursor-pointer"
@@ -1017,31 +895,18 @@ export function ProjectModal({
                 </div>
               </div>
 
-              {/* Specular Light Reflection Sweep on Arrival */}
-              {!prefersReducedMotion && (
-                <motion.div
-                  initial={{ opacity: 0, x: "-100%" }}
-                  animate={{
-                    opacity: isFlipped ? [0, 0.35, 0] : 0,
-                    x: isFlipped ? ["-100%", "200%"] : "-100%",
-                  }}
-                  transition={{ duration: openDuration * 0.85, delay: openDuration * 0.25, ease: CINEMATIC_GENTLE_EASE }}
-                  className={`absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent pointer-events-none z-40 transition-[border-radius] duration-500 ${isFullScreen ? "rounded-none" : "rounded-[28px]"
-                    }`}
-                />
-              )}
-            </div>
+            </motion.div>
           </motion.div>
         </motion.div>
       </div>
 
       {/* Centered Project Navigation Pill Below & Outside Modal */}
-        {isFlipped && !isClosing && projects && projects.length > 1 && (
+        {(!isOpening || prefersReducedMotion) && !isClosing && projects && projects.length > 1 && (
           <motion.div
-            initial={{ opacity: 0, y: 16 }}
+            initial={prefersReducedMotion ? false : { opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 12 }}
-            transition={{ duration: 0.28, delay: 0.12, ease: [0.22, 1, 0.36, 1] }}
+            transition={{ duration: prefersReducedMotion ? 0 : 0.16, ease: MODAL_EASE }}
             onClick={(e) => e.stopPropagation()}
             className="fixed bottom-4 sm:bottom-6 left-1/2 -translate-x-1/2 z-50 pointer-events-auto select-none"
           >
