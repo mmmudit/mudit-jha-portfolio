@@ -15,6 +15,7 @@ import { Hand, Sparkles } from "lucide-react";
 import { play } from "@/lib/sound";
 import { TactileFolderCard } from "@/components/TactileFolderCard";
 import { InteractiveTsuLogo } from "@/components/tsu-logo";
+import { MuditsBlockText } from "@/components/mudits-block-text";
 
 import { PlaygroundCardSize, SIZE_DIMENSIONS } from "@/lib/generateScatterLayout";
 
@@ -297,7 +298,7 @@ export function DragCanvas({
   const ambientX = useSpring(mouseNormX, { stiffness: 120, damping: 22 });
   const ambientY = useSpring(mouseNormY, { stiffness: 120, damping: 22 });
 
-  // Reverse shallow parallax for the background dot grid to create genuine 3D depth
+  // Reverse shallow parallax for the background plus grid to create genuine 3D depth
   const bgNormX = useMotionValue(0);
   const bgNormY = useMotionValue(0);
   const bgAmbientX = useSpring(bgNormX, { stiffness: 90, damping: 24 });
@@ -457,18 +458,6 @@ export function DragCanvas({
       className={`relative w-full overflow-hidden select-none bg-[#fbfaf5] ${isDragging ? "cursor-grabbing" : "cursor-grab"
         } ${className}`}
     >
-      {/* Dynamic 3D Dot Grid with Inverse Parallax Depth */}
-      <motion.div
-        style={{
-          x: bgAmbientX,
-          y: bgAmbientY,
-          backgroundImage:
-            "radial-gradient(circle, rgba(120, 130, 110, 0.45) 1.5px, transparent 1.5px)",
-          backgroundSize: "28px 28px",
-        }}
-        className="absolute -inset-12 pointer-events-none opacity-40 transform-gpu"
-      />
-
       {/* Inner Draggable Canvas with Elastic Physics & 3D Inertia Tilt */}
       <motion.div
         drag={dragAxis === "both" ? true : dragAxis}
@@ -494,6 +483,17 @@ export function DragCanvas({
         }}
         className="relative transform-gpu will-change-transform"
       >
+        {/* Thin Plus Grid Pattern (Moves with Canvas Drag & Tilt) */}
+        <div
+          style={{
+            backgroundImage:
+              "url(\"data:image/svg+xml,%3Csvg width='56' height='56' viewBox='0 0 56 56' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M28 24.5V31.5M24.5 28H31.5' stroke='rgba(120, 130, 110, 0.45)' stroke-width='0.6' stroke-linecap='round'/%3E%3C/svg%3E\")",
+            backgroundSize: "56px 56px",
+          }}
+          className="absolute inset-0 pointer-events-none opacity-40 dark:opacity-25"
+          aria-hidden="true"
+        />
+
         {/* Ambient Parallax Floating Layer */}
         <motion.div
           style={{
@@ -544,15 +544,11 @@ export function DragCanvas({
                 </motion.div>
               </div>
 
-              {/* Serif Title */}
-              <motion.h1
-                className="font-hand text-5xl sm:text-6xl font-medium tracking-[-2px] text-zinc-900 mb-2.5"
-                initial={{ opacity: 0, y: 6 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1], delay: 0.04 }}
-              >
-                Mudit&apos;s Playground
-              </motion.h1>
+              {/* Block Text Title */}
+              <div className="mb-2 sm:mb-2.5 pointer-events-auto">
+                <h1 className="sr-only">Mudit&apos;s Playground</h1>
+                <MuditsBlockText showPlayground={true} />
+              </div>
 
               {/* Subtitle Paragraph */}
               <motion.p

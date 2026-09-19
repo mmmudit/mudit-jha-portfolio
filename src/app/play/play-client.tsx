@@ -7,6 +7,7 @@ import { motion, useReducedMotion } from "framer-motion";
 import { DragCanvas, DragCanvasItem } from "@/components/DragCanvas";
 import { TactileFolderCard } from "@/components/TactileFolderCard";
 import { InteractiveTsuLogo } from "@/components/tsu-logo";
+import { MuditsBlockText } from "@/components/mudits-block-text";
 import { Grid3X3, MousePointer2, Sparkles } from "lucide-react";
 import { play } from "@/lib/sound";
 
@@ -217,9 +218,10 @@ export function PlayPageClient({
             </div>
 
             {/* Title */}
-            <h1 className="font-hand text-5xl sm:text-6xl font-medium tracking-[-2px] text-zinc-900 mb-2">
-              Mudit&apos;s Playground
-            </h1>
+            <div className="mb-2">
+              <h1 className="sr-only">Mudit&apos;s Playground</h1>
+              <MuditsBlockText showPlayground={true} />
+            </div>
 
             {/* Subtitle */}
             <p className="font-display text-zinc-600 text-base sm:text-lg leading-relaxed font-normal max-w-lg mb-4">
