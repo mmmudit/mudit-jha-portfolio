@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState, type CSSProperties } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 import { TextAnimationCollection } from "@designcodeio/threeui";
 import { motion, useReducedMotion } from "framer-motion";
 import { LiveClock } from "./live-clock";
@@ -42,18 +42,19 @@ interface FooterStar {
   delay: number;
 }
 
-function FooterSparklingStars() {
+function FooterSparklingStars({ seed = 0 }: { seed?: number }) {
   const reduce = useReducedMotion();
 
   const stars: FooterStar[] = useMemo(() => {
     const list: FooterStar[] = [];
     const count = 48;
     for (let i = 0; i < count; i++) {
-      const seed1 = Math.sin((i + 42) * 883.1) * 10000;
+      const s = seed === 0 ? i + 42 : i + 42 + seed * 137.53;
+      const seed1 = Math.sin(s * 883.1) * 10000;
       const r1 = seed1 - Math.floor(seed1);
-      const seed2 = Math.cos((i + 42) * 419.3) * 10000;
+      const seed2 = Math.cos(s * 419.3) * 10000;
       const r2 = seed2 - Math.floor(seed2);
-      const seed3 = Math.sin((i + 42) * 617.7) * 10000;
+      const seed3 = Math.sin(s * 617.7) * 10000;
       const r3 = seed3 - Math.floor(seed3);
 
       list.push({
@@ -67,7 +68,7 @@ function FooterSparklingStars() {
       });
     }
     return list;
-  }, []);
+  }, [seed]);
 
   return (
     <div className="absolute inset-0 pointer-events-none overflow-hidden z-0" aria-hidden="true">
@@ -82,7 +83,7 @@ function FooterSparklingStars() {
       {stars.map((star) => (
         <motion.div
           key={star.id}
-          className="absolute rounded-full bg-white"
+          className="absolute rounded-full bg-white transition-[left,top] duration-[850ms] ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none"
           style={{
             left: `${star.x}%`,
             top: `${star.y}%`,
@@ -175,6 +176,43 @@ export function Footer() {
     return () => window.clearInterval(interval);
   }, [applySolarPosition]);
 
+  const [starSeed, setStarSeed] = useState(0);
+  const [starBurst, setStarBurst] = useState<{ x: number; y: number; id: number } | null>(null);
+  const starryPanelRef = useRef<HTMLDivElement>(null);
+
+  const randomizeStars = useCallback((e?: React.MouseEvent) => {
+    setStarSeed((prev) => {
+      let next = Math.floor(Math.random() * 100000) + 1;
+      while (next === prev) {
+        next = Math.floor(Math.random() * 100000) + 1;
+      }
+      return next;
+    });
+
+    if (e && starryPanelRef.current) {
+      const rect = starryPanelRef.current.getBoundingClientRect();
+      const clamp = (val: number, min: number, max: number) => Math.max(min, Math.min(max, val));
+      const x = clamp(((e.clientX - rect.left) / rect.width) * 100, 5, 95);
+      const y = clamp(((e.clientY - rect.top) / rect.height) * 100, 5, 95);
+      setStarBurst({ x, y, id: Date.now() });
+    } else {
+      setStarBurst({ x: 50, y: 30, id: Date.now() });
+    }
+
+    play("sparkle", { volume: 0.35 });
+  }, []);
+
+  const handleFooterClick = useCallback(
+    (e: React.MouseEvent) => {
+      const target = e.target as HTMLElement | null;
+      if (target?.closest("a, button, input, textarea, [role='button']")) {
+        return;
+      }
+      randomizeStars(e);
+    },
+    [randomizeStars]
+  );
+
   const handleEmailClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     if (href.startsWith("mailto:")) {
       e.preventDefault();
@@ -198,7 +236,10 @@ export function Footer() {
   };
 
   return (
-    <footer className="relative w-screen left-1/2 -translate-x-1/2 select-none">
+    <footer
+      onClick={handleFooterClick}
+      className="relative w-screen left-1/2 -translate-x-1/2 select-none"
+    >
       {/* Subtle Frost Blur Gradient Overlay with Color Willow (Spanning entire viewport width) */}
       <div
         className="absolute inset-0 pointer-events-none -z-10 select-none transition-[backdrop-filter,opacity] duration-250 ease-out dark:opacity-0"
@@ -276,11 +317,13 @@ export function Footer() {
 
         {/* Brand Black Footer Area Below Social Links with Organic Stars & Adaptive Sunlight */}
         <div
+          ref={starryPanelRef}
           style={solarStyle}
-          className={`relative w-full text-zinc-400 pt-8 sm:pt-10 pb-[calc(1.25rem+env(safe-area-inset-bottom,0px))] sm:pb-[max(1rem,env(safe-area-inset-bottom))] px-6 sm:px-14 flex flex-col items-center gap-6 sm:gap-8 mt-2 transition-[background-color,border-color] duration-300 ${isZeroG
+          className={`relative w-full text-zinc-400 pt-8 sm:pt-10 pb-[calc(1.25rem+env(safe-area-inset-bottom,0px))] sm:pb-[max(1rem,env(safe-area-inset-bottom))] px-6 sm:px-14 flex flex-col items-center gap-6 sm:gap-8 mt-2 transition-[background-color,border-color] duration-300 cursor-pointer ${isZeroG
             ? "bg-transparent border-t-0 overflow-visible"
             : "bg-[#090a0f] border-t border-white/10 overflow-hidden"
             }`}
+          title="Click to randomize stars"
         >
           {/* Organic Celestial Stars (Starlight 1.00 - Hidden in Zero-G in favor of ZeroG Cosmos) */}
           {!isZeroG && (
@@ -288,7 +331,7 @@ export function Footer() {
               className="absolute inset-0 pointer-events-none z-0"
               style={{ overflow: "hidden" }}
             >
-              <OrganicStars tone="haze" />
+              <OrganicStars tone="haze" seed={starSeed} />
             </div>
           )}
 
@@ -304,7 +347,22 @@ export function Footer() {
           </div>
 
           {/* Sparkling Micro-Stars (Hidden in Zero-G mode) */}
-          {!isZeroG && <FooterSparklingStars />}
+          {!isZeroG && <FooterSparklingStars seed={starSeed} />}
+
+          {/* Starlight Click Ripple / Burst */}
+          {!isZeroG && starBurst && (
+            <motion.div
+              key={starBurst.id}
+              className="pointer-events-none absolute rounded-full border border-white/30 bg-white/[0.04] z-10 -translate-x-1/2 -translate-y-1/2"
+              style={{
+                left: `${starBurst.x}%`,
+                top: `${starBurst.y}%`,
+              }}
+              initial={{ width: 0, height: 0, opacity: 0.8 }}
+              animate={{ width: 440, height: 440, opacity: 0 }}
+              transition={{ duration: 0.85, ease: "easeOut" }}
+            />
+          )}
 
           {/* Metadata Bar (Live Clock, Copyright, Changelog) */}
           <div className="relative z-30 pt-1 grid grid-cols-1 sm:grid-cols-3 items-center w-full max-w-[1400px] mx-auto gap-4 text-zinc-400 text-[13px] sm:text-[14px] md:text-[15px] tracking-tight">
