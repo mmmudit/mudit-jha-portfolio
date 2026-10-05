@@ -129,25 +129,29 @@ export default function NavigationTabs({
     const nav = navRef.current;
     if (!nav) return;
 
-    const navRect = nav.getBoundingClientRect();
     const nextGeometries = tabs.flatMap((tab) => {
       const element = tabRefs.current.get(tab.id);
       if (!element) return [];
 
-      const rect = element.getBoundingClientRect();
-      const left = rect.left - navRect.left;
+      // Use unscaled layout geometry (offsetLeft/offsetWidth) rather than getBoundingClientRect()
+      // so ancestor CSS transforms/layout animations (e.g. Dynamic Island scale or popLayout)
+      // cannot distort the measured tab pill width or position.
+      const left = element.offsetLeft;
+      const width = element.offsetWidth;
 
       return [
         {
           ...tab,
           left,
-          width: rect.width,
-          center: left + rect.width / 2,
+          width,
+          center: left + width / 2,
         },
       ];
     });
 
-    setGeometries(nextGeometries);
+    if (nextGeometries.length > 0 && nextGeometries.some((g) => g.width > 0)) {
+      setGeometries(nextGeometries);
+    }
   }, [tabs]);
 
   useLayoutEffect(() => {
@@ -160,7 +164,18 @@ export default function NavigationTabs({
     resizeObserver.observe(nav);
     tabRefs.current.forEach((element) => resizeObserver.observe(element));
 
-    return () => resizeObserver.disconnect();
+    const rafId = requestAnimationFrame(measureTabs);
+
+    window.addEventListener("resize", measureTabs);
+    if (typeof document !== "undefined" && "fonts" in document) {
+      document.fonts.ready.then(measureTabs);
+    }
+
+    return () => {
+      cancelAnimationFrame(rafId);
+      resizeObserver.disconnect();
+      window.removeEventListener("resize", measureTabs);
+    };
   }, [measureTabs]);
 
   useEffect(() => {
@@ -169,10 +184,17 @@ export default function NavigationTabs({
     const activeGeometry = geometries.find((tab) => tab.id === activeId);
     if (!activeGeometry) return;
 
-    xTarget.set(activeGeometry.left);
-    widthTarget.set(activeGeometry.width);
+    if (widthTarget.get() === 0) {
+      xTarget.set(activeGeometry.left);
+      widthTarget.set(activeGeometry.width);
+      xSpring.jump(activeGeometry.left);
+      widthSpring.jump(activeGeometry.width);
+    } else {
+      xTarget.set(activeGeometry.left);
+      widthTarget.set(activeGeometry.width);
+    }
     stretchTarget.set(1);
-  }, [activeId, geometries, stretchTarget, widthTarget, xTarget]);
+  }, [activeId, geometries, stretchTarget, widthTarget, xTarget, xSpring, widthSpring]);
 
   const finishDrag = useCallback(
     (event: ReactPointerEvent<HTMLElement>, cancelled = false) => {
@@ -197,11 +219,13 @@ export default function NavigationTabs({
         return;
       }
 
-      const navRect = navRef.current?.getBoundingClientRect();
-      if (!navRect) return;
+      const nav = navRef.current;
+      const navRect = nav?.getBoundingClientRect();
+      if (!nav || !navRect) return;
 
+      const scaleX = navRect.width > 0 && nav.offsetWidth > 0 ? navRect.width / nav.offsetWidth : 1;
       const projectedPoint =
-        event.clientX - navRect.left + session.velocity * 0.09;
+        (event.clientX - navRect.left) / scaleX + session.velocity * 0.09;
       const destination = nearestTab(geometries, projectedPoint);
 
       setActiveId(destination.id);
@@ -278,15 +302,17 @@ export default function NavigationTabs({
     if (!nav) return;
 
     const navRect = nav.getBoundingClientRect();
-    const pointerPosition = event.clientX - navRect.left;
+    const scaleX = navRect.width > 0 && nav.offsetWidth > 0 ? navRect.width / nav.offsetWidth : 1;
+    const pointerPosition = (event.clientX - navRect.left) / scaleX;
     const targetTab = nearestTab(geometries, pointerPosition);
-    const maxX = Math.max(navRect.width - targetTab.width, 0);
+    const navWidth = nav.offsetWidth;
+    const maxX = Math.max(navWidth - targetTab.width, 0);
     const rawX = session.startPillX + delta;
     const nextX =
       rawX < 0
-        ? rubberband(rawX, navRect.width)
+        ? rubberband(rawX, navWidth)
         : rawX > maxX
-          ? maxX + rubberband(rawX - maxX, navRect.width)
+          ? maxX + rubberband(rawX - maxX, navWidth)
           : rawX;
 
     xTarget.set(nextX);

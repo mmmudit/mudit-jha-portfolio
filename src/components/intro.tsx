@@ -6,6 +6,12 @@ import { LiveClock } from "./live-clock";
 import { AppleDockText } from "./apple-dock-text";
 import { useZeroGravity } from "@/context/zero-gravity-context";
 import { UmnHoverPreview } from "./umn-hover-preview";
+import dynamic from "next/dynamic";
+
+const RainbowTunnel = dynamic(
+  () => import("./rainbow-tunnel/rainbow-tunnel").then((module) => module.RainbowTunnel),
+  { ssr: false },
+);
 
 export function Intro() {
   const reduce = useReducedMotion();
@@ -20,7 +26,16 @@ export function Intro() {
   }, []);
 
   return (
-    <section className="flex flex-col md:flex-row items-start md:items-center justify-between gap-8 md:gap-10 mt-14 sm:mt-24 md:mt-40">
+    <section className="relative isolate flex flex-col md:flex-row items-start md:items-center justify-between gap-8 md:gap-10 mt-14 sm:mt-24 md:mt-40">
+      {!isZeroGravity && (
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute -top-28 -bottom-12 left-1/2 -z-10 w-screen -translate-x-1/2 dark:hidden sm:-top-44"
+          style={{ maskImage: "linear-gradient(to bottom, transparent, black 25%, black 65%, transparent)" }}
+        >
+          <RainbowTunnel />
+        </div>
+      )}
       <div className="flex flex-col gap-4 max-w-[650px] order-2 md:order-1">
         {/* Title dropped down from top with zero-g unmooring */}
         <motion.div
