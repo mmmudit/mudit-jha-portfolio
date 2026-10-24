@@ -5,6 +5,14 @@ import { ArrowLeft, ArrowUpRight, Sparkles, Layers, Folder, Maximize2 } from "lu
 
 const PROTOTYPES = [
   {
+    title: "Spatial Canvas 3D Project Orbit",
+    slug: "spatial-canvas",
+    description: "Creative technologist R3F spatial project canvas with 16:10 rounded SDF planes, heavy OrbitControls damping, and interactive GSAP camera flight.",
+    badge: "NEW",
+    icon: Sparkles,
+    href: "/prototypes/spatial-canvas",
+  },
+  {
     title: "Dynamic Island Gooey Loading Puck",
     slug: "dynamic-island-loader",
     description: "Squeezes out a circular 32×32 loading puck as you scroll UP using an SVG filter goo neck (feColorMatrix 18 -7 + feComposite atop).",

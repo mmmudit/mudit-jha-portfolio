@@ -3,6 +3,8 @@
 import { useMemo } from "react";
 import { motion, AnimatePresence, useReducedMotion, useScroll, useTransform } from "framer-motion";
 import { useZeroGravity } from "@/context/zero-gravity-context";
+import { FloatingLightsaber } from "./FloatingLightsaber";
+import { FloatingPixelGoku } from "./FloatingPixelGoku";
 
 interface Star {
   id: number;
@@ -102,6 +104,12 @@ export function ZeroGravityCosmos() {
               />
             ))}
           </motion.div>
+
+          {/* Floating blue kyber lightsaber drifting through the cosmic background */}
+          <FloatingLightsaber />
+
+          {/* Animated pixel Goku firing Kamehameha drifting through the cosmos */}
+          <FloatingPixelGoku />
         </motion.div>
       )}
     </AnimatePresence>

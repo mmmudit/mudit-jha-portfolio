@@ -12,6 +12,84 @@ interface CaseStudyHeroProps {
   className?: string;
 }
 
+const CLARITY_PRODUCT_VISUALS = [
+  {
+    src: "https://image.mux.com/WkFllBhN2ddiHrlMJhWVeZaU0001gSvk02zmlXikFkuewk/thumbnail.jpg?time=1&width=900",
+    alt: "Clarity adaptive friction scroll prototype",
+    label: "Adaptive friction",
+  },
+  {
+    src: "https://image.mux.com/01DiQd02dePOFaXAMrBe01Blzi9SldAcPZj02fiG2E46lkQ/thumbnail.jpg?time=1&width=900",
+    alt: "Clarity Dynamic Island prototype",
+    label: "Ambient awareness",
+  },
+  {
+    src: "https://image.mux.com/BOLlqfR6S5V7BZh00cmCnxN5Cey8cy1Ym1UQHxrr3Wjg/thumbnail.jpg?time=1&width=900",
+    alt: "Clarity Apple Watch prototype",
+    label: "Off-screen reset",
+  },
+];
+
+function ClarityProjectBrief() {
+  return (
+    <section
+      aria-label="Clarity case study summary"
+      className="relative isolate overflow-hidden rounded-[24px] border border-sky-950/10 bg-[#e9f5f8] shadow-[0_14px_40px_rgba(52,113,139,0.12)]"
+    >
+      <div aria-hidden="true" className="absolute -right-24 -top-24 size-72 rounded-full bg-sky-300/30 blur-3xl" />
+      <div aria-hidden="true" className="absolute -bottom-28 left-1/3 size-64 rounded-full bg-amber-100/60 blur-3xl" />
+
+      <div className="relative space-y-7 p-5 sm:p-7 md:p-8">
+        <div className="grid gap-5 md:grid-cols-[1.05fr_0.95fr] md:items-end">
+          <div className="space-y-3">
+            <p className="font-sans text-xs font-semibold text-sky-950/60">The design move</p>
+            <h2 className="max-w-xl font-display text-2xl font-semibold leading-[1.08] tracking-[-0.03em] text-sky-950 sm:text-3xl">
+              Turn a passive scroll loop into a felt signal.
+            </h2>
+          </div>
+          <p className="max-w-md font-sans text-sm leading-relaxed text-sky-950/75 sm:text-[15px]">
+            Clarity makes overstimulation visible while it is happening—using progressive resistance, visual softening, and grounding audio instead of another notification users can dismiss.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-3 gap-2.5 sm:gap-3">
+          {CLARITY_PRODUCT_VISUALS.map((visual) => (
+            <figure key={visual.label} className="relative aspect-[4/5] overflow-hidden rounded-[15px] bg-sky-950 shadow-[0_8px_20px_rgba(29,78,98,0.16)] sm:aspect-[16/10]">
+              <Image
+                src={visual.src}
+                alt={visual.alt}
+                fill
+                sizes="(max-width: 640px) 32vw, 300px"
+                className="object-cover"
+              />
+              <figcaption className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-sky-950/80 via-sky-950/25 to-transparent px-2.5 pb-2.5 pt-8 font-sans text-[10px] font-medium leading-tight text-white sm:px-3 sm:pb-3 sm:text-xs">
+                {visual.label}
+              </figcaption>
+            </figure>
+          ))}
+        </div>
+
+        <div className="grid gap-5 border-t border-sky-950/10 pt-5 md:grid-cols-[1.05fr_0.95fr]">
+          <div>
+            <p className="font-sans text-xs font-semibold text-sky-950/60">My contribution</p>
+            <p className="mt-2 max-w-xl font-sans text-sm leading-relaxed text-sky-950 sm:text-[15px]">
+              I led the interaction design and prototyping: defining the escalation model and choreographing haptic, visual, and audio feedback into one understandable system.
+            </p>
+          </div>
+          <div>
+            <p className="font-sans text-xs font-semibold text-sky-950/60">What the prototype established</p>
+            <ul className="mt-2 grid gap-1.5 font-sans text-sm leading-snug text-sky-950/80 sm:grid-cols-3 sm:text-xs">
+              <li>Friction can preserve agency without a hard lockout.</li>
+              <li>An abstract state can be recognized at a glance.</li>
+              <li>Awareness can extend beyond the app in use.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function getMuxPlaybackId(val?: string): string | undefined {
   if (!val || typeof val !== "string") return undefined;
   const trimmed = val.trim();
@@ -50,6 +128,7 @@ export function CaseStudyHero({ project, className = "" }: CaseStudyHeroProps) {
 
   const displayTitle = project.tagline || project.title;
   const isBorderless = Boolean(heroMedia?.borderless);
+  const isClarity = project.slug === "clarity" || project.id === "clarity";
 
   return (
     <header id="sec-hero" className={`space-y-6 sm:space-y-8 pt-2 sm:pt-4 scroll-mt-6 ${className}`}>
@@ -75,6 +154,7 @@ export function CaseStudyHero({ project, className = "" }: CaseStudyHeroProps) {
         )}
       </div>
 
+      {isClarity && <ClarityProjectBrief />}
 
       {/* Large Hero Demo Container — shown only when the author has supplied media */}
       {hasHeroMedia && <div
