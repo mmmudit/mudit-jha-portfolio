@@ -59,6 +59,7 @@ function ClarityProjectBrief() {
                 src={visual.src}
                 alt={visual.alt}
                 fill
+                loading={visual.label === "Adaptive friction" ? "eager" : "lazy"}
                 sizes="(max-width: 640px) 32vw, 300px"
                 className="object-cover"
               />
